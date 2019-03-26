@@ -6,5 +6,5 @@ var router = VRender.router();
 
 ///////////////////////////////////////////////////////////
 router(null, function (name, params, callback) {
-	return "Hello World!!";
+	callback(false, "./doc/main/MainView");
 });
