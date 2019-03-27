@@ -1,20 +1,31 @@
 // 2019-03-25
 
-var VRender = require(__vrender);
+const VRender = require(__vrender);
+const SideMenu = require("./SideMenu");
 
 
-var MainView = VRender.PageView.extend(module, {
-	doInit: function (done) {
-		MainView.super(this, () => {
-			setTimeout(() => {
-				this.val = "00000000000"
-				done();
-			}, 1000);
-		});
+const $ = VRender.$;
+
+const MainView = VRender.PageView.extend(module, {
+	getPageTitle () {
+		return "v-render-ui";
 	},
 
-	renderBody: function (body) {
+	getPageLogo () {
+		return "/logo.png";
+	},
+
+	renderBody (body) {
 		MainView.super(this, body);
-		body.text("Welcome!" + this.val);
+
+		let mainBody = $("#main-body").appendTo(body);
+
+		let sidemenu = $(".main-menu").appendTo(mainBody);
+		new SideMenu(this).render(sidemenu);
+
+		let container = $(".main-container").appendTo(mainBody);
+		$("#singlepage-container").appendTo(container);
 	}
 });
+
+MainView.use(VRender.plugins.SinglePage);
