@@ -14,8 +14,11 @@ require("./router");
 VRender.use(require("../index"));
 
 new VRender({
+	mode: "development",
+
 	cwd: Path.resolve(__dirname, "../"),
 	uplifyExpires: 1000,
+	// uglify: false,
 
 	server: {
 		port: 9200,
