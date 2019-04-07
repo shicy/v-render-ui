@@ -15,11 +15,8 @@ VRender.use(require("../index"));
 
 new VRender({
 	mode: "development",
-
 	cwd: Path.resolve(__dirname, "../"),
-	uplifyExpires: 1000,
-	// uglify: false,
-
+	// babel: true,
 	server: {
 		port: 9200,
 		root: "./doc/public"
