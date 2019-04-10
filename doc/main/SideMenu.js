@@ -8,6 +8,7 @@ const Utils = VRender.Utils;
 
 const SideMenu = VRender.UIView.extend(module, {
 	id: "main-sidemenu",
+	ref: "mainSideMenu",
 
 	renderView () {
 		SideMenu.super(this);
@@ -16,7 +17,6 @@ const SideMenu = VRender.UIView.extend(module, {
 
 	renderMenus () {
 		let target = $(".menus").appendTo(this.$el);
-		target.attr("ref", "mainSideMenu");
 		Utils.each(menus, (group) => {
 			let menuGrp = $(".menu-grp").appendTo(target);
 			$(".title").appendTo(menuGrp).text(group.name);
