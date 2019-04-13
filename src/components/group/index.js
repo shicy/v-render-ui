@@ -1,12 +1,12 @@
-// 2019-04-10
+// 2019-04-13
 
 var VRender = require(__vrender__);
 var Component = require("../../common/Component");
 
 
-var UIButton = Component.extend(module, {
+var UIGroup = Component.extend(module, {
 	renderView: function () {
-		UIButton.super(this);
-		this.$el.text("Button");
+		UIGroup.super(this);
+		this.$el.text("Group");
 	}
 });

@@ -1,10 +1,10 @@
 // 2019-04-13
 
 var VRender = require(__vrender__);
-var ComponentBase = require("../../common/ComponentBase");
+var Component = require("../../common/Component");
 
 
-var UICheckbox = ComponentBase.extend(module, {
+var UICheckbox = Component.extend(module, {
 	renderView: function () {
 		UICheckbox.super(this, "renderView");
 		this.$el.text("Checkbox");
