@@ -34,8 +34,18 @@
 	padding: 10px 20px;
     color: #505050;
     font-size: 14px;
+    line-height: 20px;
     border-top: 1px dashed #f0f0f0;
     background-color: #fafafa;
+}
+
+.module-view > .module-group > .module-demo > .description code {
+	display: inline-block;
+    padding: 0px 5px;
+    color: #f94304;
+    font-size: 12px;
+    border-radius: 3px;
+    background-color: #f0f0f0;
 }
 
 .module-view > .module-group > .module-demo > .source {
@@ -45,7 +55,7 @@
 
 .module-view > .module-group > .module-demo > .source > pre {
 	display: none;
-	padding: 10px;
+	padding: 10px 20px;
 	margin: 0px;
 	line-height: 22px;
 	background-color: #fdfcf6;

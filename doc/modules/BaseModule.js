@@ -38,9 +38,14 @@ const addDemo = function (target, view, code, desc, title) {
 		new UIGroup(this, {cls: "preview"}).append(view).render(target);
 	}
 	if (desc) {
+		if (Utils.isArray(desc))
+			desc = desc.join("");
+		desc = desc.replace(/\<\>([^\<]*)\<\/\>/g, (a, b) => { return `<code>${b}</code>`; });
 		$(".description").appendTo(target).append(desc);
 	}
 	if (code) {
+		if (Utils.isArray(code))
+			code = code.join("\n");
 		code = Prism.highlight(code, Prism.languages.javascript);
 		$(".source").appendTo(target)
 			.append($("pre").write(code))
