@@ -39,6 +39,7 @@ span {
 #main-body > .main-container {
 	height: 100%;
 	overflow: auto;
+	padding: 20px 30px;
 }
 
 #main-sidemenu .menus {

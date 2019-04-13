@@ -1,10 +1,12 @@
 // 2019-03-25
 
+const Path = require("path");
 const VRender = require(__vrender);
 const SideMenu = require("./SideMenu");
 
 
 const $ = VRender.$;
+const Utils = VRender.Utils;
 
 const MainView = VRender.PageView.extend(module, {
 	getPageTitle () {
@@ -27,5 +29,7 @@ const MainView = VRender.PageView.extend(module, {
 		$("#singlepage-container").appendTo(container);
 	}
 });
+
+MainView.import("file://" + Utils.getModuleFilePath("prismjs/themes/prism.css", __dirname));
 
 MainView.use(VRender.plugins.SinglePage);
