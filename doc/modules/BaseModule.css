@@ -1,0 +1,83 @@
+.module-view > .module-title {
+	color: #333;
+    font-size: 24px;
+    line-height: 40px;
+}
+
+.module-view > .module-group {
+	margin-top: 30px;
+}
+
+.module-view > .module-group > .title {
+	color: rgba(0, 0, 0, 0.75);
+    font-size: 20px;
+    line-height: 32px;
+}
+
+.module-view > .module-group > .module-demo {
+	margin-top: 10px;
+    font-size: 16px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.module-view > .module-group > .module-demo:hover {
+	border-color: #68acff;
+}
+
+.module-view > .module-group > .module-demo > .preview {
+	padding: 20px;
+}
+
+.module-view > .module-group > .module-demo > .description {
+	padding: 10px 20px;
+    color: #505050;
+    font-size: 14px;
+    border-top: 1px dashed #f0f0f0;
+    background-color: #fafafa;
+}
+
+.module-view > .module-group > .module-demo > .source {
+	font-size: 14px;
+	border-top: 1px dashed #eee;
+}
+
+.module-view > .module-group > .module-demo > .source > pre {
+	display: none;
+	padding: 10px;
+	margin: 0px;
+	line-height: 22px;
+	background-color: #fdfcf6;
+}
+
+.module-view > .module-group > .module-demo > .source > .expand {
+	height: 26px;
+    border-radius: 0px 0px 5px 5px;
+    background-color: #f6f6f6;
+    cursor: pointer;
+}
+
+.module-view > .module-group > .module-demo > .source > .expand:hover {
+	background-color: #eee;
+}
+
+.module-view > .module-group > .module-demo > .source > .expand i {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	left: 50%;
+	top: 50%;
+	margin-top: -5px;
+	margin-left: -5px;
+	background-image: url(/icons/a001.png);
+	background-size: 10px;
+}
+
+.module-view > .module-group > .module-demo > .source.open > pre {
+	display: block;
+}
+
+.module-view > .module-group > .module-demo > .source.open > .expand i {
+	transform: rotate(180deg);
+}
