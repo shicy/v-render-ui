@@ -1,15 +1,15 @@
-// 2019-04-09
+// 2019-04-13
 
 const VRender = require(__vrender__);
 const BaseModule = require("../BaseModule");
 
 
 const UIGroup = VRender.UIGroup;
-const UIButton = VRender.UIButton;
+const UICheckbox = VRender.UICheckbox;
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UIButton 按钮";
+		return "UICheckbox 对选框";
 	},
 
 	renderDemos: function (target, render) {
@@ -19,7 +19,7 @@ const ModuleView = BaseModule.extend(module, {
 
 	renderDemo1: function (render) {
 		let demo = new UIGroup(this);
-		demo.append(new UIButton(this));
+		demo.append(new UICheckbox(this));
 		render(demo);
 	}
 });

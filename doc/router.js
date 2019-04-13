@@ -8,7 +8,6 @@ const router = VRender.router();
 
 ///////////////////////////////////////////////////////////
 router("/component/module", function (name, params, callback) {
-	console.log(name);
 	let paths = name.split("/");
 	if (paths[3]) {
 		let modulePath = Path.resolve(__dirname, `./modules/${paths[3]}/index.js`);
