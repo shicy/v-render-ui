@@ -3,6 +3,6 @@
 var VRender = require(__vrender__);
 
 
-var Component = VRender.UIView.extend(module, {
+var UIBase = VRender.UIView.extend(module, {
 
 });
