@@ -43,4 +43,9 @@ const menus = [{
 		{name: "combobox", title: "Combobox", subTitle: "下拉选择框"},
 		{name: "dateinput", title: "DateInput", subTitle: "日期输入框"},
 	]
+}, {
+	name: "容器",
+	children: [
+		{name: "group", title: "Group", subTitle: "组视图"}
+	]
 }];

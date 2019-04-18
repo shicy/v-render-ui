@@ -37,18 +37,21 @@ const addDemo = function (target, view, code, desc, title) {
 	if (view) {
 		new UIGroup(this, {cls: "preview"}).append(view).render(target);
 	}
+	desc = Utils.isArray(desc) ? desc.join("<br/>") : desc;
 	if (desc) {
-		if (Utils.isArray(desc))
-			desc = desc.join("");
 		desc = desc.replace(/\<\>([^\<]*)\<\/\>/g, (a, b) => { return `<code>${b}</code>`; });
 		$(".description").appendTo(target).append(desc);
 	}
+	code = Utils.isArray(code) ? code.join("\n") : code;
 	if (code) {
-		if (Utils.isArray(code))
-			code = code.join("\n");
 		code = Prism.highlight(code, Prism.languages.javascript);
-		$(".source").appendTo(target)
-			.append($("pre").write(code))
-			.append($(".expand").append("<i></i>"));
+		var source = $(".source").appendTo(target)
+			.append($("pre").write(code));
+		if (view || desc) {
+			source.append($(".expand").append("<i></i>"));
+		}
+		else {
+			source.addClass("open");
+		}
 	}
 };
