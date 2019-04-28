@@ -10,7 +10,8 @@
 	const HORIZONTIAL = "horizontial";
 
 	///////////////////////////////////////////////////////
-	const UIGroup = UI.group = function (context, options) {
+	const UIGroup = UI.group = function (view, options) {
+		// 
 	};
 	const _UIGroup = UIGroup.prototype = new UI._base();
 
@@ -21,6 +22,8 @@
 	const _Renderer = Renderer.prototype = new UI._baseRender();
 
 	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-group");
 		// BaseRender._base.render.call(this, $, target);
 		// target.addClass("ui-group");
 
@@ -41,7 +44,8 @@
 	///////////////////////////////////////////////////////
 	if (frontend) {
 		window.UIGroup = UIGroup;
-		VRender.Component.register(".ui-group", UIGroup);
+		UI.fn.init(".ui-group", UIGroup, Renderer);
+		// VRender.Component.register(".ui-group", UIGroup);
 	}
 	else {
 		module.exports = function (context, $, target, options) {
