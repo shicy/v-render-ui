@@ -10,7 +10,7 @@
 
 const VRender = require(__vrender__);
 const UIBase = require("../../common/UIBase");
-const render = require("./script");
+const Renderer = require("./render");
 
 
 const Utils = VRender.Utils;
@@ -33,7 +33,7 @@ const UIGroup = UIBase.extend(module, {
 
 	renderView: function () {
 		UIGroup.super(this);
-		render(this, VRender.$, this.$el, this.options);
+		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 
 	getOrientation: function () {

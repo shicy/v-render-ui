@@ -11,7 +11,7 @@
 
 	///////////////////////////////////////////////////////
 	const UIGroup = UI.group = function (view, options) {
-		// 
+		return UI._base.call(this, view, options);
 	};
 	const _UIGroup = UIGroup.prototype = new UI._base();
 
@@ -24,6 +24,8 @@
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
 		target.addClass("ui-group");
+
+		
 		// BaseRender._base.render.call(this, $, target);
 		// target.addClass("ui-group");
 
@@ -44,12 +46,9 @@
 	///////////////////////////////////////////////////////
 	if (frontend) {
 		window.UIGroup = UIGroup;
-		UI.fn.init(".ui-group", UIGroup, Renderer);
-		// VRender.Component.register(".ui-group", UIGroup);
+		UI.init(".ui-group", UIGroup, Renderer);
 	}
 	else {
-		module.exports = function (context, $, target, options) {
-			new Renderer(context, options).render($, target);
-		};
+		module.exports = Renderer;
 	}
 })(typeof window !== "undefined");
