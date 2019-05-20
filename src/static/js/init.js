@@ -4,7 +4,7 @@
 	if (frontend && VRender.Component.ui)
 		return ;
 
-	const Utils = frontend ? VRender.Utils : require(__vrender__).Utils;
+	const Utils = frontend ? VRender.Utils : require("" + __vrender__).Utils;
 
 	///////////////////////////////////////////////////////
 	const Fn = {};
@@ -133,6 +133,8 @@
 			return this.options[name];
 		if (this.hasOwnProperty(name))
 			return this[name];
+		if (type && this.options.hasOwnProperty(type))
+			return this.options[type];
 		let func = null;
 		let target = this.$el.children(".ui-fn[name='" + (type || name) + "']");
 		if (target && target.length > 0) {
@@ -169,16 +171,15 @@
 		api = api || this.lastLoadApi || this.$el.attr("api-name");
 		if (Utils.isBlank(api))
 			return false;
-		let self = this;
 		let target = this.$el.addClass("is-loading");
 		let timerId = this.loadTimerId = Date.now();
-		Component.load.call(this, api, params, function (err, data) {
-			if (timerId == self.loadTimerId) {
+		Component.load.call(this, api, params, (err, data) => {
+			if (timerId == this.loadTimerId) {
 				target.removeClass("is-loading");
 
-				let pager = Utils.isFunction(self.getPaginator) && self.getPaginator();
+				let pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
 				if (pager && Utils.isFunction(pager.set)) {
-					let pageInfo = self._pageInfo || {}
+					let pageInfo = this._pageInfo || {}
 					pager.set(pageInfo.total, pageInfo.page, pageInfo.size);
 				}
 
@@ -197,7 +198,7 @@
 		min = Utils.isNull(min) ? Number.NEGATIVE_INFINITY : min;
 		max = Utils.isNull(max) ? Number.POSITIVE_INFINITY : max;
 		let values = [];
-		Utils.each(value, function (val) {
+		Utils.each(value, (val) => {
 			if (!isNaN(val)) {
 				val = parseInt(val);
 				if (!isNaN(val) && values.indexOf(val) < 0) {
@@ -216,8 +217,8 @@
 		index2 = Fn.getIntValues(index2, 0);
 		if (index1.length != index2.length)
 			return false;
-		index1.sort(function (a, b) { return a > b; });
-		index2.sort(function (a, b) { return a > b; });
+		index1.sort((a, b) => (a - b));
+		index2.sort((a, b) => (a - b));
 		for (let i = 0, l = index1.length; i < l; i++) {
 			if (index1[i] != index2[i])
 				return false;
@@ -306,7 +307,7 @@
 			target.removeAttr("timerid");
 		}
 		if (event.type == "mouseleave") {
-			timerId = setTimeout(function () {
+			timerId = setTimeout(() => {
 				target.removeAttr("timerid");
 				handler();
 			}, 500);
