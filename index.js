@@ -12,5 +12,17 @@ module.exports = {
 		VRender.UIGroup = UIGroup;
 		VRender.UIButton = UIButton;
 		VRender.UICheckbox = UICheckbox;
-	}
+	},
+
+	initPageView: function () {
+		let files = [];
+		files.push("vrender-ui.css");
+		files.push("vrender-ui.js");
+		// files.push("vrender-ui.2f4e57b0.css");
+		// files.push("vrender-ui.2f4e57b0.js");
+		files.forEach(file => {
+			file = "file://" + __dirname + "/dist/" + file;
+			this.import(file, {group: "ui", index: 0});
+		});
+	},
 };
