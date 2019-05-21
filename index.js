@@ -22,7 +22,7 @@ module.exports = {
 		// files.push("vrender-ui.2f4e57b0.js");
 		files.forEach(file => {
 			file = "file://" + __dirname + "/dist/" + file;
-			this.import(file, {group: "ui", index: 0});
+			this.import(file, {group: "ui", minify: false, index: 0});
 		});
 	},
 };
