@@ -30,7 +30,7 @@ module.exports = env => {
       libraryTarget: "var"
     },
 
-    devtool: "cheap-source-map",
+    devtool: "inline-cheap-source-map",
 
     module: {
       rules: [{
