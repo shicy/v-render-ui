@@ -268,6 +268,7 @@
 	// ====================================================
 	// 通用组件渲染方法，子组件继承后可直接使用
 	Renderer.render = function ($, target) {
+		target.addClass("vrender-ui");
 		this.renderData($, target);
 		Fn.renderFunction.call(this, target, "adapter", this.getDataAdapter());
 		Fn.renderFunction.call(this, target, "mapper", this.getDataMapper());
