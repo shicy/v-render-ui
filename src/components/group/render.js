@@ -54,14 +54,18 @@
 
 	_UIGroup.add = function (child, index) {
 		if (Utils.isNotBlank(child)) {
+			let item = $("<div class='grp-item'></div>");
+			item.append(child.$el || child);
+
 			index = (isNaN(index) || index === "") ? -1 : parseInt(index);
 			let children = this.$el.children();
 			if (index >= 0 && index < children.length) {
-				children.eq(index).before(child.$el || child);
+				children.eq(index).before(item);
 			}
 			else {
-				this.$el.append(child.$el || child);
+				this.$el.append(item);
 			}
+
 			layoutChanged.call(this);
 		}
 		return child;
@@ -70,7 +74,7 @@
 	_UIGroup.removeAt = function (index) {
 		let item = this.$el.children().eq(index).remove();
 		layoutChanged.call(this);
-		return item;
+		return item.children();
 	};
 
 	// ====================================================
@@ -118,10 +122,11 @@
 		children = Utils.toArray(children);
 		Utils.each(children, (child) => {
 			if (Utils.isNotNull(child)) {
+				let _target = $("<div class='grp-item'></div>").appendTo(target);
 				if (Utils.isFunction(child.render))
-					child.render(target);
+					child.render(_target);
 				else 
-					target.append(child.$el || child);
+					_target.append(child.$el || child);
 			}
 		});
 		updateLayout.call(this, $, target);
