@@ -8,7 +8,8 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = env => {
   let isDevelopment = env.NODE_ENV == "development";
 
-  let fileName = "vrender-ui";
+  // let fileName = "vrender-ui";
+  fileName = "[name]";
   if (!isDevelopment) {
     // let dt = new Date();
     // let year = dt.getFullYear() - 2000;
@@ -17,12 +18,15 @@ module.exports = env => {
     // fileName += "." + (year < 10 ? "0" : "") + year;
     // fileName += (month < 10 ? "0" : "") + month;
     // fileName += (date < 10 ? "0" : "") + date;
-    fileName += ".[chunkhash:8]";
+    fileName += ".[hash:8]";
   }
 
   return {
     mode: env.NODE_ENV || "production",
-    entry: "./build/build.js",
+    // entry: "./build/build.js",
+    entry: {
+      "vrender-ui": "./build/build.js"
+    },
 
     output: {
       path: Path.resolve(__dirname, "dist"),
@@ -60,7 +64,23 @@ module.exports = env => {
       minimizer: [
         new TerserJSPlugin({}),
         new OptimizeCSSAssetsPlugin({})
-      ]
+      ],
+      splitChunks: {
+        cacheGroups: {
+          p: {
+            name: "vrender-ui.p",
+            test: /\.p\.css$/,
+            chunks: "all",
+            enforce: true
+          },
+          m: {
+            name: "vrender-ui.m",
+            test: /\.m\.css$/,
+            chunks: "all",
+            enforce: true
+          }
+        }
+      }
     }
   };
 };
