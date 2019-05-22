@@ -133,6 +133,10 @@ const UIGroup = UIBase.extend(module, {
 UIGroup.VERTICAL = "vertical";
 UIGroup.HORIZONTIAL = "horizontial";
 
+UIGroup.HGroup = function (context, options) {
+	
+}
+
 const addItem = function (item, index) {
 	index = (isNaN(index) || index === "") ? -1 : parseInt(index);
 	let children = this.options.children;
