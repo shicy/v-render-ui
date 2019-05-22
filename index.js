@@ -34,6 +34,8 @@ module.exports = {
 		else {
 			files.push("vrender-ui.p" + distHashValue + ".css");
 		}
+		files.push("vrender-ui.p" + distHashValue + ".js");
+		files.push("vrender-ui.m" + distHashValue + ".js");
 		files.push("vrender-ui" + distHashValue + ".js");
 		files.forEach(file => {
 			file = "file://" + __dirname + "/dist/" + file;

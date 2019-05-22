@@ -30,8 +30,7 @@ module.exports = env => {
 
     output: {
       path: Path.resolve(__dirname, "dist"),
-      filename: fileName + ".js",
-      libraryTarget: "var"
+      filename: fileName + ".js"
     },
 
     devtool: isDevelopment ? false : "inline-cheap-source-map",
