@@ -14,6 +14,8 @@ const distVersion = "190523";
 module.exports = {
 	install: function () {
 		VRender.UIGroup = UIGroup;
+		VRender.UIHGroup = UIGroup.HGroup;
+		VRender.UIVGroup = UIGroup.VGroup;
 		VRender.UIButton = UIButton;
 		VRender.UICheckbox = UICheckbox;
 	},

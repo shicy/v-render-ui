@@ -1,4 +1,5 @@
 // 2019-04-13
+// group
 
 (function (frontend) {
 	if (frontend && VRender.Component.ui.group)
@@ -205,6 +206,12 @@
 	///////////////////////////////////////////////////////
 	if (frontend) {
 		window.UIGroup = UIGroup;
+		window.UIHGroup = function (options) {
+			return new UIGroup(Utils.extend(options, {orientation: HORIZONTIAL}));
+		};
+		window.UIVGroup = function (options) {
+			return new UIGroup(Utils.extend(options, {orientation: VERTICAL}));
+		};
 		UI.init(".ui-group", UIGroup, Renderer);
 	}
 	else {

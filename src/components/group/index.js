@@ -134,7 +134,13 @@ UIGroup.VERTICAL = "vertical";
 UIGroup.HORIZONTIAL = "horizontial";
 
 UIGroup.HGroup = function (context, options) {
-	
+	options = Utils.extend(options, {orientation: UIGroup.HORIZONTIAL});
+	return new UIGroup(context, options);
+}
+
+UIGroup.VGroup = function (context, options) {
+	options = Utils.extend(options, {orientation: UIGroup.VERTICAL});
+	return new UIGroup(context, options);
 }
 
 const addItem = function (item, index) {
