@@ -41,6 +41,7 @@ function buildJs() {
 	jsFiles.push("src/static/js/selectable.js");
 
 	jsFiles.push("src/components/group/render.js");
+	jsFiles.push("src/components/button/render.js");
 
 	return Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))
@@ -87,13 +88,21 @@ function final(callback) {
 	callback();
 }
 
+function build() {
+	return Gulp.series(
+		clean,
+		Gulp.parallel(
+			buildJs,
+			buildCss_p,
+			buildCss_m
+		),
+		final
+	);
+}
+
 ///////////////////////////////////////////////////////////
-exports.default = Gulp.series(
-	clean,
-	Gulp.parallel(
-		buildJs,
-		buildCss_p,
-		buildCss_m
-	),
-	final
-);
+exports.default = build();
+
+exports.watch = function () {
+	Gulp.watch("src/components/**", {delay: 500}, build());
+};
