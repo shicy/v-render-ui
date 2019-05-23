@@ -5,6 +5,7 @@ const BaseModule = require("../BaseModule");
 
 
 const UIGroup = VRender.UIGroup;
+const UIHGroup = VRender.UIHGroup;
 const UIButton = VRender.UIButton;
 
 const ModuleView = BaseModule.extend(module, {
@@ -22,7 +23,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>type</> 可选值：");
 		description.push("<>primary</>、<>success</>、<>error</>、<>warn</>、<>info</>、<>text</>、<>link</>。");
 
-		let demo = new UIGroup(this);
+		let demo = new UIHGroup(this, {gap: 10});
 		demo.append(new UIButton(this, { label: "Default" }));
 		demo.append(new UIButton(this, { label: "Primary", type: "primary" }));
 		demo.append(new UIButton(this, { label: "Success", type: "success" }));
