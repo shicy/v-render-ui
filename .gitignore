@@ -2,8 +2,3 @@ node_modules
 package-lock.json
 logs
 bin/_work
-vrender-ui.js
-vrender-ui.m.css
-vrender-ui.m.js
-vrender-ui.p.css
-vrender-ui.p.js
