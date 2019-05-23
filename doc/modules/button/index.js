@@ -16,6 +16,7 @@ const ModuleView = BaseModule.extend(module, {
 	renderDemos: function (target, render) {
 		ModuleView.super(this, target, render);
 		this.renderDemo1(render);
+		this.renderDemo2(render);
 	},
 
 	renderDemo1: function (render) {
@@ -44,5 +45,9 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("new UIButton([context], { label: 'Link', type: 'link' });");
 
 		render(demo, source, description);
+	},
+
+	renderDemo2: function (render) {
+
 	}
 });

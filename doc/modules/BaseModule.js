@@ -9,6 +9,11 @@ const Utils = VRender.Utils;
 const UIGroup = VRender.UIGroup;
 
 const BaseModule = VRender.Fragment.extend(module, {
+	doInit: function () {
+		BaseModule.super(this);
+		this.isApp = this.isRenderAsApp();
+	},
+
 	getTitle: function () {
 	},
 
