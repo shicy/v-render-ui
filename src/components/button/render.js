@@ -129,11 +129,11 @@
 		let icon = this.options.icon;
 		if (icon === true) {
 			let type = this.options.type;
-			if (type == "success")
+			if (type == "success" || type == "submit")
 				icon = "012b.png";
 			else if (type == "warn")
 				icon = "013b.png";
-			else if (type == "danger")
+			else if (type == "error" || type == "danger")
 				icon = "014b.png";
 			else if (type == "info")
 				icon = "015b.png";

@@ -17,8 +17,8 @@ const Utils = VRender.Utils;
 const UIView = VRender.UIView;
 
 const UIGroup = UIBase.extend(module, {
-	doInit: function (options) {
-		UIGroup.super(this, (done) => {
+	doInit: function (done) {
+		UIGroup.super(this, () => {
 			let options = this.options || {};
 
 			let children = options.children || options.subViews || options.views;
