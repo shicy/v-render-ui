@@ -9,9 +9,12 @@ const Utils = VRender.Utils;
 const UIGroup = VRender.UIGroup;
 
 const BaseModule = VRender.Fragment.extend(module, {
-	doInit: function () {
-		BaseModule.super(this);
-		this.isApp = this.isRenderAsApp();
+	doInit: function (done) {
+		BaseModule.super(this, () => {
+			this.isApp = this.isRenderAsApp();
+			this.suggestOrientation = this.isApp ? UIGroup.VERTICAL : UIGroup.HORIZONTIAL;
+			done && done();
+		});
 	},
 
 	getTitle: function () {
