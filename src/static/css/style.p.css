@@ -6,6 +6,16 @@
 	-moz-box-sizing: border-box;
 }
 
+.vrender-ui * {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.vrender-ui ul {
+    margin: 0px;
+    list-style-type: none;
+}
+
 .no-select {
 	-moz-user-select: none;
 	-webkit-user-select: none;

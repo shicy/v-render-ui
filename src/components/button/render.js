@@ -20,6 +20,52 @@
 	};
 	const _UIButton = UIButton.prototype = new UI._base();
 
+	_UIButton.init = function (target, options) {
+		UI._base.init.call(this, target, options);
+
+		if (this._isRenderAsApp()) {
+			target.on("tap", ".dropdown", onDropdownTouchHandler.bind(this));
+		}
+		
+		target.on("tap", ".btn", onBtnClickHandler.bind(this));
+		target.on("tap", ".dropdownbtn", onDropdownBtnHandler.bind(this));
+		target.on("tap", ".dropdown li", onDropdownItemHandler.bind(this));
+	};
+
+	// ====================================================
+	_UIButton.getLabel = function () {
+		return this.options.label;
+	};
+
+	_UIButton.setLabel = function (value) {
+		this.options.label = value;
+		var button = this.$el.children(".btn");
+		button.children("span").remove();
+		if (Utils.isNotBlank(value)) {
+			$("<span></span>").appendTo(button).text(Utils.trimToEmpty(value) || " ");
+		}
+	};
+
+	_UIButton.waiting = function (time) {
+		if (Utils.isNull(time) || time === true)
+			time = parseInt(this.$el.attr("opt-wait")) || -1;
+		else
+			time = Math.max(0, parseInt(time)) || 0;
+		doWaiting.call(this, time);
+	};
+
+	_UIButton.isWaiting = function () {
+		return this.$el.is(".waiting");
+	};
+
+	_UIButton.setWaiting = function (value) {
+		if (value === true || Utils.isNull(value))
+			value = -1;
+		else
+			value = Math.max(0, parseInt(value)) || 0;
+		this.$el.attr("opt-wait", value);
+	};
+
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -72,6 +118,67 @@
 
 
 	///////////////////////////////////////////////////////
+	const onBtnClickHandler = function (e) {
+		if (this.$el.is(".disabled, .waiting"))
+			return ;
+		let target = this.$el;
+		let link = target.attr("data-lnk");
+		if (link) {
+			window.open(link, "_self");
+		}
+		else {
+			let isToggle = target.attr("opt-toggle") == 1;
+			if (target.is(".has-items")) {
+				if (!isToggle) {
+					showDropdown.call(this);
+					return ;
+				}
+			}
+			else if (isToggle) {
+				if (target.attr("active") == 1)
+					target.removeAttr("active");
+				else
+					target.attr("active", "1");
+			}
+
+			this.trigger("tap", target.attr("name"));
+
+			let waitTime = parseInt(target.attr("opt-wait"));
+			if (waitTime) {
+				doWaiting.call(this, waitTime);
+			}
+		}
+	};
+
+	const onDropdownBtnHandler = function (e) {
+		if (this.$el.is(".disabled, .waiting"))
+			return false;
+		showDropdown.call(this);
+		return false;
+	};
+
+	const onDropdownTouchHandler = function (e) {
+		if ($(e.target).is(".dropdown"))
+			hideDropdown.call(this);
+	};
+
+	const onDropdownItemHandler = function (e) {
+		let item = $(e.currentTarget);
+		let name = item.attr("name") || "";
+		if (this.$el.attr("opt-toggle") == 1) {
+			this.$el.attr("name", name);
+			this.$el.children(".btn").find("span").text(item.text());
+		}
+		this.trigger("tap", item.attr("name"));
+		hideDropdown.call(this);
+		return false;
+	};
+
+	const onMouseHandler = function (e) {
+		UI.fn.mouseDebounce(e, hideDropdown.bind(this));
+	};
+
+	// ====================================================
 	const renderWaitingInfos = function ($, target) {
 		let waitTime = getWaitTime.call(this);
 		if (waitTime)
@@ -102,6 +209,70 @@
 				}
 			});
 		}
+	};
+
+	const doWaiting = function (time) {
+		if (this.t_wait) {
+			clearTimeout(this.t_wait);
+			this.t_wait = 0;
+		}
+		if (time) {
+			let target = this.$el.addClass("waiting");
+			if (time > 0) {
+				this.t_wait = setTimeout(() => {
+					this.t_wait = 0;
+					target.removeClass("waiting");
+				}, time);
+			}
+		}
+		else {
+			this.$el.removeClass("waiting");
+		}
+	};
+
+	// ====================================================
+	const showDropdown = function () {
+		if (this.$el.is(".show-dropdown"))
+			return ;
+
+		let target = this.$el.addClass("show-dropdown");
+
+		if (this._isRenderAsApp()) {
+			$("html,body").addClass("ui-scrollless");
+		}
+		else {
+			target.on("mouseenter", onMouseHandler.bind(this));
+			target.on("mouseleave", onMouseHandler.bind(this));
+
+			let dropdown = target.children(".dropdown");
+			let maxHeight = UI.fn.getDropdownHeight.call(this, dropdown);
+			let offset = Utils.offset(dropdown, this._getScrollContainer(), 0, maxHeight);
+			if (offset.isOverflowY)
+				target.addClass("show-before");
+		}
+
+		setTimeout(() => {
+			target.addClass("animate-in");
+		});
+	};
+
+	const hideDropdown = function () {
+		if (!this.$el.is(".show-dropdown"))
+			return ;
+
+		let target = this.$el.addClass("animate-out");
+
+		if (this._isRenderAsApp()) {
+			$("html,body").removeClass("ui-scrollless");
+		}
+		else {
+			target.off("mouseenter").off("mouseleave");
+		}
+
+		setTimeout(() => {
+			target.removeClass("show-dropdown").removeClass("show-before");
+			target.removeClass("animate-in").removeClass("animate-out");
+		}, 300);
 	};
 
 	// ====================================================

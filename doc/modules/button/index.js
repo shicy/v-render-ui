@@ -18,6 +18,9 @@ const ModuleView = BaseModule.extend(module, {
 		this.renderDemo2(render);
 		this.renderDemo3(render);
 		this.renderDemo4(render);
+		this.renderDemo5(render);
+		this.renderDemo6(render);
+		this.renderDemo7(render);
 	},
 
 	renderDemo1: function (render) {
@@ -129,6 +132,109 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("new UIButton(context, { label: 'Windows', type: 'primary', icon: '/icons/os_windows.png' });");
 		source.push("new UIButton(context, { label: 'Mac', type: 'primary', icon: '/icons/os_mac.png' });");
 		source.push("new UIButton(context, { label: 'Linux', type: 'primary', icon: '/icons/os_linux.png' });");
+
+		render(demo, source, description);
+	},
+
+	renderDemo5: function (render) {
+		let description = [];
+		description.push("等待状态");
+		description.push("设置属性 <>{waiting: true}</> 初始化按钮为等待状态。");
+		description.push("设置属性 <>{wait: true}</>，当点击按钮时，按钮变为等待状态。");
+		description.push("设置属性 <>wait</> 为 <>number</>，当点击按钮时，按钮变为等待状态，并在 <>[wait]</> 毫秒后恢复状态。");
+
+		let demo = new UIGroup(this, { gap: 10 });
+		demo.add(new UIGroup(this, { gap: 10, orientation: this.suggestOrientation }))
+			.append(new UIButton(this, { label: "Default", waiting: true }))
+			.append(new UIButton(this, { label: "Primary", type: "primary", waiting: true }))
+			.append(new UIButton(this, { label: "Success", type: "success", icon: true, waiting: true }))
+			.append(new UIButton(this, { label: "Warn", type: "warn", icon: true, waiting: true }))
+			.append(new UIButton(this, { label: "Danger", type: "danger", icon: true, waiting: true }))
+			.append(new UIButton(this, { label: "Info", type: "info", icon: true, waiting: true }))
+			.append(new UIButton(this, { label: "Text", type: "text", icon: true, waiting: true }))
+			.append(new UIButton(this, { label: "Link", type: "link", icon: true, waiting: true }));
+		demo.add(new UIGroup(this, { gap: 10, orientation: this.suggestOrientation }))
+			.append(new UIButton(this, { label: "点击进入等待状态", type: "primary", wait: true }))
+			.append(new UIButton(this, { label: "点击等待5秒后恢复", type: "primary", wait: 5000 }));
+
+		let source = [];
+		source.push("new UIButton([context], { label: 'Default', waiting: true });");
+		source.push("new UIButton([context], { label: 'Primary', type: 'primary', waiting: true });");
+		source.push("new UIButton([context], { label: 'Success', type: 'source', icon: true, waiting: true });");
+		source.push("new UIButton([context], { label: 'Warn', type: 'warn', icon: true, waiting: true });");
+		source.push("new UIButton([context], { label: 'Danger', type: 'danger', icon: true, waiting: true });");
+		source.push("new UIButton([context], { label: 'Info', type: 'info', icon: true, waiting: true });");
+		source.push("new UIButton([context], { label: 'Text', type: 'text', icon: true, waiting: true });");
+		source.push("new UIButton([context], { label: 'Link', type: 'link', icon: true, waiting: true });");
+		source.push("new UIButton([context], { label: '点击进入等待状态', type: 'primary', wait: true });");
+		source.push("new UIButton([context], { label: '点击等待5秒后恢复', type: 'primary', wait: 5000 });");
+
+		render(demo, source, description);
+	},
+
+	renderDemo6: function (render) {
+		let description = [];
+		description.push("属性 <>toggle</>：选中/未选中");
+
+		let demo = new UIGroup(this);
+		demo.add(new UIGroup(this, { gap: 10, orientation: this.suggestOrientation }))
+			.append(new UIButton(this, { label: "Default", toggle: true }))
+			.append(new UIButton(this, { label: "Primary", type: "primary", toggle: true }))
+			.append(new UIButton(this, { label: "Success", type: "success", toggle: true }))
+			.append(new UIButton(this, { label: "Warn", type: "warn", toggle: true }))
+			.append(new UIButton(this, { label: "Danger", type: "danger", toggle: true }))
+			.append(new UIButton(this, { label: "Info", type: "info", toggle: true }))
+			.append(new UIButton(this, { label: "Text", type: "text", toggle: true }))
+			.append(new UIButton(this, { label: "Link", type: "link", toggle: true }));
+
+		let source = [];
+		source.push("new UIButton([context], { label: 'Default', toggle: true });");
+		source.push("new UIButton([context], { label: 'Primary', type: 'primary', toggle: true });");
+		source.push("new UIButton([context], { label: 'Success', type: 'success', toggle: true });");
+		source.push("new UIButton([context], { label: 'Warn', type: 'warn', toggle: true });");
+		source.push("new UIButton([context], { label: 'Danger', type: 'danger', toggle: true });");
+		source.push("new UIButton([context], { label: 'Info', type: 'info', toggle: true });");
+		source.push("new UIButton([context], { label: 'Text', type: 'text', toggle: true });");
+		source.push("new UIButton([context], { label: 'Link', type: 'link', toggle: true });");
+
+		render(demo, source, description);
+	},
+
+	renderDemo7: function (render) {
+		let description = [];
+		description.push("组合按钮");
+
+		let items = [{name: "btn1", label: "按钮1"}, {name: "btn2", label: "按钮2"}, {name: "btn3", label: "按钮3"}];
+
+		let demo = new UIGroup(this, { gap: 10 });
+		demo.add(new UIGroup(this, { gap: 10, orientation: this.suggestOrientation }))
+			.append(new UIButton(this, { label: "Default", items: items }))
+			.append(new UIButton(this, { label: "Primary", items: items, type: "primary" }))
+			.append(new UIButton(this, { label: "Success", items: items, type: "success" }))
+			.append(new UIButton(this, { label: "Warn", items: items, type: "warn" }))
+			.append(new UIButton(this, { label: "Danger", items: items, type: "danger" }))
+			.append(new UIButton(this, { label: "Info", items: items, type: "info" }))
+			.append(new UIButton(this, { label: "Text", items: items, type: "text" }))
+			.append(new UIButton(this, { label: "Link", items: items, type: "link" }));
+		demo.add(new UIGroup(this, { gap: 10, orientation: this.suggestOrientation }))
+			.append(new UIButton(this, { label: "Toggle Button", items: items, toggle: true }));
+
+		let source = [];
+		source.push("var items = [");
+		source.push("  {name: 'btn1', label: '按钮1'},");
+		source.push("  {name: 'btn3', label: '按钮3'},");
+		source.push("  {name: 'btn3', label: '按钮3'}");
+		source.push("];");
+		source.push("new UIButton([context], { label: 'Default', items: items });");
+		source.push("new UIButton([context], { label: 'Primary', items: items, type: 'primary' });");
+		source.push("new UIButton([context], { label: 'Success', items: items, type: 'success' });");
+		source.push("new UIButton([context], { label: 'Warn', items: items, type: 'warn' });");
+		source.push("new UIButton([context], { label: 'Danger', items: items, type: 'danger' });");
+		source.push("new UIButton([context], { label: 'Info', items: items, type: 'info' });");
+		source.push("new UIButton([context], { label: 'Text', items: items, type: 'text' });");
+		source.push("new UIButton([context], { label: 'Link', items: items, type: 'link' });");
+		source.push("// -----------------------------------------------------");
+		source.push("new UIButton([context], { label: 'Toggle Button', items: items, toggle: true });");
 
 		render(demo, source, description);
 	}
