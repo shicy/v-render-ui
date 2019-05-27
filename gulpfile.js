@@ -26,10 +26,12 @@ const version = (function () {
 
 ///////////////////////////////////////////////////////////
 function clean(callback) {
-	FileSys.readdirSync(distDir).forEach(file => {
-		let filePath = distDir + Path.sep + file;
-		FileSys.unlinkSync(filePath);
-	});
+	if (!isDevelopment) {
+		FileSys.readdirSync(distDir).forEach(file => {
+			let filePath = distDir + Path.sep + file;
+			FileSys.unlinkSync(filePath);
+		});
+	}
 	callback();
 };
 
@@ -43,13 +45,16 @@ function buildJs() {
 	jsFiles.push("src/components/group/render.js");
 	jsFiles.push("src/components/button/render.js");
 
-	return Gulp.src(jsFiles)
+	let result = Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))
 		.pipe(GulpConcat("vrender-ui.js"))
-		.pipe(Gulp.dest(distDir))
-		.pipe(GulpUglify({compress: {pure_funcs: ["console.log"]}}))
-		.pipe(GulpRename({basename: "vrender-ui." + version + ".min"}))
 		.pipe(Gulp.dest(distDir));
+	if (!isDevelopment) {
+		result = result.pipe(GulpUglify({compress: {pure_funcs: ["console.log"]}}))
+			.pipe(GulpRename({basename: "vrender-ui." + version + ".min"}))
+			.pipe(Gulp.dest(distDir));
+	}
+	return result;
 }
 
 function buildCss_p(callback) {
@@ -57,12 +62,15 @@ function buildCss_p(callback) {
 	cssFiles.push("src/static/css/style.p.css");
 	cssFiles.push("src/components/**/*.p.css");
 
-	return Gulp.src(cssFiles)
+	let result = Gulp.src(cssFiles)
 		.pipe(GulpConcat("vrender-ui.p.css"))
-		.pipe(Gulp.dest(distDir))
-		.pipe(GulpCleanCss())
-		.pipe(GulpRename({basename: "vrender-ui." + version + ".min.p"}))
 		.pipe(Gulp.dest(distDir));
+	if (!isDevelopment) {
+		result = result.pipe(GulpCleanCss())
+			.pipe(GulpRename({basename: "vrender-ui." + version + ".min.p"}))
+			.pipe(Gulp.dest(distDir));
+	}
+	return result;
 }
 
 function buildCss_m(callback) {
@@ -70,21 +78,26 @@ function buildCss_m(callback) {
 	cssFiles.push("src/static/css/style.m.css");
 	cssFiles.push("src/components/**/*.m.css");
 
-	return Gulp.src(cssFiles)
+	let result = Gulp.src(cssFiles)
 		.pipe(GulpConcat("vrender-ui.m.css"))
-		.pipe(Gulp.dest(distDir))
-		.pipe(GulpCleanCss())
-		.pipe(GulpRename({basename: "vrender-ui." + version + ".min.m"}))
 		.pipe(Gulp.dest(distDir));
+	if (!isDevelopment) {
+		result = result.pipe(GulpCleanCss())
+			.pipe(GulpRename({basename: "vrender-ui." + version + ".min.m"}))
+			.pipe(Gulp.dest(distDir));
+	}
+	return result;
 }
 
 function final(callback) {
-	let indexFile = Path.resolve(__dirname, "./index.js");
-	let indexFileData = FileSys.readFileSync(indexFile, {encoding: "utf-8"});
-	indexFileData = indexFileData.replace(
-		/const distVersion = "(\d){6}";/,
-		"const distVersion = \"" + version + "\";");
-	FileSys.writeFileSync(indexFile, indexFileData);
+	if (!isDevelopment) {
+		let indexFile = Path.resolve(__dirname, "./index.js");
+		let indexFileData = FileSys.readFileSync(indexFile, {encoding: "utf-8"});
+		indexFileData = indexFileData.replace(
+			/const distVersion = "(\d){6}";/,
+			"const distVersion = \"" + version + "\";");
+		FileSys.writeFileSync(indexFile, indexFileData);
+	}
 	callback();
 }
 
@@ -104,5 +117,5 @@ function build() {
 exports.default = build();
 
 exports.watch = function () {
-	Gulp.watch("src/components/**", {delay: 500}, build());
+	Gulp.watch("src/components/**", {delay: 500, ignoreInitial: false}, build());
 };
