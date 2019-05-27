@@ -117,5 +117,5 @@ function build() {
 exports.default = build();
 
 exports.watch = function () {
-	Gulp.watch("src/components/**", {delay: 500, ignoreInitial: false}, build());
+	Gulp.watch("src/components/**", {delay: 1000, ignoreInitial: false}, build());
 };
