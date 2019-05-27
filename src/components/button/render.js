@@ -138,7 +138,7 @@
 			else if (type == "info")
 				icon = "015b.png";
 			if (icon !== true)
-				icon = "/VRender/icons/" + icon;
+				icon = "/vrender-ui/icons/" + icon;
 		}
 		return (typeof icon == "string") ? icon : null;
 	};

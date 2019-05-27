@@ -1,5 +1,6 @@
 // 2019-03-21
 
+const Path = require("path");
 const FileSys = require("fs");
 const VRender = require(__vrender__);
 
@@ -39,5 +40,18 @@ module.exports = {
 			file = "file://" + __dirname + "/dist/" + file;
 			this.import(file, {group: "ui", minify: false, index: 0});
 		});
+	},
+
+	routeFile: function (filepath, params, callback) {
+		if (/\/vrender-ui\//.test(filepath)) {
+			if (/icons/.test(filepath)) {
+				filepath = filepath.split("/").pop();
+				filepath = Path.resolve(__dirname, "./public/icons/", filepath);
+				callback(false, filepath);
+			}
+		}
+		else {
+			return false;
+		}
 	}
 };
