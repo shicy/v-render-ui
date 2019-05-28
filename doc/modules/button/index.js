@@ -40,14 +40,14 @@ const ModuleView = BaseModule.extend(module, {
 		demo.append(new UIButton(this, { label: "Link", type: "link" }));
 
 		let source = [];
-		source.push("new UIButton([context], { label: 'Default' });");
-		source.push("new UIButton([context], { label: 'Primary', type: 'primary' });");
-		source.push("new UIButton([context], { label: 'Success', type: 'success' });");
-		source.push("new UIButton([context], { label: 'Error', type: 'error' });");
-		source.push("new UIButton([context], { label: 'Warn', type: 'warn' });");
-		source.push("new UIButton([context], { label: 'Info', type: 'info' });");
-		source.push("new UIButton([context], { label: 'Text', type: 'text' });");
-		source.push("new UIButton([context], { label: 'Link', type: 'link' });");
+		source.push("new UIButton([context], {\n  label: 'Default'\n});");
+		source.push("new UIButton([context], {\n  label: 'Primary',\n  type: 'primary'\n});");
+		source.push("new UIButton([context], {\n  label: 'Success',\n  type: 'success'\n});");
+		source.push("new UIButton([context], {\n  label: 'Error',\n  type: 'error'\n});");
+		source.push("new UIButton([context], {\n  label: 'Warn',\n  type: 'warn'\n});");
+		source.push("new UIButton([context], {\n  label: 'Info',\n  type: 'info'\n});");
+		source.push("new UIButton([context], {\n  label: 'Text',\n  type: 'text'\n});");
+		source.push("new UIButton([context], {\n  label: 'Link',\n  type: 'link'\n});");
 
 		render(demo, source, description);
 	},
@@ -65,11 +65,11 @@ const ModuleView = BaseModule.extend(module, {
 		demo.append(new UIButton(this, { label: "bigger button", type: "primary", size: "bigger" }));
 
 		let source = [];
-		source.push("new UIButton([context], { label: 'tiny button', type: 'primary', size: 'tiny' });");
-		source.push("new UIButton([context], { label: 'tiny button', type: 'primary', size: 'small' });");
-		source.push("new UIButton([context], { label: 'tiny button', type: 'primary' });");
-		source.push("new UIButton([context], { label: 'tiny button', type: 'primary', size: 'big' });");
-		source.push("new UIButton([context], { label: 'tiny button', type: 'primary', size: 'bigger' });");
+		source.push("new UIButton([context], {\n  label: 'tiny button',\n  type: 'primary',\n  size: 'tiny'\n});");
+		source.push("new UIButton([context], {\n  label: 'tiny button',\n  type: 'primary',\n  size: 'small'\n});");
+		source.push("new UIButton([context], {\n  label: 'tiny button',\n  type: 'primary'\n});");
+		source.push("new UIButton([context], {\n  label: 'tiny button',\n  type: 'primary',\n  size: 'big'\n});");
+		source.push("new UIButton([context], {\n  label: 'tiny button',\n  type: 'primary',\n  size: 'bigger'\n});");
 
 		render(demo, source, description);
 	},
@@ -90,14 +90,14 @@ const ModuleView = BaseModule.extend(module, {
 		demo.append(new UIButton(this, { label: "Link", type: "link", disabled: true }));
 
 		let source = [];
-		source.push("new UIButton([context], { label: 'Default', disabled: true });");
-		source.push("new UIButton([context], { label: 'Primary', type: 'primary', disabled: true });");
-		source.push("new UIButton([context], { label: 'Success', type: 'success', disabled: true });");
-		source.push("new UIButton([context], { label: 'Warn', type: 'warn', disabled: true });");
-		source.push("new UIButton([context], { label: 'Error', type: 'error', disabled: true });");
-		source.push("new UIButton([context], { label: 'Info', type: 'info', disabled: true });");
-		source.push("new UIButton([context], { label: 'Text', type: 'text', disabled: true });");
-		source.push("new UIButton([context], { label: 'Link', type: 'link', disabled: true });");
+		source.push("new UIButton([context], {\n  label: 'Default',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Primary',\n  type: 'primary',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Success',\n  type: 'success',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Warn',\n  type: 'warn',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Error',\n  type: 'error',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Info',\n  type: 'info',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Text',\n  type: 'text',\n  disabled: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Link',\n  type: 'link',\n  disabled: true\n});");
 
 		render(demo, source, description);
 	},
@@ -122,16 +122,16 @@ const ModuleView = BaseModule.extend(module, {
 			.append(new UIButton(this, { label: "Linux", type: "primary", icon: "/icons/os_linux.png" }));
 
 		var source = [];
-		source.push("new UIButton(context, { label: 'Default', icon: true });");
-		source.push("new UIButton(context, { label: 'Primary', type: 'primary', icon: true });");
-		source.push("new UIButton(context, { label: 'Success', type: 'success', icon: true });");
-		source.push("new UIButton(context, { label: 'Warn', type: 'warn', icon: true });");
-		source.push("new UIButton(context, { label: 'Error', type: 'error', icon: true });");
-		source.push("new UIButton(context, { label: 'Info', type: 'info', icon: true });");
+		source.push("new UIButton(context, {\n  label: 'Default',\n  icon: true\n});");
+		source.push("new UIButton(context, {\n  label: 'Primary',\n  type: 'primary',\n  icon: true\n});");
+		source.push("new UIButton(context, {\n  label: 'Success',\n  type: 'success',\n  icon: true\n});");
+		source.push("new UIButton(context, {\n  label: 'Warn',\n  type: 'warn',\n  icon: true\n});");
+		source.push("new UIButton(context, {\n  label: 'Error',\n  type: 'error',\n  icon: true\n});");
+		source.push("new UIButton(context, {\n  label: 'Info',\n  type: 'info',\n  icon: true\n});");
 		source.push("// -----------------------------------------------------");
-		source.push("new UIButton(context, { label: 'Windows', type: 'primary', icon: '/icons/os_windows.png' });");
-		source.push("new UIButton(context, { label: 'Mac', type: 'primary', icon: '/icons/os_mac.png' });");
-		source.push("new UIButton(context, { label: 'Linux', type: 'primary', icon: '/icons/os_linux.png' });");
+		source.push("new UIButton(context, {\n  label: 'Windows',\n  type: 'primary',\n  icon: '/icons/os_windows.png'\n});");
+		source.push("new UIButton(context, {\n  label: 'Mac',\n  type: 'primary',\n  icon: '/icons/os_mac.png'\n});");
+		source.push("new UIButton(context, {\n  label: 'Linux',\n  type: 'primary',\n  icon: '/icons/os_linux.png'\n});");
 
 		render(demo, source, description);
 	},
@@ -158,16 +158,16 @@ const ModuleView = BaseModule.extend(module, {
 			.append(new UIButton(this, { label: "点击等待5秒后恢复", type: "primary", wait: 5000 }));
 
 		let source = [];
-		source.push("new UIButton([context], { label: 'Default', waiting: true });");
-		source.push("new UIButton([context], { label: 'Primary', type: 'primary', waiting: true });");
-		source.push("new UIButton([context], { label: 'Success', type: 'source', icon: true, waiting: true });");
-		source.push("new UIButton([context], { label: 'Warn', type: 'warn', icon: true, waiting: true });");
-		source.push("new UIButton([context], { label: 'Danger', type: 'danger', icon: true, waiting: true });");
-		source.push("new UIButton([context], { label: 'Info', type: 'info', icon: true, waiting: true });");
-		source.push("new UIButton([context], { label: 'Text', type: 'text', icon: true, waiting: true });");
-		source.push("new UIButton([context], { label: 'Link', type: 'link', icon: true, waiting: true });");
-		source.push("new UIButton([context], { label: '点击进入等待状态', type: 'primary', wait: true });");
-		source.push("new UIButton([context], { label: '点击等待5秒后恢复', type: 'primary', wait: 5000 });");
+		source.push("new UIButton([context], {\n  label: 'Default',\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Primary',\n  type: 'primary',\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Success',\n  type: 'source',\n  icon: true,\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Warn',\n  type: 'warn',\n  icon: true,\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Danger',\n  type: 'danger',\n  icon: true,\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Info',\n  type: 'info',\n  icon: true,\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Text',\n  type: 'text',\n  icon: true,\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Link',\n  type: 'link',\n  icon: true,\n  waiting: true\n});");
+		source.push("new UIButton([context], {\n  label: '点击进入等待状态',\n  type: 'primary',\n  wait: true\n});");
+		source.push("new UIButton([context], {\n  label: '点击等待5秒后恢复',\n  type: 'primary',\n  wait: 5000\n});");
 
 		render(demo, source, description);
 	},
@@ -188,14 +188,14 @@ const ModuleView = BaseModule.extend(module, {
 			.append(new UIButton(this, { label: "Link", type: "link", toggle: true }));
 
 		let source = [];
-		source.push("new UIButton([context], { label: 'Default', toggle: true });");
-		source.push("new UIButton([context], { label: 'Primary', type: 'primary', toggle: true });");
-		source.push("new UIButton([context], { label: 'Success', type: 'success', toggle: true });");
-		source.push("new UIButton([context], { label: 'Warn', type: 'warn', toggle: true });");
-		source.push("new UIButton([context], { label: 'Danger', type: 'danger', toggle: true });");
-		source.push("new UIButton([context], { label: 'Info', type: 'info', toggle: true });");
-		source.push("new UIButton([context], { label: 'Text', type: 'text', toggle: true });");
-		source.push("new UIButton([context], { label: 'Link', type: 'link', toggle: true });");
+		source.push("new UIButton([context], {\n  label: 'Default',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Primary',\n  type: 'primary',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Success',\n  type: 'success',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Warn',\n  type: 'warn',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Danger',\n  type: 'danger',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Info',\n  type: 'info',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Text',\n  type: 'text',\n  toggle: true\n});");
+		source.push("new UIButton([context], {\n  label: 'Link',\n  type: 'link',\n  toggle: true\n});");
 
 		render(demo, source, description);
 	},
@@ -203,6 +203,7 @@ const ModuleView = BaseModule.extend(module, {
 	renderDemo7: function (render) {
 		let description = [];
 		description.push("组合按钮");
+		description.push("同时设置 <>toggle</> 为 <>true</> 时，点击按钮切换按钮显示文本。");
 
 		let items = [{name: "btn1", label: "按钮1"}, {name: "btn2", label: "按钮2"}, {name: "btn3", label: "按钮3"}];
 
@@ -221,20 +222,21 @@ const ModuleView = BaseModule.extend(module, {
 
 		let source = [];
 		source.push("var items = [");
-		source.push("  {name: 'btn1', label: '按钮1'},");
-		source.push("  {name: 'btn3', label: '按钮3'},");
-		source.push("  {name: 'btn3', label: '按钮3'}");
+		source.push("  {\n    name: 'btn1',\n    label: '按钮1'\n  },");
+		source.push("  {\n    name: 'btn3',\n    label: '按钮3'\n},");
+		source.push("  {\n    name: 'btn3',\n    label: '按钮3'\n}");
 		source.push("];");
-		source.push("new UIButton([context], { label: 'Default', items: items });");
-		source.push("new UIButton([context], { label: 'Primary', items: items, type: 'primary' });");
-		source.push("new UIButton([context], { label: 'Success', items: items, type: 'success' });");
-		source.push("new UIButton([context], { label: 'Warn', items: items, type: 'warn' });");
-		source.push("new UIButton([context], { label: 'Danger', items: items, type: 'danger' });");
-		source.push("new UIButton([context], { label: 'Info', items: items, type: 'info' });");
-		source.push("new UIButton([context], { label: 'Text', items: items, type: 'text' });");
-		source.push("new UIButton([context], { label: 'Link', items: items, type: 'link' });");
 		source.push("// -----------------------------------------------------");
-		source.push("new UIButton([context], { label: 'Toggle Button', items: items, toggle: true });");
+		source.push("new UIButton([context], {\n  label: 'Default',\n  items: items\n});");
+		source.push("new UIButton([context], {\n  label: 'Primary',\n  items: items,\n  type: 'primary'\n});");
+		source.push("new UIButton([context], {\n  label: 'Success',\n  items: items,\n  type: 'success'\n});");
+		source.push("new UIButton([context], {\n  label: 'Warn',\n  items: items,\n  type: 'warn'\n});");
+		source.push("new UIButton([context], {\n  label: 'Danger',\n  items: items,\n  type: 'danger'\n});");
+		source.push("new UIButton([context], {\n  label: 'Info',\n  items: items,\n  type: 'info'\n});");
+		source.push("new UIButton([context], {\n  label: 'Text',\n  items: items,\n  type: 'text'\n});");
+		source.push("new UIButton([context], {\n  label: 'Link',\n  items: items,\n  type: 'link'\n});");
+		source.push("// -----------------------------------------------------");
+		source.push("new UIButton([context], {\n  label: 'Toggle Button',\n  items: items,\n  toggle: true\n});");
 
 		render(demo, source, description);
 	}
