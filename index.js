@@ -10,7 +10,7 @@ const UICheckbox = require("./src/components/checkbox");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190523";
+const distVersion = "190529";
 
 module.exports = {
 	install: function () {

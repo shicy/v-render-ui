@@ -2,7 +2,6 @@
 
 // 2019-04-15
 (function (frontend) {
-  console.log("innnnnnnnnnnnnnnnnnnn");
   if (frontend && VRender.Component.ui) return;
   var Utils = frontend ? VRender.Utils : require("" + __vrender__).Utils; ///////////////////////////////////////////////////////
 
@@ -754,6 +753,7 @@
 "use strict";
 
 // 2019-04-13
+// group
 (function (frontend) {
   if (frontend && VRender.Component.ui.group) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
@@ -954,7 +954,404 @@
 
   if (frontend) {
     window.UIGroup = UIGroup;
+
+    window.UIHGroup = function (options) {
+      return new UIGroup(Utils.extend(options, {
+        orientation: HORIZONTIAL
+      }));
+    };
+
+    window.UIVGroup = function (options) {
+      return new UIGroup(Utils.extend(options, {
+        orientation: VERTICAL
+      }));
+    };
+
     UI.init(".ui-group", UIGroup, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
+// 2019-05-23
+// button
+(function (frontend) {
+  if (frontend && VRender.Component.ui.button) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Utils = UI.util; // 默认按钮样式
+
+  var ButtonStyles = ["ui-btn-default", "ui-btn-primary", "ui-btn-success", "ui-btn-danger", "ui-btn-warn", "ui-btn-info", "ui-btn-link", "ui-btn-text"]; // 按钮大小定义
+
+  var ButtonSizes = ["bigger", "big", "normal", "small", "tiny"]; ///////////////////////////////////////////////////////
+
+  var UIButton = UI.button = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UIButton = UIButton.prototype = new UI._base();
+
+  _UIButton.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    if (this._isRenderAsApp()) {
+      target.on("tap", ".dropdown", onDropdownTouchHandler.bind(this));
+    }
+
+    target.on("tap", ".btn", onBtnClickHandler.bind(this));
+    target.on("tap", ".dropdownbtn", onDropdownBtnHandler.bind(this));
+    target.on("tap", ".dropdown li", onDropdownItemHandler.bind(this));
+  }; // ====================================================
+
+
+  _UIButton.getLabel = function () {
+    return this.options.label;
+  };
+
+  _UIButton.setLabel = function (value) {
+    this.options.label = value;
+    var button = this.$el.children(".btn");
+    button.children("span").remove();
+
+    if (Utils.isNotBlank(value)) {
+      $("<span></span>").appendTo(button).text(Utils.trimToEmpty(value) || " ");
+    }
+  };
+
+  _UIButton.waiting = function (time) {
+    if (Utils.isNull(time) || time === true) time = parseInt(this.$el.attr("opt-wait")) || -1;else time = Math.max(0, parseInt(time)) || 0;
+    doWaiting.call(this, time);
+  };
+
+  _UIButton.isWaiting = function () {
+    return this.$el.is(".waiting");
+  };
+
+  _UIButton.setWaiting = function (value) {
+    if (value === true || Utils.isNull(value)) value = -1;else value = Math.max(0, parseInt(value)) || 0;
+    this.$el.attr("opt-wait", value);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender();
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-btn");
+    var options = this.options || {};
+    var size = options.size;
+    if (size && ButtonSizes.indexOf(size) >= 0) target.addClass(size); // 如果是内置 style 就用该样式，否则通过 type 获取一个样式
+    // 注：style 样式已在 base 或 UIView 中添加
+
+    var style = options.style || "";
+
+    if (ButtonStyles.indexOf(style) < 0) {
+      target.addClass(getTypeStyle(options.type)); // 会返回一个默认样式
+    }
+
+    if (Utils.isTrue(options.toggle)) target.attr("opt-toggle", "1");
+    if (Utils.isNotBlank(options.link)) target.attr("data-lnk", Utils.trimToNull(options.link));
+    var mainBtn = $("<button class='btn'></button>").appendTo(target);
+    var iconUrl = getIconUrl.call(this);
+
+    if (Utils.isNotBlank(iconUrl)) {
+      var icon = $("<i class='icon'></i>").appendTo(mainBtn);
+      icon.css(frontend ? "backgroundImage" : "background-image", "url(" + iconUrl + ")");
+    }
+
+    if (Utils.isNotBlank(options.label)) {
+      $("<span></span>").appendTo(mainBtn).text(Utils.trimToEmpty(options.label) || " ");
+    }
+
+    renderWaitingInfos.call(this, $, target);
+    renderDropdowns.call(this, $, target);
+    return this;
+  };
+
+  _Renderer.getItems = function () {
+    return Utils.toArray(this.options.items);
+  }; ///////////////////////////////////////////////////////
+
+
+  var onBtnClickHandler = function onBtnClickHandler(e) {
+    if (this.$el.is(".disabled, .waiting")) return;
+    var target = this.$el;
+    var link = target.attr("data-lnk");
+
+    if (link) {
+      window.open(link, "_self");
+    } else {
+      var isToggle = target.attr("opt-toggle") == 1;
+
+      if (target.is(".has-items")) {
+        if (!isToggle) {
+          showDropdown.call(this);
+          return;
+        }
+      } else if (isToggle) {
+        if (target.attr("active") == 1) target.removeAttr("active");else target.attr("active", "1");
+      }
+
+      this.trigger("tap", target.attr("name"));
+      var waitTime = parseInt(target.attr("opt-wait"));
+
+      if (waitTime) {
+        doWaiting.call(this, waitTime);
+      }
+    }
+  };
+
+  var onDropdownBtnHandler = function onDropdownBtnHandler(e) {
+    if (this.$el.is(".disabled, .waiting")) return false;
+    showDropdown.call(this);
+    return false;
+  };
+
+  var onDropdownTouchHandler = function onDropdownTouchHandler(e) {
+    if ($(e.target).is(".dropdown")) hideDropdown.call(this);
+  };
+
+  var onDropdownItemHandler = function onDropdownItemHandler(e) {
+    var item = $(e.currentTarget);
+    var name = item.attr("name") || "";
+
+    if (this.$el.attr("opt-toggle") == 1) {
+      this.$el.attr("name", name);
+      this.$el.children(".btn").find("span").text(item.text());
+    }
+
+    this.trigger("tap", item.attr("name"));
+    hideDropdown.call(this);
+    return false;
+  };
+
+  var onMouseHandler = function onMouseHandler(e) {
+    UI.fn.mouseDebounce(e, hideDropdown.bind(this));
+  }; // ====================================================
+
+
+  var renderWaitingInfos = function renderWaitingInfos($, target) {
+    var waitTime = getWaitTime.call(this);
+    if (waitTime) target.attr("opt-wait", waitTime);
+    if (Utils.isTrue(this.options.waiting)) target.addClass("waiting");
+  };
+
+  var renderDropdowns = function renderDropdowns($, target) {
+    target.removeClass("has-items");
+    target.children(".dropdownbtn").remove();
+    target.children(".dropdown").remove();
+    var datas = this.getItems();
+
+    if (datas && datas.length > 0) {
+      target.addClass("has-items");
+      target.append("<span class='dropdownbtn'>&nbsp;</span>");
+      var dropdown = $("<div class='dropdown'></div>").appendTo(target);
+      var items = $("<ul></ul>").appendTo(dropdown);
+      Utils.each(datas, function (data) {
+        if (Utils.isNotBlank(data)) {
+          if (Utils.isPrimitive(data)) data = {
+            label: data
+          };
+          var item = $("<li></li>").appendTo(items);
+          if (data.name) item.attr("name", data.name);
+          $("<span></span>").appendTo(item).text(Utils.trimToEmpty(data.label) || " ");
+        }
+      });
+    }
+  };
+
+  var doWaiting = function doWaiting(time) {
+    var _this = this;
+
+    if (this.t_wait) {
+      clearTimeout(this.t_wait);
+      this.t_wait = 0;
+    }
+
+    if (time) {
+      var target = this.$el.addClass("waiting");
+
+      if (time > 0) {
+        this.t_wait = setTimeout(function () {
+          _this.t_wait = 0;
+          target.removeClass("waiting");
+        }, time);
+      }
+    } else {
+      this.$el.removeClass("waiting");
+    }
+  }; // ====================================================
+
+
+  var showDropdown = function showDropdown() {
+    if (this.$el.is(".show-dropdown")) return;
+    var target = this.$el.addClass("show-dropdown");
+
+    if (this._isRenderAsApp()) {
+      $("html,body").addClass("ui-scrollless");
+    } else {
+      target.on("mouseenter", onMouseHandler.bind(this));
+      target.on("mouseleave", onMouseHandler.bind(this));
+      var dropdown = target.children(".dropdown");
+      var maxHeight = UI.fn.getDropdownHeight.call(this, dropdown);
+      var offset = Utils.offset(dropdown, this._getScrollContainer(), 0, maxHeight);
+      if (offset.isOverflowY) target.addClass("show-before");
+    }
+
+    setTimeout(function () {
+      target.addClass("animate-in");
+    });
+  };
+
+  var hideDropdown = function hideDropdown() {
+    if (!this.$el.is(".show-dropdown")) return;
+    var target = this.$el.addClass("animate-out");
+
+    if (this._isRenderAsApp()) {
+      $("html,body").removeClass("ui-scrollless");
+    } else {
+      target.off("mouseenter").off("mouseleave");
+    }
+
+    setTimeout(function () {
+      target.removeClass("show-dropdown").removeClass("show-before");
+      target.removeClass("animate-in").removeClass("animate-out");
+    }, 300);
+  }; // ====================================================
+
+
+  var getTypeStyle = function getTypeStyle(type) {
+    if (Utils.isNotBlank(type)) {
+      if (["ok", "submit", "save", "primary", "major"].indexOf(type) >= 0) return "ui-btn-primary";
+      if (["danger", "error"].indexOf(type) >= 0) return "ui-btn-danger";
+      if (["success", "complete", "finish"].indexOf(type) >= 0) return "ui-btn-success";
+      if (["warn", "warning"].indexOf(type) >= 0) return "ui-btn-warn";
+      if (["info", "highlight"].indexOf(type) >= 0) return "ui-btn-info";
+      if (type === "text") return "ui-btn-text";
+      if (type === "link") return "ui-btn-link";
+    }
+
+    return "ui-btn-default";
+  };
+
+  var getIconUrl = function getIconUrl() {
+    var icon = this.options.icon;
+
+    if (icon === true) {
+      var type = this.options.type;
+      if (type == "success" || type == "submit") icon = "012b.png";else if (type == "warn") icon = "013b.png";else if (type == "error" || type == "danger") icon = "014b.png";else if (type == "info") icon = "015b.png";
+      if (icon !== true) icon = "/vrender-ui/icons/" + icon;
+    }
+
+    return typeof icon == "string" ? icon : null;
+  };
+
+  var getWaitTime = function getWaitTime() {
+    var waitTime = 0;
+    var options = this.options || {};
+    if (options.hasOwnProperty("waitTime")) waitTime = options.waitTime;else if (options.hasOwnProperty("wait")) waitTime = options.wait;
+    if (waitTime === true) return -1;
+    return Math.max(0, parseInt(waitTime)) || 0;
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIButton = UIButton;
+    UI.init(".ui-btn", UIButton, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
+// 2019-05-29
+// checkbox
+(function (frontend) {
+  if (frontend && VRender.Component.ui.checkbox) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UICheckbox = UI.checkbox = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UICheckbox = UICheckbox.prototype = new UI._base();
+
+  _UICheckbox.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    this.input = this.$el.children("input");
+    this.input.on("change", chkboxChangeHandler.bind(this));
+  }; // ====================================================
+
+
+  _UICheckbox.val = function (value) {
+    if (Utils.isNotNull(value)) {
+      this.input.val(value);
+    }
+
+    return this.input.val();
+  };
+
+  _UICheckbox.isChecked = function () {
+    return this.input.is(":checked");
+  };
+
+  _UICheckbox.setChecked = function (bool) {
+    var checked = Utils.isNull(bool) ? true : Utils.isTrue(bool);
+    this.input[0].checked = checked;
+    this.input.trigger("change");
+  };
+
+  _UICheckbox.getLabel = function () {
+    return this.$el.children("span").text();
+  };
+
+  _UICheckbox.setLabel = function (value) {
+    this.$el.children("span").remove();
+    if (Utils.isNotBlank(value)) $("<span></span>").appendTo(this.$el).text(value);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender();
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-chkbox");
+    var options = this.options || {};
+    var input = $("<input type='checkbox'/>").appendTo(target);
+    if (Utils.isNotNull(options.value)) input.val(options.value);
+
+    if (Utils.isTrue(options.checked)) {
+      target.addClass("checked");
+      input.attr("checked", "checked");
+    }
+
+    if (Utils.isNotNull(options.label)) $("<span></span>").appendTo(target).text(options.label);
+    input.attr("name", Utils.trimToNull(options.name));
+    return this;
+  }; ///////////////////////////////////////////////////////
+  // 复选框状态变更事件
+
+
+  var chkboxChangeHandler = function chkboxChangeHandler(e) {
+    if ($(e.currentTarget).is(":checked")) this.$el.addClass("checked");else this.$el.removeClass("checked");
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UICheckbox = UICheckbox;
+    UI.init(".ui-chkbox", UICheckbox, Renderer);
   } else {
     module.exports = Renderer;
   }
