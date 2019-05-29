@@ -16,6 +16,7 @@ const ModuleView = BaseModule.extend(module, {
 		ModuleView.super(this, target, render);
 		this.renderDemo1(render);
 		this.renderDemo2(render);
+		this.renderDemo3(render);
 	},
 
 	renderDemo1: function (render) {
@@ -40,14 +41,27 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>checked</>：选中状态");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICheckbox(this, { label: "一个可用的多选框", value: 1 }));
-		demo.append(new UICheckbox(this, { label: "一个禁用的多选框，未选中", value: 2, disabled: true }));
-		demo.append(new UICheckbox(this, { label: "一个禁用的多选框，选中状态", value: 3, checked: true, disabled: true }));
+		demo.append(new UICheckbox(this, { label: "未选中", value: 1 }));
+		demo.append(new UICheckbox(this, { label: "默认选中", value: 2, checked: true }));
 
 		let source = [];
-		source.push("new UICheckbox([context], { label: '一个可用的多选框', value: 1 });");
-		source.push("new UICheckbox([context], { label: '一个禁用的多选框，未选中', value: 2, disabled: true });");
-		source.push("new UICheckbox([context], { label: '一个禁用的多选框，选中状态', value: 2, checked: true, disabled: true });");
+		source.push("new UICheckbox([context], {\n  label: '未选中',\n  value: 1\n});");
+		source.push("new UICheckbox([context], {\n  label: '默认选中',\n  value: 2,\n  checked: true\n});");
+
+		render(demo, source, description);
+	},
+
+	renderDemo3: function (render) {
+		let description = [];
+		description.push("属性 <>disabled</>：禁用");
+
+		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
+		demo.append(new UICheckbox(this, { label: "一个禁用的多选框，未选中", value: 1, disabled: true }));
+		demo.append(new UICheckbox(this, { label: "一个禁用的多选框，选中状态", value: 2, checked: true, disabled: true }));
+
+		let source = [];
+		source.push("new UICheckbox([context], {\n  label: '一个禁用的多选框，未选中',\n  value: 1,\n  disabled: true\n});");
+		source.push("new UICheckbox([context], {\n  label: '一个禁用的多选框，选中状态',\n  value: 1,\n  checked: true,\n  disabled: true\n});");
 
 		render(demo, source, description);
 	}

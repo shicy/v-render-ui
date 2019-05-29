@@ -44,6 +44,7 @@ function buildJs() {
 
 	jsFiles.push("src/components/group/render.js");
 	jsFiles.push("src/components/button/render.js");
+	jsFiles.push("src/components/checkbox/render.js");
 
 	let result = Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))
