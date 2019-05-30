@@ -10,12 +10,12 @@
 
 	///////////////////////////////////////////////////////
 	const UICheckbox = UI.checkbox = function (view, options) {
-		return UI._base.call(this, view, options);
+		return UI._select.call(this, view, options);
 	};
-	const _UICheckbox = UICheckbox.prototype = new UI._base();
+	const _UICheckbox = UICheckbox.prototype = new UI._select();
 
 	_UICheckbox.init = function (target, options) {
-		UI._base.init.call(this, target, options);
+		UI._select.init.call(this, target, options);
 
 		this.input = this.$el.children("input");
 
@@ -50,12 +50,12 @@
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
+		UI._selectRender.call(this, context, options);
 	};
-	const _Renderer = Renderer.prototype = new UI._baseRender();
+	const _Renderer = Renderer.prototype = new UI._selectRender();
 
 	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
+		UI._selectRender.render.call(this, $, target);
 		target.addClass("ui-chkbox");
 
 		let options = this.options || {};

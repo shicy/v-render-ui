@@ -9,7 +9,7 @@ const UICheckbox = VRender.UICheckbox;
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UICheckbox 对选框";
+		return "UICheckbox 多选框";
 	},
 
 	renderDemos: function (target, render) {

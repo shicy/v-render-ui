@@ -5,12 +5,12 @@
 // Create on 2019-05-29
 // ========================================================
 
-var VRender = require(__vrender__);
-var UIBase = require("../../common/UIBase");
-var Renderer = require("./render");
+const VRender = require(__vrender__);
+const UIBase = require("../../common/UIBase");
+const Renderer = require("./render");
 
 
-var UICheckbox = UIBase.extend(module, {
+const UICheckbox = UIBase.extend(module, {
 	renderView: function () {
 		UICheckbox.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
