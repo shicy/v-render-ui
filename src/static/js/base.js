@@ -5,8 +5,7 @@
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("./init");
-	const Fn = UI.fn;
-	const Utils = UI.util;
+	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
 	const UICommon = function () {};
@@ -94,11 +93,11 @@
 
 			this.options = options || {};
 			this.init(target, this.options);
-			return this;
 		}
 	};
 	const _UIBase = UIBase.prototype = new UICommon();
 
+	// ====================================================
 	UIBase.init = function (target, options) {
 		doInit.call(this, target, options);
 
