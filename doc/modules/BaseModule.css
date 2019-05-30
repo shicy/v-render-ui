@@ -40,7 +40,7 @@
 	padding: 10px 20px;
     color: #505050;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 24px;
     border-top: 1px dashed #f0f0f0;
     background-color: #fafafa;
 }
@@ -50,6 +50,7 @@
     padding: 0px 5px;
     color: #f94304;
     font-size: 12px;
+    line-height: 22px;
     border-radius: 3px;
     background-color: #f0f0f0;
 }
@@ -78,7 +79,7 @@
 	background-color: #eee;
 }
 
-.module-view > .module-group > .module-demo > .source > .expand i {
+/*.module-view > .module-group > .module-demo > .source > .expand i {
 	position: absolute;
 	width: 10px;
 	height: 10px;
@@ -88,14 +89,28 @@
 	margin-left: -5px;
 	background-image: url(/icons/a001.png);
 	background-size: 10px;
+}*/
+
+.module-view > .module-group > .module-demo > .source > .expand i:before {
+	content: "显示原代码";
+	display: block;
+	color: #aaa;
+	font-size: 12px;
+	font-style: normal;
+	text-align: center;
+	line-height: 26px;
 }
 
 .module-view > .module-group > .module-demo > .source.open > pre {
 	display: block;
 }
 
-.module-view > .module-group > .module-demo > .source.open > .expand i {
+/*.module-view > .module-group > .module-demo > .source.open > .expand i {
 	transform: rotate(180deg);
+}*/
+
+.module-view > .module-group > .module-demo > .source.open > .expand i:before {
+	content: "隐藏原代码";
 }
 
 .module-view > .module-group > .module-demo > *:first-child {
