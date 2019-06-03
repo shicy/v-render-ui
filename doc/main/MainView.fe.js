@@ -6,6 +6,17 @@ const body = $("body");
 const menus = $ref("mainSideMenu");
 
 ///////////////////////////////////////////////////////////
+VR.Component.dataAdapter = function (data) {
+	if (Utils.isNotNull(data)) {
+		if (Utils.isArray(data))
+			return {total: data.length, data: data};
+		var total = parseInt(data.total) || 0;
+		data = data.rows || data.data || data;
+		return {total: total, data: data};
+	}
+	return data;
+};
+
 SinglePage.setViewHandler((state, callback) => {
 	var url = "/component/module/"
 	url += state && state.name || "index";
