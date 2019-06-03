@@ -86,8 +86,8 @@ const ModuleView = BaseModule.extend(module, {
 		let description = [];
 		description.push("默认选择");
 		description.push("属性 <>selectedIndex</>：按索引号设置默认选项。");
-		description.push("属性 <>selectedId</>：按编号设置默认选项。");
-		description.push("注：默认选项编号为 <>id</>，想要将其他字段作为编号，请设置属性 <>idField</> 为相应字段名称。");
+		description.push("属性 <>selectedKey</>：按编号设置默认选项。");
+		description.push("注：默认选项编号为 <>id</>，想要将其他字段作为编号，请设置属性 <>keyField</> 为相应字段名称。");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
 		demo.add(new UIVGroup(this))
@@ -97,11 +97,11 @@ const ModuleView = BaseModule.extend(module, {
 			.append($("label.demo-lbl").text("使用 selectedIndex(分组)"))
 			.append(new UICombobox(this, { data: exampleData, selectedIndex: 2 }));
 		demo.add(new UIVGroup(this))
-			.append($("label.demo-lbl").text("使用 selectedId"))
-			.append(new UICombobox(this, { data: exampleData2, selectedId: 2 }));
+			.append($("label.demo-lbl").text("使用 selectedKey"))
+			.append(new UICombobox(this, { data: exampleData2, selectedKey: 2 }));
 		demo.add(new UIVGroup(this))
-			.append($("label.demo-lbl").text("使用 idField"))
-			.append(new UICombobox(this, { data: exampleData2, selectedId: "val2", idField: "value" }));
+			.append($("label.demo-lbl").text("使用 keyField"))
+			.append(new UICombobox(this, { data: exampleData2, selectedKey: "val2", keyField: "value" }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
@@ -109,8 +109,8 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("// -----------------------------------------------------");
 		source.push("new UICombobox([context], {\n  data:items2,\n  selectedIndex: 2\n});");
 		source.push("new UICombobox([context], {\n  data:items,\n  selectedIndex: 2\n});");
-		source.push("new UICombobox([context], {\n  data:items2,\n  selectedId: 2\n});");
-		source.push("new UICombobox([context], {\n  data:items2,\n  selectedId: 'val2',\n  idField: 'value'\n});");
+		source.push("new UICombobox([context], {\n  data:items2,\n  selectedKey: 2\n});");
+		source.push("new UICombobox([context], {\n  data:items2,\n  selectedKey: 'val2',\n  keyField: 'value'\n});");
 
 		render(demo, source, description);
 	},
@@ -140,13 +140,13 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
 		demo.append(new UICombobox(this, { data: exampleData, prompt: "请输入..", editable: true }));
-		demo.append(new UICombobox(this, { data: exampleData, prompt: "请输入选择..", editabled: true, needMatch: true}));
+		demo.append(new UICombobox(this, { data: exampleData, prompt: "请输入选择..", editable: true, needMatch: true}));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: items,\n  prompt: '请输入..',\n  editabled: true\n});");
+		source.push("new UICombobox([context], {\n  data: items,\n  prompt: '请输入..',\n  editable: true\n});");
 		source.push("new UICombobox([context], {\n  data: items,\n  prompt: '请输入..',\n  " +
-			"editabled: true,\n  needMatch: true\n});");
+			"editable: true,\n  needMatch: true\n});");
 
 		render(demo, source, description);
 	},
@@ -170,6 +170,7 @@ const ModuleView = BaseModule.extend(module, {
 		let description = [];
 		description.push("原生");
 		description.push("设置属性 <>native</> 为 <>true</>，组件将使用原生 <>select</> 标签显示下拉列表。");
+		description.push("注：仅适用于移到端");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
 		demo.append(new UICombobox(this, { data: exampleData, selectedIndex: 1, native: true }));
