@@ -11,7 +11,7 @@ const UICombobox = require("./src/components/combobox");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190529";
+const distVersion = "190603";
 
 module.exports = {
 	install: function () {

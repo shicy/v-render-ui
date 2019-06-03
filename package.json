@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node-dev ./doc",
     "build": "NODE_ENV=production gulp",
-    "build-dev": "NODE_ENV=development gulp watch"
+    "build-dev": "NODE_ENV=development gulp"
   },
   "keywords": [
     "vrender",
