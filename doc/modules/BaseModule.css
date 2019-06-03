@@ -31,6 +31,13 @@
     box-shadow: 0px 0px 0px 2px rgba(204, 204, 204, 0.5);
 }
 
+.module-view > .module-group > .module-demo .demo-lbl {
+	display: block;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    line-height: 28px;
+}
+
 .module-view > .module-group > .module-demo > .preview {
 	padding: 20px;
 }
