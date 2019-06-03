@@ -18,7 +18,7 @@
 	const UIButton = UI.button = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UIButton = UIButton.prototype = new UI._base();
+	const _UIButton = UIButton.prototype = new UI._base(false);
 
 	_UIButton.init = function (target, options) {
 		UI._base.init.call(this, target, options);
@@ -71,7 +71,7 @@
 	const Renderer = function (context, options) {
 		UI._baseRender.call(this, context, options);
 	};
-	const _Renderer = Renderer.prototype = new UI._baseRender();
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);

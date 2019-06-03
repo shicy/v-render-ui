@@ -15,7 +15,7 @@
 	const UIGroup = UI.group = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UIGroup = UIGroup.prototype = new UI._base();
+	const _UIGroup = UIGroup.prototype = new UI._base(false);
 
 	_UIGroup.getOrientation = function () {
 		return this.$el.attr("opt-orientation");
@@ -101,7 +101,7 @@
 	const Renderer = function (context, options) {
 		UI._baseRender.call(this, context, options);
 	};
-	const _Renderer = Renderer.prototype = new UI._baseRender();
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);

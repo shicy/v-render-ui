@@ -12,7 +12,7 @@
 	const UICheckbox = UI.checkbox = function (view, options) {
 		return UI._select.call(this, view, options);
 	};
-	const _UICheckbox = UICheckbox.prototype = new UI._select();
+	const _UICheckbox = UICheckbox.prototype = new UI._select(false);
 
 	_UICheckbox.init = function (target, options) {
 		UI._select.init.call(this, target, options);
@@ -52,7 +52,7 @@
 	const Renderer = function (context, options) {
 		UI._selectRender.call(this, context, options);
 	};
-	const _Renderer = Renderer.prototype = new UI._selectRender();
+	const _Renderer = Renderer.prototype = new UI._selectRender(false);
 
 	_Renderer.render = function ($, target) {
 		UI._selectRender.render.call(this, $, target);
