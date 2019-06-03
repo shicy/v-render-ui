@@ -77,7 +77,7 @@
 	///////////////////////////////////////////////////////
 	const UIBase = UI._base = function (view, options) {
 		// 通过 new UIBase() 调用时，仅用于子类继承，不执行初始化
-		if (arguments.length > 0) {
+		if (arguments.length > 0 && view !== false) {
 			// 参数 view 不是 Element 或 jQuery 对象时，需要构建组件
 			if (!Fn.isElement(view)) {
 				options = null;
@@ -223,6 +223,7 @@
 		if (Utils.isFunction(this._loadBefore))
 			this._loadBefore(api, params);
 		return Fn.load.call(this, api, params, (err, data) => {
+			console.log("###########", err, data);
 			if (!err) {
 				if (Utils.isFunction(this.setData))
 					this.setData(data);
@@ -259,8 +260,10 @@
 
 	///////////////////////////////////////////////////////
 	const Renderer = UI._baseRender = function (context, options) {
-		this.context = !options ? null : context;
-		this.options = (!options ? context : options) || {};
+		if (arguments.length > 0 && context !== false) {
+			this.context = !options ? null : context;
+			this.options = (!options ? context : options) || {};
+		}
 	};
 	const _Renderer = Renderer.prototype = new UICommon();
 

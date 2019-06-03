@@ -11,7 +11,7 @@
 	const UISelect = UI._select = function (view, options) {
 		return UI._items.call(this, view, options);
 	};
-	const _UISelect = UISelect.prototype = new UI._items();
+	const _UISelect = UISelect.prototype = new UI._items(false);
 
 	// ====================================================
 	UISelect.init = function (view, options) {
@@ -254,7 +254,7 @@
 	};
 
 	_UISelect.removeItem = function (data) {
-		let data = UISelect.removeItem.call(this, data);
+		data = UISelect.removeItem.call(this, data);
 		if (data)
 			UISelect.updateSelection.call(this);
 		return data;
@@ -299,7 +299,7 @@
 	const Renderer = UI._selectRender = function (context, options) {
 		UI._itemsRender.call(this, context, options);
 	};
-	const _Renderer = Renderer.prototype = new UI._itemsRender();
+	const _Renderer = Renderer.prototype = new UI._itemsRender(false);
 
 	// ====================================================
 	Renderer.render = function ($, target) {

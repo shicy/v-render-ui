@@ -166,30 +166,6 @@
 		}
 	};
 
-	// 异步数据加载方法
-	Fn.load = function (api, params, callback) {
-		api = api || this.lastLoadApi || this.$el.attr("api-name");
-		if (Utils.isBlank(api))
-			return false;
-		let target = this.$el.addClass("is-loading");
-		let timerId = this.loadTimerId = Date.now();
-		Component.load.call(this, api, params, (err, data) => {
-			if (timerId == this.loadTimerId) {
-				target.removeClass("is-loading");
-
-				let pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
-				if (pager && Utils.isFunction(pager.set)) {
-					let pageInfo = this._pageInfo || {}
-					pager.set(pageInfo.total, pageInfo.page, pageInfo.size);
-				}
-
-				if (Utils.isFunction(callback))
-					callback(err, data);
-			}
-		});
-		return true;
-	};
-
 	// 解析并返回一个整数数组，忽略无效数据
 	// 参数可以是数组（[1,2,3]）或逗号分隔的字符串（"1,2,3"）
 	Fn.getIntValues = function (value, min, max) {
@@ -224,95 +200,6 @@
 				return false;
 		}
 		return true;
-	};
-
-	// 快照
-	Fn.snapshoot = function () {
-		let state = {}, newState = {}, self = this;
-
-		let _snapshoot = {};
-		if (!this._rootSnapshoot)
-			this._rootSnapshoot = _snapshoot;
-
-		_snapshoot.shoot = function (_state, args) {
-			_state = _state || state;
-			if (Utils.isFunction(self._snapshoot_shoot)) {
-				let params = Array.prototype.slice.call(arguments);
-				params[0] = _state;
-				self._snapshoot_shoot.apply(self, params);
-			}
-			else {
-				_state.data = self.getData();
-			}
-		};
-		_snapshoot.compare = function (args) {
-			let params = Array.prototype.slice.call(arguments);
-			if (Utils.isFunction(self._snapshoot_compare)) {
-				return self._snapshoot_compare.apply(self, [state].concat(params));
-			}
-			else {
-				this.shoot.apply(this, [newState].concat(params));
-				return state.data == newState.data;
-			}
-		};
-		_snapshoot.done = function (args) {
-			let hasChanged = false;
-			if (self._rootSnapshoot == this) {
-				let params = Array.prototype.slice.call(arguments);
-				if (!this.compare.apply(this, params)) {
-					this.shoot.apply(this, [newState].concat(params));
-					if (Utils.isFunction(self._snapshoot_change))
-						self._snapshoot_change(newState.data, state.data);
-					self.trigger("change", newState.data, state.data);
-					self.$el.trigger("change", newState.data, state.data);
-					hasChanged = true;
-				}
-			}
-			this.release();
-			return hasChanged;
-		};
-		_snapshoot.release = function () {
-			if (self._rootSnapshoot == this)
-				self._rootSnapshoot = null;
-		};
-		_snapshoot.getState = function () {
-			return state;
-		};
-
-		_snapshoot.shoot(state);
-		newState.data = state.data;
-
-		return _snapshoot;
-	};
-
-	Fn.getDropdownHeight = function (target, maxHeight) {
-		let height = 0;
-		if (this._isRenderAsApp()) {
-			height = $(window).height() * 0.8;
-		}
-		else {
-			height = parseInt(target.css("maxHeight")) || maxHeight || 300;
-		}
-		let scrollHeight = target.get(0).scrollHeight;
-		if (height > scrollHeight)
-			height = scrollHeight;
-		return height;
-	};
-
-	Fn.mouseDebounce = function (event, handler) {
-		let target = $(event.currentTarget);
-		let timerId = parseInt(target.attr("timerid"));
-		if (timerId) {
-			clearTimeout(timerId);
-			target.removeAttr("timerid");
-		}
-		if (event.type == "mouseleave") {
-			timerId = setTimeout(() => {
-				target.removeAttr("timerid");
-				handler();
-			}, 500);
-			target.attr("timerid", timerId);
-		}
 	};
 
 	// ====================================================
@@ -353,6 +240,119 @@
 		// 判断是不是页面元素（包括 jQuery 对象）
 		Fn.isElement = function (target) {
 			return (target instanceof Element) || (target instanceof $);
+		};
+
+		// 异步数据加载方法
+		Fn.load = function (api, params, callback) {
+			api = api || this.lastLoadApi || this.$el.attr("api-name");
+			if (Utils.isBlank(api))
+				return false;
+			let target = this.$el.addClass("is-loading");
+			let timerId = this.loadTimerId = Date.now();
+			VComponent.load.call(this, api, params, (err, data) => {
+				if (timerId == this.loadTimerId) {
+					target.removeClass("is-loading");
+
+					let pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
+					if (pager && Utils.isFunction(pager.set)) {
+						let pageInfo = this._pageInfo || {}
+						pager.set(pageInfo.total, pageInfo.page, pageInfo.size);
+					}
+
+					if (Utils.isFunction(callback))
+						callback(err, data);
+				}
+			});
+			return true;
+		};
+
+		// 快照
+		Fn.snapshoot = function () {
+			let state = {}, newState = {}, self = this;
+
+			let _snapshoot = {};
+			if (!this._rootSnapshoot)
+				this._rootSnapshoot = _snapshoot;
+
+			_snapshoot.shoot = function (_state, args) {
+				_state = _state || state;
+				if (Utils.isFunction(self._snapshoot_shoot)) {
+					let params = Array.prototype.slice.call(arguments);
+					params[0] = _state;
+					self._snapshoot_shoot.apply(self, params);
+				}
+				else {
+					_state.data = self.getData();
+				}
+			};
+			_snapshoot.compare = function (args) {
+				let params = Array.prototype.slice.call(arguments);
+				if (Utils.isFunction(self._snapshoot_compare)) {
+					return self._snapshoot_compare.apply(self, [state].concat(params));
+				}
+				else {
+					this.shoot.apply(this, [newState].concat(params));
+					return state.data == newState.data;
+				}
+			};
+			_snapshoot.done = function (args) {
+				let hasChanged = false;
+				if (self._rootSnapshoot == this) {
+					let params = Array.prototype.slice.call(arguments);
+					if (!this.compare.apply(this, params)) {
+						this.shoot.apply(this, [newState].concat(params));
+						if (Utils.isFunction(self._snapshoot_change))
+							self._snapshoot_change(newState.data, state.data);
+						self.trigger("change", newState.data, state.data);
+						self.$el.trigger("change", newState.data, state.data);
+						hasChanged = true;
+					}
+				}
+				this.release();
+				return hasChanged;
+			};
+			_snapshoot.release = function () {
+				if (self._rootSnapshoot == this)
+					self._rootSnapshoot = null;
+			};
+			_snapshoot.getState = function () {
+				return state;
+			};
+
+			_snapshoot.shoot(state);
+			newState.data = state.data;
+
+			return _snapshoot;
+		};
+
+		Fn.getDropdownHeight = function (target, maxHeight) {
+			let height = 0;
+			if (this._isRenderAsApp()) {
+				height = $(window).height() * 0.8;
+			}
+			else {
+				height = parseInt(target.css("maxHeight")) || maxHeight || 300;
+			}
+			let scrollHeight = target.get(0).scrollHeight;
+			if (height > scrollHeight)
+				height = scrollHeight;
+			return height;
+		};
+
+		Fn.mouseDebounce = function (event, handler) {
+			let target = $(event.currentTarget);
+			let timerId = parseInt(target.attr("timerid"));
+			if (timerId) {
+				clearTimeout(timerId);
+				target.removeAttr("timerid");
+			}
+			if (event.type == "mouseleave") {
+				timerId = setTimeout(() => {
+					target.removeAttr("timerid");
+					handler();
+				}, 500);
+				target.attr("timerid", timerId);
+			}
 		};
 	}
 

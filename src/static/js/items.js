@@ -11,7 +11,7 @@
 	const UIItems = UI._items = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UIItems = UIItems.prototype = new UI._base();
+	const _UIItems = UIItems.prototype = new UI._base(false);
 
 	// ====================================================
 	UIItems.init = function (view, options) {
@@ -40,8 +40,9 @@
 		index = Utils.getIndexValue(index);
 		data = Fn.doAdapter.call(this, data, index);
 
+		datas = datas || this.getData();
+
 		let newItem = null;
-		let datas = datas || this.getData();
 		let itemContainer = this._getItemContainer();
 		if (itemContainer && itemContainer.length > 0) {
 			newItem = this._getNewItem($, itemContainer, data, index);
@@ -443,7 +444,7 @@
 					if (Utils.isFunction(callback))
 						callback(err, data);
 					this.trigger("loaded", err, data);
-				}, 0);
+				});
 			});
 
 			return true;
@@ -602,7 +603,7 @@
 	const Renderer = UI._itemsRender = function (context, options) {
 		UI._baseRender.call(this, context, options);
 	};
-	const _Renderer = Renderer.prototype = new UI._baseRender();
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
 
 	// ====================================================
 	Renderer.render = function ($, target) {
