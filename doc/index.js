@@ -20,5 +20,8 @@ new VRender({
 	server: {
 		port: 9200,
 		root: "./doc/public"
+	},
+	router: {
+		adapter: "./doc/RouterAdapter"
 	}
 });
