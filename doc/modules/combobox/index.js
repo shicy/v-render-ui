@@ -153,21 +153,6 @@ const ModuleView = BaseModule.extend(module, {
 
 	renderDemo6: function (render) {
 		let description = [];
-		description.push("禁用");
-		description.push("设置属性 <>disabled</> 为 <>true</>。");
-
-		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICombobox(this, { data: exampleData, selectedIndex: 5, disabled: true }));
-
-		let source = [];
-		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: items,\n  selectedIndex: 5,\n  disabled: true\n});");
-
-		render(demo, source, description);
-	},
-
-	renderDemo7: function (render) {
-		let description = [];
 		description.push("原生");
 		description.push("设置属性 <>native</> 为 <>true</>，组件将使用原生 <>select</> 标签显示下拉列表。");
 		description.push("注：仅适用于移到端");
@@ -182,7 +167,7 @@ const ModuleView = BaseModule.extend(module, {
 		render(demo, source, description);
 	},
 
-	renderDemo8: function (render) {
+	renderDemo7: function (render) {
 		let description = [];
 		description.push("异步");
 		description.push("异步获取远程数据集作为选项列表。在浏览器端组件渲染完成之后发起异步请求，等待接口返回之后渲染选项列表。");
@@ -194,6 +179,21 @@ const ModuleView = BaseModule.extend(module, {
 		let source = [];
 		source.push("new UICombobox([context], {\n  apiName: 'data.component.items',\n  prompt: '请选择..'," +
 			"\n  selectedIndex: 3,\n  labelField: 'c1'\n);");
+
+		render(demo, source, description);
+	},
+
+	renderDemo8: function (render) {
+		let description = [];
+		description.push("禁用");
+		description.push("设置属性 <>disabled</> 为 <>true</>。");
+
+		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
+		demo.append(new UICombobox(this, { data: exampleData, selectedIndex: 5, disabled: true }));
+
+		let source = [];
+		source.push("var items = " + strExampleData);
+		source.push("new UICombobox([context], {\n  data: items,\n  selectedIndex: 5,\n  disabled: true\n});");
 
 		render(demo, source, description);
 	}
