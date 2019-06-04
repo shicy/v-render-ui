@@ -42,6 +42,7 @@ const menus = [{
 		{name: "checkbox", title: "Checkbox", subTitle: "多选框"},
 		{name: "combobox", title: "Combobox", subTitle: "下拉选择框"},
 		{name: "dateinput", title: "DateInput", subTitle: "日期输入框"},
+		{name: "datepicker", title: "DatePicker", subTitle: "日期选择器"}
 	]
 }, {
 	name: "容器",

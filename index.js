@@ -8,6 +8,8 @@ const UIGroup = require("./src/components/group");
 const UIButton = require("./src/components/button");
 const UICheckbox = require("./src/components/checkbox");
 const UICombobox = require("./src/components/combobox");
+const UIDatePicker = require("./src/components/datepicker");
+const UIDateInput = require("./src/components/dateinput");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
@@ -21,6 +23,8 @@ module.exports = {
 		VRender.UIButton = UIButton;
 		VRender.UICheckbox = UICheckbox;
 		VRender.UICombobox = UICombobox;
+		VRender.UIDateInput = UIDateInput;
+		VRender.UIDatePicker = UIDatePicker;
 	},
 
 	initPageView: function () {
