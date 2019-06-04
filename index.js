@@ -10,6 +10,7 @@ const UICheckbox = require("./src/components/checkbox");
 const UICombobox = require("./src/components/combobox");
 const UIDatePicker = require("./src/components/datepicker");
 const UIDateInput = require("./src/components/dateinput");
+const UIDateRange = require("./src/components/daterange");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
@@ -25,6 +26,7 @@ module.exports = {
 		VRender.UICombobox = UICombobox;
 		VRender.UIDateInput = UIDateInput;
 		VRender.UIDatePicker = UIDatePicker;
+		VRender.UIDateRange = UIDateRange;
 	},
 
 	initPageView: function () {

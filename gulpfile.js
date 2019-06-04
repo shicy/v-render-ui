@@ -48,6 +48,7 @@ function buildJs() {
 	jsFiles.push("src/components/combobox/render.js");
 	jsFiles.push("src/components/datepicker/render.js");
 	jsFiles.push("src/components/dateinput/render.js");
+	jsFiles.push("src/components/daterange/render.js");
 
 	let result = Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))
