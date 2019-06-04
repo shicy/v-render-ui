@@ -11,13 +11,34 @@
     -moz-box-sizing: border-box;
 }
 
-.vrender-ui p {
+.vrender-ui header,
+.vrender-ui section,
+.vrender-ui footer {
+    display: block;
+    position: relative;
+}
+
+.vrender-ui table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+.vrender-ui td {
+    padding: 0px;
+}
+
+.vrender-ui p,
+.vrender-ui dl {
     margin: 0px;
 }
 
 .vrender-ui ul {
     margin: 0px;
     list-style-type: none;
+}
+
+.vrender-ui input {
+    outline: none;
 }
 
 .no-select {
