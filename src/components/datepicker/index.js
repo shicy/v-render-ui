@@ -12,9 +12,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UIDateInput = UIBase.extend(module, {
+const UIDatePicker = UIBase.extend(module, {
 	renderView: function () {
-		UIDateInput.super(this);
+		UIDatePicker.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 
