@@ -11,13 +11,34 @@
     -moz-box-sizing: border-box;
 }
 
-.vrender-ui p {
+.vrender-ui header,
+.vrender-ui section,
+.vrender-ui footer {
+    display: block;
+    position: relative;
+}
+
+.vrender-ui table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+.vrender-ui td {
+    padding: 0px;
+}
+
+.vrender-ui p,
+.vrender-ui dl {
     margin: 0px;
 }
 
 .vrender-ui ul {
     margin: 0px;
     list-style-type: none;
+}
+
+.vrender-ui input {
+    outline: none;
 }
 
 .no-select {
@@ -132,6 +153,69 @@
 @keyframes ui-loading-animate {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+.ui-chkbox {
+    display: inline-block;
+    position: relative;
+    min-height: 16px;
+    padding-left: 16px;
+    vertical-align: baseline;
+}
+
+.ui-chkbox:before {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 1px;
+    top: 50%;
+    margin-top: -7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 1px 1px #eee;
+    background-color: #fff;
+    transition: background-color 0.25s, box-shadow 0.25s;
+}
+
+.ui-chkbox:hover:before {
+    background-color: #f6f6f6;
+}
+
+.ui-chkbox > input {
+    display: none;
+}
+
+.ui-chkbox > span {
+    padding-left: 3px;
+}
+
+.ui-chkbox.checked:before {
+    background-color: #333444;
+    border-color: #333;
+    background-image: url(/VRender/icons/003b.png);
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ui-chkbox:active:before {
+    box-shadow: 0px 0px 0px 2px #ddd;
+}
+
+.ui-chkbox.checked:active:before {
+    box-shadow: 0px 0px 0px 2px #ccc;
+}
+
+.ui-chkbox + .ui-chkbox {
+    margin-left: 10px;
+}
+
+.ui-chkbox[disabled] {
+    opacity: 0.35;
+    pointer-events: none;
 }
 
 
@@ -628,69 +712,6 @@
 
 
 
-.ui-chkbox {
-    display: inline-block;
-    position: relative;
-    min-height: 16px;
-    padding-left: 16px;
-    vertical-align: baseline;
-}
-
-.ui-chkbox:before {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    left: 1px;
-    top: 50%;
-    margin-top: -7px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    box-sizing: border-box;
-    box-shadow: 0px 0px 1px 1px #eee;
-    background-color: #fff;
-    transition: background-color 0.25s, box-shadow 0.25s;
-}
-
-.ui-chkbox:hover:before {
-    background-color: #f6f6f6;
-}
-
-.ui-chkbox > input {
-    display: none;
-}
-
-.ui-chkbox > span {
-    padding-left: 3px;
-}
-
-.ui-chkbox.checked:before {
-    background-color: #333444;
-    border-color: #333;
-    background-image: url(/VRender/icons/003b.png);
-    background-size: 10px;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.ui-chkbox:active:before {
-    box-shadow: 0px 0px 0px 2px #ddd;
-}
-
-.ui-chkbox.checked:active:before {
-    box-shadow: 0px 0px 0px 2px #ccc;
-}
-
-.ui-chkbox + .ui-chkbox {
-    margin-left: 10px;
-}
-
-.ui-chkbox[disabled] {
-    opacity: 0.35;
-    pointer-events: none;
-}
-
-
 .ui-combobox {
 	display: inline-block;
     width: 200px;
@@ -924,4 +945,388 @@
 
 .ui-combobox[disabled] > .ipt > input {
     background-color: #f0f0f0;
+}
+
+
+.ui-dateipt {
+	display: inline-block;
+	width: 200px;
+    text-align: left;
+}
+
+.ui-dateipt > .ipt:before {
+	content: "";
+    position: absolute;
+    width: 30px;
+    height: 32px;
+    left: 0px;
+    top: 0px;
+    background-image: url(/VRender/icons/040a.png);
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: center;
+    opacity: .5;
+    z-index: 1;
+}
+
+.ui-dateipt > .ipt > input {
+	width: 100%;
+    height: 32px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    border-top-color: #999;
+    border-left-color: #999;
+    padding: 0px 3px 0px 30px;
+    margin: 0px;
+    background-color: #fff;
+}
+
+.ui-dateipt > .ipt > input:focus {
+    border-color: #66afe9;
+}
+
+.ui-dateipt > .ipt > .prompt {
+    position: absolute;
+    left: 30px;
+    top: 1px;
+    right: 1px;
+    line-height: 30px;
+    color: #999;
+    background-color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ui-dateipt > .ipt > .clear {
+	position: absolute;
+	width: 16px;
+    height: 16px;
+    top: 8px;
+    right: 6px;
+    border: none;
+    background-color: #fff;
+    background-image: url(/VRender/icons/002a.png);
+    background-size: 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: none;
+    outline: none;
+}
+
+.ui-dateipt > .ipt > .clear:hover {
+	opacity: .75;
+}
+
+.ui-dateipt > .ipt > .clear:active {
+	opacity: 1;
+}
+
+.ui-dateipt > .format {
+	display: none;
+}
+
+.ui-dateipt > .picker {
+    display: none;
+    position: absolute;
+    z-index: 200;
+    overflow: hidden;
+    max-height: 0px;
+    left: 0px;
+    top: 100%;
+    margin-top: 3px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 10px 0px #ddd;
+}
+
+.ui-dateipt.show-picker > .picker {
+    display: block;
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.25s;
+}
+
+.ui-dateipt.show-before > .picker {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 3px;
+}
+
+.ui-dateipt.animate-in > .picker {
+    max-height: 235px;
+    opacity: 1;
+}
+
+.ui-dateipt.animate-out > .picker {
+    max-height: 0px;
+    opacity: 0;
+}
+
+.ui-dateipt.has-val > .ipt > .prompt {
+    display: none;
+}
+
+.ui-dateipt.has-val > .ipt:hover > input {
+    padding-right: 32px;
+}
+
+.ui-dateipt.has-val > .ipt:hover > .clear {
+    display: block;
+    opacity: .5;
+}
+
+.ui-dateipt[disabled] {
+    cursor: no-drop;
+}
+
+.ui-dateipt[disabled] > .ipt {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.ui-dateipt[disabled] > .ipt > input {
+    background-color: #f0f0f0;
+}
+
+
+.ui-datepicker {
+    display: inline-block;
+    min-width: 212px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+.ui-datepicker > header {
+    background-color: #f4f5f9;
+}
+
+.ui-datepicker > header > .title {
+    font-size: 14px;
+    text-align: center;
+}
+
+.ui-datepicker > header > .title > .item {
+    position: relative;
+}
+
+.ui-datepicker > header > .title > .item > .lbl {
+    line-height: 30px;
+}
+
+.ui-datepicker > header > .title > .item > .val {
+    display: none;
+    line-height: 30px;
+}
+
+.ui-datepicker > header > .title > .item > button {
+    position: absolute;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    border: 0px;
+    background: none;
+    background-size: 8px;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: .45;
+    cursor: pointer;
+    outline: none;
+}
+
+.ui-datepicker > header > .title > .item > button:hover {
+    opacity: 1;
+}
+
+.ui-datepicker > header > .title > .item > button.disabled {
+    opacity: .10;
+    pointer-events: none;
+}
+
+.ui-datepicker > header > .title > .item > button.prev.y {
+    left: 0px;
+    background-image: url(/VRender/icons/011a.png);
+}
+
+.ui-datepicker > header > .title > .item > button.prev.m {
+    left: 20px;
+    background-image: url(/VRender/icons/008a.png);
+}
+
+.ui-datepicker > header > .title > .item > button.next.y {
+    right: 0px;
+    background-image: url(/VRender/icons/010a.png);
+}
+
+.ui-datepicker > header > .title > .item > button.next.m {
+    right: 20px;
+    background-image: url(/VRender/icons/006a.png);
+}
+
+.ui-datepicker > section table {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+.ui-datepicker > section th {
+    font-weight: normal;
+}
+
+.ui-datepicker > section > .table {
+    display: inline-block;
+    width: 210px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.ui-datepicker > section > .table:before {
+    content: "";
+    position: absolute;
+    left: 0px;
+    top: -30px;
+    bottom: 0px;
+    width: 1px;
+    background-color: #eee;
+    z-index: 1;
+}
+
+.ui-datepicker > section > .table:first-child:before {
+    display: none;
+}
+
+.ui-datepicker > section > .table table.head tr {
+    color: #aaa;
+    background-color: #f7f7fc;
+}
+
+.ui-datepicker > section > .table table.body {
+    font-size: 12px;
+}
+
+.ui-datepicker > section > .table table.body thead {
+    display: none;
+}
+
+.ui-datepicker > section > .table table.body tr {
+    height: 30px;
+}
+
+.ui-datepicker > section > .table table.body td {
+    position: relative;
+    width: 30px;
+    cursor: pointer;
+}
+
+.ui-datepicker > section > .table table.body td:hover {
+    background-color: #f0f0f0;
+}
+
+.ui-datepicker > section > .table table.body td.today:before {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    top: 3px;
+    border: 1px solid #787878;
+    border-radius: 100px;
+    z-index: 1;
+}
+
+.ui-datepicker > section > .table table.body td.selected span {
+    display: inline-block;
+    width: 24px;
+    line-height: 24px;
+    color: #fff;
+    border-radius: 100px;
+    background-color: #333444;
+}
+
+.ui-datepicker > section > .table table.body td.disabled {
+    color: #ccc;
+    pointer-events: none;
+}
+
+.ui-datepicker > section > .table table.body td.disabled:before {
+    display: none;
+}
+
+.ui-datepicker > section > .table table.body td.over {
+    color: #fff;
+}
+
+.ui-datepicker > section > .table table.body td.over span {
+    background-color: #fff;
+}
+
+.ui-datepicker > footer {
+    height: 48px;
+    background-color: #f4f5f9;
+}
+
+.ui-datepicker > footer > .vals {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    color: #999;
+}
+
+.ui-datepicker > footer > .vals > span {
+    display: inline-block;
+    width: 80px;
+    height: 24px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 24px;
+    background-color: #fff;
+    vertical-align: middle;
+}
+
+.ui-datepicker > footer > .btns {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+}
+
+.ui-datepicker > footer > .btns > .ui-btn {
+    width: 85px;
+    margin-left: 10px;
+}
+
+.ui-datepicker.is-range {
+    min-width: 422px;
+}
+
+.ui-datepicker.is-range > header > .title > .item {
+    display: inline-block;
+    width: 50%;
+}
+
+.ui-datepicker.is-range > header > .title > .item > .lbl {
+    display: none;
+}
+
+.ui-datepicker.is-range > header > .title > .item > .val {
+    display: block;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected span {
+    width: 100%;
+    line-height: 22px;
+    border-radius: 0px;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected.start span {
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected.end span {
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
 }

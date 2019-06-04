@@ -13,7 +13,7 @@ const UIDateInput = require("./src/components/dateinput");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190603";
+const distVersion = "190604";
 
 module.exports = {
 	install: function () {
