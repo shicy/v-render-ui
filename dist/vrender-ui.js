@@ -564,8 +564,6 @@
 
     if (Utils.isFunction(this._loadBefore)) this._loadBefore(api, params);
     return Fn.load.call(this, api, params, function (err, data) {
-      console.log("###########", err, data);
-
       if (!err) {
         if (Utils.isFunction(_this2.setData)) _this2.setData(data);else _this2.options.data = data;
       }
@@ -2648,13 +2646,13 @@
   var Utils = UI.util; ///////////////////////////////////////////////////////
 
   var UICheckbox = UI.checkbox = function (view, options) {
-    return UI._select.call(this, view, options);
+    return UI._base.call(this, view, options);
   };
 
-  var _UICheckbox = UICheckbox.prototype = new UI._select(false);
+  var _UICheckbox = UICheckbox.prototype = new UI._base(false);
 
   _UICheckbox.init = function (target, options) {
-    UI._select.init.call(this, target, options);
+    UI._base.init.call(this, target, options);
 
     this.input = this.$el.children("input");
     this.input.on("change", chkboxChangeHandler.bind(this));
@@ -2690,13 +2688,13 @@
 
 
   var Renderer = function Renderer(context, options) {
-    UI._selectRender.call(this, context, options);
+    UI._baseRender.call(this, context, options);
   };
 
-  var _Renderer = Renderer.prototype = new UI._selectRender(false);
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
 
   _Renderer.render = function ($, target) {
-    UI._selectRender.render.call(this, $, target);
+    UI._baseRender.render.call(this, $, target);
 
     target.addClass("ui-chkbox");
     var options = this.options || {};
@@ -2723,6 +2721,112 @@
   if (frontend) {
     window.UICheckbox = UICheckbox;
     UI.init(".ui-chkbox", UICheckbox, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-06
+// radiobox
+(function (frontend) {
+  if (frontend && VRender.Component.ui.radiobox) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UIRadiobox = UI.radiobox = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UIRadiobox = UIRadiobox.prototype = new UI._base(false);
+
+  _UIRadiobox.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    this.input = this.$el.children("input");
+    this.input.on("change", radboxChangeHandler.bind(this));
+    if (this.input.is(":checked")) this.input.trigger("change");
+  }; // ====================================================
+
+
+  _UIRadiobox.val = function (value) {
+    if (Utils.isNotBlank(value)) {
+      this.input.val(value);
+    }
+
+    return this.input.val();
+  };
+
+  _UIRadiobox.isChecked = function () {
+    return this.input.is(":checked");
+  };
+
+  _UIRadiobox.setChecked = function (bool) {
+    var checked = Utils.isNull(bool) ? true : Utils.isTrue(bool);
+
+    if (this.isChecked() != checked) {
+      this.input[0].checked = checked;
+      this.input.trigger("change");
+    }
+  };
+
+  _UIRadiobox.getLabel = function () {
+    return this.$el.children("span").text();
+  };
+
+  _UIRadiobox.setLabel = function (value) {
+    this.$el.children("span").remove();
+    if (Utils.isNotBlank(value)) $("<span></span>").appendTo(this.$el).text(value);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-radbox");
+    var options = this.options || {};
+    var input = $("<input type='radio'/>").appendTo(target);
+    if (Utils.isNotNull(options.value)) input.val(options.value);
+
+    if (Utils.isTrue(options.checked)) {
+      target.addClass("checked");
+      input.attr("checked", "checked");
+    }
+
+    if (Utils.isNotNull(options.label)) $("<span></span>").appendTo(target).text(options.label);
+    input.attr("name", Utils.trimToNull(options.name));
+    return this;
+  }; ///////////////////////////////////////////////////////
+
+
+  var radboxChangeHandler = function radboxChangeHandler(e) {
+    var _isChecked = this.isChecked();
+
+    if (_isChecked) {
+      this.input.parent().addClass("checked");
+      var name = this.input.attr("name");
+
+      if (Utils.isNotBlank(name)) {
+        var radios = $("input[name='" + name + "']").not(this.input);
+        radios.parent().removeClass("checked");
+      }
+    } else {
+      this.$el.removeClass("checked");
+    }
+
+    this.trigger("change");
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIRadiobox = UIRadiobox;
+    UI.init(".ui-radbox", UIRadiobox, Renderer);
   } else {
     module.exports = Renderer;
   }
