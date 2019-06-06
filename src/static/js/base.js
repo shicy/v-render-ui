@@ -223,7 +223,6 @@
 		if (Utils.isFunction(this._loadBefore))
 			this._loadBefore(api, params);
 		return Fn.load.call(this, api, params, (err, data) => {
-			console.log("###########", err, data);
 			if (!err) {
 				if (Utils.isFunction(this.setData))
 					this.setData(data);
