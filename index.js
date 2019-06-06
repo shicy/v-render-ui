@@ -8,6 +8,7 @@ const UIGroup = require("./src/components/group");
 const UIButton = require("./src/components/button");
 const UICheckbox = require("./src/components/checkbox");
 const UIRadiobox = require("./src/components/radiobox");
+const UITextView = require("./src/components/textview");
 const UICombobox = require("./src/components/combobox");
 const UIDatePicker = require("./src/components/datepicker");
 const UIDateInput = require("./src/components/dateinput");
@@ -31,6 +32,7 @@ module.exports = {
 		VRender.UIDateRange = UIDateRange;
 		VRender.UIDateTime = UIDateTime;
 		VRender.UIRadiobox = UIRadiobox;
+		VRender.UITextView = UITextView;
 	},
 
 	initPageView: function () {

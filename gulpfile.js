@@ -46,6 +46,7 @@ function buildJs() {
 	jsFiles.push("src/components/button/render.js");
 	jsFiles.push("src/components/checkbox/render.js");
 	jsFiles.push("src/components/radiobox/render.js");
+	jsFiles.push("src/components/textview/render.js");
 	jsFiles.push("src/components/combobox/render.js");
 	jsFiles.push("src/components/datepicker/render.js");
 	jsFiles.push("src/components/dateinput/render.js");
