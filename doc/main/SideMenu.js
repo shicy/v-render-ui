@@ -44,7 +44,8 @@ const menus = [{
 		{name: "dateinput", title: "DateInput", subTitle: "日期输入框"},
 		{name: "datepicker", title: "DatePicker", subTitle: "日期选择器"},
 		{name: "daterange", title: "DateRange", subTitle: "起止日期输入框"},
-		{name: "datetime", title: "DateTime", subTitle: "日期时间输入框"}
+		{name: "datetime", title: "DateTime", subTitle: "日期时间输入框"},
+		{name: "radiobox", title: "Radiobox", subTitle: "单选框"}
 	]
 }, {
 	name: "容器",
