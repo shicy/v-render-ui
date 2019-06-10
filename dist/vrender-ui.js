@@ -5658,6 +5658,64 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return !(state.data || range);
+  }; // ====================================================
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-daterange");
+    var options = this.options || {};
+    if (Utils.isTrue(options.dropdown)) target.addClass("tools-dropdown");
+    if (Utils.isTrue(options["native"])) target.attr("opt-native", "1");
+    var minDate = Utils.toDate(options.min);
+    if (minDate) target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
+    var maxDate = Utils.toDate(options.max);
+    if (maxDate) target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
+    var start = Utils.toDate(options.start),
+        end = null;
+
+    if (start) {
+      end = Utils.toDate(options.end) || new Date(start.getTime());
+      if (minDate && getTime(minDate) > getTime(start)) start = minDate;
+      if (maxDate && getTime(maxDate) < getTime(end)) end = maxDate;
+      if (getTime(start) > getTime(end)) start = end = null;
+    }
+
+    var defVal = parseInt(options.quickDef) || 0;
+
+    if (start && end) {
+      defVal = 0;
+    } else if (defVal) {
+      end = new Date();
+      start = new Date();
+      start.setDate(start.getDate() - defVal);
+    }
+
+    if (start && end) {
+      target.addClass("has-val");
+      target.attr("data-start", Utils.toDateString(start, "yyyy-MM-dd"));
+      target.attr("data-end", Utils.toDateString(end, "yyyy-MM-dd"));
+    }
+
+    renderShortcuts.call(this, $, target, this.getShortcutDates(), defVal);
+    renderDateInput.call(this, $, target, start, end);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getDateFormat = function () {
+    return this.options.dateFormat || this.options.format;
+  };
+
+  _Renderer.getShortcutDates = function () {
+    return this.options.shortcuts || this.options.quickDates;
   }; ///////////////////////////////////////////////////////
   // 点击输入框显示日历
 
@@ -5736,64 +5794,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     setDateInner.call(this, start, end);
     updateShortcuts.call(this, start, end);
   }; // ====================================================
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-daterange");
-    var options = this.options || {};
-    if (Utils.isTrue(options.dropdown)) target.addClass("tools-dropdown");
-    if (Utils.isTrue(options["native"])) target.attr("opt-native", "1");
-    var minDate = Utils.toDate(options.min);
-    if (minDate) target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
-    var maxDate = Utils.toDate(options.max);
-    if (maxDate) target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
-    var start = Utils.toDate(options.start),
-        end = null;
-
-    if (start) {
-      end = Utils.toDate(options.end) || new Date(start.getTime());
-      if (minDate && getTime(minDate) > getTime(start)) start = minDate;
-      if (maxDate && getTime(maxDate) < getTime(end)) end = maxDate;
-      if (getTime(start) > getTime(end)) start = end = null;
-    }
-
-    var defVal = parseInt(options.quickDef) || 0;
-
-    if (start && end) {
-      defVal = 0;
-    } else if (defVal) {
-      end = new Date();
-      start = new Date();
-      start.setDate(start.getDate() - defVal);
-    }
-
-    if (start && end) {
-      target.addClass("has-val");
-      target.attr("data-start", Utils.toDateString(start, "yyyy-MM-dd"));
-      target.attr("data-end", Utils.toDateString(end, "yyyy-MM-dd"));
-    }
-
-    renderShortcuts.call(this, $, target, this.getShortcutDates(), defVal);
-    renderDateInput.call(this, $, target, start, end);
-    return this;
-  }; // ====================================================
-
-
-  _Renderer.getDateFormat = function () {
-    return this.options.dateFormat || this.options.format;
-  };
-
-  _Renderer.getShortcutDates = function () {
-    return this.options.shortcuts || this.options.quickDates;
-  }; ///////////////////////////////////////////////////////
 
 
   var renderShortcuts = function renderShortcuts($, target, shortcuts, defVal) {
@@ -7941,6 +7941,178 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   if (frontend) {
     window.UIFileUpload = UIFileUpload;
     UI.init(".ui-fileupload", UIFileUpload, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-10
+// tooltip
+(function (frontend) {
+  if (frontend && VRender.Component.ui.tooltip) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UITooltip = UI.tooltip = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UITooltip = UITooltip.prototype = new UI._base(false);
+
+  _UITooltip.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    this.open();
+  }; // ====================================================
+
+
+  _UITooltip.open = function () {
+    doOpen.call(this);
+
+    if (this._isRenderAsApp()) {
+      if (this.$el.find(".closebtn").length > 0) this.$el.on("tap", onClickHandler.bind(this));
+    } else {
+      this.$el.on("tap", ".closebtn", onCloseBtnHandler.bind(this));
+      this.$el.on("tap", ".content", onContentClickHandler.bind(this));
+      this.$el.on("mouseenter", onMouseHandler.bind(this));
+      this.$el.on("mouseleave", onMouseHandler.bind(this));
+    }
+  };
+
+  _UITooltip.close = function () {
+    doClose.call(this);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-tooltip");
+    var type = this.getType();
+    if (type) target.addClass("show-icon").attr("opt-type", type);
+    target.attr("opt-duration", this.getDuration());
+    renderView.call(this, $, target);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getType = function () {
+    if (this.options.type == "danger") return "error";
+    if (/^(success|warn|error|info)$/i.test(this.options.type)) return this.options.type;
+    return null;
+  };
+
+  _Renderer.getDuration = function () {
+    if (Utils.isBlank(this.options.duration)) return null;
+    if (isNaN(this.options.duration)) return null;
+    return parseInt(this.options.duration) || 0;
+  };
+
+  _Renderer.isClosable = function () {
+    if (Utils.isNull(this.options.closable)) return true;
+    return Utils.isTrue(this.options.closable);
+  }; ///////////////////////////////////////////////////////
+
+
+  var onClickHandler = function onClickHandler(e) {
+    if ($(e.target).is(this.$el)) {
+      doClose.call(this);
+    }
+  };
+
+  var onCloseBtnHandler = function onCloseBtnHandler() {
+    doClose.call(this);
+  };
+
+  var onContentClickHandler = function onContentClickHandler() {
+    this.$el.addClass("active");
+  };
+
+  var onMouseHandler = function onMouseHandler(e) {
+    if (e.type == "mouseenter") {
+      if (this.t_close) {
+        clearTimeout(this.t_close);
+        this.t_close = null;
+      }
+    } else {
+      this.$el.removeClass("active");
+      waitToClose.call(this);
+    }
+  }; // ====================================================
+
+
+  var renderView = function renderView($, target) {
+    var container = $("<div class='container'></div>").appendTo(target);
+    var icon = $("<i class='img'></i>").appendTo(container);
+    var content = $("<div class='content'></div>").appendTo(container);
+
+    if (this.options.hasOwnProperty("focusHtmlContent")) {
+      content.html(this.options.focusHtmlContent || "无");
+    } else {
+      content.text(this.options.content || "无");
+    }
+
+    if (this.isClosable()) container.append("<div class='closebtn'></div>");
+
+    if (this.options.icon) {
+      target.addClass("show-icon");
+      icon.css("backgroundImage", "url(" + this.options.icon + ")");
+    }
+  }; // ====================================================
+
+
+  var doOpen = function doOpen() {
+    var wrapper = $("body").children(".ui-tooltip-wrap");
+    if (!wrapper || wrapper.length == 0) wrapper = $("<div class='ui-tooltip-wrap'></div>").appendTo("body");
+    var target = this.$el.appendTo(wrapper);
+    setTimeout(function () {
+      target.addClass("animate-in");
+    }, 50);
+    waitToClose.call(this);
+  };
+
+  var doClose = function doClose() {
+    var target = this.$el.addClass("animate-out");
+    setTimeout(function () {
+      target.removeClass("animate-in").removeClass("animate-out");
+      target.remove();
+      var wrapper = $("body").children(".ui-tooltip-wrap");
+      if (wrapper.children().length == 0) wrapper.remove();
+    }, 500);
+    this.trigger("close");
+  };
+
+  var waitToClose = function waitToClose() {
+    var _this = this;
+
+    if (this.t_close) {
+      clearTimeout(this.t_close);
+      this.t_close = null;
+    }
+
+    var duration = this.$el.attr("opt-duration");
+    if (Utils.isBlank(duration)) duration = 3000;else duration = parseInt(duration) || 0;
+
+    if (duration > 0) {
+      this.t_close = setTimeout(function () {
+        _this.t_close = null;
+        doClose.call(_this);
+      }, duration);
+    }
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UITooltip = UITooltip;
+    UI.init(".ui-tooltip", UITooltip, Renderer);
   } else {
     module.exports = Renderer;
   }
