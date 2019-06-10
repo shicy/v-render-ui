@@ -53,6 +53,7 @@ function buildJs() {
 	jsFiles.push("src/components/daterange/render.js");
 	jsFiles.push("src/components/datetime/render.js");
 	jsFiles.push("src/components/timeinput/render.js");
+	jsFiles.push("src/components/fileupload/render.js");
 
 	let result = Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))
