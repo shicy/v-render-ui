@@ -17,6 +17,7 @@ const UIDateTime = require("./src/components/datetime");
 const UITimeInput = require("./src/components/timeinput");
 const UIFileUpload = require("./src/components/fileupload");
 const UITooltip = require("./src/components/tooltip");
+const UIConfirm = require("./src/components/confirm");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
@@ -39,6 +40,7 @@ module.exports = {
 		VRender.UITimeInput = UITimeInput;
 		VRender.UIFileUpload = UIFileUpload;
 		VRender.UITooltip = UITooltip;
+		VRender.UIConfirm = UIConfirm;
 	},
 
 	initPageView: function () {
