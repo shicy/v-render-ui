@@ -53,6 +53,7 @@ const menus = [{
 }, {
 	name: "容器",
 	children: [
+		{name: "chkgrp", title: "CheckGroup", subTitle: "多选组"},
 		{name: "group", title: "Group", subTitle: "组视图"}
 	]
 }, {
