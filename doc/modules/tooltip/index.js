@@ -10,8 +10,6 @@ const UIButton = VRender.UIButton;
 const UITooltip = VRender.UITooltip;
 
 const ModuleView = BaseModule.extend(module, {
-	className: "comp-tooltip",
-
 	getTitle: function () {
 		return "UITooltip 提示框";
 	},

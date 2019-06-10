@@ -1,6 +1,4 @@
 
-var view = $(".comp-tooltip"); console.log(view);
-
 $ref("tooltip_btn1").on("tap", function (e) {
 	new UITooltip({content: '这是一条消息提示。默认3秒后关闭'});
 });

@@ -1,6 +1,4 @@
 
-var view = $(".comp-confirm");
-
 $ref("confirm_btn1").on("tap", function (e) {
 	new UIConfirm({title: "提示！！", content: "您是否确认操作？"});
 });
