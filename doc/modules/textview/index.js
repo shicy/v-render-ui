@@ -162,7 +162,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>min</> 和 <>max</> 分别是数字的最小值和最大值。");
 		description.push("设置属性 <>type</> 为 <>'int'</> 相当于 <>{type: 'number', decimals: 0}</>。")
 
-		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
+		let demo = new UIGroup.VGroup(this, { gap: 10 });
 		demo.append(new UITextView(this, { type: "number", prompt: "请输入数字，默认2为小数" }));
 		demo.append(new UITextView(this, { type: "number", prompt: "请输入数字，默认3为小数", decimals: 3 }));
 		demo.append(new UITextView(this, { type: "number", prompt: "请输入10-20之间的数字", decimals: 0, min: 10, max: 20 }));
@@ -257,14 +257,14 @@ const ModuleView = BaseModule.extend(module, {
 			"\n\n每当这个时候，等你们争论一番毫无结果时，你也许会有一种挫败感，甚至捶胸顿足地喊道：从来就没有见过如此固执的人，这么简单的道理，他怎么就是不懂呢?";
 
 		let demo = new UIGroup.VGroup(this, { gap: 10 });
-		demo.append(new UITextView(this, { prompt: "请输入", autoHeight: true, width: "100%" }));
+		demo.append(new UITextView(this, { prompt: "请输入", multi: true, width: "100%" }));
 		demo.append(new UITextView(this, { prompt: "请输入内容", multi: true, autoHeight: true, 
-			width: "100%", maxHeight: 500, value: autoText }));
+			width: "100%", maxHeight: 300, value: autoText }));
 
 		let source = [];
-		source.push("new UITextView([context], {\n  prompt: '请输入',\n  autoHeight: true,\n  width: '100%'\n});");
+		source.push("new UITextView([context], {\n  prompt: '请输入',\n  multi: true,\n  width: '100%'\n});");
 		source.push("new UITextView([context], {\n  prompt: '请输入内容',\n  multi: true,\n  autoHeight: true," +
-			"\n  width: '100%',\n  maxHeight: 500,\n  value: '你可能...'\n});");
+			"\n  width: '100%',\n  maxHeight: 300,\n  value: '你可能...'\n});");
 
 		render(demo, source, description);
 	}
