@@ -55,4 +55,9 @@ const menus = [{
 	children: [
 		{name: "group", title: "Group", subTitle: "组视图"}
 	]
+}, {
+	name: "其他",
+	children: [
+		{name: "tooltip", title: "Tooltip", subTitle: "提示框"}
+	]
 }];
