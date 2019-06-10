@@ -196,11 +196,15 @@
 			valign = "bottom";
 
 		target.css("text-align", align);
+		
 		let children = target.children();
-		children.css("display", display);
 		children.css("vertical-align", valign);
 		children.css("margin-left", left).css("margin-top", top);
 		children.eq(0).css("margin-left", "").css("margin-top", "");
+
+		if (orientation) {
+			children.css("display", display);
+		}
 	};
 
 	///////////////////////////////////////////////////////
