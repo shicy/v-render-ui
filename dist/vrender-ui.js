@@ -6703,3 +6703,636 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     module.exports = Renderer;
   }
 })(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-10
+// timeinput
+(function (frontend) {
+  if (frontend && VRender.Component.ui.timeinput) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UITimeInput = UI.timeinput = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UITimeInput = UITimeInput.prototype = new UI._base(false);
+
+  _UITimeInput.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    var inputTarget = this.inputTag = this.$el.children(".ipt");
+    inputTarget.on("tap", iptClickHandler.bind(this));
+    inputTarget.on("tap", ".clear", clearBtnHandler.bind(this));
+
+    if (!this._isRenderAsApp()) {
+      this.$el.on("tap", ".picker .item", pickerItemClickHandler.bind(this));
+    }
+  }; // ====================================================
+
+
+  _UITimeInput.getTime = function () {
+    return this.$el.attr("data-t") || "";
+  };
+
+  _UITimeInput.setTime = function (value) {
+    var time = getTime(value, this.isSecondVisible());
+    setTimeInner.call(this, time);
+    if (this.picker) rerenderPicker.call(this, this.picker.empty());
+  };
+
+  _UITimeInput.getMinTime = function () {
+    return this.$el.attr("opt-min") || "";
+  };
+
+  _UITimeInput.setMinTime = function (value) {
+    var time = getTime(value, true);
+    this.$el.attr("opt-min", time);
+    if (this.picker) checkPickerEnabled.call(this, this.picker);
+  };
+
+  _UITimeInput.getMaxTime = function () {
+    return this.$el.attr("opt-max") || "";
+  };
+
+  _UITimeInput.setMaxTime = function (value) {
+    var time = getTime(value, true);
+    this.$el.attr("opt-max", time);
+    if (this.picker) checkPickerEnabled.call(this, this.picker);
+  };
+
+  _UITimeInput.isSecondVisible = function () {
+    if (!this.options.hasOwnProperty("showSecond")) {
+      this.options.showSecond = !!this.$el.attr("opt-sec");
+    }
+
+    return Utils.isTrue(this.options.showSecond);
+  };
+
+  _UITimeInput.setSecondVisible = function (value) {
+    value = Utils.isNull(value) ? true : Utils.isTrue(value);
+    if (value == this.isSecondVisible()) return;
+    this.options.showSecond = value;
+    rerender.call(this);
+  };
+
+  _UITimeInput.isUse12Hour = function () {
+    if (!this.options.hasOwnProperty("use12Hour")) {
+      this.options.use12Hour = !!this.$el.attr("opt-h12");
+    }
+
+    return Utils.isTrue(this.options.use12Hour);
+  };
+
+  _UITimeInput.setUse12Hour = function (value) {
+    value = Utils.isNull(value) ? true : Utils.isTrue(value);
+    if (value == this.isUse12Hour()) return;
+    this.options.use12Hour = value;
+    rerender.call(this);
+  };
+
+  _UITimeInput.getHours = function () {
+    if (!this.options.hasOwnProperty("hours")) {
+      this.options.hours = this.$el.attr("opt-hours");
+    }
+
+    var use12Hour = this.isUse12Hour();
+    var hours = Fn.getIntValues(this.options.hours, 0, use12Hour ? 11 : 23);
+    if (hours && hours.length > 0) return hours;
+    return Utils.map(new Array(use12Hour ? 12 : 24), function (tmp, i) {
+      return i;
+    });
+  };
+
+  _UITimeInput.setHours = function (value) {
+    this.options.hours = value;
+    rerenderPicker.call(this);
+  };
+
+  _UITimeInput.getMinutes = function () {
+    if (!this.options.hasOwnProperty("minutes")) {
+      this.options.minutes = this.$el.attr("opt-minutes");
+    }
+
+    var minutes = Fn.getIntValues(this.options.minutes, 0, 59);
+    if (minutes && minutes.length > 0) return minutes;
+    return Utils.map(new Array(60), function (tmp, i) {
+      return i;
+    });
+  };
+
+  _UITimeInput.setMinutes = function (value) {
+    this.options.minutes = value;
+    rerenderPicker.call(this);
+  };
+
+  _UITimeInput.getSeconds = function () {
+    if (!this.options.hasOwnProperty("seconds")) {
+      this.options.seconds = this.$el.attr("opt-seconds");
+    }
+
+    var seconds = Fn.getIntValues(this.options.seconds, 0, 59);
+    if (seconds && seconds.length > 0) return seconds;
+    return Utils.map(new Array(60), function (tmp, i) {
+      return i;
+    });
+  };
+
+  _UITimeInput.setSeconds = function (value) {
+    this.options.seconds = value;
+    rerenderPicker.call(this);
+  };
+
+  _UITimeInput.isReadonly = function () {
+    return this.$el.attr("opt-readonly") == 1;
+  };
+
+  _UITimeInput.setReadonly = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) {
+      this.$el.attr("opt-readonly", "1");
+    } else {
+      this.$el.removeAttr("opt-readonly");
+    }
+  };
+
+  _UITimeInput.getPrompt = function () {
+    return this.inputTag.find(".prompt").text();
+  };
+
+  _UITimeInput.setPrompt = function (value) {
+    this.inputTag.find(".prompt").remove();
+
+    if (Utils.isNotBlank(value)) {
+      $("<span class='prompt'></span>").appendTo(this.inputTag).text(value);
+    }
+  }; // ====================================================
+
+
+  _UITimeInput._snapshoot_shoot = function (state) {
+    state.data = this.getTime();
+  };
+
+  _UITimeInput._snapshoot_compare = function (state) {
+    return state.data == this.getTime();
+  };
+
+  _UITimeInput.rerender = function () {
+    var _this = this;
+
+    Utils.debounce("timeinput_render-" + this.getViewId(), function () {
+      setTimeInner.call(_this, _this.getTime());
+      if (_this.picker) renderPicker.call(_this, _this.picker.empty());
+    });
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-timeipt");
+    var options = this.options || {}; // 容器，用于下拉列表定位
+
+    target.attr("opt-box", options.container);
+    if (this.isSecondVisible()) target.attr("opt-sec", "1");
+    if (this.isUse12Hour()) target.attr("opt-h12", "1");
+
+    if (Utils.isTrue(options.readonly)) {
+      target.attr("opt-readonly", "1");
+    }
+
+    target.attr("opt-min", getTime(options.min, true) || null);
+    target.attr("opt-max", getTime(options.max, true) || null);
+    if (Utils.isArray(options.hours)) target.attr("opt-hours", options.hours.join(",") || null);
+    if (Utils.isArray(options.minutes)) target.attr("opt-minutes", options.minutes.join(",") || null);
+    if (Utils.isArray(options.seconds)) target.attr("opt-seconds", options.seconds.join(",") || null);
+    renderTimeInput.call(this, $, target, options.time);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.isSecondVisible = function () {
+    return Utils.isTrue(this.options.showSecond);
+  };
+
+  _Renderer.isUse12Hour = function () {
+    return Utils.isTrue(this.options.use12Hour);
+  }; ///////////////////////////////////////////////////////
+
+
+  var iptClickHandler = function iptClickHandler(e) {
+    if (!this.isReadonly()) showTimePicker.call(this);
+  };
+
+  var clearBtnHandler = function clearBtnHandler(e) {
+    setTimeInner.call(this, null);
+    if (this.picker) setPickerTime.call(this, this.picker, "");
+    return false;
+  };
+
+  var mouseHoverHandler = function mouseHoverHandler(e) {
+    Fn.mouseDebounce(e, hideTimePicker.bind(this));
+  };
+
+  var pickerTapHandler = function pickerTapHandler(e) {
+    if ($(e.target).is(".picker")) hideTimePicker.call(this);
+  };
+
+  var pickerTouchHandler = function pickerTouchHandler(e) {
+    var _this2 = this;
+
+    if (e.type == "touchstart") {
+      if (this.t_touchend) {
+        clearTimeout(this.t_touchend);
+      }
+
+      this.t_touchend = null;
+    } else if (e.type == "touchend") {
+      if (this.beScrolled) {
+        this.beScrolled = false;
+        var time = getPickerTime.call(this, this.picker);
+
+        var waitToStop = function waitToStop() {
+          _this2.t_touchend = setTimeout(function () {
+            _this2.t_touchend = null;
+
+            var _time = getPickerTime.call(_this2, _this2.picker);
+
+            if (time == _time) {
+              scrollToTime.call(_this2, _this2.picker, _time);
+            } else {
+              time = _time;
+              waitToStop();
+            }
+          }, 200);
+        };
+
+        waitToStop();
+      }
+    }
+  };
+
+  var pickerScrollHandler = function pickerScrollHandler(e) {
+    this.beScrolled = true;
+    var target = $(e.currentTarget);
+    var items = target.children();
+    var height = items.eq(0).height();
+    var scrollTop = target.scrollTop();
+    var index = parseInt(scrollTop / height);
+
+    if (index > 0 && scrollTop % height < height / 2) {
+      index -= 1;
+    }
+
+    var item = items.eq(index);
+    if (item.is(".selected")) return;
+    items.filter(".selected").removeClass("selected");
+    item.addClass("selected");
+    checkPickerEnabled.call(this, this.picker);
+    var time = getPickerTime.call(this, this.picker);
+    setTimeInner.call(this, getLimitTime.call(this, time));
+  };
+
+  var pickerItemClickHandler = function pickerItemClickHandler(e) {
+    var item = $(e.currentTarget);
+    if (item.is(".selected")) return;
+    item.addClass("selected").siblings().removeClass("selected");
+    checkPickerEnabled.call(this, this.picker);
+    var time = getPickerTime.call(this, this.picker);
+    setTimeInner.call(this, getLimitTime.call(this, time));
+    return false;
+  }; // ====================================================
+
+
+  var renderTimeInput = function renderTimeInput($, target, time) {
+    var iptTarget = $("<div class='ipt'></div>").appendTo(target);
+    var input = $("<input type='text' readonly='readonly'/>").appendTo(iptTarget);
+    iptTarget.append("<span class='clear'></span>");
+    var prompt = this.options.prompt;
+
+    if (Utils.isNotBlank(prompt)) {
+      $("<span class='prompt'></span>").appendTo(iptTarget).text(prompt);
+    }
+
+    time = getTime(time, this.isSecondVisible());
+
+    if (time) {
+      input.val(this.isUse12Hour() ? get12HourTime(time) : time);
+      target.addClass("has-val").attr("data-t", time);
+    }
+  };
+
+  var renderPicker = function renderPicker(picker) {
+    var target = $("<div class='cols'></div>").appendTo(picker);
+
+    var addCol = function addCol(name, values) {
+      var col = $("<div class='col'></div>").appendTo(target);
+      col.addClass(name);
+      Utils.each(values, function (temp) {
+        $("<div class='item'></div>").appendTo(col).text(temp);
+      });
+    }; // 时
+
+
+    addCol("hour", this.getHours()); // 分
+
+    addCol("minute", this.getMinutes()); // 秒
+
+    if (this.isSecondVisible()) addCol("second", this.getSeconds());
+    if (this.isUse12Hour()) addCol("apm", ["AM", "PM"]);
+    setPickerTime.call(this, picker, this.getTime());
+    checkPickerEnabled.call(this, picker);
+    if (this._isRenderAsApp()) target.children(".col").on("scroll", pickerScrollHandler.bind(this));
+  };
+
+  var rerenderPicker = function rerenderPicker() {
+    var _this3 = this;
+
+    if (this.picker) {
+      Utils.debounce("timeinput_renderpicker-" + this.getViewId(), function () {
+        renderPicker.call(_this3, _this3.picker.empty());
+      });
+    }
+  }; // ====================================================
+
+
+  var setTimeInner = function setTimeInner(time) {
+    var snapshoot = this._snapshoot();
+
+    this.$el.attr("data-t", time || "");
+    var input = this.inputTag.find("input");
+
+    if (time) {
+      time = getTime(time, this.isSecondVisible());
+      input.val(this.isUse12Hour() ? get12HourTime(time) : time);
+      this.$el.addClass("has-val");
+    } else {
+      input.val("");
+      this.$el.removeClass("has-val");
+    }
+
+    snapshoot.done();
+  };
+
+  var showTimePicker = function showTimePicker() {
+    if (!this.picker) {
+      this.picker = $("<div class='picker'></div>").appendTo(this.$el);
+      renderPicker.call(this, this.picker);
+    }
+
+    if (this.$el.is(".show-picker")) return;
+    var target = this.$el.addClass("show-picker");
+    var picker = this.picker;
+
+    if (this._isRenderAsApp()) {
+      $("html,body").addClass("ui-scrollless");
+      picker.on("tap", pickerTapHandler.bind(this));
+      picker.on("touchstart", pickerTouchHandler.bind(this));
+      picker.on("touchend", pickerTouchHandler.bind(this));
+    } else {
+      target.on("mouseenter", mouseHoverHandler.bind(this));
+      target.on("mouseleave", mouseHoverHandler.bind(this));
+      var offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
+      if (offset.isOverflowY) target.addClass("show-before");
+    }
+
+    scrollToTime.call(this, picker, this.getTime());
+    setTimeout(function () {
+      target.addClass("animate-in");
+    });
+  };
+
+  var hideTimePicker = function hideTimePicker() {
+    var target = this.$el.addClass("animate-out");
+
+    if (this._isRenderAsApp()) {
+      $("html,body").removeClass("ui-scrollless");
+      this.picker.off("tap").off("touchstart").off("touchend");
+    } else {
+      target.off("mouseenter").off("mouseleave");
+    }
+
+    setTimeout(function () {
+      target.removeClass("show-picker").removeClass("show-before");
+      target.removeClass("animate-in").removeClass("animate-out");
+    }, 300);
+  };
+
+  var scrollToTime = function scrollToTime(picker, time) {
+    var _renderAsApp = this._isRenderAsApp();
+
+    var target = picker.children(".cols");
+
+    if (time) {
+      var use12Hour = this.isUse12Hour();
+
+      var scroll = function scroll(name, value) {
+        var col = target.children("." + name);
+        var item = Utils.find(col.children(), function (temp) {
+          return temp.text() == value;
+        });
+
+        if (item && item.length > 0) {
+          var scrollTop = item.index() * item.height();
+          if (_renderAsApp) scrollTop += item.height();
+          col.scrollTop(scrollTop);
+        }
+      };
+
+      time = time.split(":");
+      var hour = parseInt(time[0]) || 0;
+      scroll("hour", hour > 11 && use12Hour ? hour - 12 : hour);
+      scroll("minute", parseInt(time[1]) || 0);
+      scroll("second", parseInt(time[2]) || 0);
+
+      if (_renderAsApp && use12Hour) {
+        scroll("apm", hour < 12 ? "AM" : "PM");
+      }
+    } else if (_renderAsApp) {
+      target.children().scrollTop(0);
+    }
+  };
+
+  var getPickerTime = function getPickerTime(picker) {
+    var target = picker.children(".cols");
+    var time = []; // 时
+
+    var hour = parseInt(target.children(".hour").find(".selected").text()) || 0;
+
+    if (this.isUse12Hour()) {
+      if (target.children(".apm").find(".selected").text() == "PM") hour += 12;
+    }
+
+    time.push((hour < 10 ? "0" : "") + hour); // 分
+
+    var minute = parseInt(target.children(".minute").find(".selected").text()) || 0;
+    time.push((minute < 10 ? "0" : "") + minute); // 秒
+
+    if (this.isSecondVisible()) {
+      var second = parseInt(target.children(".second").find(".selected").text()) || 0;
+      time.push((second < 10 ? "0" : "") + second);
+    }
+
+    return time.join(":");
+  };
+
+  var setPickerTime = function setPickerTime(picker, time) {
+    var target = picker.children(".cols");
+    target.find(".selected").removeClass("selected");
+
+    if (time) {
+      var setSelected = function setSelected(name, value) {
+        var col = target.children("." + name);
+        var item = Utils.find(col.children(), function (temp) {
+          return temp.text() == value;
+        });
+        if (item && item.length > 0) item.addClass("selected");
+      };
+
+      time = time.split(":");
+      var hour = parseInt(time[0]) || 0;
+
+      if (this.isUse12Hour()) {
+        setSelected("apm", hour < 12 ? "AM" : "PM");
+        if (hour > 11) hour -= 12;
+      }
+
+      setSelected("hour", hour);
+      setSelected("minute", parseInt(time[1]) || 0);
+      if (this.isSecondVisible()) setSelected("second", parseInt(time[2]) || 0);
+    }
+  };
+
+  var checkPickerEnabled = function checkPickerEnabled(picker) {
+    var target = picker.children(".cols");
+    var min = (this.getMinTime() || "00:00:00").split(":");
+    var max = (this.getMaxTime() || "23:59:59").split(":");
+    var minHour = parseInt(min[0]) || 0;
+    var minMinute = parseInt(min[1]) || 0;
+    var minSecond = parseInt(min[2]) || 0;
+    var maxHour = parseInt(max[0]) || 0;
+    var maxMinute = parseInt(max[1]) || 0;
+    var maxSecond = parseInt(max[2]) || 0;
+    var ispm = target.children(".apm").find(".selected").text() == "PM";
+    var hour = -1,
+        minute = -1;
+
+    var _min = minHour * 10000,
+        _max = maxHour * 10000,
+        _time = 0;
+
+    Utils.each(target.children(".hour").children(), function (item) {
+      var _hour = (parseInt(item.text()) || 0) + (ispm ? 12 : 0);
+
+      var _t = _time + _hour * 10000;
+
+      if (_t < _min || _t > _max) item.addClass("disabled");else item.removeClass("disabled");
+      if (item.is(".selected")) hour = _hour;
+    });
+    _min += minMinute * 100;
+    _max += maxMinute * 100;
+    _time += hour < 0 ? 0 : hour * 10000;
+    Utils.each(target.children(".minute").children(), function (item) {
+      var _minute = parseInt(item.text()) || 0;
+
+      var _t = _time + _minute * 100;
+
+      if (_t < _min || _t > _max) item.addClass("disabled");else item.removeClass("disabled");
+      if (item.is(".selected")) minute = _minute;
+    });
+    _min += minSecond;
+    _max += maxSecond;
+    _time += minute < 0 ? 0 : minute * 100;
+    Utils.each(target.children(".second").children(), function (item) {
+      item.removeClass("disabled");
+
+      var _second = parseInt(item.text()) || 0;
+
+      var _t = _time + _second;
+
+      if (_t < _min || _t > _max) item.addClass("disabled");
+    });
+    Utils.each(target.children(".apm").children(), function (item) {
+      item.removeClass("disabled");
+      if (item.text() == "AM" && minHour > 11) item.addClass("disabled");else if (item.text() == "PM" && maxHour < 12) item.addClass("disabled");
+    });
+  }; // ====================================================
+
+
+  var getLimitTime = function getLimitTime(time) {
+    var min = this.getMinTime();
+    if (min && time < min) time = min;
+    var max = this.getMaxTime();
+    if (max && time > max) time = max;
+    return time;
+  };
+
+  var getTime = function getTime(value, showSecond) {
+    if (value) {
+      value = value.split(":");
+      var hour = Math.max(0, parseInt(value[0])) || 0;
+      var minute = Math.max(0, parseInt(value[1])) || 0;
+      var second = Math.max(0, parseInt(value[2])) || 0;
+
+      if (second > 59) {
+        minute += parseInt(second / 60);
+        second = second % 60;
+      }
+
+      if (minute > 59) {
+        hour += parseInt(minute / 60);
+        minute = minute % 60;
+      }
+
+      if (hour > 23) {
+        hour = hour % 24;
+      }
+
+      var time = [];
+      time.push((hour < 10 ? "0" : "") + hour);
+      time.push((minute < 10 ? "0" : "") + minute);
+      if (showSecond) time.push((second < 10 ? "0" : "") + second);
+      return time.join(":");
+    }
+
+    return "";
+  };
+
+  var get12HourTime = function get12HourTime(time) {
+    if (time) {
+      time = time.split(":");
+      var hour = Math.max(0, parseInt(time[0])) || 0;
+
+      if (hour > 11) {
+        time[0] = hour - 12;
+        if (time[0] < 10) time[0] = "0" + time[0];
+      }
+
+      return getAPMName(hour) + " " + time.join(":");
+    }
+
+    return "";
+  };
+
+  var getAPMName = function getAPMName(hour) {
+    if (hour < 6) return "凌晨";
+    if (hour < 12) return "上午";
+    if (hour < 14) return "中午";
+    if (hour < 18) return "下午";
+    return "晚上";
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UITimeInput = UITimeInput;
+    UI.init(".ui-timeipt", UITimeInput, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
