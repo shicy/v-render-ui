@@ -8117,3 +8117,165 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     module.exports = Renderer;
   }
 })(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-10
+// confirm
+(function (frontend) {
+  if (frontend && VRender.Component.ui.confirm) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UIConfirm = UI.confirm = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UIConfirm = UIConfirm.prototype = new UI._base(false);
+
+  _UIConfirm.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    this.open();
+  }; // ====================================================
+
+
+  _UIConfirm.open = function () {
+    doOpen.call(this);
+    this.$el.on("tap", ".closebtn", onCloseBtnHandler.bind(this));
+    this.$el.on("tap", ".btnbar .ui-btn", onButtonClickHandler.bind(this));
+  };
+
+  _UIConfirm.close = function () {
+    doClose.call(this);
+  };
+
+  _UIConfirm.onSubmit = function (handler) {
+    this.submitHandler = handler;
+    return this;
+  };
+
+  _UIConfirm.onCancel = function (handler) {
+    this.cancelHandler = handler;
+    return this;
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-confirm");
+    renderView.call(this, $, target);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getConfirmLabel = function () {
+    return Utils.trimToNull(this.options.confirmLabel) || "确认";
+  };
+
+  _Renderer.getCancelLabel = function () {
+    return Utils.trimToNull(this.options.cancelLabel) || "取消";
+  }; ///////////////////////////////////////////////////////
+
+
+  var onCloseBtnHandler = function onCloseBtnHandler(e) {
+    doCancel.call(this);
+  };
+
+  var onButtonClickHandler = function onButtonClickHandler(e) {
+    if ($(e.currentTarget).attr("name") == "ok") {
+      doSubmit.call(this);
+    } else {
+      doCancel.call(this);
+    }
+  }; // ====================================================
+
+
+  var renderView = function renderView($, target) {
+    var container = $("<div class='container'></div>").appendTo(target);
+    var title = Utils.trimToNull(this.options.title);
+    if (title) $("<div class='title'></div>").appendTo(container).text(title);
+    var content = $("<div class='content'></div>").appendTo(container);
+    content = $("<div></div>").appendTo(content);
+
+    if (this.options.hasOwnProperty("focusHtmlContent")) {
+      content.html(this.options.focusHtmlContent || "无内容");
+    } else {
+      content.text(this.options.content || "无内容");
+    }
+
+    var btnbar = $("<div class='btnbar'></div>").appendTo(container);
+    addButton($, btnbar, {
+      name: "ok",
+      label: this.getConfirmLabel(),
+      type: "primary"
+    });
+    addButton($, btnbar, {
+      name: "cancel",
+      label: this.getCancelLabel()
+    });
+    $("<span class='closebtn'></span>").appendTo(container);
+  };
+
+  var addButton = function addButton($, target, data) {
+    target = $("<div></div>").appendTo(target);
+
+    if (!frontend) {
+      var UIButton = require("../button/index");
+
+      new UIButton(this.context, data).render(target);
+    } else {
+      UI.button.create(Utils.extend(data, {
+        target: target
+      }));
+    }
+  }; // ====================================================
+
+
+  var doOpen = function doOpen() {
+    var wrapper = $("body").children(".ui-confirm-wrap");
+    if (!wrapper || wrapper.length == 0) wrapper = $("<div class='ui-confirm-wrap'></div>").appendTo("body");
+    var target = this.$el.appendTo(wrapper);
+    setTimeout(function () {
+      target.addClass("animate-in");
+    }, 50);
+  };
+
+  var doClose = function doClose() {
+    var target = this.$el.addClass("animate-out");
+    setTimeout(function () {
+      target.removeClass("animate-in").removeClass("animate-out");
+      target.remove();
+      var wrapper = $("body").children(".ui-confirm-wrap");
+      if (wrapper.children().length == 0) wrapper.remove();
+    }, 500);
+    this.trigger("close");
+  };
+
+  var doSubmit = function doSubmit() {
+    doClose.call(this);
+    if (Utils.isFunction(this.submitHandler)) this.submitHandler();
+    this.trigger("submit");
+  };
+
+  var doCancel = function doCancel() {
+    doClose.call(this);
+    if (Utils.isFunction(this.cancelHandler)) this.cancelHandler();
+    this.trigger("cancel");
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIConfirm = UIConfirm;
+    UI.init(".ui-confirm", UIConfirm, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
