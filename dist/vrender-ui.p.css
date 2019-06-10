@@ -712,6 +712,25 @@
 }
 
 
+.ui-chkgrp {
+	display: inline-block;
+}
+
+.ui-chkgrp > .item {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.ui-chkgrp > .item:last-child {
+	margin-right: 0px;
+}
+
+.ui-chkgrp[disabled] {
+	opacity: 0.35;
+	pointer-events: none;
+}
+
+
 .ui-combobox {
 	display: inline-block;
     width: 200px;
@@ -1866,6 +1885,7 @@
 .ui-datetime[disabled] > .ipt > input {
     background-color: #f0f0f0;
 }
+
 
 
 .ui-radbox {

@@ -2730,6 +2730,196 @@
 })(typeof window !== "undefined");
 "use strict";
 
+// 2019-06-10
+// checkgroup
+(function (frontend) {
+  if (frontend && VRender.Component.ui.checkgroup) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UICheckGroup = UI.checkgroup = function (view, options) {
+    return UI._select.call(this, view, options);
+  };
+
+  var _UICheckGroup = UICheckGroup.prototype = new UI._select(false);
+
+  _UICheckGroup.init = function (target, options) {
+    UI._select.init.call(this, target, options);
+
+    this.$el.on("change", "input", selectedChangeHandler.bind(this));
+  }; // ====================================================
+
+
+  _UICheckGroup.setSelectedIndex = function (value) {
+    var snapshoot = this._snapshoot();
+
+    var indexs = Renderer.fn.getIntValues(value, 0) || [];
+    Utils.each(this.$el.children(), function (item, i) {
+      var chkbox = VRender.Component.get(item.children());
+      chkbox.setChecked(indexs.indexOf(i) >= 0);
+    });
+    snapshoot.done();
+  };
+
+  _UICheckGroup.isMultiple = function () {
+    return true;
+  };
+
+  _UICheckGroup.isDisabled = function (value) {
+    if (typeof value == "number") {
+      var chkbox = VRender.Component.get(this._getItemAt(value).children());
+      return chkbox ? chkbox.isDisabled() : false;
+    }
+
+    if (typeof value == "string") {
+      return this.isDisabled(this.getIndexByName(value));
+    }
+
+    return this.$el.is(".disabled");
+  };
+
+  _UICheckGroup.setDisabled = function (disabled, value) {
+    if (typeof value == "string") {
+      return this.setDisabled(disabled, this.getIndexByName(value));
+    }
+
+    if (typeof value == "number") {
+      var chkbox = VRender.Component.get(this._getItemAt(value).children());
+      chkbox && chkbox.setDisabled(disabled);
+    } else {
+      disabled = Utils.isNull(disabled) || Utils.isTrue(disabled) ? true : false;
+      if (disabled) this.$el.addClass("disabled").attr("disabled", "disabled");else this.$el.removeClass("disabled").removeAttr("disabled");
+    }
+  }; // ====================================================
+
+
+  _UICheckGroup._getItems = function () {
+    return this.$el.children();
+  };
+
+  _UICheckGroup._getNewItem = function ($, itemContainer, data, index) {
+    return getNewItem.call(this, $, itemContainer, data, index);
+  };
+
+  _UICheckGroup._renderItems = function ($, itemContainer, datas) {
+    renderItems.call(this, $, itemContainer, datas);
+  };
+
+  _UICheckGroup._renderOneItem = function ($, item, data, index) {
+    renderOneItem.call(this, $, item, data, index);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._selectRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._selectRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._selectRender.render.call(this, $, target);
+
+    target.addClass("ui-chkgrp");
+    return this;
+  };
+
+  _Renderer.renderSelection = function ($, target) {
+    var indexs = this.getSelectedIndex(true);
+    if (indexs) target.attr("data-inds", indexs.join(","));
+    var ids = this.getSelectedKey(true);
+    if (ids) target.attr("data-ids", ids.join(","));
+  }; // ====================================================
+
+
+  _Renderer.isMultiple = function () {
+    return true;
+  }; // ====================================================
+
+
+  _Renderer._renderItems = function ($, target) {
+    var itemContainer = this._getItemContainer($, target);
+
+    if (itemContainer) {
+      renderItems.call(this, $, itemContainer);
+    }
+  };
+
+  _Renderer._renderOneItem = function ($, item, data, index) {
+    renderOneItem.call(this, $, item, data, index);
+  };
+
+  _Renderer._getNewItem = function ($, target) {
+    return getNewItem.call(this, $, target);
+  };
+
+  _Renderer._renderEmptyView = function () {// do nothing
+  };
+
+  _Renderer._renderLoadView = function () {// do nothing
+  }; ///////////////////////////////////////////////////////
+
+
+  var selectedChangeHandler = function selectedChangeHandler(e) {
+    e.stopPropagation();
+
+    var snapshoot = this._snapshoot();
+
+    var indexs = [];
+    Utils.each(this.$el.find("input"), function (input, i) {
+      if (input.is(":checked")) indexs.push(i);
+    });
+
+    UI._select.setSelectedIndex.call(this, indexs);
+
+    snapshoot.done();
+  }; // ====================================================
+
+
+  var renderItems = function renderItems($, itemContainer, datas) {
+    this._cache_selected_indexs = this.getSelectedIndex(true);
+    this._cache_selected_ids = this.getSelectedKey(true) || [];
+
+    UI._itemsRender.renderItems.call(this, $, itemContainer, datas);
+
+    delete this._cache_selected_indexs;
+    delete this._cache_selected_ids;
+  };
+
+  var renderOneItem = function renderOneItem($, item, data, index) {
+    if (typeof data == "string") data = {
+      label: data
+    };
+    var params = Utils.extend({}, data);
+    params.value = this._getDataKey(data);
+    params.label = this._getDataLabel(data, index);
+    params.checked = this._isSelected(data, index, this._cache_selected_indexs, this._cache_selected_ids);
+
+    if (!frontend) {
+      var UICheckbox = require("../checkbox/index");
+
+      return new UICheckbox(this.context, params).render(item);
+    } else {
+      params.target = item;
+      return UI.checkbox.create(params);
+    }
+  }; // ====================================================
+
+
+  var getNewItem = function getNewItem($, target) {
+    return $("<div class='item'></div>").appendTo(target);
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UICheckGroup = UICheckGroup;
+    UI.init(".ui-chkgrp", UICheckGroup, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
 // 2019-06-06
 // radiobox
 (function (frontend) {
