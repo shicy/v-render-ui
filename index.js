@@ -17,7 +17,7 @@ const UIDateTime = require("./src/components/datetime");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190606";
+const distVersion = "190610";
 
 module.exports = {
 	install: function () {
