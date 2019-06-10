@@ -80,7 +80,7 @@
 	content: "";
     display: block;
     height: 50px;
-    background-image: url(/VRender/icons/018a.png);
+    background-image: url(/vrender-ui/icons/018a.png);
     background-size: 48px;
     background-repeat: no-repeat;
     background-position: top center;
@@ -124,7 +124,7 @@
     left: 50%;
     top: 0px;
     margin-left: -16px;
-    background-image: url(/VRender/icons/017a.png);
+    background-image: url(/vrender-ui/icons/017a.png);
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: center;

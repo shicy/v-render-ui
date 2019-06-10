@@ -35,7 +35,7 @@
 .ui-chkbox.checked:before {
     border-color: #333;
 	background-color: #333444;
-    background-image: url(/VRender/icons/003b.png);
+    background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;
     background-position: center;

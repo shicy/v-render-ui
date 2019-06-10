@@ -38,7 +38,7 @@
     top: 0px;
     right: 0px;
     bottom: 0px;
-    background-image: url(/VRender/icons/005a.png);
+    background-image: url(/vrender-ui/icons/005a.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;
     background-position: center;
@@ -117,27 +117,27 @@
 }
 
 .ui-btn-primary.has-items > .dropdownbtn {
-    background-image: url(/VRender/icons/005b.png);
+    background-image: url(/vrender-ui/icons/005b.png);
     opacity: 0.8;
 }
 
 .ui-btn-success.has-items > .dropdownbtn {
-    background-image: url(/VRender/icons/005b.png);
+    background-image: url(/vrender-ui/icons/005b.png);
     opacity: 0.8;
 }
 
 .ui-btn-warn.has-items > .dropdownbtn {
-    background-image: url(/VRender/icons/005b.png);
+    background-image: url(/vrender-ui/icons/005b.png);
     opacity: 0.8;
 }
 
 .ui-btn-danger.has-items > .dropdownbtn {
-    background-image: url(/VRender/icons/005b.png);
+    background-image: url(/vrender-ui/icons/005b.png);
     opacity: 0.8;
 }
 
 .ui-btn-info.has-items > .dropdownbtn {
-    background-image: url(/VRender/icons/005b.png);
+    background-image: url(/vrender-ui/icons/005b.png);
     opacity: 0.8;
 }
 
@@ -164,7 +164,7 @@
     width: 0.32rem;
     height: 0.32rem;
     margin: -0.16rem 0px 0px -0.16rem;
-    background-image: url(/VRender/icons/016b.png);
+    background-image: url(/vrender-ui/icons/016b.png);
     background-size: 0.16rem;
     background-position: center;
     background-repeat: no-repeat;

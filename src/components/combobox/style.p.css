@@ -40,7 +40,7 @@
     border: 0px;
     border-radius: 0px;
     background: none;
-    background-image: url(/VRender/icons/005a.png);
+    background-image: url(/vrender-ui/icons/005a.png);
     background-size: 10px;
     background-repeat: no-repeat;
     background-position: center;
@@ -152,7 +152,7 @@
     top: 50%;
     margin-left: 0px;
     margin-top: -8px;
-    background-image: url(/VRender/icons/017a.png);
+    background-image: url(/vrender-ui/icons/017a.png);
     background-size: 14px;
     background-repeat: no-repeat;
     background-position: center;
