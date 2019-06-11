@@ -62,6 +62,7 @@ const menus = [{
 	name: "其他",
 	children: [
 		{name: "confirm", title: "Confirm", subTitle: "确认对话框"},
+		{name: "notice", title: "Notice", subTitle: "通知"},
 		{name: "tooltip", title: "Tooltip", subTitle: "提示框"}
 	]
 }];

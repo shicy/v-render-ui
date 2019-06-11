@@ -20,6 +20,7 @@ const UITimeInput = require("./src/components/timeinput");
 const UIFileUpload = require("./src/components/fileupload");
 const UIFormView = require("./src/components/formview");
 const UITooltip = require("./src/components/tooltip");
+const UINotice = require("./src/components/notice");
 const UIConfirm = require("./src/components/confirm");
 
 
@@ -41,6 +42,7 @@ module.exports = {
 		VRender.UIFormView = UIFormView;
 		VRender.UIGroup = UIGroup;
 		VRender.UIHGroup = UIGroup.HGroup;
+		VRender.UINotice = UINotice;
 		VRender.UIRadiobox = UIRadiobox;
 		VRender.UIRadioGroup = UIRadioGroup;
 		VRender.UITextView = UITextView;

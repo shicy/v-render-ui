@@ -58,6 +58,7 @@ function buildJs() {
 	jsFiles.push("src/components/fileupload/render.js");
 	jsFiles.push("src/components/formview/render.js");
 	jsFiles.push("src/components/tooltip/render.js");
+	jsFiles.push("src/components/notice/render.js");
 	jsFiles.push("src/components/confirm/render.js");
 
 	let result = Gulp.src(jsFiles)
