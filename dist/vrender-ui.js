@@ -745,7 +745,7 @@
   };
 
   UIItems.doAdapter = function (datas) {
-    Renderer.doAdapter.call(this, datas);
+    return Renderer.doAdapter.call(this, datas);
   };
 
   UIItems.renderItems = function (itemContainer, datas) {
@@ -3939,7 +3939,7 @@
     if (Utils.isNull(value)) {
       var selectedIndex = this.getSelectedIndex(true);
 
-      if (selectedIndex && selectedIndex > 0) {
+      if (selectedIndex && selectedIndex.length > 0) {
         return this.getSelectedKey();
       }
 
@@ -8337,6 +8337,889 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   if (frontend) {
     window.UIFileUpload = UIFileUpload;
     UI.init(".ui-fileupload", UIFileUpload, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-10
+// formview
+(function (frontend) {
+  if (frontend && VRender.Component.ui.formview) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util;
+  var VERTICAL = "vertical";
+  var HORIZONTIAL = "horizontial"; ///////////////////////////////////////////////////////
+
+  var UIFormView = UI.formview = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UIFormView = UIFormView.prototype = new UI._base(false);
+
+  _UIFormView.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    var btnbar = this.$el.children(".btnbar");
+    btnbar.on("tap", ".ui-btn", onButtonClickHandler.bind(this));
+    this.$el.on("keydown", ".form-item > .content > dd > div > *", onNativeInputKeyHandler.bind(this));
+    this.$el.on("focusout", ".form-item > .content > dd > div > *", onNativeInputFocusHandler.bind(this));
+    this.$el.on("change", ".form-item > .content > dd > div > *", onValueChangeHandler.bind(this));
+    this.$el.on("keydown", ".ui-textview > .ipt > *", onTextViewKeyHandler.bind(this));
+    this.$el.on("focusout", ".ui-textview > .ipt > *", onTextViewFocusHandler.bind(this));
+
+    if (!this._isRenderAsApp()) {
+      this.$el.on("mouseenter", ".form-item > .content > dd > div > *", onItemMouseHandler.bind(this));
+      this.$el.on("mouseleave", ".form-item > .content > dd > div > *", onItemMouseHandler.bind(this));
+    }
+  }; // ====================================================
+
+
+  _UIFormView.validate = function (callback) {
+    var _this = this;
+
+    var errors = [];
+
+    var formItems = this._getItems();
+
+    var count = formItems.length;
+    Utils.each(formItems, function (item, index) {
+      validateItem.call(_this, item, null, function (result) {
+        if (result) {
+          errors.push({
+            index: index,
+            name: item.attr("name"),
+            message: result
+          });
+        }
+
+        count -= 1;
+
+        if (count <= 0) {
+          if (Utils.isFunction(callback)) {
+            callback(errors.length > 0 ? errors : false);
+          }
+        }
+      });
+    });
+  };
+
+  _UIFormView.submit = function (action, callback) {
+    var _this2 = this;
+
+    if (this.$el.is(".is-loading")) return false;
+
+    if (Utils.isFunction(action)) {
+      callback = action;
+      action = null;
+    }
+
+    if (Utils.isBlank(action)) action = this.getAction();
+    this.$el.addClass("is-loading");
+    var submitBtn = this.$el.find(".btnbar .is-submit .ui-btn");
+    Utils.each(submitBtn, function (button) {
+      VRender.Component.get(button).waiting();
+    });
+
+    var resultHandler = function resultHandler(err, ret, submitParams) {
+      _this2.$el.removeClass("is-loading");
+
+      Utils.each(submitBtn, function (button) {
+        VRender.Component.get(button).waiting(0);
+      });
+
+      if (Utils.isFunction(callback)) {
+        callback(err, ret, submitParams);
+      }
+
+      if (action) {
+        _this2.trigger("action_after", err, ret, submitParams);
+      }
+    };
+
+    this.validate(function (errors) {
+      if (!errors && action) {
+        doSubmit.call(_this2, action, resultHandler);
+      } else {
+        resultHandler(errors);
+      }
+    });
+  }; // ====================================================
+
+
+  _UIFormView.add = function (name, label, index) {
+    var container = this.$el.children(".items");
+    var item = $("<div class='form-item'></div>").appendTo(container);
+    item.attr("name", Utils.trimToNull(name));
+    var content = $("<dl class='content'></dl>").appendTo(item);
+    var labelTarget = $("<dt></dt>").appendTo(content);
+    labelTarget.text(Utils.trimToEmpty(label));
+    labelTarget.css("width", Utils.trimToEmpty(this.getLabelWidth()));
+    content.append("<dd><div></div></dd>");
+    index = Utils.getIndexValue(index);
+
+    if (index >= 0) {
+      var items = container.children();
+      if (index < items.length - 1) items.eq(index).before(item);
+    }
+
+    return new FormItem(this, item);
+  };
+
+  _UIFormView.get = function (name) {
+    if (Utils.isBlank(name)) return null;
+    var item = Utils.find(this._getItems(), function (item) {
+      return item.attr("name") == name;
+    });
+    return !item ? null : new FormItem(this, item);
+  };
+
+  _UIFormView.getAt = function (index) {
+    index = Utils.getIndexValue(index);
+
+    if (index >= 0) {
+      var item = this._getItems().eq(index);
+
+      return !item ? null : new FormItem(this, item);
+    }
+
+    return null;
+  };
+
+  _UIFormView["delete"] = function (name) {
+    if (Utils.isBlank(name)) return null;
+    var item = Utils.find(this._getItems(), function (item) {
+      return item.attr("name") == name;
+    });
+    if (item) item.remove();
+    return item;
+  };
+
+  _UIFormView.deleteAt = function (index) {
+    index = Utils.getIndexValue(index);
+
+    if (index >= 0) {
+      var item = this._getItems().eq(index);
+
+      if (item) item.remove();
+      return item;
+    }
+
+    return null;
+  }; // ====================================================
+
+
+  _UIFormView.getFormData = function () {
+    var params = {};
+    params = Utils.extend(params, this.getParams());
+    Utils.each(this._getItems(), function (item) {
+      var name = item.attr("name");
+      if (Utils.isBlank(name)) return;
+      var contentView = item.children(".content").children("dd").children().children();
+
+      if (contentView.is("input, textarea")) {
+        params[name] = contentView.val() || "";
+      } else {
+        contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView);
+
+        if (contentView) {
+          if (contentView instanceof UI.dateinput) {
+            params[name] = contentView.getDate("yyyy-MM-dd");
+          } else if (contentView instanceof UI.daterange) {
+            params[name] = contentView.getDateRange("yyyy-MM-dd");
+          } else if (contentView instanceof UI.combobox) {
+            params[name] = contentView.val();
+          } else if (contentView instanceof UI._select) {
+            params[name] = contentView.getSelectedKey();
+          } else if (Utils.isFunction(contentView.getValue)) {
+            params[name] = contentView.getValue();
+          } else if (Utils.isFunction(contentView.val)) {
+            if (!Utils.isFunction(contentView.isChecked) || contentView.isChecked()) params[name] = contentView.val();
+          }
+        }
+      }
+    });
+    return params;
+  };
+
+  _UIFormView.setFormData = function (data) {
+    var _this3 = this;
+
+    data = data || {};
+    Utils.each(this._getItems(), function (item) {
+      var name = item.attr("name");
+      if (Utils.isBlank(name)) return;
+      if (!data.hasOwnProperty(name)) return;
+      var value = data[name];
+      var content = item.children(".content").children("dd").children().children();
+
+      if (content.is("input, textarea")) {
+        content.val(value || "");
+        validateInput.call(_this3, item, content);
+      } else {
+        var contentView = VRender.Component.get(content);
+
+        if (contentView) {
+          if (contentView instanceof UI._select) {
+            contentView.setSelectedKey(value);
+            validateSelectionView.call(_this3, item, contentView);
+          } else if (Utils.isFunction(contentView.val)) {
+            contentView.val(value || "");
+            validateItem.call(_this3, item, content);
+          }
+        }
+      }
+    });
+  };
+
+  _UIFormView.getColumns = function () {
+    if (this._isRenderAsApp()) return 1;
+    if (this.options.hasOwnProperty("columns")) return parseInt(this.options.columns) || 1;
+    this.options.columns = parseInt(this.$el.attr("opt-cols")) || 1;
+    this.$el.removeAttr("opt-cols");
+    return this.options.columns;
+  };
+
+  _UIFormView.setColumns = function (value) {
+    if (this._isRenderAsApp()) return;
+    var columns = parseInt(value) || 1;
+    if (columns < 1) columns = 1;
+    this.options.columns = columns;
+    this.$el.removeAttr("opt-cols");
+    Utils.each(this._getItems(), function (item) {
+      var colspan = parseInt(item.attr("opt-col")) || 1;
+      if (columns > colspan) item.css("width", (colspan * 100 / columns).toFixed(6) + "%");else item.css("width", "");
+    });
+  };
+
+  _UIFormView.getAction = function () {
+    return this.$el.attr("opt-action");
+  };
+
+  _UIFormView.setAction = function (value) {
+    this.$el.attr("opt-action", Utils.trimToEmpty(value));
+  };
+
+  _UIFormView.getParams = function () {
+    if (this.options.hasOwnProperty("params")) return this.options.params;
+    var params = null;
+
+    try {
+      params = JSON.parse(this.$el.attr("opt-params"));
+    } catch (e) {}
+
+    ;
+    this.options.params = params;
+    return this.options.params;
+  };
+
+  _UIFormView.setParams = function (value) {
+    this.options.params = value;
+    this.$el.removeAttr("opt-params");
+  };
+
+  _UIFormView.getMethod = function () {
+    return this.$el.attr("opt-method");
+  };
+
+  _UIFormView.setMethod = function (value) {
+    this.$el.attr("opt-method", Utils.trimToEmpty(value));
+  };
+
+  _UIFormView.getLabelWidth = function () {
+    if (this.options.hasOwnProperty("labelWidth")) return this.options.labelWidth;
+    var width = this.$el.attr("opt-lw");
+    this.options.width = Utils.getFormatSize(width, this.isRenderAsRem());
+    this.$el.removeAttr("opt-lw");
+    return this.options.labelWidth;
+  };
+
+  _UIFormView.setLabelWidth = function (value) {
+    this.options.labelWidth = value;
+    this.$el.removeAttr("opt-lw");
+  };
+
+  _UIFormView.getLabelAlign = function () {
+    var align = this.$el.attr("opt-la");
+    return /^(center|right)$/.test(align) ? align : "left";
+  };
+
+  _UIFormView.setLabelAlign = function (value) {
+    var align = /^(center|right)$/.test(value) ? align : "left";
+    this.options.labelAlign = align;
+    this.$el.attr("opt-la", align);
+  };
+
+  _UIFormView.getOrientation = function () {
+    return this.$el.attr("opt-orientate");
+  };
+
+  _UIFormView.setOrientation = function (value) {
+    if (VERTICAL != value && HORIZONTIAL != value) {
+      value = this._isRenderAsApp() ? VERTICAL : HORIZONTIAL;
+    }
+
+    this.$el.removeClass(VERTICAL);
+    this.$el.removeClass(HORIZONTIAL);
+    this.$el.addClass(value).attr("opt-orientate", value);
+  };
+
+  _UIFormView.setButtons = function (value) {
+    renderButtons.call(this, $, this.$el, Utils.toArray(value));
+  }; // ====================================================
+
+
+  _UIFormView._getItems = function () {
+    return this.$el.children(".items").children();
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-formview");
+    var options = this.options || {};
+    renderView.call(this, $, target);
+    var labelAlign = this.getLabelAlign();
+    if (labelAlign && labelAlign != "left") target.attr("opt-la", labelAlign);
+    target.attr("opt-action", Utils.trimToNull(options.action));
+    target.attr("opt-method", Utils.trimToNull(options.method));
+    var orientation = this.getOrientation();
+    target.addClass(orientation).attr("opt-orientate", orientation);
+
+    if (!frontend) {
+      if (options.params) {
+        target.attr("opt-params", JSON.stringify(options.params));
+      }
+
+      var columns = this.getColumns();
+      if (columns > 1) target.attr("opt-cols", columns);
+      var labelWidth = this.getLabelWidth();
+      if (labelWidth) target.attr("opt-lw", labelWidth);
+    }
+
+    return this;
+  };
+
+  _Renderer.renderData = function () {// do nothing
+  }; // ====================================================
+
+
+  _Renderer.add = function (name, label, index) {
+    var datas = Utils.toArray(this.options.data);
+    var newData = {
+      name: name,
+      label: label
+    };
+    index = Utils.getIndexValue(index);
+    if (index >= 0 && index < datas.length) datas.splice(index, 0, newData);else datas.push(newData);
+    this.options.data = datas;
+    return new FormItem(newData);
+  };
+
+  _Renderer.get = function (name) {
+    if (Utils.isBlank(name)) return null;
+    var datas = Utils.toArray(this.options.data);
+    var data = Utils.findBy(datas, "name", name);
+    if (data) return new FormItem(data);
+    return null;
+  };
+
+  _Renderer.getAt = function (index) {
+    index = Utils.getIndexValue(index);
+    var datas = Utils.toArray(this.options.data);
+    if (index >= 0 && index < datas.length) return new FormItem(datas[index]);
+    return null;
+  };
+
+  _Renderer["delete"] = function (name) {
+    if (Utils.isBlank(name)) return null;
+    var datas = Utils.toArray(this.options.data);
+    var items = Utils.deleteBy(datas, "name", name);
+    if (items && items.length > 0) return items.length > 1 ? items : items[0];
+    return null;
+  };
+
+  _Renderer.deleteAt = function (index) {
+    index = Utils.getIndexValue(index);
+    var datas = Utils.toArray(this.options.data);
+    if (index >= 0 && index < datas.length) return datas.splice(index, 1)[0];
+    return null;
+  }; // ====================================================
+
+
+  _Renderer.getColumns = function () {
+    if (this._isRenderAsApp()) return 1;
+    return parseInt(this.options.columns) || 1;
+  };
+
+  _Renderer.getLabelWidth = function () {
+    if (!this.hasOwnProperty("labelWidth")) this.labelWidth = Utils.getFormatSize(this.options.labelWidth, this._isRenderAsRem());
+    return this.labelWidth;
+  };
+
+  _Renderer.getLabelAlign = function () {
+    if (!this.hasOwnProperty("labelAlign")) {
+      var align = this.options.labelAlign;
+      this.labelAlign = /^(left|right|center)$/.test(align) ? align : null;
+    }
+
+    return this.labelAlign;
+  };
+
+  _Renderer.getOrientation = function () {
+    var orientation = this.options.orientation;
+    if (VERTICAL == orientation || HORIZONTIAL == orientation) return orientation;
+    return this._isRenderAsApp() ? VERTICAL : HORIZONTIAL;
+  }; ///////////////////////////////////////////////////////
+
+
+  var onButtonClickHandler = function onButtonClickHandler(e) {
+    var btn = $(e.currentTarget);
+
+    if (btn.parent().is(".is-submit")) {
+      this.submit();
+    }
+
+    var btnName = btn.attr("name");
+
+    if (btnName) {
+      this.trigger("btn_" + btnName);
+      this.trigger("btnclick", btnName, btn);
+    }
+  };
+
+  var onNativeInputKeyHandler = function onNativeInputKeyHandler(e) {
+    var input = $(e.currentTarget);
+    if (!input.is("input, textarea")) return; // console.log("onNativeInputKeyHandler");
+
+    var item = Utils.parentUntil(input, ".form-item");
+    hideErrorMsg.call(this, item);
+  };
+
+  var onNativeInputFocusHandler = function onNativeInputFocusHandler(e) {
+    var input = $(e.currentTarget);
+    if (!input.is("input, textarea")) return; // console.log("onNativeInputFocusHandler");
+
+    var item = Utils.parentUntil(input, ".form-item");
+    validateInput.call(this, item, input);
+  };
+
+  var onTextViewKeyHandler = function onTextViewKeyHandler(e) {
+    var item = Utils.parentUntil(e.currentTarget, ".form-item");
+    item.removeClass("is-error");
+  };
+
+  var onTextViewFocusHandler = function onTextViewFocusHandler(e) {
+    var input = $(e.currentTarget);
+    var item = Utils.parentUntil(input, ".form-item");
+    var textView = VRender.Component.get(input.parent().parent());
+    validateTextView.call(this, item, textView);
+  };
+
+  var onValueChangeHandler = function onValueChangeHandler(e) {
+    var target = $(e.currentTarget);
+    if (target.is("input, textarea, .ui-textview")) return; // console.log("onValueChangeHandler");
+
+    var item = Utils.parentUntil(target, ".form-item");
+    validateItem.call(this, item);
+  };
+
+  var onItemMouseHandler = function onItemMouseHandler(e) {
+    var item = Utils.parentUntil(e.currentTarget, ".form-item");
+
+    if (item.is(".is-error")) {
+      stopErrorFadeout.call(this, item);
+
+      if (e.type == "mouseenter") {
+        item.children(".errmsg").removeClass("animate-out");
+      } else
+        /*if (e.type == "mouseleave")*/
+        {
+          startErrorFadeout.call(this, item);
+        }
+    }
+  }; // ====================================================
+
+
+  var renderView = function renderView($, target) {
+    renderItems.call(this, $, target, this.options.data);
+    renderButtons.call(this, $, target, this.options.buttons);
+  };
+
+  var renderItems = function renderItems($, target, datas) {
+    var _this4 = this;
+
+    var items = target.children(".items").empty();
+    if (!items || items.length == 0) items = $("<div class='items'></div>").appendTo(target);
+    var columns = this.getColumns();
+    Utils.each(Utils.toArray(datas), function (data) {
+      var item = $("<div class='form-item'></div>").appendTo(items);
+      renderOneItem.call(_this4, $, target, item, data);
+      var colspan = parseInt(data.colspan) || 1;
+      item.attr("opt-col", colspan);
+
+      if (columns > 1 && columns > colspan) {
+        item.css("width", (colspan * 100 / columns).toFixed(6) + "%");
+      }
+    });
+  };
+
+  var renderOneItem = function renderOneItem($, target, item, data) {
+    if (Utils.isNotBlank(data.name)) item.attr("name", data.name);
+    if (Utils.isTrue(data.required)) item.attr("opt-required", "1");
+    var empty = Utils.trimToNull(data.empty);
+    if (empty) item.attr("opt-empty", empty);
+    if (Utils.isNotNull(data.visible) && !Utils.isTrue(data.visible)) item.attr("opt-hide", "1");
+    var itemContent = $("<dl class='content'></dl>").appendTo(item);
+    var label = $("<dt></dt>").appendTo(itemContent);
+    label.text(Utils.trimToEmpty(data.label));
+    var labelWidth = this.getLabelWidth();
+    if (labelWidth) label.css("width", labelWidth);
+    var container = $("<dd></dd>").appendTo(itemContent);
+    container = $("<div></div>").appendTo(container);
+    var contentView = data.content;
+
+    if (contentView) {
+      if (Utils.isFunction(contentView.render)) {
+        contentView.render(container);
+      } else if (contentView.hasOwnProperty("$el")) {
+        container.append(contentView.$el);
+      } else {
+        container.append(contentView);
+      }
+    }
+
+    Fn.renderFunction.call(this, item, "validate", data.validate);
+  };
+
+  var renderButtons = function renderButtons($, target, datas) {
+    var _this5 = this;
+
+    target.children(".btnbar").remove();
+
+    if (datas && datas.length > 0) {
+      var btnbar = $("<div class='btnbar'></div>").appendTo(target);
+      var labelWidth = this.getLabelWidth();
+      if (labelWidth && !this._isRenderAsApp()) btnbar.css("paddingLeft", labelWidth);
+      Utils.each(datas, function (data) {
+        var button = $("<div></div>").appendTo(btnbar);
+        if (data.type == "submit") button.addClass("is-submit");
+
+        if (!frontend) {
+          var UIButton = require("../button/index");
+
+          new UIButton(_this5.context, data).render(button);
+        } else {
+          new UI.button(Utils.extend({}, data, {
+            target: button
+          }));
+        }
+      });
+    }
+  }; // ====================================================
+
+
+  var validateItem = function validateItem(item, contentView, callback) {
+    // console.log("validateItem")
+    if (item.attr("opt-hide") == 1) return Utils.isFunction(callback) ? callback(false) : null;
+    if (!contentView) contentView = item.children(".content").children("dd").children().children();
+
+    if (contentView.is("input, textarea")) {
+      validateInput.call(this, item, contentView, callback);
+    } else {
+      contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
+
+      if (contentView instanceof UI.textview) {
+        validateTextView.call(this, item, contentView, callback);
+      } else if (contentView instanceof UI.dateinput) {
+        validateDateInputView.call(this, item, contentView, callback);
+      } else if (contentView instanceof UI.daterange) {
+        validateDateRangeView.call(this, item, contentView, callback);
+      } else if (contentView instanceof UI.combobox) {
+        validateComboboxView.call(this, item, contentView, callback);
+      } else if (contentView instanceof UI._select) {
+        validateSelectionView.call(this, item, contentView, callback);
+      } else if (Utils.isFunction(contentView.getValue)) {
+        validateInterfaceView.call(this, item, contentView, contentView.getValue(), callback);
+      } else if (Utils.isFunction(contentView.val)) {
+        validateInterfaceView.call(this, item, contentView, contentView.val(), callback);
+      } else if (Utils.isFunction(callback)) {
+        callback(false);
+      }
+    }
+  };
+
+  var validateInput = function validateInput(item, input, callback) {
+    // console.log("validateInput");
+    doItemValidate.call(this, item, input.val(), callback);
+  };
+
+  var validateInterfaceView = function validateInterfaceView(item, view, value, callback) {
+    // console.log("validateInterfaceView");
+    doItemValidate.call(this, item, value, callback);
+  };
+
+  var validateTextView = function validateTextView(item, view, callback) {
+    var _this6 = this;
+
+    // console.log("validateTextView")
+    view.validate(function () {
+      if (view.hasError()) {
+        item.addClass("is-error");
+        item.children(".errmsg").remove();
+      } else {
+        item.removeClass("is-error");
+        doItemValidate.call(_this6, item, view.val(), callback);
+      }
+    });
+  };
+
+  var validateSelectionView = function validateSelectionView(item, view, callback) {
+    // console.log("validateSelectionView")
+    doItemValidate.call(this, item, view.getSelectedKey(), callback);
+  };
+
+  var validateComboboxView = function validateComboboxView(item, view, callback) {
+    // console.log("validateComboboxView")
+    if (view.isEditable()) {
+      doItemValidate.call(this, item, view.val(), callback);
+    } else {
+      doItemValidate.call(this, item, view.getSelectedKey(), callback);
+    }
+  };
+
+  var validateDateInputView = function validateDateInputView(item, view, callback) {
+    // console.log("validateDateInputView")
+    doItemValidate.call(this, item, view.getDate(), callback);
+  };
+
+  var validateDateRangeView = function validateDateRangeView(item, view, callback) {
+    // console.log("validateDateRangeView");
+    doItemValidate.call(this, item, view.getDateRange(), callback);
+  };
+
+  var doItemValidate = function doItemValidate(item, value, callback) {
+    var _this7 = this;
+
+    // console.log("doItemValidate");
+    if (Utils.isBlank(value)) {
+      var error = item.attr("opt-required") == 1 ? item.attr("opt-empty") || "不能为空" : null;
+      setItemErrorMsg.call(this, item, error, callback);
+    } else {
+      var validate = getItemValidate.call(this, item);
+
+      if (Utils.isFunction(validate)) {
+        validate(value, function (err) {
+          var error = !err ? false : err === true ? "内容不正确" : Utils.trimToNull(err);
+          setItemErrorMsg.call(_this7, item, error, callback);
+        });
+      } else {
+        setItemErrorMsg.call(this, item, false, callback);
+      }
+    }
+  };
+
+  var getItemValidate = function getItemValidate(item) {
+    var validateFunction = item.data("validate");
+
+    if (!validateFunction) {
+      var target = item.children(".ui-fn[name='validate']");
+
+      if (target && target.length > 0) {
+        var func = target.text();
+
+        if (Utils.isNotBlank(func)) {
+          validateFunction = new Function("var Utils=VRender.Utils;return (" + unescape(func) + ");")();
+        }
+
+        target.remove();
+      }
+
+      if (!validateFunction) validateFunction = "1"; // 无效的方法
+
+      item.data("validate", validateFunction);
+    }
+
+    return validateFunction;
+  }; // ====================================================
+
+
+  var setItemErrorMsg = function setItemErrorMsg(item, errmsg, callback) {
+    if (errmsg) {
+      showErrorMsg.call(this, item, errmsg);
+    } else {
+      hideErrorMsg.call(this, item);
+    }
+
+    if (Utils.isFunction(callback)) {
+      callback(errmsg);
+    }
+  };
+
+  var showErrorMsg = function showErrorMsg(item, errmsg) {
+    item.addClass("is-error");
+    var target = item.children(".errmsg");
+
+    if (!target || target.length == 0) {
+      target = $("<div class='errmsg'></div>").appendTo(item);
+    }
+
+    target.html(errmsg);
+    target.removeClass("animate-in").removeClass("animate-out");
+    setTimeout(function () {
+      target.addClass("animate-in");
+    });
+
+    if (!this._isRenderAsApp()) {
+      startErrorFadeout.call(this, item);
+    }
+  }; // 不再是错误的了
+
+
+  var hideErrorMsg = function hideErrorMsg(item) {
+    stopErrorFadeout.call(this, item);
+
+    if (item.is(".is-error")) {
+      var target = item.children(".errmsg");
+      target.addClass("animate-out");
+      setTimeout(function () {
+        item.removeClass("is-error");
+        target.removeClass("animate-in").removeClass("animate-out");
+      }, 300);
+    }
+  };
+
+  var startErrorFadeout = function startErrorFadeout(item) {
+    stopErrorFadeout.call(this, item);
+    var hideTimerId = setTimeout(function () {
+      item.removeAttr("t-err");
+      item.children(".errmsg").addClass("animate-out");
+    }, 3000);
+    item.attr("t-err", hideTimerId);
+  };
+
+  var stopErrorFadeout = function stopErrorFadeout(item) {
+    var hideTimerId = parseInt(item.attr("t-err"));
+
+    if (hideTimerId) {
+      clearTimeout(hideTimerId);
+      item.removeAttr("t-err");
+    }
+  }; // ====================================================
+
+
+  var doSubmit = function doSubmit(action, callback) {
+    var params = this.getFormData();
+    var method = this.getMethod();
+    doSubmitBefore.call(this, params, function (error) {
+      if (!error) {
+        if (/post|put|delete/.test(method)) {
+          VRender.send(action, params, function (err, ret) {
+            callback(err, ret, params);
+          });
+        } else {
+          VRender.fetch(action, params, function (err, ret) {
+            callback(err, ret, params);
+          });
+        }
+      } else {
+        callback(error, null, params);
+      }
+    });
+  };
+
+  var doSubmitBefore = function doSubmitBefore(params, callback) {
+    var event = {
+      type: "action_before"
+    };
+    this.trigger(event, params);
+
+    if (event.isPreventDefault) {
+      callback("canceled");
+    } else {
+      callback();
+    }
+  }; ///////////////////////////////////////////////////////
+
+
+  var FormItem = function FormItem(data) {
+    this.data = data;
+    this.data.visible = true;
+  };
+
+  var _FormItem = FormItem.prototype = new Object();
+
+  _FormItem.getName = function () {
+    return this.data.name;
+  };
+
+  _FormItem.setName = function (value) {
+    this.data.name = value;
+    return this;
+  };
+
+  _FormItem.getLabel = function () {
+    return this.data.label;
+  };
+
+  _FormItem.setLabel = function (value) {
+    this.data.label = value;
+    return this;
+  };
+
+  _FormItem.content = function (value) {
+    this.data.content = value;
+    return this;
+  };
+
+  _FormItem.required = function (value) {
+    this.data.required = Utils.isNull(value) ? true : Utils.isTrue(value);
+    return this;
+  };
+
+  _FormItem.visible = function (value) {
+    this.data.visible = Utils.isNull(value) ? true : Utils.isTrue(value);
+    return this;
+  };
+
+  _FormItem.show = function () {
+    this.data.visible = true;
+    return this;
+  };
+
+  _FormItem.hide = function () {
+    this.data.visible = false;
+    return this;
+  };
+
+  _FormItem.emptyMsg = function (value) {
+    this.data.empty = value;
+    return this;
+  };
+
+  _FormItem.validate = function (value) {
+    this.data.validate = value;
+    return this;
+  };
+
+  _FormItem.colspan = function (value) {
+    this.datas.colspan = value;
+    return this;
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIFormView = UIFormView;
+    UI.init(".ui-formview", UIFormView, Renderer);
   } else {
     module.exports = Renderer;
   }
