@@ -18,33 +18,35 @@ const UIDateRange = require("./src/components/daterange");
 const UIDateTime = require("./src/components/datetime");
 const UITimeInput = require("./src/components/timeinput");
 const UIFileUpload = require("./src/components/fileupload");
+const UIFormView = require("./src/components/formview");
 const UITooltip = require("./src/components/tooltip");
 const UIConfirm = require("./src/components/confirm");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190610";
+const distVersion = "190611";
 
 module.exports = {
 	install: function () {
-		VRender.UIGroup = UIGroup;
-		VRender.UIHGroup = UIGroup.HGroup;
-		VRender.UIVGroup = UIGroup.VGroup;
 		VRender.UIButton = UIButton;
 		VRender.UICheckbox = UICheckbox;
 		VRender.UICheckGroup = UICheckGroup;
 		VRender.UICombobox = UICombobox;
+		VRender.UIConfirm = UIConfirm;
 		VRender.UIDateInput = UIDateInput;
 		VRender.UIDatePicker = UIDatePicker;
 		VRender.UIDateRange = UIDateRange;
 		VRender.UIDateTime = UIDateTime;
+		VRender.UIFileUpload = UIFileUpload;
+		VRender.UIFormView = UIFormView;
+		VRender.UIGroup = UIGroup;
+		VRender.UIHGroup = UIGroup.HGroup;
 		VRender.UIRadiobox = UIRadiobox;
 		VRender.UIRadioGroup = UIRadioGroup;
 		VRender.UITextView = UITextView;
 		VRender.UITimeInput = UITimeInput;
-		VRender.UIFileUpload = UIFileUpload;
 		VRender.UITooltip = UITooltip;
-		VRender.UIConfirm = UIConfirm;
+		VRender.UIVGroup = UIGroup.VGroup;
 	},
 
 	initPageView: function () {

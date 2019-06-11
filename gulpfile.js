@@ -56,6 +56,7 @@ function buildJs() {
 	jsFiles.push("src/components/datetime/render.js");
 	jsFiles.push("src/components/timeinput/render.js");
 	jsFiles.push("src/components/fileupload/render.js");
+	jsFiles.push("src/components/formview/render.js");
 	jsFiles.push("src/components/tooltip/render.js");
 	jsFiles.push("src/components/confirm/render.js");
 

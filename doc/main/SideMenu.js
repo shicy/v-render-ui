@@ -46,6 +46,7 @@ const menus = [{
 		{name: "daterange", title: "DateRange", subTitle: "起止日期输入框"},
 		{name: "datetime", title: "DateTime", subTitle: "日期时间输入框"},
 		{name: "fileupload", title: "FileUpload", subTitle: "文件上传"},
+		{name: "formview", title: "FormView", subTitle: "表单视图"},
 		{name: "radiobox", title: "Radiobox", subTitle: "单选框"},
 		{name: "textview", title: "TextView", subTitle: "文本输入框"},
 		{name: "timeinput", title: "TimeInput", subTitle: "时间输入框"}
