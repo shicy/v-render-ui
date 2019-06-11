@@ -28,7 +28,8 @@
 }
 
 .vrender-ui p,
-.vrender-ui dl {
+.vrender-ui dl,
+.vrender-ui dd {
     margin: 0px;
 }
 

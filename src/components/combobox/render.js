@@ -42,7 +42,7 @@
 	_UICombobox.val = function (value) {
 		if (Utils.isNull(value)) {
 			let selectedIndex = this.getSelectedIndex(true);
-			if (selectedIndex && selectedIndex > 0) {
+			if (selectedIndex && selectedIndex.length > 0) {
 				return this.getSelectedKey();
 			}
 			if (this.isEditable())

@@ -21,7 +21,7 @@
 	};
 
 	UIItems.doAdapter = function (datas) {
-		Renderer.doAdapter.call(this, datas);
+		return Renderer.doAdapter.call(this, datas);
 	};
 
 	UIItems.renderItems = function (itemContainer, datas) {
