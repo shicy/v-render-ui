@@ -839,6 +839,199 @@ input {
 }
 
 
+.ui-datepicker {
+    border: 1px solid #ddd;
+    border-radius: 0.03rem;
+    overflow: hidden;
+}
+
+.ui-datepicker > header {
+    border-bottom: 1px solid #ddd;
+}
+
+.ui-datepicker > header > .title {
+    padding: 0px 0.1rem;
+}
+
+.ui-datepicker > header > .title > .item > .lbl {
+    line-height: 0.4rem;
+}
+
+.ui-datepicker > header > .title > .item > .val {
+    display: none;
+    line-height: 0.4rem;
+}
+
+.ui-datepicker > header > .title > .item > button {
+    position: absolute;
+    top: 0px;
+    width: 0.4rem;
+    height: 0.4rem;
+    border: 0px;
+    background: none;
+    background-size: 0.1rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 0px;
+    margin: 0px;
+    opacity: 0.65;
+    outline: none;
+}
+
+.ui-datepicker > header > .title > .item > button.y {
+    display: none;
+}
+
+.ui-datepicker > header > .title > .item > button.prev.m {
+    right: 0.4rem;
+    background-image: url(/vrender-ui/icons/008a.png);
+}
+
+.ui-datepicker > header > .title > .item > button.next.m {
+    right: 0px;
+    background-image: url(/vrender-ui/icons/006a.png);
+}
+
+.ui-datepicker > header > button {
+    display: none;
+}
+
+.ui-datepicker > section {
+    overflow: hidden;
+}
+
+.ui-datepicker > section > .table {
+    width: 100%;
+}
+
+.ui-datepicker > section > .table table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+.ui-datepicker > section > .table table.head th {
+    height: 0.32rem;
+    color: #999;
+    font-size: 0.14rem;
+    font-weight: normal;
+}
+
+.ui-datepicker > section > .table table.body thead {
+    display: none;
+}
+
+.ui-datepicker > section > .table table.body td {
+    position: relative;
+    width: 14.285714%;
+    height: 0.48rem;
+}
+
+.ui-datepicker > section > .table table.body td.today:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0.28rem;
+    height: 0.28rem;
+    border: 1px solid #0030ff;
+    border-radius: 100px;
+    z-index: 1;
+}
+
+.ui-datepicker > section > .table table.body td.today span {
+    color: #0030ff;
+    font-size: 0.14rem;
+}
+
+.ui-datepicker > section > .table table.body td.selected span {
+    display: inline-block;
+    width: 0.32rem;
+    line-height: 0.32rem;
+    color: #fff;
+    font-size: 0.14rem;
+    border-radius: 100%;
+    background-color: #333444;
+}
+
+.ui-datepicker > section > .table table.body td.selected.today:before {
+    border-color: #ccc;
+}
+
+.ui-datepicker > section > .table table.body td.disabled {
+    color: #ccc;
+}
+
+.ui-datepicker > section > .table table.body td.over {
+    visibility: hidden;
+}
+
+.ui-datepicker > section > .table.t1 {
+    position: absolute;
+    top: 0px;
+    opacity: 0.5;
+}
+
+.ui-datepicker > section > .table.t1 table.head {
+    visibility: hidden;
+}
+
+.ui-datepicker.is-range > header > .title > .item {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.ui-datepicker.is-range > header > .title > .item > .lbl {
+    display: none;
+}
+
+.ui-datepicker.is-range > header > .title > .item > .val {
+    display: inline-block;
+}
+
+.ui-datepicker.is-range > header > .title > .item.e:before {
+    content: "/";
+    color: #999;
+    font-size: 0.14rem;
+    padding: 0px 0.05rem;
+}
+
+.ui-datepicker.is-range > section > .table table.body thead {
+    display: table-header-group;
+}
+
+.ui-datepicker.is-range > section > .table table.body th {
+    height: 0.32rem;
+    color: #999;
+    text-align: left;
+    font-size: 0.12rem;
+    font-weight: normal;
+    padding-left: 0.15rem;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected span {
+    width: 100%;
+    line-height: 0.3rem;
+    border-radius: 0px;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected.start span {
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected.end span {
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
+}
+
+.ui-datepicker.is-range > footer {
+    padding: 0.05rem 0.1rem;
+}
+
+
 .ui-dateipt {
     tap-highlight-color: transparent;
     -webkit-tap-highlight-color: transparent;
@@ -1035,199 +1228,6 @@ input {
 
 .ui-dateipt[disabled] > .ipt > .clear {
 	display: none;
-}
-
-
-.ui-datepicker {
-    border: 1px solid #ddd;
-    border-radius: 0.03rem;
-    overflow: hidden;
-}
-
-.ui-datepicker > header {
-    border-bottom: 1px solid #ddd;
-}
-
-.ui-datepicker > header > .title {
-    padding: 0px 0.1rem;
-}
-
-.ui-datepicker > header > .title > .item > .lbl {
-    line-height: 0.4rem;
-}
-
-.ui-datepicker > header > .title > .item > .val {
-    display: none;
-    line-height: 0.4rem;
-}
-
-.ui-datepicker > header > .title > .item > button {
-    position: absolute;
-    top: 0px;
-    width: 0.4rem;
-    height: 0.4rem;
-    border: 0px;
-    background: none;
-    background-size: 0.1rem;
-    background-repeat: no-repeat;
-    background-position: center;
-    padding: 0px;
-    margin: 0px;
-    opacity: 0.65;
-    outline: none;
-}
-
-.ui-datepicker > header > .title > .item > button.y {
-    display: none;
-}
-
-.ui-datepicker > header > .title > .item > button.prev.m {
-    right: 0.4rem;
-    background-image: url(/vrender-ui/icons/008a.png);
-}
-
-.ui-datepicker > header > .title > .item > button.next.m {
-    right: 0px;
-    background-image: url(/vrender-ui/icons/006a.png);
-}
-
-.ui-datepicker > header > button {
-    display: none;
-}
-
-.ui-datepicker > section {
-    overflow: hidden;
-}
-
-.ui-datepicker > section > .table {
-    width: 100%;
-}
-
-.ui-datepicker > section > .table table {
-    width: 100%;
-    text-align: center;
-    border-collapse: collapse;
-    border-spacing: 0px;
-}
-
-.ui-datepicker > section > .table table.head th {
-    height: 0.32rem;
-    color: #999;
-    font-size: 0.14rem;
-    font-weight: normal;
-}
-
-.ui-datepicker > section > .table table.body thead {
-    display: none;
-}
-
-.ui-datepicker > section > .table table.body td {
-    position: relative;
-    width: 14.285714%;
-    height: 0.48rem;
-}
-
-.ui-datepicker > section > .table table.body td.today:before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 0.28rem;
-    height: 0.28rem;
-    border: 1px solid #0030ff;
-    border-radius: 100px;
-    z-index: 1;
-}
-
-.ui-datepicker > section > .table table.body td.today span {
-    color: #0030ff;
-    font-size: 0.14rem;
-}
-
-.ui-datepicker > section > .table table.body td.selected span {
-    display: inline-block;
-    width: 0.32rem;
-    line-height: 0.32rem;
-    color: #fff;
-    font-size: 0.14rem;
-    border-radius: 100%;
-    background-color: #333444;
-}
-
-.ui-datepicker > section > .table table.body td.selected.today:before {
-    border-color: #ccc;
-}
-
-.ui-datepicker > section > .table table.body td.disabled {
-    color: #ccc;
-}
-
-.ui-datepicker > section > .table table.body td.over {
-    visibility: hidden;
-}
-
-.ui-datepicker > section > .table.t1 {
-    position: absolute;
-    top: 0px;
-    opacity: 0.5;
-}
-
-.ui-datepicker > section > .table.t1 table.head {
-    visibility: hidden;
-}
-
-.ui-datepicker.is-range > header > .title > .item {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.ui-datepicker.is-range > header > .title > .item > .lbl {
-    display: none;
-}
-
-.ui-datepicker.is-range > header > .title > .item > .val {
-    display: inline-block;
-}
-
-.ui-datepicker.is-range > header > .title > .item.e:before {
-    content: "/";
-    color: #999;
-    font-size: 0.14rem;
-    padding: 0px 0.05rem;
-}
-
-.ui-datepicker.is-range > section > .table table.body thead {
-    display: table-header-group;
-}
-
-.ui-datepicker.is-range > section > .table table.body th {
-    height: 0.32rem;
-    color: #999;
-    text-align: left;
-    font-size: 0.12rem;
-    font-weight: normal;
-    padding-left: 0.15rem;
-}
-
-.ui-datepicker.is-range > section > .table table.body td.selected span {
-    width: 100%;
-    line-height: 0.3rem;
-    border-radius: 0px;
-}
-
-.ui-datepicker.is-range > section > .table table.body td.selected.start span {
-    border-top-left-radius: 100px;
-    border-bottom-left-radius: 100px;
-}
-
-.ui-datepicker.is-range > section > .table table.body td.selected.end span {
-    border-top-right-radius: 100px;
-    border-bottom-right-radius: 100px;
-}
-
-.ui-datepicker.is-range > footer {
-    padding: 0.05rem 0.1rem;
 }
 
 
@@ -1903,6 +1903,181 @@ input {
 
 .ui-formview.horizontial[opt-la='right'] > .items > .form-item[opt-required] > .content > dt:after {
 	display: none;
+}
+
+
+.ui-notice-wrap {
+	position: fixed;
+    z-index: 2100;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+.ui-notice {
+	height: 0px;
+	overflow: hidden;
+}
+
+.ui-notice > .container {
+	display: flex;
+    align-items: center;
+    height: 0.32rem;
+    left: 100%;
+    padding-left: 0.1rem;
+    color: #8b572a;
+    font-size: 0.14rem;
+    border-top: 1px solid rgba(139, 87, 42, 0.5);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.ui-notice > .container > * {
+	flex: none;
+}
+
+.ui-notice > .container > .img {
+	display: none;
+	width: 0.24rem;
+    height: 0.24rem;
+    background-size: 0.16rem;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ui-notice > .container > .title {
+	padding-right: 0.05rem;
+}
+
+.ui-notice > .container > .title:after {
+	content: ":";
+}
+
+.ui-notice > .container > .content {
+	flex: auto;
+	height: 0.24rem;
+    overflow: hidden;
+}
+
+.ui-notice > .container > .content > div {
+	position: absolute;
+    line-height: 0.24rem;
+    white-space: nowrap;
+}
+
+/*.ui-notice > .container > .content.over > div {
+	animation: ui-notice-animate 5s infinite linear;
+    -webkit-animation: ui-notice-animate 5s infinite linear;
+}*/
+
+.ui-notice > .container > .closebtn {
+	width: 0.32rem;
+    height: 0.32rem;
+    background-image: url(/vrender-ui/icons/001a.png);
+    background-size: 0.1rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+}
+
+.ui-notice.show-icon > .container {
+	padding-left: 0px;
+}
+
+.ui-notice.show-icon > .container > .img {
+	display: block;
+}
+
+.ui-notice[opt-type='success'] > .container {
+	color: #57ad4c;
+	border-top-color: rgba(87, 173, 76, 0.4);
+    background-color: #e9f7e7;
+}
+
+.ui-notice[opt-type='success'] > .container > .img {
+    background-image: url(/vrender-ui/icons/030c.png);
+}
+
+.ui-notice[opt-type='error'] > .container {
+	color: #f90e0d;
+	border-top-color: rgba(249, 14, 13, 0.3);
+    background-color: #fbeded;
+}
+
+.ui-notice[opt-type='error'] > .container > .img {
+    background-image: url(/vrender-ui/icons/031c.png);
+}
+
+.ui-notice[opt-type='warn'] > .container {
+	color: #faa202;
+	border-top-color: rgba(250, 162, 2, 0.5);
+    background-color: #fbf1de;
+}
+
+.ui-notice[opt-type='warn'] > .container > .img {
+    background-image: url(/vrender-ui/icons/032c.png);
+}
+
+.ui-notice[opt-type='info'] > .container {
+	color: #04aff8;
+	border-top-color: rgba(4, 175, 248, 0.5);
+    background-color: #e6f7ff;
+}
+
+.ui-notice[opt-type='info'] > .container > .img {
+    background-image: url(/vrender-ui/icons/033c.png);
+}
+
+.ui-notice.animate-in {
+	height: 0.32rem;
+	transition: height 0.4s;
+}
+
+.ui-notice.animate-in > .container {
+	left: 0px;
+	transition: left 0.5s 0.3s;
+}
+
+.ui-notice.animate-out {
+	height: 0px;
+	transition: height 0.4s 0.4s;
+}
+
+.ui-notice.animate-out > .container {
+	left: 100%;
+	transition: left 0.5s;
+}
+
+
+@-webkit-keyframes ui-notice-animate {
+    0% { left: 0px; transform: translate(0px, 0px); }
+    40% { left: 100%; transform: translate(-100%, 0px); }
+    50% { left: 100%; transform: translate(-100%, 0px); }
+    90% {left: 0px; transform: translate(0px, 0px); }
+    100% {left: 0px; transform: translate(0px, 0px); }
+}
+
+@-o-keyframes ui-notice-animate {
+    0% { left: 0px; transform: translate(0px, 0px); }
+    40% { left: 100%; transform: translate(-100%, 0px); }
+    50% { left: 100%; transform: translate(-100%, 0px); }
+    90% {left: 0px; transform: translate(0px, 0px); }
+    100% {left: 0px; transform: translate(0px, 0px); }
+}
+
+@-moz-keyframes ui-notice-animate {
+    0% { left: 0px; transform: translate(0px, 0px); }
+    40% { left: 100%; transform: translate(-100%, 0px); }
+    50% { left: 100%; transform: translate(-100%, 0px); }
+    90% {left: 0px; transform: translate(0px, 0px); }
+    100% {left: 0px; transform: translate(0px, 0px); }
+}
+
+@keyframes ui-notice-animate {
+    0% { left: 0px; transform: translate(0px, 0px); }
+    40% { left: 100%; transform: translate(-100%, 0px); }
+    50% { left: 100%; transform: translate(-100%, 0px); }
+    90% {left: 0px; transform: translate(0px, 0px); }
+    100% {left: 0px; transform: translate(0px, 0px); }
 }
 
 
