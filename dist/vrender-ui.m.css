@@ -839,199 +839,6 @@ input {
 }
 
 
-.ui-datepicker {
-    border: 1px solid #ddd;
-    border-radius: 0.03rem;
-    overflow: hidden;
-}
-
-.ui-datepicker > header {
-    border-bottom: 1px solid #ddd;
-}
-
-.ui-datepicker > header > .title {
-    padding: 0px 0.1rem;
-}
-
-.ui-datepicker > header > .title > .item > .lbl {
-    line-height: 0.4rem;
-}
-
-.ui-datepicker > header > .title > .item > .val {
-    display: none;
-    line-height: 0.4rem;
-}
-
-.ui-datepicker > header > .title > .item > button {
-    position: absolute;
-    top: 0px;
-    width: 0.4rem;
-    height: 0.4rem;
-    border: 0px;
-    background: none;
-    background-size: 0.1rem;
-    background-repeat: no-repeat;
-    background-position: center;
-    padding: 0px;
-    margin: 0px;
-    opacity: 0.65;
-    outline: none;
-}
-
-.ui-datepicker > header > .title > .item > button.y {
-    display: none;
-}
-
-.ui-datepicker > header > .title > .item > button.prev.m {
-    right: 0.4rem;
-    background-image: url(/vrender-ui/icons/008a.png);
-}
-
-.ui-datepicker > header > .title > .item > button.next.m {
-    right: 0px;
-    background-image: url(/vrender-ui/icons/006a.png);
-}
-
-.ui-datepicker > header > button {
-    display: none;
-}
-
-.ui-datepicker > section {
-    overflow: hidden;
-}
-
-.ui-datepicker > section > .table {
-    width: 100%;
-}
-
-.ui-datepicker > section > .table table {
-    width: 100%;
-    text-align: center;
-    border-collapse: collapse;
-    border-spacing: 0px;
-}
-
-.ui-datepicker > section > .table table.head th {
-    height: 0.32rem;
-    color: #999;
-    font-size: 0.14rem;
-    font-weight: normal;
-}
-
-.ui-datepicker > section > .table table.body thead {
-    display: none;
-}
-
-.ui-datepicker > section > .table table.body td {
-    position: relative;
-    width: 14.285714%;
-    height: 0.48rem;
-}
-
-.ui-datepicker > section > .table table.body td.today:before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 0.28rem;
-    height: 0.28rem;
-    border: 1px solid #0030ff;
-    border-radius: 100px;
-    z-index: 1;
-}
-
-.ui-datepicker > section > .table table.body td.today span {
-    color: #0030ff;
-    font-size: 0.14rem;
-}
-
-.ui-datepicker > section > .table table.body td.selected span {
-    display: inline-block;
-    width: 0.32rem;
-    line-height: 0.32rem;
-    color: #fff;
-    font-size: 0.14rem;
-    border-radius: 100%;
-    background-color: #333444;
-}
-
-.ui-datepicker > section > .table table.body td.selected.today:before {
-    border-color: #ccc;
-}
-
-.ui-datepicker > section > .table table.body td.disabled {
-    color: #ccc;
-}
-
-.ui-datepicker > section > .table table.body td.over {
-    visibility: hidden;
-}
-
-.ui-datepicker > section > .table.t1 {
-    position: absolute;
-    top: 0px;
-    opacity: 0.5;
-}
-
-.ui-datepicker > section > .table.t1 table.head {
-    visibility: hidden;
-}
-
-.ui-datepicker.is-range > header > .title > .item {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.ui-datepicker.is-range > header > .title > .item > .lbl {
-    display: none;
-}
-
-.ui-datepicker.is-range > header > .title > .item > .val {
-    display: inline-block;
-}
-
-.ui-datepicker.is-range > header > .title > .item.e:before {
-    content: "/";
-    color: #999;
-    font-size: 0.14rem;
-    padding: 0px 0.05rem;
-}
-
-.ui-datepicker.is-range > section > .table table.body thead {
-    display: table-header-group;
-}
-
-.ui-datepicker.is-range > section > .table table.body th {
-    height: 0.32rem;
-    color: #999;
-    text-align: left;
-    font-size: 0.12rem;
-    font-weight: normal;
-    padding-left: 0.15rem;
-}
-
-.ui-datepicker.is-range > section > .table table.body td.selected span {
-    width: 100%;
-    line-height: 0.3rem;
-    border-radius: 0px;
-}
-
-.ui-datepicker.is-range > section > .table table.body td.selected.start span {
-    border-top-left-radius: 100px;
-    border-bottom-left-radius: 100px;
-}
-
-.ui-datepicker.is-range > section > .table table.body td.selected.end span {
-    border-top-right-radius: 100px;
-    border-bottom-right-radius: 100px;
-}
-
-.ui-datepicker.is-range > footer {
-    padding: 0.05rem 0.1rem;
-}
-
-
 .ui-dateipt {
     tap-highlight-color: transparent;
     -webkit-tap-highlight-color: transparent;
@@ -1228,6 +1035,199 @@ input {
 
 .ui-dateipt[disabled] > .ipt > .clear {
 	display: none;
+}
+
+
+.ui-datepicker {
+    border: 1px solid #ddd;
+    border-radius: 0.03rem;
+    overflow: hidden;
+}
+
+.ui-datepicker > header {
+    border-bottom: 1px solid #ddd;
+}
+
+.ui-datepicker > header > .title {
+    padding: 0px 0.1rem;
+}
+
+.ui-datepicker > header > .title > .item > .lbl {
+    line-height: 0.4rem;
+}
+
+.ui-datepicker > header > .title > .item > .val {
+    display: none;
+    line-height: 0.4rem;
+}
+
+.ui-datepicker > header > .title > .item > button {
+    position: absolute;
+    top: 0px;
+    width: 0.4rem;
+    height: 0.4rem;
+    border: 0px;
+    background: none;
+    background-size: 0.1rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 0px;
+    margin: 0px;
+    opacity: 0.65;
+    outline: none;
+}
+
+.ui-datepicker > header > .title > .item > button.y {
+    display: none;
+}
+
+.ui-datepicker > header > .title > .item > button.prev.m {
+    right: 0.4rem;
+    background-image: url(/vrender-ui/icons/008a.png);
+}
+
+.ui-datepicker > header > .title > .item > button.next.m {
+    right: 0px;
+    background-image: url(/vrender-ui/icons/006a.png);
+}
+
+.ui-datepicker > header > button {
+    display: none;
+}
+
+.ui-datepicker > section {
+    overflow: hidden;
+}
+
+.ui-datepicker > section > .table {
+    width: 100%;
+}
+
+.ui-datepicker > section > .table table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+.ui-datepicker > section > .table table.head th {
+    height: 0.32rem;
+    color: #999;
+    font-size: 0.14rem;
+    font-weight: normal;
+}
+
+.ui-datepicker > section > .table table.body thead {
+    display: none;
+}
+
+.ui-datepicker > section > .table table.body td {
+    position: relative;
+    width: 14.285714%;
+    height: 0.48rem;
+}
+
+.ui-datepicker > section > .table table.body td.today:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0.28rem;
+    height: 0.28rem;
+    border: 1px solid #0030ff;
+    border-radius: 100px;
+    z-index: 1;
+}
+
+.ui-datepicker > section > .table table.body td.today span {
+    color: #0030ff;
+    font-size: 0.14rem;
+}
+
+.ui-datepicker > section > .table table.body td.selected span {
+    display: inline-block;
+    width: 0.32rem;
+    line-height: 0.32rem;
+    color: #fff;
+    font-size: 0.14rem;
+    border-radius: 100%;
+    background-color: #333444;
+}
+
+.ui-datepicker > section > .table table.body td.selected.today:before {
+    border-color: #ccc;
+}
+
+.ui-datepicker > section > .table table.body td.disabled {
+    color: #ccc;
+}
+
+.ui-datepicker > section > .table table.body td.over {
+    visibility: hidden;
+}
+
+.ui-datepicker > section > .table.t1 {
+    position: absolute;
+    top: 0px;
+    opacity: 0.5;
+}
+
+.ui-datepicker > section > .table.t1 table.head {
+    visibility: hidden;
+}
+
+.ui-datepicker.is-range > header > .title > .item {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.ui-datepicker.is-range > header > .title > .item > .lbl {
+    display: none;
+}
+
+.ui-datepicker.is-range > header > .title > .item > .val {
+    display: inline-block;
+}
+
+.ui-datepicker.is-range > header > .title > .item.e:before {
+    content: "/";
+    color: #999;
+    font-size: 0.14rem;
+    padding: 0px 0.05rem;
+}
+
+.ui-datepicker.is-range > section > .table table.body thead {
+    display: table-header-group;
+}
+
+.ui-datepicker.is-range > section > .table table.body th {
+    height: 0.32rem;
+    color: #999;
+    text-align: left;
+    font-size: 0.12rem;
+    font-weight: normal;
+    padding-left: 0.15rem;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected span {
+    width: 100%;
+    line-height: 0.3rem;
+    border-radius: 0px;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected.start span {
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+}
+
+.ui-datepicker.is-range > section > .table table.body td.selected.end span {
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
+}
+
+.ui-datepicker.is-range > footer {
+    padding: 0.05rem 0.1rem;
 }
 
 
@@ -2078,6 +2078,164 @@ input {
     50% { left: 100%; transform: translate(-100%, 0px); }
     90% {left: 0px; transform: translate(0px, 0px); }
     100% {left: 0px; transform: translate(0px, 0px); }
+}
+
+
+.ui-popupmenu {
+	display: none;
+	position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 2000;
+    transition: background-color 0.25s;
+}
+
+.ui-popupmenu > .menu-container {
+	display: none;
+	position: absolute;
+	max-height: 80%;
+	overflow: auto;
+	left: 0.15rem;
+	right: 0.15rem;
+	bottom: 0.1rem;
+	transition: height 0.1s;
+}
+
+.ui-popupmenu > .menu-container:last-child {
+	display: block;
+}
+
+.ui-popupmenu > .menu-container > .btn {
+	display: none;
+}
+
+.ui-popupmenu > .menu-container > .back {
+	margin-bottom: 0.1rem;
+    font-size: 0.16rem;
+    text-align: center;
+    line-height: 0.4rem;
+    border-radius: 0.03rem;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp {
+	margin-top: 0.1rem;
+    border-radius: 0.03rem;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .title {
+	position: absolute;
+    left: 0.03rem;
+    top: -0.22rem;
+    color: #999;
+    font-size: 0.12rem;
+    line-height: 0.2rem;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .title + .menu {
+	margin-top: 0.25rem;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 0.45rem;
+	font-size: 0.14rem;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu > i {
+	width: 0.24rem;
+    height: 0.2rem;
+    background-size: 0.16rem;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu:last-child {
+	border-bottom: 0px;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu.checked:before {
+	content: "";
+    position: absolute;
+    width: 0.2rem;
+    height: 0.2rem;
+    left: 0.1rem;
+    top: 50%;
+    margin-top: -0.1rem;
+    background-image: url(/VRender/icons/003a.png);
+    background-size: 0.12rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.75;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu.has-child:after {
+	content: "";
+    position: absolute;
+    width: 0.2rem;
+    height: 0.2rem;
+    right: 0.1rem;
+    top: 50%;
+    margin-top: -0.1rem;
+    background-image: url(/VRender/icons/006a.png);
+    background-size: 0.12rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu:active {
+	background-color: #ddd;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu[disabled] {
+	pointer-events: none;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .menu[disabled] > * {
+	opacity: 0.5;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .more {
+	font-size: 0.16rem;
+	text-align: center;
+	line-height: 0.4rem;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .loading {
+	text-align: center;
+    line-height: 0.4rem;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp > .loading:before {
+	content: "";
+    display: inline-block;
+    width: 0.2rem;
+    height: 0.2rem;
+    margin-right: 0.05rem;
+    vertical-align: -0.04rem;
+    background-image: url(/VRender/icons/017a.png);
+    background-size: 0.16rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: ui-loading-animate 1s steps(8, end) infinite;
+    -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
+}
+
+.ui-popupmenu > .menu-container > .menus > .grp:first-child {
+	margin-top: 0px;
+}
+
+.ui-popupmenu.animate-open {
+	background-color: rgba(0, 0, 0, 0.75);
 }
 
 

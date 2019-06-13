@@ -9739,3 +9739,763 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     module.exports = Renderer;
   }
 })(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-12
+// popupmenu
+(function (frontend) {
+  if (frontend && VRender.Component.ui.popupmenu) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UIPopupMenu = UI.popupmenu = function (view, options) {
+    return UI._items.call(this, view, options);
+  };
+
+  var _UIPopupMenu = UIPopupMenu.prototype = new UI._items(false);
+
+  _UIPopupMenu.init = function (target, options) {
+    UI._items.init.call(this, target, options);
+
+    this.options.autoLoad = false;
+    this.setActionTarget(this.getActionTarget());
+    this.$el.on("tap", onClickHandler.bind(this));
+    this.$el.on("tap", ".menu", onItemClickHandler.bind(this));
+    this.$el.on("tap", ".more", onMoreClickHandler.bind(this));
+
+    if (this._isRenderAsApp()) {
+      this.$el.on("tap", ".back", onBackClickHandler.bind(this));
+    } else {
+      this.$el.on("mouseenter", ".menu", onItemMouseEnterHandler.bind(this));
+      this.$el.on("mouseleave", ".menu", onItemMouseLeaveHandler.bind(this));
+      this.$el.on("mouseenter", ".menu-container > .btn", onScrollMouseEnterHandler.bind(this));
+      this.$el.on("mouseleave", ".menu-container > .btn", onScrollMouseLeaveHandler.bind(this));
+    }
+  }; // ====================================================
+
+
+  _UIPopupMenu.open = function () {
+    var _this = this;
+
+    var target = this.$el.show();
+    doOpen.call(this, target);
+
+    if (this._isRenderAsApp()) {
+      $("body").addClass("ui-scrollless");
+      setTimeout(function () {
+        target.addClass("animate-open");
+      });
+    } else {
+      setTimeout(function () {
+        $("body").on("tap._" + _this.getViewId(), function () {
+          _this.close();
+
+          _this.trigger("cancel");
+        });
+      });
+    }
+  };
+
+  _UIPopupMenu.close = function () {
+    var target = this.$el;
+
+    if (this._isRenderAsApp()) {
+      $("body").removeClass("ui-scrollless");
+      target.removeClass("animate-open");
+      target.children(".menu-container").last().height(0);
+      setTimeout(function () {
+        target.empty().hide();
+      }, 300);
+    } else {
+      target.empty().hide();
+      $("body").off("tap._" + this.getViewId());
+    }
+  };
+
+  _UIPopupMenu.destory = function () {
+    var _this2 = this;
+
+    this.close();
+    setTimeout(function () {
+      _this2.$el.remove();
+    }, 300);
+  }; // ====================================================
+
+
+  _UIPopupMenu.getActionTarget = function () {
+    if (this.options.hasOwnProperty("actionTarget")) return this.options.actionTarget;
+    this.options.actionTarget = Utils.trimToNull(this.$el.attr("opt-target"));
+    this.$el.removeAttr("opt-target");
+    return this.options.actionTarget;
+  };
+
+  _UIPopupMenu.setActionTarget = function (value) {
+    if (this.actionTarget == value) return;
+    var actionType = Utils.trimToNull(this.getActionType()) || "click";
+    var eventType = actionType + "._" + this.getViewId();
+
+    if (this.actionTarget) {
+      if (typeof this.actionTarget == "string") $("body").off(eventType, this.actionTarget);else // if (Utils.isFunction(this.actionTarget.off))
+        this.actionTarget.off(eventType);
+    }
+
+    this.actionTarget = value;
+
+    if (this.actionTarget) {
+      if (typeof this.actionTarget == "string") $("body").on(eventType, this.actionTarget, onActionTargetHandler.bind(this));else {
+        this.actionTarget = $(this.actionTarget);
+        this.actionTarget.on(eventType, onActionTargetHandler.bind(this));
+      }
+    }
+
+    this.$el.removeAttr("opt-target");
+  };
+
+  _UIPopupMenu.getActionType = function () {
+    if (this.options.hasOwnProperty("actionType")) return this.options.actionType;
+    this.options.actionType = Utils.trimToNull(this.$el.attr("opt-trigger"));
+    this.$el.removeAttr("opt-trigger");
+    return this.options.actionType;
+  };
+
+  _UIPopupMenu.setActionType = function (value) {
+    this.options.actionType = value;
+    this.$el.removeAttr("opt-trigger");
+  };
+
+  _UIPopupMenu.getIconField = function () {
+    if (this.options.hasOwnProperty("iconField")) return this.options.iconField;
+    this.options.iconField = Utils.trimToNull(this.$el.attr("opt-ic")) || "icon";
+    this.$el.removeAttr("opt-ic");
+    return this.options.iconField;
+  };
+
+  _UIPopupMenu.setIconField = function (value) {
+    this.options.iconField = value;
+    this.$el.removeAttr("opt-ic");
+  };
+
+  _UIPopupMenu.getIconFunction = function () {
+    return Fn.getFunction.call(this, "iconFunction", "icfunc");
+  };
+
+  _UIPopupMenu.setIconFunction = function (value) {
+    this.options.iconFunction = value;
+    this.$el.children(".ui-fn[name='icfunc']").remove();
+  };
+
+  _UIPopupMenu.getOffsetLeft = function () {
+    if (!this.options.hasOwnProperty("offsetLeft")) {
+      this.options.offsetLeft = this.$el.attr("opt-offsetl");
+      this.$el.removeAttr("opt-offsetl");
+    }
+
+    if (this.options.offsetLeft) return Utils.getFormatSize(this.options.offsetLeft, this._isRenderAsRem());
+    return null;
+  };
+
+  _UIPopupMenu.setOffsetLeft = function (value) {
+    this.options.offsetLeft = value;
+    this.$el.removeAttr("opt-offsetl");
+  };
+
+  _UIPopupMenu.getOffsetTop = function () {
+    if (!this.options.hasOwnProperty("offsetTop")) {
+      this.options.offsetTop = this.$el.attr("opt-offsett");
+      this.$el.removeAttr("opt-offsett");
+    }
+
+    if (this.options.offsetTop) return Utils.getFormatSize(this.options.offsetTop, this._isRenderAsRem());
+    return null;
+  };
+
+  _UIPopupMenu.setOffsetTop = function (value) {
+    this.options.offsetTop = value;
+    this.$el.removeAttr("opt-offsett");
+  }; // ====================================================
+  // 以下供子类继承
+
+
+  _UIPopupMenu._getChildrenField = function () {
+    return "children";
+  };
+
+  _UIPopupMenu._getDisabledField = function () {
+    return "disabled";
+  };
+
+  _UIPopupMenu._getIcon = function (data) {
+    var iconFunction = this.getIconFunction();
+    if (Utils.isFunction(iconFunction)) return iconFunction(data);
+    var iconField = this.getIconField();
+    return data && iconField ? data[iconField] : null;
+  };
+
+  _UIPopupMenu._isDisabled = function (data) {
+    if (data) {
+      var disabledField = this._getDisabledField();
+
+      if (disabledField) {
+        if (Utils.isTrue(data[disabledField])) return true;
+      }
+
+      return false;
+    }
+
+    return true;
+  };
+
+  _UIPopupMenu._isChecked = function (data) {
+    if (data) {
+      return !!data.checked;
+    }
+
+    return false;
+  };
+
+  _UIPopupMenu._checkIfEmpty = function () {// do nothing
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._itemsRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._itemsRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-popupmenu");
+    var options = this.options || {};
+
+    if (!frontend) {
+      var actionTarget = options.actionTarget;
+
+      if (actionTarget) {
+        if (typeof actionTarget == "string") target.attr("opt-target", Utils.trimToEmpty(actionTarget));else if (Utils.isFunction(actionTarget.getViewId)) target.attr("opt-target", "[vid='" + actionTarget.getViewId() + "']");
+      }
+
+      if (options.actionType) target.attr("opt-trigger", options.actionType);
+      var iconFunction = options.iconFunction;
+      if (Utils.isFunction(iconFunction)) BaseRender.fn.renderFunction(target, "icfunc", iconFunction);else if (options.iconField) target.attr("opt-ic", options.iconField);
+      if (options.childrenField) target.attr("opt-child", options.childrenField);
+      if (options.disabledField) target.attr("opt-disable", options.disabledField);
+      if (options.offsetLeft) target.attr("opt-offsetl", options.offsetLeft);
+      if (options.offsetTop) target.attr("opt-offsett", options.offsetTop);
+    }
+
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.doAdapter = function (data, i) {
+    var _this3 = this;
+
+    if (Utils.isArray(data)) {
+      var _data = Utils.map(data, function (temp) {
+        return Fn.doAdapter.call(_this3, temp);
+      });
+
+      if (data.title) {
+        if (backend) _data.unshift({
+          __group__: data.title
+        });else _data.title = data.title;
+      }
+
+      return _data;
+    }
+
+    return Fn.doAdapter.call(this, data, i);
+  }; // ====================================================
+
+
+  _Renderer._renderItems = function ($, target) {// 统一在前端渲染
+    // target.empty();
+    // let datas = this.getData();
+    // if (datas && datas.length > 0) {
+    // 	let container = $("<div class='menu-container'></div>").appendTo(target);
+    // 	container.append("<div class='btn up'></div>");
+    // 	container.append("<ul class='menus'></ul>");
+    // 	container.append("<div class='btn down'></div>");
+    // 	renderItems.call(this, $, container.children("ul"), datas);
+    // }
+  };
+
+  _Renderer._renderEmptyView = function () {// do nothing
+  };
+
+  _Renderer._renderLoadView = function () {// do nothing
+  }; ///////////////////////////////////////////////////////
+
+
+  var onActionTargetHandler = function onActionTargetHandler(e) {
+    if (!this.isMounted(this.$el)) {
+      this.setActionTarget(null);
+    } else {
+      this.open();
+    }
+  };
+
+  var onClickHandler = function onClickHandler(e) {
+    if (this._isRenderAsApp()) {
+      if ($(e.target).is(".ui-popupmenu")) {
+        this.close();
+        this.trigger("cancel");
+      }
+    }
+
+    return false;
+  };
+
+  var onItemClickHandler = function onItemClickHandler(e) {
+    var _this4 = this;
+
+    var item = $(e.currentTarget);
+    if (item.is(".disabled")) return;
+
+    if (item.is(".has-child")) {
+      if (this._isRenderAsApp()) doOpen.call(this, item);
+    } else {
+      var data = getItemData.call(this, item);
+
+      if (data.toggle) {
+        if (!data.checked) {
+          var _loop = function _loop(datas) {
+            if (!(datas && datas.length > 0)) return;
+            Utils.each(datas, function (_data) {
+              if (Utils.isArray(_data)) {
+                _loop(_data);
+              } else {
+                if (_data.toggle === data.toggle) _data.checked = false;
+
+                _loop(getSubDatas.call(_this4, _data));
+              }
+            });
+          };
+
+          _loop(this.getData());
+
+          data.checked = true;
+        } else if (!data.toggleRadio) {
+          data.checked = false;
+        }
+      }
+
+      this.trigger("itemclick", data);
+      this.close();
+    }
+  };
+
+  var onMoreClickHandler = function onMoreClickHandler(e) {
+    var item = $(e.currentTarget);
+    var container = item.parent().parent().parent();
+    var api = getLoadApi.call(this);
+    var params = getLoadParams.call(this);
+    params.p_no = parseInt(item.attr("page-no")) || 1;
+    params.p_no += 1;
+    var parentData = container.data("itemData");
+    params.pid = this._getDataKey(parentData);
+    item.parent().remove();
+    var datas = !parentData ? this.getData() : getSubDatas.call(this, parentData);
+    datas.pop();
+    doLoad.call(this, container, api, params, function (err, _datas) {
+      if (_datas && _datas.length > 0) {
+        Utils.each(_datas, function (temp) {
+          datas.push(temp);
+        });
+      }
+    });
+  };
+
+  var onBackClickHandler = function onBackClickHandler(e) {
+    var item = $(e.currentTarget);
+    var container = item.parent();
+    container.height(0);
+    var prevContainer = container.prev();
+    prevContainer.height(0);
+    setTimeout(function () {
+      container.remove();
+      prevContainer.height(prevContainer.get(0).scrollHeight);
+    }, 120);
+  };
+
+  var onItemMouseEnterHandler = function onItemMouseEnterHandler(e) {
+    var item = $(e.currentTarget);
+    if (item.is(".disabled")) return;
+    var container = item.parent().parent().parent();
+    var lastItem = container.find(".hover");
+
+    if (lastItem && lastItem.length > 0) {
+      lastItem.removeClass("hover");
+      closeAfter.call(this, container);
+      var timerId = parseInt(lastItem.attr("t-hover"));
+
+      if (timerId) {
+        clearTimeout(timerId);
+        lastItem.removeAttr("t-hover");
+      }
+    }
+
+    item.addClass("hover");
+    if (item.is(".has-child")) doOpen.call(this, item);
+  };
+
+  var onItemMouseLeaveHandler = function onItemMouseLeaveHandler(e) {
+    var item = $(e.currentTarget);
+    var container = item.data("submenu");
+
+    if (!container || container.length == 0) {
+      var timerId = setTimeout(function () {
+        item.removeClass("hover");
+        item.removeAttr("t-hover");
+      }, 100);
+      item.attr("t-hover", timerId);
+    }
+  };
+
+  var onScrollMouseEnterHandler = function onScrollMouseEnterHandler(e) {
+    var btn = $(e.currentTarget);
+    var container = btn.parent();
+
+    var _scroll = function _scroll() {
+      var menuContainer = container.children(".menus");
+      var maxHeight = container.height() - menuContainer.height();
+      var top = parseInt(container.attr("scroll-top")) || 0;
+      var step = btn.is(".up") ? 5 : -5;
+
+      var __scroll = function __scroll() {
+        var timerId = setTimeout(function () {
+          var _top = top + step;
+
+          if (btn.is(".up")) {
+            if (_top > 0) _top = 0;
+          } else {
+            if (_top < maxHeight) _top = maxHeight;
+          }
+
+          if (top != _top) {
+            top = _top;
+            container.attr("scroll-top", top);
+            menuContainer.css("transform", "translate(0px, " + top + "px)");
+          }
+
+          __scroll();
+        }, 50);
+        container.attr("t_scroll", timerId);
+      };
+
+      __scroll();
+    }; // 停留一段时间开始滚动
+
+
+    container.attr("t_scroll", setTimeout(_scroll, 200));
+  };
+
+  var onScrollMouseLeaveHandler = function onScrollMouseLeaveHandler(e) {
+    var container = $(e.currentTarget).parent();
+    var timerId = parseInt(container.attr("t_scroll"));
+
+    if (timerId) {
+      clearTimeout(timerId);
+      container.removeAttr("t_scroll");
+    }
+  }; // ====================================================
+
+
+  var renderMenuItems = function renderMenuItems(menuContainer, datas) {
+    var _this5 = this;
+
+    if (!datas || datas.length == 0) return;
+    var group = menuContainer.children(".grp").last();
+    Utils.each(datas, function (data, i) {
+      if (Utils.isArray(data) && data.length > 0) {
+        group = $("<div class='grp'></div>").appendTo(menuContainer);
+        if (data.title) $("<div class='title'></div>").appendTo(group).text(data.title);
+        Utils.each(data, function (temp, j) {
+          if (j === 0 && temp.__group__) {
+            $("<div class='title'></div>").appendTo(group).text(temp.__group__);
+          } else if (temp.__type__ == "more") {
+            var more = $("<div class='more'></div>").appendTo(group);
+            more.attr("page-no", temp.page);
+            more.text(_this5.options.moreText || "加载更多");
+          } else {
+            var item = $("<div class='menu'></div>").appendTo(group);
+            renderOneMenuItem.call(_this5, item, temp);
+          }
+        });
+        group = null;
+      } else {
+        if (!group || group.length == 0) group = $("<div class='grp'></div>").appendTo(menuContainer);
+        var item = $("<div class='menu'></div>").appendTo(group);
+        renderOneMenuItem.call(_this5, item, data);
+      }
+    });
+
+    if (this._isRenderAsApp()) {
+      var container = menuContainer.parent();
+      container.height(0);
+      setTimeout(function () {
+        container.height(container.get(0).scrollHeight);
+      });
+    }
+  };
+
+  var renderOneMenuItem = function renderOneMenuItem(item, data) {
+    item.data("itemData", data);
+
+    var iconUrl = this._getIcon(data);
+
+    if (Utils.isNotBlank(iconUrl)) {
+      var icon = $("<i></i>").appendTo(item);
+      icon.css("backgroundImage", "url(" + iconUrl + ")");
+    }
+
+    var content = $("<div></div>").appendTo(item);
+    var itemRenderer = this.getItemRenderer();
+
+    if (Utils.isFunction(itemRenderer)) {
+      var result = itemRenderer($, content, data);
+      if (Utils.isNotNull(result)) content.empty().append(result);
+    } else {
+      var label = this._getDataLabel(data);
+
+      content.text(Utils.trimToEmpty(label));
+    }
+
+    if (!!getSubDatas.call(this, data)) item.addClass("has-child");
+    if (this._isDisabled(data)) item.addClass("disabled").attr("disabled", "disabled");
+    if (this._isChecked(data)) item.addClass("checked");
+  }; // ====================================================
+
+
+  var doOpen = function doOpen(item) {
+    var data = getItemData.call(this, item);
+    var subDatas = getItemSubDatas.call(this, item);
+    var datas = doOpenBefore.call(this, item, data, subDatas);
+
+    if (Utils.isNull(datas)) {
+      if (!tryLoadData.call(this, item)) return;
+    } else if (!(datas && datas.length > 0)) {
+      if (!tryLoadData.call(this, item)) return;
+    }
+
+    var container = $("<div class='menu-container'></div>").appendTo(this.$el);
+    container.append("<div class='btn up'></div><div class='btn down'></div>");
+
+    if (this._isRenderAsApp() && !isRootItem(item)) {
+      $("<div class='back'></div>").appendTo(container).text(this.options.backText || "返回");
+    }
+
+    var menuContainer = $("<div class='menus'></div>").appendTo(container);
+    renderMenuItems.call(this, menuContainer, datas);
+    item.data("submenu", container);
+    container.data("itemData", data);
+    doOpenAfter.call(this, item, container);
+    this.trigger("open", data);
+  };
+
+  var doOpenBefore = function doOpenBefore(item, data, subDatas) {
+    var event = {
+      type: "open_before"
+    };
+    this.trigger(event, data, subDatas);
+    if (event.hasOwnProperty("returnValue")) subDatas = event.returnValue;
+    var datas = !!subDatas ? Utils.toArray(subDatas) : null;
+
+    if (data) {
+      var childrenField = this._getChildrenField();
+
+      data[childrenField] = datas;
+    }
+
+    return datas;
+  };
+
+  var doOpenAfter = function doOpenAfter(item, container) {
+    if (!this._isRenderAsApp()) {
+      var _isRootItem = isRootItem(item);
+
+      if (_isRootItem) {
+        container.css("left", this.getOffsetLeft() || "");
+        container.css("top", this.getOffsetTop() || "");
+      } else {
+        var _offset2 = item.offset();
+
+        _offset2.top -= 3;
+        _offset2.left += item.outerWidth() + 1;
+        container.offset(_offset2);
+      }
+
+      var offset = Utils.offset(container);
+      var maxHeight = offset.windowHeight;
+      if (_isRootItem) maxHeight -= offset.top;
+      container.css("maxHeight", maxHeight + "px");
+
+      if (!_isRootItem) {
+        var _offset = container.offset();
+
+        if (offset.isOverflowX) {
+          _offset.left -= offset.width + item.outerWidth();
+        }
+
+        if (offset.isOverflowY) {
+          _offset.top -= offset.top + offset.height - offset.windowHeight;
+        }
+
+        container.offset({
+          left: _offset.left,
+          top: _offset.top
+        });
+      }
+
+      if (container.height() < container.children(".menus").height()) container.addClass("scroll").css("minHeight", "80px");
+    }
+  };
+
+  var closeAfter = function closeAfter(menuContainer) {
+    var menus = this.$el.children(".menu-container");
+    var index = menuContainer.index();
+
+    for (var i = menus.length - 1; i >= 0; i--) {
+      if (index >= i) return;
+      menus.eq(i).remove();
+    }
+  }; // ====================================================
+
+
+  var tryLoadData = function tryLoadData(item) {
+    var _this6 = this;
+
+    var apiName = getLoadApi.call(this);
+    if (Utils.isBlank(apiName)) return false;
+    var apiParams = getLoadParams.call(this) || {};
+    apiParams.p_no = 1;
+    apiParams.pid = getItemId.call(this, item);
+    setTimeout(function () {
+      var container = item.data("submenu");
+      doLoad.call(_this6, container, apiName, apiParams, function (err, datas) {
+        var isEmpty = false;
+
+        if (!datas || datas.length == 0) {
+          isEmpty = true;
+          datas = [{
+            label: "没有选项"
+          }];
+          datas[0][_this6._getDisabledField()] = true;
+        }
+
+        if (isRootItem(item)) _this6.options.data = datas;else {
+          var data = getItemData.call(_this6, item);
+          if (data) data[_this6._getChildrenField()] = datas;
+        }
+
+        if (isEmpty) {
+          renderMenuItems.call(_this6, container.children(".menus"), datas);
+        }
+      });
+    }, 0);
+    return true;
+  };
+
+  var doLoad = function doLoad(container, api, params, callback) {
+    var _this7 = this;
+
+    var menuContainer = container.children(".menus");
+    var loadingGrp = $("<div class='grp'></div>").appendTo(menuContainer);
+    var loadingItem = $("<div class='loading'></div>").appendTo(loadingGrp);
+    loadingItem.append(this.options.loadingText || "正在加载...");
+    VRender.Component.load.call(this, api, params, function (err, data) {
+      loadingGrp.remove();
+      var datas = !err ? Utils.toArray(data) : null;
+
+      if (datas && datas.length > 0) {
+        datas[0].children = [];
+
+        if (_this7.hasMore()) {
+          datas.push([{
+            __type__: "more",
+            page: _this7._pageInfo.page
+          }]);
+        }
+
+        renderMenuItems.call(_this7, menuContainer, datas);
+      }
+
+      callback(err, datas);
+    });
+  };
+
+  var getLoadApi = function getLoadApi() {
+    if (this.lastLoadApi) return this.lastLoadApi;
+    if (this.options.hasOwnProperty("api")) return this.options.api;
+    return this.$el.attr("api-name");
+  };
+
+  var getLoadParams = function getLoadParams() {
+    if (this.lastLoadParams) return this.lastLoadParams;
+    if (this.options.hasOwnProperty("params")) return this.options.params;
+
+    try {
+      return JSON.parse(this.$el.attr("api-params") || null);
+    } catch (e) {}
+
+    return null;
+  }; // ====================================================
+
+
+  var isRootItem = function isRootItem(item) {
+    return item.is(".ui-popupmenu");
+  };
+
+  var getItemId = function getItemId(item) {
+    return this._getDataKey(getItemData.call(this, item));
+  };
+
+  var getItemData = function getItemData(item) {
+    if (isRootItem(item)) return null;
+    return item.data("itemData");
+  };
+
+  var getItemSubDatas = function getItemSubDatas(item) {
+    if (isRootItem(item)) return this.getData();
+    var data = getItemData.call(this, item);
+    return getSubDatas.call(this, data);
+  };
+
+  var getSubDatas = function getSubDatas(data) {
+    if (data) {
+      var childrenField = this._getChildrenField();
+
+      if (Utils.isArray(data[childrenField])) return data[childrenField];
+    }
+
+    return null;
+  };
+
+  var hasSubDatas = function hasSubDatas(data) {
+    var datas = getSubDatas.call(this, data);
+    if (!!datas) return true;
+
+    if (data) {
+      if (data.hasOwnProperty("hasChild")) {
+        if (Utils.isTrue(data.hasChild)) return true;
+      }
+
+      if (data.hasOwnProperty("leaf")) {
+        if (Utils.isTrue(data.leaf)) return false;
+      }
+    }
+
+    return false;
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIPopupMenu = UIPopupMenu;
+    UI.init(".ui-popupmenu", UIPopupMenu, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
