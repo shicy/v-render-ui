@@ -210,22 +210,30 @@
 		Fn.init = function (selector, UIComp, Renderer) {
 			VComponent.register(selector, UIComp);
 
-			UIComp.create = function (options) {
-				return VComponent.create(options, UIComp, Renderer);
-			};
+			if (!UIComp.create) {
+				UIComp.create = function (options) {
+					return VComponent.create(options, UIComp, Renderer);
+				};
+			}
 
-			UIComp.find = function (view) {
-				return VComponent.find(view, selector, UIComp);
-			};
+			if (!UIComp.find) {
+				UIComp.find = function (view) {
+					return VComponent.find(view, selector, UIComp);
+				};
+			}
 
-			UIComp.findMe = function (view) {
-				let comps = VComponent.find(view, selector, UIComp);
-				return (comps && comps[0]) || null;
-			};
+			if (!UIComp.findMe) {
+				UIComp.findMe = function (view) {
+					let comps = VComponent.find(view, selector, UIComp);
+					return (comps && comps[0]) || null;
+				};
+			}
 
-			UIComp.instance = function (target) {
-				return VComponent.instance(target, selector);
-			};
+			if (!UIComp.instance) {
+				UIComp.instance = function (target) {
+					return VComponent.instance(target, selector);
+				};
+			}
 
 			UIComp.prototype._create = function (options) {
 				options = options || {};
