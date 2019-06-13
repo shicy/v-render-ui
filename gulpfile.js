@@ -60,13 +60,17 @@ function buildJs() {
 	jsFiles.push("src/components/tooltip/render.js");
 	jsFiles.push("src/components/notice/render.js");
 	jsFiles.push("src/components/confirm/render.js");
+	jsFiles.push("src/components/popupmenu/render.js");
 
 	let result = Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))
 		.pipe(GulpConcat("vrender-ui.js"))
 		.pipe(Gulp.dest(distDir));
 	if (!isDevelopment) {
-		result = result.pipe(GulpUglify({compress: {pure_funcs: ["console.log"]}}))
+		result = result.pipe(GulpUglify({
+			compress: {pure_funcs: ["console.log"]},
+			output: { max_line_len: 10240 }
+		}))
 			.pipe(GulpRename({basename: "vrender-ui." + version + ".min"}))
 			.pipe(Gulp.dest(distDir));
 	}

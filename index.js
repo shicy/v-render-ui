@@ -22,10 +22,11 @@ const UIFormView = require("./src/components/formview");
 const UITooltip = require("./src/components/tooltip");
 const UINotice = require("./src/components/notice");
 const UIConfirm = require("./src/components/confirm");
+const UIPopupMenu = require("./src/components/popupmenu");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190611";
+const distVersion = "190613";
 
 module.exports = {
 	install: function () {
@@ -43,6 +44,7 @@ module.exports = {
 		VRender.UIGroup = UIGroup;
 		VRender.UIHGroup = UIGroup.HGroup;
 		VRender.UINotice = UINotice;
+		VRender.UIPopupMenu = UIPopupMenu;
 		VRender.UIRadiobox = UIRadiobox;
 		VRender.UIRadioGroup = UIRadioGroup;
 		VRender.UITextView = UITextView;
