@@ -87,7 +87,7 @@ function buildCss_p(callback) {
 		.pipe(GulpConcat("vrender-ui.p.css"))
 		.pipe(Gulp.dest(distDir));
 	if (!isDevelopment) {
-		result = result.pipe(GulpCleanCss())
+		result = result.pipe(GulpCleanCss({ format: { wrapAt: 10240 } }))
 			.pipe(GulpRename({basename: "vrender-ui." + version + ".min.p"}))
 			.pipe(Gulp.dest(distDir));
 	}
@@ -103,7 +103,7 @@ function buildCss_m(callback) {
 		.pipe(GulpConcat("vrender-ui.m.css"))
 		.pipe(Gulp.dest(distDir));
 	if (!isDevelopment) {
-		result = result.pipe(GulpCleanCss())
+		result = result.pipe(GulpCleanCss({ format: { wrapAt: 10240 } }))
 			.pipe(GulpRename({basename: "vrender-ui." + version + ".min.m"}))
 			.pipe(Gulp.dest(distDir));
 	}
