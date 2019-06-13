@@ -177,22 +177,30 @@
     Fn.init = function (selector, UIComp, Renderer) {
       VComponent.register(selector, UIComp);
 
-      UIComp.create = function (options) {
-        return VComponent.create(options, UIComp, Renderer);
-      };
+      if (!UIComp.create) {
+        UIComp.create = function (options) {
+          return VComponent.create(options, UIComp, Renderer);
+        };
+      }
 
-      UIComp.find = function (view) {
-        return VComponent.find(view, selector, UIComp);
-      };
+      if (!UIComp.find) {
+        UIComp.find = function (view) {
+          return VComponent.find(view, selector, UIComp);
+        };
+      }
 
-      UIComp.findMe = function (view) {
-        var comps = VComponent.find(view, selector, UIComp);
-        return comps && comps[0] || null;
-      };
+      if (!UIComp.findMe) {
+        UIComp.findMe = function (view) {
+          var comps = VComponent.find(view, selector, UIComp);
+          return comps && comps[0] || null;
+        };
+      }
 
-      UIComp.instance = function (target) {
-        return VComponent.instance(target, selector);
-      };
+      if (!UIComp.instance) {
+        UIComp.instance = function (target) {
+          return VComponent.instance(target, selector);
+        };
+      }
 
       UIComp.prototype._create = function (options) {
         options = options || {};
@@ -9573,6 +9581,525 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   if (frontend) {
     window.UINotice = UINotice;
     UI.init(".ui-notice", UINotice, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
+"use strict";
+
+// 2019-06-13
+// dialog
+(function (frontend) {
+  if (frontend && VRender.Component.ui.dialog) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util;
+  var openedDialogs = [];
+  var defaultButtons = [{
+    name: "cancel",
+    label: "取消",
+    type: "cancel"
+  }, {
+    name: "ok",
+    label: "确定",
+    type: "primary"
+  }];
+  var defaultButtons2 = [{
+    name: "ok",
+    label: "确定",
+    type: "primary"
+  }, {
+    name: "cancel",
+    label: "取消",
+    type: "cancel"
+  }]; ///////////////////////////////////////////////////////
+
+  var UIDialog = UI.dialog = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UIDialog = UIDialog.prototype = new UI._base(false);
+
+  UIDialog.create = function (options) {
+    options = options || {};
+
+    if (!options.target) {
+      var target = $("body").children(".ui-dialog-wrap");
+      if (!target || target.length == 0) target = $("<div class='ui-dialog-wrap'></div>").appendTo($("body"));
+      options.target = target;
+    }
+
+    return VRender.Component.create(options, UIDialog, Renderer);
+  };
+
+  UIDialog.close = function (view, forceClose, closedHandler) {
+    if (!view.is(".ui-dialog")) view = Utils.parentUntil(view, ".ui-dialog");
+
+    if (view && view.length > 0) {
+      var dialog = VRender.Component.get(view);
+      if (dialog && dialog instanceof UIDialog) dialog.close(forceClose, closedHandler);
+    }
+  }; // ====================================================
+
+
+  _UIDialog.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    var dialogView = this.dialogView = this.$el.children().children();
+    var dialogHeader = dialogView.children("header");
+    dialogHeader.on("tap", ".closebtn", closeBtnHandler.bind(this));
+    var dialogFooter = dialogView.children("footer");
+    dialogFooter.on("tap", ".btnbar > .btn", buttonClickHandler.bind(this));
+    var activeBtn = getActiveButton.call(this);
+    if (activeBtn && activeBtn.length > 0) activeBtn.on("tap", activeBtnClickHandler.bind(this));
+
+    if (this._isRenderAsApp()) {
+      this.$el.on("tap", onTouchHandler.bind(this));
+    } else
+      /*if (this.$el.is("[opt-size='auto']"))*/
+      {
+        initResizeEvents.call(this);
+      }
+
+    initContentEvents.call(this);
+  }; // ====================================================
+
+
+  _UIDialog.open = function () {
+    if (this.isopened) return this;
+    this.isopened = true;
+    var body = $("body").addClass("ui-scrollless");
+    if (body.children(".ui-dialog-mask").length == 0) body.append("<div class='ui-dialog-mask'></div>");
+    this.$el.css("display", "").addClass("show-dialog");
+    openedDialogs.push(this);
+
+    this._getContentView().trigger("dialog_open");
+
+    var transName = this.$el.attr("opt-trans");
+
+    if (transName) {
+      var target = this.$el.addClass(transName + "-open");
+      setTimeout(function () {
+        target.addClass(transName + "-opened");
+      });
+      setTimeout(function () {
+        target.removeClass(transName + "-open").removeClass(transName + "-opened");
+      }, 300);
+    }
+
+    this.trigger("opened");
+    return this;
+  };
+
+  _UIDialog.close = function (forceClose, closedHandler) {
+    var _this = this;
+
+    if (!this.isopened) return;
+
+    if (Utils.isFunction(forceClose)) {
+      closedHandler = forceClose;
+      forceClose = false;
+    }
+
+    var event = {
+      type: "dialog_close"
+    };
+
+    this._getContentView().trigger(event);
+
+    if (!!forceClose || !event.isPreventDefault) {
+      this.isopened = false;
+      var target = this.$el.removeClass("show-dialog");
+      var transName = target.attr("opt-trans");
+
+      if (transName) {
+        target.addClass(transName + "-close");
+        setTimeout(function () {
+          target.addClass(transName + "-closed");
+        });
+      }
+
+      var delay = !!transName ? 200 : 0;
+      setTimeout(function () {
+        if (transName) {
+          target.removeClass(transName + "-close").removeClass(transName + "-closed");
+        }
+
+        var dialogWrap = $("body").children(".ui-dialog-wrap");
+        if (_this.$el.parent().is(dialogWrap)) _this.$el.remove();
+
+        for (var i = openedDialogs.length - 1; i >= 0; i--) {
+          if (openedDialogs[i] === _this) openedDialogs.splice(i, 1);
+        }
+
+        if (openedDialogs.length == 0) {
+          var mask = $("body").removeClass("ui-scrollless").children(".ui-dialog-mask").fadeOut(200);
+          setTimeout(function () {
+            mask.remove();
+          }, 200);
+        }
+
+        if (Utils.isFunction(closedHandler)) closedHandler();
+      }, delay);
+      this.trigger("closed");
+    }
+  }; // ====================================================
+
+
+  _UIDialog.getTitle = function () {
+    return this.dialogView.children("header").find(".title").text();
+  };
+
+  _UIDialog.setTitle = function (value) {
+    value = Utils.isBlank(value) ? "&nbsp;" : value;
+    this.dialogView.children("header").find(".title").html(value);
+  };
+
+  _UIDialog.getContent = function () {
+    var content = this._getContentView();
+
+    if (content) {
+      content = VRender.Component.get(content) || content;
+    }
+
+    return content;
+  };
+
+  _UIDialog.setContent = function (view) {
+    renderContentView.call(this, $, this.$el, view);
+    initContentEvents.call(this);
+  };
+
+  _UIDialog.setButtons = function (buttons) {
+    renderFootButtons.call(this, $, this.$el, buttons);
+  };
+
+  _UIDialog.getSize = function () {
+    return this.$el.attr("opt-size") || "normal";
+  };
+
+  _UIDialog.setSize = function (value) {
+    if (/^small|big|auto$/.test(value)) this.$el.attr("opt-size", value);else this.$el.removeAttr("opt-size");
+  };
+
+  _UIDialog.isFill = function () {
+    return this.$el.attr("opt-fill") == 1;
+  };
+
+  _UIDialog.setFill = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-fill", "1");else this.$el.removeAttr("opt-fill");
+  };
+
+  _UIDialog.isOpen = function () {
+    return !!this.isopened;
+  }; // ====================================================
+
+
+  _UIDialog.destory = function () {
+    var _this2 = this;
+
+    this.close(true, function () {
+      _this2.$el.remove();
+    });
+  };
+
+  _UIDialog.waiting = function (waitFlag, btnName) {
+    var button = null;
+
+    if (Utils.isNotBlank(btnName)) {
+      var dialogFooter = this.dialogView.children("footer");
+      button = dialogFooter.find(".btnbar > .btn[name='" + btnName + "']");
+      if (!(button && button.length > 0)) button = null;
+    }
+
+    var waitTime = button && parseInt(button.attr("opt-wait")) || 0;
+    if (Utils.isNull(waitFlag) || waitFlag === true) waitTime = waitTime || -1;else if (waitFlag) {
+      if (isNaN(waitFlag)) waitTime = Utils.isTrue(waitFlag) ? waitTime || -1 : 0;else waitTime = Math.max(0, parseInt(waitFlag));
+    } else {
+      waitTime = 0;
+    }
+    setWaitting.call(this, waitTime, button);
+  };
+
+  _UIDialog.setButtonValue = function (name, value) {
+    if (Utils.isNotBlank(name) && Utils.isNotNull(value)) {
+      var dialogFooter = this.dialogView.children("footer");
+      var button = dialogFooter.find(".btnbar > .btn[name='" + name + "']");
+
+      if (button && button.length > 0) {
+        button = VRender.Component.get(button.children());
+        button && button.setLabel(value);
+      }
+    }
+  }; // ====================================================
+
+
+  _UIDialog._getContentView = function () {
+    return this.dialogView.children("section").children(".container").children();
+  };
+
+  _UIDialog._isTouchCloseable = function () {
+    return this.options.touchCloseEnabled !== false;
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-dialog").css("display", "none");
+    target.attr("opt-trans", "translate");
+    var options = this.options || {};
+    if (/^small|big|auto$/.test(options.size)) target.attr("opt-size", options.size);
+    if (Utils.isTrue(options.fill)) target.attr("opt-fill", "1");
+    target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
+    var container = $("<div class='dialog-container'></div>").appendTo(target);
+    var dialogView = $("<div class='dialog-view'></div>").appendTo(container);
+    renderDialogHeader.call(this, $, target, dialogView);
+    renderDialogContent.call(this, $, target, dialogView);
+    renderDialogFooter.call(this, $, target, dialogView);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getTitle = function () {
+    var title = this.options.title;
+    if (Utils.isNull(title)) return "标题";
+    if (Utils.isBlank(title)) return "&nbsp;";
+    return title;
+  };
+
+  _Renderer.getActiveButton = function () {
+    var button = this.options.openbtn;
+
+    if (!frontend && button) {
+      if (typeof button == "string") return button;
+      if (Utils.isFunction(button.getViewId)) return "[vid='" + button.getViewId() + "']";
+    }
+
+    return null;
+  }; ///////////////////////////////////////////////////////
+
+
+  var closeBtnHandler = function closeBtnHandler(e) {
+    this.close();
+  };
+
+  var buttonClickHandler = function buttonClickHandler(e) {
+    var _this3 = this;
+
+    var btn = $(e.currentTarget);
+    if (btn.is(".disabled, .waiting")) return;
+    var btnName = btn.attr("name") || "";
+    if (btnName) this._getContentView().trigger("dialog_btn_" + btnName, btnName, this);
+    var hasListen = false;
+
+    if (btnName) {
+      var btnEventName = "btn_" + btnName;
+
+      if (this.hasListen(btnEventName)) {
+        hasListen = true;
+        this.trigger(btnEventName, btnName, this);
+      }
+    }
+
+    if (this.hasListen("btnclk")) {
+      hasListen = true;
+      this.trigger("btnclk", btnName, this);
+    }
+
+    var waitTime = btn.attr("opt-wait");
+
+    if (waitTime || waitTime == 0) {
+      // 0也是需要关闭的
+      waitTime = parseInt(waitTime) || 0;
+      setWaitting.call(this, waitTime, btn);
+
+      if (waitTime > 0) {
+        this.closeTimerId = setTimeout(function () {
+          _this3.closeTimerId = 0;
+
+          _this3.close();
+        }, waitTime);
+      }
+    } else if (!hasListen) {
+      if (/^ok|cancel|submit|close|save|finish$/.test(btnName)) this.close(/^cancel|close$/.test(btnName));
+    }
+  };
+
+  var activeBtnClickHandler = function activeBtnClickHandler(e) {
+    if (this.isMounted()) {
+      this.open();
+    } else {
+      this.activeBtn.off("tap", arguments.callee);
+    }
+  };
+
+  var windowResizeHandler = function windowResizeHandler() {
+    if (this.isMounted()) {
+      var container = this.dialogView.children("section").children(".container");
+      container.css("maxHeight", $(window).height() - 200);
+    } else {
+      $(window).off("resize._" + this.getViewId());
+    }
+  };
+
+  var onTouchHandler = function onTouchHandler(e) {
+    if ($(e.target).is(this.$el)) {
+      if (this._isTouchCloseable()) this.close();
+    }
+  }; // ====================================================
+
+
+  var renderDialogHeader = function renderDialogHeader($, target, dialogView) {
+    var dialogHeader = $("<header></header>").appendTo(dialogView);
+    var title = $("<div class='title'></div>").appendTo(dialogHeader);
+    title.html(this.getTitle());
+    dialogHeader.append("<button class='closebtn'>x</button>");
+  };
+
+  var renderDialogContent = function renderDialogContent($, target, dialogView) {
+    dialogView.append("<section></section>");
+    var contentView = this.options.content || this.options.view;
+    renderContentView.call(this, $, target, contentView);
+  };
+
+  var renderDialogFooter = function renderDialogFooter($, target, dialogView) {
+    dialogView.append("<footer></footer>");
+    renderFootButtons.call(this, $, target, this.options.buttons);
+  };
+
+  var renderContentView = function renderContentView($, target, contentView) {
+    var container = getDialogView(target).children("section").empty();
+    container = $("<div class='container'></div>").appendTo(container);
+
+    if (Utils.isNotBlank(contentView)) {
+      if (Utils.isFunction(contentView.render)) contentView.render(container);else if (contentView.$el) contentView.$el.appendTo(container);else container.append(contentView);
+    }
+  };
+
+  var renderFootButtons = function renderFootButtons($, target, buttons) {
+    var _this4 = this;
+
+    target.removeClass("has-btns");
+    var container = getDialogView(target).children("footer");
+    container.children(".btnbar").remove();
+
+    if (!buttons) {
+      buttons = this._isRenderAsApp() ? defaultButtons2 : defaultButtons;
+      buttons = JSON.parse(JSON.stringify(buttons));
+    }
+
+    buttons = Utils.toArray(buttons);
+
+    if (buttons && buttons.length > 0) {
+      target.addClass("has-btns");
+      var btnbar = $("<div class='btnbar'></div>").appendTo(container);
+      btnbar.attr("opt-len", buttons.length);
+      Utils.each(buttons, function (button) {
+        var btn = $("<div class='btn'></div>").appendTo(btnbar);
+        btn.attr("name", button.name);
+        if (button.waitclose === true) btn.attr("opt-wait", "-1");else if ((button.waitclose || button.waitclose === 0) && !isNaN(button.waitclose)) btn.attr("opt-wait", Math.max(0, parseInt(button.waitclose)));
+
+        if (!frontend) {
+          var UIButton = require("../button/index");
+
+          new UIButton(_this4.context, button).render(btn);
+        } else {
+          UI.button.create(Utils.extend({}, button, {
+            target: btn
+          }));
+        }
+      });
+    }
+  }; // ====================================================
+
+
+  var initContentEvents = function initContentEvents() {
+    var _this5 = this;
+
+    var contentView = this._getContentView();
+
+    if (contentView && contentView.length > 0) {
+      contentView.off("submit_to_dialog");
+      contentView.on("submit_to_dialog", function (e, data) {
+        _this5.trigger("view_submit", data);
+
+        _this5.close();
+      });
+    }
+  };
+
+  var initResizeEvents = function initResizeEvents() {
+    var eventName = "resize._" + this.getViewId();
+
+    var _window = $(window).off(eventName);
+
+    if (this.getSize() == "auto") {
+      _window.on(eventName, windowResizeHandler.bind(this));
+
+      windowResizeHandler.call(this);
+    }
+  }; // ====================================================
+
+
+  var getDialogView = function getDialogView(target) {
+    return target.children(".dialog-container").children(".dialog-view");
+  };
+
+  var getActiveButton = function getActiveButton() {
+    if (!this.options.hasOwnProperty("openbtn")) {
+      this.options.openbtn = this.$el.attr("opt-active");
+      this.$el.removeAttr("opt-active");
+    }
+
+    var activeBtn = this.options.openbtn;
+
+    if (activeBtn) {
+      if (activeBtn.$el) return activeBtn.$el;
+      return $(activeBtn);
+    }
+
+    return null;
+  };
+
+  var setWaitting = function setWaitting(waitTime, btn) {
+    var _this6 = this;
+
+    var button = btn ? VRender.Component.get(btn.children()) : null;
+
+    if (waitTime) {
+      if (button) {
+        btn.addClass("waiting");
+        button.waiting();
+      } else {
+        this.$el.addClass("waiting");
+      }
+
+      if (waitTime > 0) {
+        setTimeout(function () {
+          setWaitting.call(_this6, false, btn);
+        }, waitTime);
+      }
+    } else {
+      if (button) {
+        btn.removeClass("waiting");
+        button.waiting(false);
+      } else {
+        this.$el.removeClass("waiting");
+      }
+    }
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIDialog = UIDialog;
+    UI.init(".ui-dialog", UIDialog, Renderer);
   } else {
     module.exports = Renderer;
   }
