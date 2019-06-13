@@ -59,6 +59,7 @@ function buildJs() {
 	jsFiles.push("src/components/formview/render.js");
 	jsFiles.push("src/components/tooltip/render.js");
 	jsFiles.push("src/components/notice/render.js");
+	jsFiles.push("src/components/dialog/render.js");
 	jsFiles.push("src/components/confirm/render.js");
 	jsFiles.push("src/components/popupmenu/render.js");
 

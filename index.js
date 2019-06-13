@@ -21,6 +21,7 @@ const UIFileUpload = require("./src/components/fileupload");
 const UIFormView = require("./src/components/formview");
 const UITooltip = require("./src/components/tooltip");
 const UINotice = require("./src/components/notice");
+const UIDialog = require("./src/components/dialog");
 const UIConfirm = require("./src/components/confirm");
 const UIPopupMenu = require("./src/components/popupmenu");
 
@@ -39,6 +40,7 @@ module.exports = {
 		VRender.UIDatePicker = UIDatePicker;
 		VRender.UIDateRange = UIDateRange;
 		VRender.UIDateTime = UIDateTime;
+		VRender.UIDialog = UIDialog;
 		VRender.UIFileUpload = UIFileUpload;
 		VRender.UIFormView = UIFormView;
 		VRender.UIGroup = UIGroup;
