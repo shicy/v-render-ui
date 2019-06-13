@@ -67,7 +67,7 @@
     right: 0px;
     top: 50%;
     margin-top: -8px;
-    background-image: url(/VRender/icons/025a.png);
+    background-image: url(/vrender-ui/icons/025a.png);
     background-size: 8px;
     background-repeat: no-repeat;
     background-position: center;
@@ -82,7 +82,7 @@
     left: 3px;
     top: 50%;
     margin-top: -8px;
-    background-image: url(/VRender/icons/003a.png);
+    background-image: url(/vrender-ui/icons/003a.png);
     background-size: 10px;
     background-repeat: no-repeat;
     background-position: center;
@@ -95,11 +95,11 @@
 }
 
 .ui-popupmenu > .menu-container > .menus > .grp > .menu.hover.has-child:after {
-	background-image: url(/VRender/icons/025b.png);
+	background-image: url(/vrender-ui/icons/025b.png);
 }
 
 .ui-popupmenu > .menu-container > .menus > .grp > .menu.hover.checked:before {
-    background-image: url(/VRender/icons/003b.png);
+    background-image: url(/vrender-ui/icons/003b.png);
 }
 
 .ui-popupmenu > .menu-container > .menus > .grp > .menu[disabled] {
@@ -140,7 +140,7 @@
     left: 2px;
     top: 50%;
     margin-top: -8px;
-    background-image: url(/VRender/icons/017a.png);
+    background-image: url(/vrender-ui/icons/017a.png);
     background-size: 14px;
     background-repeat: no-repeat;
     background-position: center;
@@ -171,7 +171,7 @@
     left: 50%;
     top: 50%;
     margin: -5px 0px 0px -5px;
-    background-image: url(/VRender/icons/006a.png);
+    background-image: url(/vrender-ui/icons/006a.png);
     background-size: 8px;
     background-repeat: no-repeat;
     background-position: center;
