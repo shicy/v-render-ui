@@ -5,6 +5,7 @@ const FileSys = require("fs");
 const VRender = require(__vrender__);
 
 const UIGroup = require("./src/components/group");
+const UIContainer = require("./src/components/container");
 const UIButton = require("./src/components/button");
 const UICheckbox = require("./src/components/checkbox");
 const UICheckGroup = require("./src/components/checkgroup");
@@ -27,7 +28,7 @@ const UIPopupMenu = require("./src/components/popupmenu");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190613";
+const distVersion = "190614";
 
 module.exports = {
 	install: function () {
@@ -36,6 +37,7 @@ module.exports = {
 		VRender.UICheckGroup = UICheckGroup;
 		VRender.UICombobox = UICombobox;
 		VRender.UIConfirm = UIConfirm;
+		VRender.UIContainer = UIContainer;
 		VRender.UIDateInput = UIDateInput;
 		VRender.UIDatePicker = UIDatePicker;
 		VRender.UIDateRange = UIDateRange;

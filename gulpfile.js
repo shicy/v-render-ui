@@ -43,6 +43,7 @@ function buildJs() {
 	jsFiles.push("src/static/js/selectable.js");
 
 	jsFiles.push("src/components/group/render.js");
+	jsFiles.push("src/components/container/render.js");
 	jsFiles.push("src/components/button/render.js");
 	jsFiles.push("src/components/checkbox/render.js");
 	jsFiles.push("src/components/checkgroup/render.js");

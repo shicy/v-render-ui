@@ -55,6 +55,7 @@ const menus = [{
 	name: "容器",
 	children: [
 		{name: "chkgrp", title: "CheckGroup", subTitle: "多选组"},
+		{name: "container", title: "Container", subTitle: "边框容器"},
 		{name: "group", title: "Group", subTitle: "组视图"},
 		{name: "radgrp", title: "RadioGroup", subTitle: "单选组"}
 	]
