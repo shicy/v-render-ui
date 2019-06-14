@@ -1076,6 +1076,12 @@
 }
 
 
+.ui-container {
+	border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+
 .ui-dateipt {
 	display: inline-block;
 	width: 200px;
