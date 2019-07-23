@@ -152,15 +152,15 @@
 	};
 
 	UISelect.addItem = function (data, index) {
-		return UI._itemsRender.addItem.call(this, data, index);
+		return UI._items.addItem.call(this, data, index);
 	};
 
 	UISelect.updateItem = function (data, index) {
-		return UI._itemsRender.updateItem.call(this, data, index);
+		return UI._items.updateItem.call(this, data, index);
 	};
 
 	UISelect.removeItem = function (data, index) {
-		return UI._itemsRender.removeItem.call(this, data, index);
+		return UI._items.removeItem.call(this, data, index);
 	};
 
 	// ====================================================

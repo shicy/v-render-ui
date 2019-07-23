@@ -62,7 +62,8 @@ const menus = [{
 }, {
 	name: "导航",
 	children: [
-		{name: "paginator", title: "Paginator", subTitle: "分页"}
+		{name: "paginator", title: "Paginator", subTitle: "分页"},
+		{name: "tabbar", title: "Tabbar", subTitle: "标签栏"}
 	]
 }, {
 	name: "其他",
