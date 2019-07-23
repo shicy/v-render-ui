@@ -29,7 +29,7 @@ const UIPaginator = require("./src/components/paginator");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190614";
+const distVersion = "190723";
 
 module.exports = {
 	install: function () {
