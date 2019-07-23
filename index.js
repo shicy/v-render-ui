@@ -25,6 +25,7 @@ const UINotice = require("./src/components/notice");
 const UIDialog = require("./src/components/dialog");
 const UIConfirm = require("./src/components/confirm");
 const UIPopupMenu = require("./src/components/popupmenu");
+const UIPaginator = require("./src/components/paginator");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
@@ -48,6 +49,7 @@ module.exports = {
 		VRender.UIGroup = UIGroup;
 		VRender.UIHGroup = UIGroup.HGroup;
 		VRender.UINotice = UINotice;
+		VRender.UIPaginator = UIPaginator;
 		VRender.UIPopupMenu = UIPopupMenu;
 		VRender.UIRadiobox = UIRadiobox;
 		VRender.UIRadioGroup = UIRadioGroup;

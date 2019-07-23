@@ -60,6 +60,11 @@ const menus = [{
 		{name: "radgrp", title: "RadioGroup", subTitle: "单选组"}
 	]
 }, {
+	name: "导航",
+	children: [
+		{name: "paginator", title: "Paginator", subTitle: "分页"}
+	]
+}, {
 	name: "其他",
 	children: [
 		{name: "confirm", title: "Confirm", subTitle: "确认对话框"},
