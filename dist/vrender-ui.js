@@ -12258,3 +12258,485 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     module.exports = Renderer;
   }
 })(typeof window !== "undefined");
+"use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+// 2019-07-23
+// panel
+(function (frontend) {
+  if (frontend && VRender.Component.ui.panel) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UIPanel = UI.panel = function (view, options) {
+    return UI._base.call(this, view, options);
+  };
+
+  var _UIPanel = UIPanel.prototype = new UI._base(false);
+
+  _UIPanel.init = function (target, options) {
+    UI._base.init.call(this, target, options);
+
+    this.header = this.$el.children("header");
+    this.container = this.$el.children("section").children();
+    this.header.on("tap", ".tabbar > .tab", onTabClickHandler.bind(this));
+
+    if (this._isRenderAsApp()) {
+      this.header.on("tap", ".btnbar > .popbtn", onPopupButtonClickHandler.bind(this));
+    } else {
+      this.header.on("tap", ".btnbar > .item > .btn", onButtonClickHandler.bind(this));
+      this.header.on("tap", ".btnbar > .item > ul > li", onDropdownButtonClickHandler.bind(this));
+    }
+
+    doInit.call(this);
+  }; // ====================================================
+
+
+  _UIPanel.getTitle = function () {
+    return this.header.children(".title").text();
+  };
+
+  _UIPanel.setTitle = function (value) {
+    if (Utils.isNotNull(value)) {
+      value = Utils.trimToEmpty(value);
+      var title = this.header.children(".title");
+
+      if (title && title.length > 0) {
+        if (value) {
+          title.empty().append(value);
+        } else {
+          title.remove();
+        }
+      } else if (value) {
+        title = $("<div class='title'></div>").prependTo(this.header);
+        title.append(value);
+      }
+    }
+  };
+
+  _UIPanel.getButtons = function () {
+    if (this.options.hasOwnProperty("buttons")) return Utils.toArray(this.options.buttons);
+    var buttons = this.$el.attr("data-btns");
+
+    if (buttons) {
+      try {
+        buttons = JSON.parse(buttons);
+      } catch (e) {}
+    }
+
+    this.$el.removeAttr("data-btns");
+    this.options.buttons = Utils.toArray(buttons);
+    return buttons;
+  };
+
+  _UIPanel.setButtons = function (value) {
+    this.options.buttons = value;
+    renderButtons.call(this, $, this.$el, Utils.toArray(value));
+
+    if (this.popupMenu) {
+      this.popupMenu.destory();
+      this.popupMenu = null;
+    }
+  };
+
+  _UIPanel.setViewports = function (value, active) {
+    var viewports = getFormatViewports.call(this, value);
+    renderTabs.call(this, $, this.$el, viewports);
+    renderViewports.call(this, $, this.container, viewports);
+    this.setViewActive(active);
+  };
+
+  _UIPanel.isViewActive = function (name) {
+    var item = Utils.find(this.header.find(".tabbar .tab"), function (tab) {
+      return tab.attr("name") == name;
+    });
+    return item && item.is(".selected");
+  };
+
+  _UIPanel.getViewActive = function () {
+    var item = this.header.find(".tabbar .selected");
+    return item && item.attr("name");
+  };
+
+  _UIPanel.setViewActive = function (name) {
+    if (Utils.isNotBlank(name)) showViewport.call(this, name);
+  }; // ====================================================
+  // ====================================================
+  ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-panel");
+    this._viewports = getFormatViewports.call(this, this.options.viewports);
+    renderHeader.call(this, $, target);
+    renderContent.call(this, $, target);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getTitle = function () {
+    if (this.options.hasOwnProperty("title")) return this.options.title;
+    if (this._viewports && this._viewports.length > 0) return false;
+    return "标题";
+  }; // ====================================================
+  ///////////////////////////////////////////////////////
+
+
+  var onButtonClickHandler = function onButtonClickHandler(e) {
+    var btn = $(e.currentTarget);
+    var item = btn.parent();
+
+    if (item.attr("has-dropdown") == 1) {
+      showBtnDropdown.call(this, item);
+    } else if (item.attr("opt-toggle") == 1) {
+      item.toggleClass("active");
+    }
+
+    var name = item.attr("name");
+    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, btn.is(".active"));
+  };
+
+  var onPopupButtonClickHandler = function onPopupButtonClickHandler(e) {
+    if (this.popupMenu) {
+      this.popupMenu.open();
+    } else {
+      var items = getPopupMenus.call(this, this.getButtons());
+
+      if (items && items.length > 0) {
+        this.popupMenu = new UI.popupmenu({
+          target: this.$el,
+          data: items
+        });
+        this.popupMenu.on("itemclick", onPopupMenuButtonHandler.bind(this));
+      }
+
+      if (this.popupMenu) {
+        this.popupMenu.open();
+      }
+    }
+  };
+
+  var onPopupMenuButtonHandler = function onPopupMenuButtonHandler(e, data) {
+    if (data && Utils.isNotBlank(data.name)) this.trigger("btnclick", data.name, !!data.checked);
+  };
+
+  var onDropdownButtonClickHandler = function onDropdownButtonClickHandler(e) {
+    var dropdownItem = $(e.currentTarget);
+    var item = dropdownItem.parent().parent();
+
+    if (item.attr("opt-toggle") == 1 && !dropdownItem.is(".active")) {
+      dropdownItem.addClass("active").siblings().removeClass("active");
+      var btn = item.children(".btn"); // btn.attr("name", dropdownItem.attr("name"));
+
+      var label = btn.children("span");
+      if (label && label.length > 0) label.text(dropdownItem.children("span").text());
+      var icon = btn.children("i");
+
+      if (icon && icon.length > 0) {
+        if (!icon.attr("data-src")) icon.attr("data-src", icon.css("backgroundImage"));
+        var iconUrl = dropdownItem.children("i").css("backgroundImage") || icon.attr("data-src");
+        icon.css("backgroundImage", iconUrl);
+      }
+    }
+
+    hideBtnDropdown.call(this, item);
+    var name = dropdownItem.attr("name");
+    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, dropdownItem.is(".active"));
+  };
+
+  var onButtonMouseHandler = function onButtonMouseHandler(e) {
+    var _this = this;
+
+    var item = $(e.currentTarget);
+    var timerId = parseInt(item.attr("timerid"));
+
+    if (timerId) {
+      clearTimeout(timerId);
+      item.removeAttr("timerid");
+    }
+
+    if (e.type == "mouseleave") {
+      timerId = setTimeout(function () {
+        item.removeAttr("timerid");
+        hideBtnDropdown.call(_this, item);
+      }, 400);
+      item.attr("timerid", timerId);
+    }
+  };
+
+  var onTabClickHandler = function onTabClickHandler(e) {
+    var item = $(e.currentTarget);
+    if (!item.is(".selected")) showViewport.call(this, item.attr("name"));
+  }; // ====================================================
+
+
+  var renderHeader = function renderHeader($, target) {
+    var options = this.options || {};
+    var header = $("<header></header>").appendTo(target); // 标题
+
+    if (options.focusHtmlTitle) {
+      $("<div class='title'></div>").appendTo(header).html(options.focusHtmlTitle);
+    } else {
+      var title = this.getTitle();
+      if (title !== false && Utils.isNotBlank(title)) $("<div class='title'></div>").appendTo(header).text(title);
+    } // 视图
+
+
+    renderTabs.call(this, $, target, this._viewports); // 按钮
+
+    var buttons = Utils.toArray(this.options.buttons);
+    renderButtons.call(this, $, target, buttons);
+  };
+
+  var renderTabs = function renderTabs($, target, viewports) {
+    var header = target.children("header");
+    header.children(".tabbar").remove();
+
+    if (viewports && viewports.length > 0) {
+      var tabbar = $("<div class='tabbar'></div>").prependTo(header);
+      header.children(".title").after(tabbar);
+      tabbar.append("<div class='thumb'></div>");
+      var viewIndex = Utils.getIndexValue(this.options.viewIndex);
+      Utils.each(viewports, function (data, i) {
+        var tab = $("<div class='tab'></div>").appendTo(tabbar);
+        tab.attr("name", data.name);
+        if (data.focusHtmlLabel) tab.html(data.focusHtmlLabel);else $("<span></span>").appendTo(tab).text(data.label || data.name);
+        if (i == viewIndex) tab.addClass("selected");
+      });
+    }
+  };
+
+  var renderButtons = function renderButtons($, target, buttons) {
+    var _this2 = this;
+
+    var header = target.children("header");
+    header.children(".btnbar").remove();
+
+    if (buttons && buttons.length > 0) {
+      var btnbar = $("<div class='btnbar'></div>").appendTo(header);
+
+      if (this._isRenderAsApp()) {
+        btnbar.append("<button class='popbtn'>&nbsp;</button>");
+        target.attr("data-btns", JSON.stringify(buttons));
+      } else {
+        Utils.each(buttons, function (data) {
+          renderOneButton.call(_this2, $, btnbar, data);
+        });
+      }
+    }
+  };
+
+  var renderOneButton = function renderOneButton($, btnbar, data) {
+    if (Utils.isBlank(data)) return;
+    if (typeof data == "string") data = {
+      name: data
+    };
+    var item = $("<div class='item'></div>").appendTo(btnbar);
+    item.attr("name", Utils.trimToNull(data.name));
+
+    var _isToggle = Utils.isTrue(data.toggle);
+
+    if (_isToggle) item.attr("opt-toggle", "1");
+    if (Utils.isNotBlank(data.tooltip)) item.attr("title", data.tooltip);
+    var btn = $("<button class='btn'></button>").appendTo(item);
+
+    if (data.icon) {
+      var icon = $("<i>&nbsp;</i>").appendTo(btn);
+      if (typeof data.icon == "string") icon.css("backgroundImage", "url(" + data.icon + ")");
+    }
+
+    if (!data.icon || data.label !== false) {
+      var label = $("<span></span>").appendTo(btn);
+      label.text(Utils.trimToNull(data.label) || "按钮");
+    }
+
+    if (Utils.isArray(data.items) && data.items.length > 0) {
+      var dropdown = $("<ul></ul>").appendTo(item.attr("has-dropdown", "1"));
+      var hasIcon = false;
+      Utils.each(data.items, function (temp, i) {
+        var dropdownItem = $("<li></li>").appendTo(dropdown);
+        dropdownItem.attr("name", Utils.trimToNull(temp.name));
+
+        if (Utils.isNotBlank(temp.icon)) {
+          hasIcon = true;
+          $("<i>&nbsp;</i>").appendTo(dropdownItem).css("backgroundImage", "url(" + temp.icon + ")");
+        }
+
+        var label = Utils.trimToNull(temp.label);
+        $("<span></span>").appendTo(dropdownItem).text(label || "选项");
+        if (_isToggle && label && label == data.label) dropdownItem.addClass("active");
+      });
+      if (hasIcon) dropdown.attr("show-ic", "1");
+    }
+  };
+
+  var renderContent = function renderContent($, target, viewports) {
+    var container = $("<section></section>").appendTo(target);
+    container = $("<div class='container'></div>").appendTo(container);
+    var content = $("<div></div>").appendTo(container);
+    var contentView = this.options.content || this.options.view;
+
+    if (Utils.isNotNull(contentView)) {
+      if (Utils.isFunction(contentView.render)) contentView.render(content);else content.append(contentView.$el || contentView);
+    }
+
+    viewports = viewports || this._viewports;
+    renderViewports.call(this, $, container, viewports);
+    if (container.children(".selected").length == 0) content.addClass("selected");
+  };
+
+  var renderViewports = function renderViewports($, container, viewports) {
+    container.children(":not(:first-child)").remove();
+
+    if (viewports && viewports.length > 0) {
+      var viewIndex = Utils.getIndexValue(this.options.viewIndex);
+      Utils.each(viewports, function (data, i) {
+        contentView = data.content || data.view;
+
+        if (Utils.isNotNull(contentView)) {
+          var viewport = $("<div></div>").appendTo(container);
+          viewport.attr("name", data.name);
+          if (i == viewIndex) viewport.addClass("selected");
+          if (Utils.isFunction(contentView.render)) contentView.render(viewport);else viewport.append(contentView.$el || contentView);
+        }
+      });
+    }
+  }; // ====================================================
+
+
+  var doInit = function doInit() {
+    this.getButtons(); // 初始化
+
+    var tab = this.header.find(".tabbar .tab.selected");
+    if (tab && tab.length > 0) showViewportThumbs.call(this, tab);
+  };
+
+  var showViewport = function showViewport(name) {
+    var tabs = this.header.find(".tabbar .tab");
+    var tabItem = Utils.find(tabs, function (tab) {
+      return tab.attr("name") == name;
+    });
+    if (!tabItem || tabItem.length == 0) return; // 不存在的视图
+
+    if (tabItem.is(".selected")) return;
+    var lastTabItem = tabs.filter(".selected").removeClass("selected");
+    tabItem.addClass("selected");
+    showViewportThumbs.call(this, tabItem);
+    var viewports = this.container.children();
+    var viewport = Utils.find(viewports, function (item) {
+      return item.attr("name") == name;
+    });
+    if (!viewport || viewport.length == 0) viewport = viewports.eq(0);
+
+    if (!viewport.is(".selected")) {
+      var currentViewport = viewports.filter(".selected");
+      var swrapLeft = lastTabItem.index() < tabItem.index();
+      viewport.addClass("animate-in");
+      viewport.addClass(swrapLeft ? "animate-in-right" : "animate-in-left");
+      currentViewport.addClass("animate-out");
+      setTimeout(function () {
+        viewport.removeClass("animate-in-left animate-in-right");
+        currentViewport.addClass(swrapLeft ? "animate-out-left" : "animate-out-right");
+        setTimeout(function () {
+          viewport.addClass("selected").removeClass("animate-in");
+          currentViewport.removeClass("selected animate-out animate-out-left animate-out-right");
+        }, 400);
+      }, 0);
+    }
+
+    this.trigger("change", tabItem.attr("name"), lastTabItem.attr("name"));
+  };
+
+  var showViewportThumbs = function showViewportThumbs(tab) {
+    var thumb = this.header.children(".tabbar").children(".thumb");
+
+    if (thumb && thumb.length > 0) {
+      var left = tab.position().left;
+      var width = tab.outerWidth();
+      var thumbWidth = this.options.thumbWidth;
+
+      if (thumbWidth) {
+        if (Utils.isFunction(thumbWidth)) thumbWidth = thumbWidth(tab, width);else if (/%$/.test(thumbWidth)) thumbWidth = parseFloat(thumbWidth) * width / 100;
+
+        if (!isNaN(thumbWidth)) {
+          left += (width - thumbWidth) / 2;
+          width = thumbWidth;
+        }
+      }
+
+      thumb.css("left", left + "px");
+      thumb.css("width", width + "px");
+    }
+  };
+
+  var showBtnDropdown = function showBtnDropdown(btnItem) {
+    if (btnItem.is(".show-dropdown")) return;
+    btnItem.addClass("show-dropdown");
+    btnItem.on("mouseenter", onButtonMouseHandler.bind(this));
+    btnItem.on("mouseleave", onButtonMouseHandler.bind(this));
+    setTimeout(function () {
+      btnItem.addClass("animate-in");
+    }, 0);
+  };
+
+  var hideBtnDropdown = function hideBtnDropdown(btnItem) {
+    btnItem.addClass("animate-out");
+    btnItem.off("mouseenter").off("mouseleave");
+    setTimeout(function () {
+      btnItem.removeClass("show-dropdown");
+      btnItem.removeClass("animate-in").removeClass("animate-out");
+    }, 300);
+  };
+
+  var getPopupMenus = function getPopupMenus(buttons) {
+    if (buttons && buttons.length > 0) {
+      var format = function format(data) {
+        var temp = {};
+        temp.name = data.name;
+        temp.label = data.label || data.name || "按钮";
+        if (data.icon) temp.icon = data.icon;
+        if (data.toggle) temp.toggle = data.toggle;
+        if (data.disabled) temp.disabled = data.disabled;
+        return temp;
+      };
+
+      return Utils.map(buttons, function (data) {
+        var item = format(data);
+        item.children = Utils.map(data.items, format);
+        if (item.children.length == 0) delete item.children;
+        return item;
+      });
+    }
+
+    return null;
+  };
+
+  var getFormatViewports = function getFormatViewports(value) {
+    var viewports = [];
+    Utils.each(Utils.toArray(value), function (data, i) {
+      if (Utils.isNotBlank(data) && _typeof(data) == "object") {
+        data.name = data.name || "view_" + i;
+        viewports.push(data);
+      }
+    });
+    return viewports;
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIPanel = UIPanel;
+    UI.init(".ui-panel", UIPanel, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
