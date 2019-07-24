@@ -20,6 +20,9 @@ const BaseModule = VRender.Fragment.extend(module, {
 	getTitle: function () {
 	},
 
+	getDescription: function () {
+	},
+
 	renderView: function () {
 		BaseModule.super(this);
 
@@ -28,6 +31,9 @@ const BaseModule = VRender.Fragment.extend(module, {
 		let title = this.getTitle();
 		if (Utils.isNotBlank(title))
 			$(".module-title").appendTo(target).text(title);
+		let description = this.getDescription();
+		if (Utils.isNotBlank(description))
+			$(".module-desc").appendTo(target).text(description);
 
 		let demo = $(".module-group").appendTo(target);
 		this.renderDemos(demo, (view, code, desc, title) => {
