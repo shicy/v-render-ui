@@ -66,6 +66,7 @@ function buildJs() {
 	jsFiles.push("src/components/paginator/render.js");
 	jsFiles.push("src/components/tabbar/render.js");
 	jsFiles.push("src/components/panel/render.js");
+	jsFiles.push("src/components/listview/render.js");
 
 	let result = Gulp.src(jsFiles)
 		.pipe(GulpBabel({presets: ["@babel/env"]}))

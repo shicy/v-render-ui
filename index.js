@@ -28,10 +28,11 @@ const UIPopupMenu = require("./src/components/popupmenu");
 const UIPaginator = require("./src/components/paginator");
 const UITabbar = require("./src/components/tabbar");
 const UIPanel = require("./src/components/panel");
+const UIListView = require("./src/components/listview");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190723";
+const distVersion = "190724";
 
 module.exports = {
 	install: function () {
@@ -50,6 +51,7 @@ module.exports = {
 		VRender.UIFormView = UIFormView;
 		VRender.UIGroup = UIGroup;
 		VRender.UIHGroup = UIGroup.HGroup;
+		VRender.UIListView = UIListView;
 		VRender.UINotice = UINotice;
 		VRender.UIPaginator = UIPaginator;
 		VRender.UIPanel = UIPanel;

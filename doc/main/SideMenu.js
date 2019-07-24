@@ -52,13 +52,19 @@ const menus = [{
 		{name: "timeinput", title: "TimeInput", subTitle: "时间输入框"}
 	]
 }, {
+	name: "数据集",
+	children: [
+		{name: "listview", title: "ListView", subTitle: "列表视图"}
+	]
+}, {
 	name: "容器",
 	children: [
 		{name: "chkgrp", title: "CheckGroup", subTitle: "多选组"},
 		{name: "container", title: "Container", subTitle: "边框容器"},
 		{name: "group", title: "Group", subTitle: "组视图"},
 		{name: "panel", title: "Panel", subTitle: "面板"},
-		{name: "radgrp", title: "RadioGroup", subTitle: "单选组"}
+		{name: "radgrp", title: "RadioGroup", subTitle: "单选组"},
+		{name: "scrollbox", title: "ScrollBox", subTitle: "滚动加载"}
 	]
 }, {
 	name: "导航",
