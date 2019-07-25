@@ -13023,3 +13023,1881 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     module.exports = Renderer;
   }
 })(typeof window !== "undefined");
+"use strict";
+
+// 2019-07-24
+// datagrid
+(function (frontend) {
+  if (frontend && VRender.Component.ui.datagrid) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util;
+  var dateFormats = {
+    date: "yyyy-MM-dd",
+    datetime: "yyyy-MM-dd HH:mm:ss",
+    time: "HH:mm:ss"
+  };
+  var defaultIcons = {
+    asc: "/vrender-ui/icons/020c.png",
+    desc: "/vrender-ui/icons/021c.png"
+  }; ///////////////////////////////////////////////////////
+
+  var UIDatagrid = UI.datagrid = function (view, options) {
+    return UI._select.call(this, view, options);
+  };
+
+  var _UIDatagrid = UIDatagrid.prototype = new UI._select(false);
+
+  _UIDatagrid.init = function (target, options) {
+    UI._select.init.call(this, target, options);
+
+    this.__columns = this.getColumns(); // 解析一次
+    // console.log(this.getColumns());
+
+    target = this.$el;
+    var ghead = this.gridHead = target.children(".table").children("header").children();
+    var gbody = this.gridBody = target.children(".table").children("section").children();
+    ghead.on("tap", "th.col-chk", allChkboxClickHandler.bind(this));
+    gbody.on("tap", "tr", itemClickHandler.bind(this));
+    gbody.on("tap", "td.col-exp .expbtn", onExpandBtnHandler.bind(this));
+
+    if (this._isRenderAsApp()) {
+      ghead.on("tap", "th", headTouchHandler.bind(this));
+      target.on("tap", ".sort-and-filter", sortAndFilterClickHandler.bind(this));
+      target.on("tap", ".sort-and-filter .item", sortAndFilterItemHandler.bind(this));
+      target.on("tap", ".sort-and-filter input", sortAndFilterInputClickHandler.bind(this));
+      target.on("tap", ".sort-and-filter .clearbtn", sortAndFilterClearHandler.bind(this));
+      target.on("tap", ".sort-and-filter .submitbtn", sortAndFilterSubmitHandler.bind(this));
+      target.on("keyup", ".sort-and-filter input", sortAndFilterInputKeyHandler.bind(this));
+    } else {
+      ghead.on("tap", ".toolbar > *", toolbtnClickHandler.bind(this));
+      ghead.on("tap", ".toolbar .dropdown li", toolDropdownClickHandler.bind(this));
+      ghead.on("mouseenter", ".toolbar > *", toolbtnMouseHandler.bind(this));
+      ghead.on("mouseleave", ".toolbar > *", toolbtnMouseHandler.bind(this));
+    }
+
+    doInit.call(this);
+    this.renderComplete = true;
+  }; // ====================================================
+
+
+  _UIDatagrid.getData = function (isOriginal) {
+    if (isOriginal) {
+      // 这是没有排序、筛选过的数据集
+      this.options.data = this._doAdapter(this.options.data);
+      return this.options.data;
+    }
+
+    var datas = this.getData(true);
+    return Utils.map(this._getItems(), function (item) {
+      var data = item.data("itemData");
+
+      if (!data) {
+        var index = parseInt(item.attr("opt-ind")) || 0;
+        data = datas[index];
+      }
+
+      return data;
+    });
+  };
+
+  _UIDatagrid.setData = function (value) {
+    var snapshoot = this._snapshoot();
+
+    this.options.data = this._doAdapter(value);
+
+    UI._select.setSelectedIndex.call(this, []);
+
+    this._getItems().removeClass("selected").removeClass("expand");
+
+    rerenderItems.call(this);
+    snapshoot.done([], []);
+  };
+
+  _UIDatagrid.getColumns = function () {
+    if (this.options.hasOwnProperty("columns")) return this.options.columns;
+
+    var getFunc = function getFunc(value) {
+      return new Function("var Utils=VRender.Utils;return (" + unescape(value) + ");")();
+    };
+
+    var columns = this.$el.children("[name='columns']");
+
+    if (columns && columns.length > 0) {
+      try {
+        columns = JSON.parse(columns.remove().attr("data"));
+        Utils.each(columns, function (column) {
+          if (column.html) column.html = unescape(column.html);
+
+          if (/^function/.test(column.sortable)) {
+            column.sortable = getFunc(column.sortable);
+          } else if (Utils.isArray(column.sortable)) {
+            Utils.each(column.sortable, function (temp) {
+              if (/^function/.test(temp.handler)) temp.handler = getFunc(temp.handler);
+            });
+          }
+
+          if (/^function/.test(column.sortFunction)) column.sortFunction = getFunc(column.sortFunction);
+          if (/^function/.test(column.filter)) column.filter = getFunc(column.filter);else if (Utils.isArray(column.filter)) {
+            Utils.each(column.filter, function (temp) {
+              if (/^function/.test(temp.handler)) temp.handler = getFunc(temp.handler);
+            });
+          }
+          if (/^function/.test(column.filterFunction)) column.filterFunction = getFunc(column.filterFunction);
+        });
+      } catch (e) {
+        columns = [];
+      }
+
+      ;
+    } else {
+      columns = [];
+    }
+
+    this.options.columns = columns;
+    return this.options.columns;
+  };
+
+  _UIDatagrid.setColumns = function (value) {
+    this.options.columns = getFormatColumns(value);
+    var columns = this.__columns = this.options.columns;
+
+    if (this.currentSort && this.currentSort.name) {
+      var column = Utils.findBy(columns, "name", this.currentSort.name);
+
+      if (column && Utils.isTrue(column.sortable) && column.sortType == this.currentSort.type) {
+        this.currentSort.column = column;
+      } else this.currentSort = null;
+    }
+
+    if (this.currentFilters) {
+      Utils.remove(this.currentFilters, function (filter) {
+        if (filter.name) {
+          var _column2 = Utils.findBy(columns, "name", filter.name);
+
+          if (_column2) filter.column = _column2;else return true; // 删除不存在的列
+        }
+      });
+    }
+
+    rerender.call(this);
+  };
+
+  _UIDatagrid.isHeaderVisible = function () {
+    return !this.$el.is(".no-head");
+  };
+
+  _UIDatagrid.setHeaderVisible = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) {
+      if (!this.isHeaderVisible()) {
+        this.$el.removeClass("no-head");
+        rerenderHeader.call(this);
+      }
+    } else if (this.isHeaderVisible()) {
+      this.$el.addClass("no-head");
+      rerenderHeader.call(this);
+    }
+  };
+
+  _UIDatagrid.isChkboxVisible = function () {
+    return this.$el.attr("opt-chk") == "1";
+  };
+
+  _UIDatagrid.setChkboxVisible = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) {
+      if (!this.isChkboxVisible()) {
+        this.$el.attr("opt-chk", "1");
+        rerender.call(this);
+      }
+    } else if (this.isChkboxVisible()) {
+      this.$el.removeAttr("opt-chk");
+      rerender.call(this);
+    }
+  }; // itemRenderer 即行渲染，也即tr，不能修改，设置无效
+
+
+  _UIDatagrid.getItemRenderer = function () {
+    return Renderer.rowRenderer;
+  };
+
+  _UIDatagrid.setItemRenderer = function (value) {// 设置无效，默认是 Renderer.rowRenderer;
+  };
+
+  _UIDatagrid.getHeadRenderer = function () {
+    return Fn.getFunction.call(this, "headRenderer", "hrender");
+  };
+
+  _UIDatagrid.setHeadRenderer = function (value) {
+    var _changed = this.getHeadRenderer() != value;
+
+    this.options.headRenderer = value;
+    if (_changed) rerenderHeader.call(this);
+  };
+
+  _UIDatagrid.getColumnRenderer = function () {
+    if (this.options.hasOwnProperty("renderer")) return this.options.renderer;
+    return Fn.getFunction.call(this, "columnRenderer", "crender");
+  };
+
+  _UIDatagrid.setColumnRenderer = function (value) {
+    var _changed = this.getColumnRenderer() != value;
+
+    this.options.columnRenderer = value;
+    delete this.options.renderer;
+    if (_changed) rerenderItems.call(this);
+  };
+
+  _UIDatagrid.getExpandRenderer = function () {
+    return Fn.getFunction.call(this, "expandRenderer", "erender");
+  };
+
+  _UIDatagrid.setExpandRenderer = function (value) {
+    var _changed = this.getExpandRenderer() != value;
+
+    this.options.expandRenderer = value;
+
+    if (_changed) {
+      var itemContainer = this._getItemContainer();
+
+      itemContainer.children(".row-expand").remove();
+      var expandRows = itemContainer.children(".expand").removeClass("expand");
+      expandRows.children(".col-exp").children(".expbtn").trigger("tap"); // 重新打开
+    }
+  };
+
+  _UIDatagrid.getExpandColspan = function () {
+    return parseInt(this.$el.attr("opt-expcols")) || 0;
+  };
+
+  _UIDatagrid.setExpandColsapn = function (value) {
+    if (!isNaN(value) && (value || value === 0)) {
+      value = parseInt(value);
+
+      if (!isNaN(value) && value > 0 && this.getExpandColspan() != value) {
+        this.$el.attr("opt-expcols", value);
+
+        var itemContainer = this._getItemContainer();
+
+        itemContainer.children(".row-expand").remove();
+        var expandRows = itemContainer.children(".expand").removeClass("expand");
+        expandRows.children(".col-exp").children(".expbtn").trigger("tap"); // 重新打开
+      }
+    }
+  };
+
+  _UIDatagrid.getRowStyleFunction = function () {
+    return Fn.getFunction.call(this, "rowStyleFunction", "rstyle");
+  };
+
+  _UIDatagrid.setRowStyleFunction = function (value) {
+    var _changed = this.getRowStyleFunction() != value;
+
+    this.options.rowStyleFunction = value;
+    if (_changed) rerenderItems.call(this);
+  };
+
+  _UIDatagrid.getCellStyleFunction = function () {
+    return Fn.getFunction.call(this, "cellStyleFunction", "cstyle");
+  };
+
+  _UIDatagrid.setCellStyleFunction = function () {
+    var _changed = this.getCellStyleFunction() != value;
+
+    this.options.cellStyleFunction = value;
+    if (_changed) rerenderItems.call(this);
+  };
+
+  delete _UIDatagrid.getLabelField;
+  delete _UIDatagrid.setLabelField;
+  delete _UIDatagrid.getLabelFunction;
+  delete _UIDatagrid.setLabelFunction;
+  delete _UIDatagrid.setItemRenderer; // ====================================================
+
+  _UIDatagrid.sort = function (column, type, sortFunction) {
+    if (Utils.isFunction(column)) {
+      sortFunction = column;
+      column = type = null;
+    }
+
+    if (Utils.isFunction(type)) {
+      sortFunction = type;
+      type = null;
+    }
+
+    if (column) column = getColumnInfo.call(this, "" + column);
+    doSort.call(this, column, type, sortFunction);
+  };
+
+  _UIDatagrid.filter = function (column, value, filterFunction) {
+    if (Utils.isFunction(column)) {
+      filterFunction = column;
+      column = value = null;
+    }
+
+    if (Utils.isFunction(value)) {
+      filterFunction = value;
+      value = null;
+    }
+
+    if (column) column = getColumnInfo.call(this, "" + column);
+    doFilter.call(this, column, value, filterFunction);
+  }; // ====================================================
+
+
+  _UIDatagrid.addItem = function (data, index) {
+    if (Utils.isNull(data)) return;
+    index = Utils.getIndexValue(index);
+    var datas = this.getData(true);
+    data = Fn.doAdapter.call(this, data, index);
+
+    if (index >= 0 && index < datas.length) {
+      datas.splice(index, 0, data);
+    } else {
+      datas.push(data);
+    }
+
+    var snapshoot = this._snapshoot();
+
+    rerenderItems.call(this);
+    snapshoot.done();
+  };
+
+  _UIDatagrid.updateItem = function (data, index) {
+    if (Utils.isNull(data)) return;
+    var datas = this.getData(true);
+
+    if (!index && index !== 0) {
+      data = Fn.doAdapter.call(this, data);
+      index = this.getDataRealIndex(data, datas);
+    } else {
+      index = Utils.getIndexValue(index);
+      data = Fn.doAdapter.call(this, data, index);
+    }
+
+    if (index >= 0) {
+      datas.splice(index, 1, data);
+
+      var snapshoot = this._snapshoot(); // 可能被筛选或排序
+
+
+      rerenderItems.call(this);
+      snapshoot.done();
+    }
+  };
+
+  _UIDatagrid.removeItem = function (data) {
+    if (Utils.isNotNull(data)) this.removeItemAt(this.getDataRealIndex(data));
+  };
+
+  _UIDatagrid.removeItemAt = function (index) {
+    index = Utils.getIndexValue(index);
+
+    if (index >= 0) {
+      var datas = this.getData(true);
+
+      if (index < datas.length) {
+        var removedData = datas.splice(index, 1);
+
+        var snapshoot = this._snapshoot();
+
+        rerenderItems.call(this);
+        snapshoot.done();
+      }
+    }
+  };
+
+  _UIDatagrid.addOrUpdateItem = function (data) {
+    var index = this.getDataRealIndex(data);
+    if (index >= 0) this.updateItem(data, index);else this.addItem(data, index);
+  };
+
+  _UIDatagrid.getDataRealIndex = function (data, datas) {
+    var _this = this;
+
+    datas = datas || this.getData(true);
+
+    if (datas && datas.length > 0) {
+      var id = this._getDataKey(data);
+
+      return Utils.index(datas, function (temp) {
+        return temp == data || _this._getDataKey(temp) == id;
+      });
+    }
+
+    return -1;
+  };
+
+  _UIDatagrid.rerender = function () {
+    rerender.call(this);
+  }; // ====================================================
+
+
+  _UIDatagrid._getItemContainer = function () {
+    if (!this.itemContainer) {
+      var target = this.$el.children(".table").children("section").children();
+      this.itemContainer = target.children("table").children("tbody");
+    }
+
+    return this.itemContainer;
+  };
+
+  _UIDatagrid._getNewItem = function ($, itemContainer, data, index) {
+    return $("<tr class='datagrid-row'></tr>").appendTo(itemContainer);
+  };
+
+  _UIDatagrid._getItemData = function (item) {
+    var data = item.data("itemData");
+
+    if (!data) {
+      var datas = this.getData(true);
+
+      if (Utils.isArray(datas) && datas.length > 0) {
+        var index = parseInt(item.attr("opt-ind"));
+        if (!isNaN(index) && index >= 0) return datas[index];
+      }
+    }
+
+    return data;
+  };
+
+  _UIDatagrid._getSortFunction = function (column, type) {
+    return getSortFunction.call(this, column, type);
+  };
+
+  _UIDatagrid._getFilterFunction = function (column, value) {
+    return getFilterFunction.call(this, column, value);
+  };
+
+  _UIDatagrid._hasExpand = function () {
+    return Utils.index(this.__columns, function (column) {
+      return !!column.expand;
+    }) >= 0;
+  };
+
+  _UIDatagrid._snapshoot_change = function () {
+    selectedChanged.call(this);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._selectRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._selectRender(false); // 行渲染
+
+
+  Renderer.rowRenderer = function ($, item, data, index) {
+    renderRow.call(this, $, item, this.__columns, data, index);
+  };
+
+  Renderer.rowRenderer._state = 1; // 内部渲染器标志
+  // ====================================================
+
+  _Renderer.render = function ($, target) {
+    target.addClass("ui-datagrid");
+    var height = Utils.getFormatSize(this.options.height, this._isRenderAsRem());
+
+    if (height) {
+      target.attr("opt-fixed", "1").css("height", height);
+    }
+
+    if (this.isChkboxVisible()) target.attr("opt-chk", "1");
+    var expandColspan = parseInt(this.options.expandcols);
+    if (expandColspan) target.attr("opt-expcols", expandColspan);
+    var table = $("<div class='table'></div>").appendTo(target);
+    table.append("<header><div></div></header>");
+    table.append("<section><div><table><thead></thead><tbody></tbody></table></div></section>");
+    var columns = this.__columns = this.getColumns();
+
+    UI._selectRender.render.call(this, $, target);
+
+    renderHeader.call(this, $, target, columns);
+    renderOthers.call(this, $, target, columns);
+    this.renderComplete = true; // 首次渲染完成
+
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getColumns = function () {
+    return getFormatColumns(this.options.columns);
+  };
+
+  _Renderer.isChkboxVisible = function () {
+    return Utils.isTrue(this.options.chkbox);
+  };
+
+  _Renderer.isHeaderVisible = function () {
+    if (this.options.hasOwnProperty("showHeader")) return Utils.isTrue(this.options.showHeader);
+    return true;
+  };
+
+  _Renderer.getHeadRenderer = function () {
+    return this.options.headRenderer;
+  };
+
+  _Renderer.getColumnRenderer = function () {
+    return this.options.columnRenderer || this.options.renderer;
+  };
+
+  _Renderer.getExpandRenderer = function () {
+    return this.options.expandRenderer;
+  };
+
+  _Renderer.getRowStyleFunction = function () {
+    return this.options.rowStyleFunction;
+  };
+
+  _Renderer.getCellStyleFunction = function () {
+    return this.options.cellStyleFunction;
+  };
+
+  _Renderer.getItemRenderer = function () {
+    return Renderer.rowRenderer;
+  }; // ====================================================
+
+
+  _Renderer._getItemContainer = function ($, target) {
+    target = target.children(".table").children("section").children();
+    return target.children("table").children("tbody");
+  };
+
+  _Renderer._getNewItem = function ($, itemContainer, data, index) {
+    return $("<tr class='datagrid-row'></tr>").appendTo(itemContainer);
+  };
+
+  _Renderer._renderItems = function ($, target) {
+    var _this2 = this;
+
+    var datas = this.getData();
+    var hasFilterOrSort = false;
+    var _indexs = null;
+
+    var _datas = [].concat(datas); // 下面需要排序、筛选，保证原数据集不变
+
+
+    if (datas && datas.length > 0) {
+      // doFilter
+      Utils.each(this.__columns, function (column) {
+        if (Utils.isTrue(column.filter) && Utils.isNotBlank(column.filterValue)) {
+          var filterFunction = _this2._getFilterFunction(column, column.filterValue);
+
+          _datas = Utils.filter(_datas, function (data, i) {
+            return filterFunction(column, data, column.filterValue);
+          });
+          hasFilterOrSort = true;
+        }
+      }); // doSort
+
+      var sortColumn = Utils.find(this.__columns, function (column) {
+        return Utils.isTrue(column.sortable) && column.sortType;
+      });
+
+      if (sortColumn) {
+        var sortFunction = this._getSortFunction(sortColumn, sortColumn.sortType);
+
+        _datas.sort(function (a, b) {
+          return sortFunction(sortColumn, a, b, sortColumn.sortType);
+        });
+
+        hasFilterOrSort = true;
+      }
+    }
+
+    if (hasFilterOrSort) {
+      // 获取对象在原数据集中的索引
+      _indexs = Utils.map(_datas, function (data) {
+        return Utils.index(datas, function (temp) {
+          return temp == data;
+        });
+      });
+    }
+
+    this._renderDatas = _datas;
+    renderItems.call(this, $, target, _datas, _indexs);
+  };
+
+  _Renderer._renderEmptyView = function ($, target) {
+    UI._itemsRender.renderEmptyView.call(this, $, target);
+  };
+
+  _Renderer._renderLoadView = function ($, target) {
+    UI._itemsRender.renderLoadView.call(this, $, target);
+  };
+
+  _Renderer._getSortFunction = function (column, type) {
+    return getSortFunction.call(this, column, type);
+  };
+
+  _Renderer._getFilterFunction = function (column, value) {
+    return getFilterFunction.call(this, column, value);
+  };
+
+  _Renderer._hasExpand = function () {
+    return Utils.index(this.__columns, function (column) {
+      return !!column.expand;
+    }) >= 0;
+  }; ///////////////////////////////////////////////////////
+
+
+  var itemClickHandler = function itemClickHandler(e) {
+    var item = $(e.currentTarget);
+
+    if (item.parent().is(this._getItemContainer())) {
+      if (item.is(".disabled")) return;
+
+      if (item.is(".selected")) {
+        item.removeClass("selected");
+      } else {
+        item.addClass("selected");
+        if (!this.isMultiple()) item.siblings().removeClass("selected");
+      }
+
+      selectedChanged.call(this);
+    }
+  };
+
+  var headTouchHandler = function headTouchHandler(e) {
+    var col = $(e.currentTarget);
+    var colName = col.attr("col-name");
+    var column = colName && getColumnInfo.call(this, colName);
+
+    if (column) {
+      if (column.filter || Utils.isArray(column.sortable)) showSortAndFilterDialog.call(this, column, col);else if (column.sortable) {
+        var sortType = col.attr("opt-sort");
+        sortType = sortType == "desc" ? null : sortType == "asc" ? "desc" : "asc";
+        doSort.call(this, column, sortType);
+      }
+    }
+  };
+
+  var allChkboxClickHandler = function allChkboxClickHandler(e) {
+    var header = this.gridHead.find("tr");
+    var selectedIndex = [];
+
+    if (header.is(".selected")) {
+      header.removeClass("selected");
+    } else {
+      header.addClass("selected");
+
+      for (var i = 0, l = this.length(); i < l; i++) {
+        selectedIndex.push(i);
+      }
+    }
+
+    this.setSelectedIndex(selectedIndex);
+  };
+
+  var onExpandBtnHandler = function onExpandBtnHandler(e) {
+    var item = $(e.currentTarget).parent().parent();
+
+    if (item.parent().is(this._getItemContainer())) {
+      if (item.is(".disabled")) return false;
+
+      if (item.is(".expand")) {
+        item.removeClass("expand");
+        item.next().remove();
+      } else {
+        item.addClass("expand");
+        var index = parseInt(item.attr("opt-ind")) || 0;
+
+        var data = this._getItemData(item, index);
+
+        renderExpandView.call(this, $, item, data, index);
+      }
+
+      return false;
+    }
+  };
+
+  var toolbtnClickHandler = function toolbtnClickHandler(e) {
+    var btn = $(e.currentTarget);
+    var col = btn.parent().parent();
+    var column = getColumnInfo.call(this, col.attr("col-name"));
+    var dropdown = btn.children(".dropdown");
+
+    if (dropdown && dropdown.length > 0) {
+      btn.addClass("show-dropdown");
+
+      if (dropdown.is(".ipt")) {
+        var input = dropdown.find("input").focus();
+        input.off("keydown").on("keydown", filterInputKeyHandler.bind(this));
+      }
+    } else if (btn.is(".sort")) {
+      var sortType = col.attr("opt-sort");
+      sortType = sortType == "desc" ? null : sortType == "asc" ? "desc" : "asc";
+      doSort.call(this, column, sortType);
+    } else if (btn.is(".filter")) {// 默认都有 dropdown
+    }
+  };
+
+  var toolbtnMouseHandler = function toolbtnMouseHandler(e) {
+    var btn = $(e.currentTarget);
+    var timerId = parseInt(btn.attr("opt-t")) || 0;
+
+    if (timerId) {
+      clearTimeout(timerId);
+      btn.removeAttr("opt-t");
+    }
+
+    if (e.type == "mouseleave") {
+      timerId = setTimeout(function () {
+        btn.removeClass("show-dropdown");
+        btn.removeAttr("opt-t");
+
+        if (btn.is(".filter")) {
+          var input = btn.find("input");
+          if (input && input.length > 0) VRender.onInputChange(input, null);
+        }
+      }, 400);
+      btn.attr("opt-t", timerId);
+    }
+  };
+
+  var toolDropdownClickHandler = function toolDropdownClickHandler(e) {
+    var item = $(e.currentTarget);
+    var toolbtn = item.parent().parent();
+    var col = toolbtn.parent().parent();
+    var column = getColumnInfo.call(this, col.attr("col-name"));
+    var timerId = parseInt(toolbtn.attr("opt-t")) || 0;
+    if (timerId) clearTimeout(timerId);
+    toolbtn.removeClass("show-dropdown").removeAttr("opt-t");
+
+    if (toolbtn.is(".sort")) {
+      doSort.call(this, column, item.is(".selected") ? null : item.attr("data-type"));
+    } else if (toolbtn.is(".filter")) {
+      doFilter.call(this, column, item.is(".selected") ? null : item.attr("data-val"));
+    }
+
+    return false;
+  };
+
+  var filterInputKeyHandler = function filterInputKeyHandler(e) {
+    if (e.which == 13) {
+      var input = $(e.currentTarget);
+      var colName = Utils.parentUntil(input, "th").attr("col-name");
+
+      if (colName) {
+        var column = getColumnInfo.call(this, colName);
+        doFilter.call(this, column, input.val() || null);
+      }
+    }
+  };
+
+  var sortAndFilterClickHandler = function sortAndFilterClickHandler(e) {
+    if ($(e.target).is(".sort-and-filter")) {
+      hideSortAndFilterDialog.call(this);
+      return false;
+    }
+  };
+
+  var sortAndFilterItemHandler = function sortAndFilterItemHandler(e) {
+    var item = $(e.currentTarget);
+    var column = this.$el.children(".sort-and-filter").data("column");
+
+    if (item.parent().parent().is(".sort")) {
+      var sortType = item.is(".selected") ? null : item.attr("data-type");
+      doSort.call(this, column, sortType);
+    } else {
+      var filterValue = item.is(".selected") ? null : item.attr("data-val");
+      doFilter.call(this, column, filterValue);
+    }
+
+    hideSortAndFilterDialog.call(this);
+  };
+
+  var sortAndFilterInputClickHandler = function sortAndFilterInputClickHandler(e) {
+    this.$el.children(".sort-and-filter").addClass("inputing");
+  };
+
+  var sortAndFilterClearHandler = function sortAndFilterClearHandler(e) {
+    var target = this.$el.children(".sort-and-filter");
+    var input = target.find("input").val("");
+
+    if (target.is(".inputing")) {
+      setTimeout(function () {
+        input.focus();
+      }, 0);
+    }
+  };
+
+  var sortAndFilterSubmitHandler = function sortAndFilterSubmitHandler(e) {
+    var target = this.$el.children(".sort-and-filter");
+    var column = target.data("column");
+    var filterValue = target.find("input").val() || null;
+    doFilter.call(this, column, filterValue);
+    hideSortAndFilterDialog.call(this);
+  };
+
+  var sortAndFilterInputKeyHandler = function sortAndFilterInputKeyHandler(e) {
+    if (e.which == 13) {
+      this.$el.children(".sort-and-filter").find(".submitbtn").tap();
+    }
+  }; // ====================================================
+
+
+  var renderHeader = function renderHeader($, target, columns) {
+    var _this3 = this;
+
+    if (this.isHeaderVisible()) {
+      var isApp = this._isRenderAsApp();
+
+      target = target.removeClass("no-head").children(".table");
+      var thead = target.children("section").children().children("table").children("thead").empty();
+      row = $("<tr></tr>").appendTo(thead);
+      if (this.isAllSelected(this._renderDatas || [])) row.addClass("selected");
+      if (this._hasExpand() && !isApp) row.append("<th class='col-exp'></th>");
+      if (this.isChkboxVisible()) row.append("<th class='col-chk'><span class='chkbox'></span></th>");
+      Utils.each(columns, function (column, i) {
+        if (column.expand) return;
+        var col = $("<th></th>").appendTo(row);
+        col.addClass("col-" + i);
+        if (Utils.isNotBlank(column.name)) col.attr("col-name", column.name); //.addClass("col-name-" + column.name);
+
+        if (Utils.isNotBlank(column.dataType)) col.attr("col-type", column.dataType);
+        var width = Utils.getFormatSize(column.width, _this3._isRenderAsRem());
+        if (width) col.css("width", width);
+        renderHeaderView.call(_this3, $, col, column, i);
+        renderHeaderToolbar.call(_this3, $, col, column, i);
+      });
+      if (this._hasExpand() && isApp) row.append("<th class='col-exp'></th>"); // 固定表头
+
+      var header = target.children("header").children().empty();
+      if (!frontend) header.write("<table><thead>" + thead.html() + "</thead></table>");else header.html("<table><thead>" + thead.html() + "</thead></table>");
+      row.find(".dropdown").remove();
+    } else {
+      target.addClass("no-head");
+    }
+  };
+
+  var renderHeaderView = function renderHeaderView($, col, column, index) {
+    if (!column.html) {
+      var headRenderer = this.getHeadRenderer();
+
+      if (Utils.isFunction(headRenderer)) {
+        var headView = headRenderer(column, index);
+
+        if (headView) {
+          if (!frontend && Utils.isFunction(headView.render)) headView.render(col);else col.append(headView.$el || headView);
+          return;
+        }
+      }
+    }
+
+    if (column.icon) $("<i>&nbsp;</i>").appendTo(col).css("backgroundImage", "url(" + column.icon + ")");
+    var title = $("<div class='title'></div>").appendTo(col);
+    if (column.html) title.html(column.html);else title.text(column.title || column.name || "列 " + (index + 1));
+  };
+
+  var renderHeaderToolbar = function renderHeaderToolbar($, col, column, index) {
+    if (column.sortable || column.filter) {
+      var toolbar = $("<div class=toolbar></div>").appendTo(col);
+
+      if (column.sortable) {
+        if (column.sortType) col.attr("opt-sort", column.sortType);
+        renderSortView.call(this, $, toolbar, column);
+      }
+
+      if (column.filter) {
+        if (column.filterValue) col.attr("opt-filter", column.filterValue);
+        renderFilterView.call(this, $, toolbar, column);
+      }
+    }
+  };
+
+  var renderSortView = function renderSortView($, toolbar, column) {
+    var sortTarget = $("<div class='sort'><i title='排序'></i></div>").appendTo(toolbar);
+
+    if (!this._isRenderAsApp()) {
+      if (Utils.isArray(column.sortable) && column.sortable.length > 0) {
+        renderToolDropdown.call(this, $, sortTarget, column.sortable, column.sortType, "无");
+      }
+    }
+  };
+
+  var renderFilterView = function renderFilterView($, toolbar, column) {
+    var filterTarget = $("<div class='filter'><i title='筛选'></i></div>").appendTo(toolbar);
+    var filterType = column.filter;
+
+    if (filterType == "enum") {
+      filterType = getColumnValueSet.call(this, column);
+      if (!(filterType && filterType.length > 0)) filterType = [{
+        label: "无选项",
+        value: ""
+      }];else {
+        filterType = Utils.map(filterType, function (tmp) {
+          return {
+            label: tmp,
+            value: tmp
+          };
+        });
+      }
+    }
+
+    if (!this._isRenderAsApp()) {
+      if (Utils.isArray(filterType)) {
+        renderToolDropdown.call(this, $, filterTarget, filterType, column.filterValue, "空");
+      } else {
+        var dropdown = $("<div class='dropdown ipt'></div>").appendTo(filterTarget);
+        var input = $("<input/>").appendTo(dropdown);
+        if (column.filterValue) input.val(column.filterValue);
+      }
+    }
+  };
+
+  var renderToolDropdown = function renderToolDropdown($, toolBtn, items, value, defLbl) {
+    var dropdown = $("<ul class='dropdown'></ul>").appendTo(toolBtn);
+    Utils.each(items, function (data) {
+      var item = $("<li></li>").appendTo(dropdown);
+      var bSelected = false;
+
+      if (data.hasOwnProperty("type")) {
+        item.attr("data-type", data.type);
+        bSelected = data.type == value;
+      }
+
+      if (data.hasOwnProperty("value")) {
+        item.attr("data-val", data.value);
+        bSelected = data.value == value;
+      }
+
+      var icon = $("<i></i>").appendTo(item);
+      var iconUrl = data.icon || defaultIcons[data.type];
+      if (iconUrl) icon.css("backgroundImage", "url(" + iconUrl + ")");
+      $("<span></span>").appendTo(item).text(data.label || defLbl);
+
+      if (bSelected) {
+        item.addClass("selected");
+
+        var _icon = toolBtn.children("i");
+
+        if (iconUrl) _icon.css("backgroundImage", "url(" + iconUrl + ")");
+        if (data.label) _icon.attr("title", data.label);
+      }
+    });
+  }; // ====================================================
+  // indexs 是 datas 在原数据集中相应的索引
+
+
+  var renderItems = function renderItems($, target, datas, indexs, selectedIndexs) {
+    var _this4 = this;
+
+    var itemContainer = this._getItemContainer($, target).empty();
+
+    var selectedIndex = selectedIndexs || this.getSelectedIndex(true);
+    var selectedId = this.getSelectedKey(true) || []; // let items = this._render_items = [];
+
+    Utils.each(datas, function (data, i) {
+      var index = indexs ? indexs[i] : i; // 在源数据集中的索引
+
+      var item = _this4._getNewItem($, itemContainer, data, index);
+
+      if (item) {
+        // items.push({item: item, data: data, index: i});
+        _this4._renderOneItem($, item, data, index); // 这里还是要用原始的索引的，否则渲染的数据可能就是错的
+
+
+        var bSelected = _this4._isSelected(data, i, selectedIndex, selectedId);
+
+        if (bSelected) item.addClass("selected");
+      }
+    }); // setTimeout(() => {
+    // 	this._render_items = null;
+    // }, 0);
+  };
+
+  var renderRow = function renderRow($, row, columns, data, rowIndex) {
+    var _this5 = this;
+
+    row.attr("opt-ind", rowIndex);
+
+    var isApp = this._isRenderAsApp();
+
+    var rowStyleFunction = this.getRowStyleFunction();
+
+    if (Utils.isFunction(rowStyleFunction)) {
+      var styles = rowStyleFunction(data, rowIndex);
+      if (styles) row.css(styles);
+    }
+
+    if (this._hasExpand() && !isApp) row.append("<td class='col-exp'><span class='expbtn'></span></td>");
+    if (this.isChkboxVisible()) row.append("<td class='col-chk'><span class='chkbox'></span></td>");
+    Utils.each(columns, function (column, i) {
+      if (!column.expand) {
+        var col = $("<td></td>").appendTo(row);
+        renderCell.call(_this5, $, col, column, data, rowIndex, i);
+      }
+    });
+    if (this._hasExpand() && isApp) row.append("<td class='col-exp'><span class='expbtn'></span></td>");
+  };
+
+  var renderCell = function renderCell($, col, column, data, rowIndex, colIndex) {
+    var cellStyleFunction = this.getCellStyleFunction();
+
+    if (Utils.isFunction(cellStyleFunction)) {
+      var styles = cellStyleFunction(column.name, data, rowIndex, colIndex);
+      if (styles) col.css(styles);
+    }
+
+    col.addClass("col-" + colIndex);
+    if (Utils.isNotBlank(column.name)) col.attr("col-name", column.name);
+    var value = null;
+    var columnRenderer = this.getColumnRenderer();
+
+    if (Utils.isFunction(columnRenderer)) {
+      value = columnRenderer(column.name, data, rowIndex, colIndex, column);
+    }
+
+    if (Utils.isNull(value)) {
+      value = getDefaultValue.call(this, column, data, colIndex);
+    }
+
+    if (Utils.isBlank(value)) value = "&nbsp;";
+
+    if (!frontend && Utils.isFunction(value.render)) {
+      value.render(col);
+    } else {
+      col.append(value.$el || value);
+    }
+  };
+
+  var renderOthers = function renderOthers($, target, columns) {
+    if (!frontend) {
+      var _columns = Utils.map(columns, function (temp) {
+        var column = Utils.extend({}, temp);
+        if (column.html) column.html = escape(column.html);
+        if (Utils.isFunction(column.sortFunction)) column.sortFunction = escape(column.sortFunction);else if (Utils.isArray(column.sortable)) {
+          Utils.each(column.sortable, function (tmp) {
+            if (Utils.isFunction(tmp.handler)) tmp.handler = escape(tmp.handler);
+          });
+        }
+        if (Utils.isFunction(column.filterFunction)) column.filterFunction = escape(column.filterFunction);else if (Utils.isArray(column.filter)) {
+          Utils.each(column.filter, function (tmp) {
+            if (Utils.isFunction(tmp.handler)) tmp.handler = escape(tmp.handler);
+          });
+        }
+        return column;
+      });
+
+      target.write("<div class='ui-hidden' name='columns' data='" + JSON.stringify(_columns) + "'></div>");
+      Fn.renderFunction(target, "hrender", this.getHeadRenderer());
+      Fn.renderFunction(target, "crender", this.getColumnRenderer());
+      Fn.renderFunction(target, "erender", this.getExpandRenderer());
+      Fn.renderFunction(target, "rstyle", this.getRowStyleFunction());
+      Fn.renderFunction(target, "cstyle", this.getCellStyleFunction());
+    }
+  }; // ====================================================
+
+
+  var rerender = function rerender() {
+    var _this6 = this;
+
+    if (this.t_rerender) {
+      clearTimeout(this.t_rerender);
+      this.t_rerender = 0;
+    }
+
+    if (this.t_rerenderheader) {
+      clearTimeout(this.t_rerenderheader);
+      this.t_rerenderheader = 0;
+    }
+
+    if (this.t_rerenderitems) {
+      clearTimeout(this.t_rerenderitems);
+      this.t_rerenderitems = 0;
+    }
+
+    this.t_rerender = setTimeout(function () {
+      _this6.t_rerender = 0;
+      renderHeader.call(_this6, $, _this6.$el, _this6.__columns);
+      renderBySortAndFilter.call(_this6, true);
+    }, 0);
+  };
+
+  var rerenderHeader = function rerenderHeader() {
+    var _this7 = this;
+
+    if (this.t_rerender) return;
+
+    if (this.t_rerenderheader) {
+      clearTimeout(this.t_rerenderheader);
+      this.t_rerenderheader = 0;
+    }
+
+    this.t_rerenderheader = setTimeout(function () {
+      _this7.t_rerenderheader = 0;
+      renderHeader.call(_this7, $, _this7.$el, _this7.__columns);
+    }, 0);
+  };
+
+  var rerenderItems = function rerenderItems() {
+    var _this8 = this;
+
+    if (this.t_rerender) return;
+
+    if (this.t_rerenderitems) {
+      clearTimeout(this.t_rerenderitems);
+      this.t_rerenderitems = 0;
+    }
+
+    this.t_rerenderitems = setTimeout(function () {
+      _this8.t_rerenderitems = 0;
+      renderBySortAndFilter.call(_this8, true);
+      rerenderEnumFilters.call(_this8);
+    }, 0);
+  };
+
+  var renderExpandView = function renderExpandView($, row, data, rowIndex) {
+    var _this9 = this;
+
+    var expandRow = $("<tr class='row-expand'></tr>").insertAfter(row);
+    var expandCell = $("<td></td>").appendTo(expandRow);
+    expandCell.attr("colspan", row.children().length);
+    var container = $("<div class='container'></div>").appendTo(expandCell);
+    var expandRender = this.getExpandRenderer();
+
+    if (Utils.isFunction(expandRender)) {
+      var expandView = expandRender(data, rowIndex);
+
+      if (Utils.isNotNull(expandView)) {
+        container.append(expandView.$el || expandView);
+      }
+    } else {
+      var _expandView = $("<div class='datagrid-expand'></div>").appendTo(container);
+
+      _expandView.attr("cols", this.getExpandColspan());
+
+      Utils.each(this.__columns, function (column, i) {
+        if (Utils.isTrue(column.expand)) {
+          var item = $("<div></div>").appendTo(_expandView);
+          item.addClass("col-" + i).attr("col-name", column.name);
+          item = $("<dl></dl>").appendTo(item);
+          $("<dt></dt>").appendTo(item).text(column.title || column.name || "");
+          var content = $("<dd></dd>").appendTo(item);
+          renderCell.call(_this9, $, content, column, data, rowIndex, i);
+          item.removeClass("col-" + i).removeAttr("col-name");
+        }
+      });
+    }
+  };
+
+  var rerenderEnumFilters = function rerenderEnumFilters() {
+    var _this10 = this;
+
+    if (this._isRenderAsApp()) return;
+    Utils.each(getHeaders.call(this), function (col) {
+      var colName = col.attr("col-name");
+
+      if (colName) {
+        var column = getColumnInfo.call(_this10, col.attr("col-name"));
+
+        if (column && column.filter == "enum") {
+          var filterBtn = col.find(".toolbar .filter");
+          var filterItems = DatagridRender.getColumnValueSet.call(_this10, column);
+          var filterValue = col.attr("opt-filter");
+
+          if (filterItems && filterItems.length > 0) {
+            filterItems = Utils.map(filterItems, function (tmp) {
+              return {
+                label: tmp,
+                value: tmp
+              };
+            });
+          } else {
+            filterItems = [{
+              label: "无选项",
+              value: ""
+            }];
+          }
+
+          filterBtn.children(".dropdown").remove();
+          renderToolDropdown.call(_this10, $, filterBtn, filterItems, filterValue, "空");
+        }
+      }
+    });
+  }; // ====================================================
+
+
+  var doInit = function doInit() {
+    this.$el.children("[name='irender']").remove(); // selectedChanged.call(this);
+
+    startLayoutChangeMonitor.call(this);
+  }; // 排序互斥，即只能有一个排序方法
+
+
+  var doSort = function doSort(column, sortType, sortFunction) {
+    var cols = getHeaders.call(this);
+    cols.removeAttr("opt-sort");
+    cols.find(".sort > i").css("backgroundImage", "");
+    cols.find(".sort .dropdown li").removeClass("selected");
+    var isCustom = column && column.sortable == "custom";
+
+    if (column && column.name && Utils.isNotNull(sortType)) {
+      var col = cols.filter("[col-name='" + column.name + "']");
+
+      if (col && col.length > 0) {
+        col.attr("opt-sort", sortType);
+        var icon = defaultIcons[sortType];
+
+        if (Utils.isArray(column.sortable)) {
+          if (!this._isRenderAsApp()) col.find(".sort li[data-type='" + sortType + "']").addClass("selected");
+          var sortItem = Utils.findBy(column.sortable, "type", sortType) || {};
+          icon = sortItem.icon || icon;
+          isCustom = Utils.isTrue(sortItem.custom);
+        }
+
+        if (icon) col.find(".sort > i").css("backgroundImage", "url(" + icon + ")");
+      }
+    }
+
+    this.currentSort = {
+      column: column,
+      type: sortType,
+      fn: sortFunction,
+      name: column && column.name
+    };
+
+    if (Utils.isFunction(sortFunction)) {
+      var _sortFunction = sortFunction;
+
+      this.currentSort.fn = function (column, a, b, sortType) {
+        return _sortFunction(a, b, sortType, column);
+      };
+    } else if (Utils.isNotNull(sortType) && !isCustom) {
+      this.currentSort.fn = this._getSortFunction(column, sortType);
+    }
+
+    if (Utils.isFunction(this.currentSort.fn) || !isCustom) {
+      renderBySortAndFilter.call(this);
+    }
+
+    this.trigger("sort", column && column.name, sortType);
+  }; // 设置某一列筛选，不影响其他列筛选
+
+
+  var doFilter = function doFilter(column, filterValue, filterFunction) {
+    var isCustom = column && column.filter == "custom";
+    var isNullValue = Utils.isNull(filterValue) || filterValue === false;
+
+    if (column && column.name) {
+      var cols = getHeaders.call(this);
+      var col = cols.filter("[col-name='" + column.name + "']");
+
+      if (col && col.length > 0) {
+        col.removeAttr("opt-filter");
+        col.find(".filter > i").css("backgroundImage", "");
+        col.find(".filter li").removeClass("selected");
+
+        if (!isNullValue || Utils.isFunction(filterFunction)) {
+          col.attr("opt-filter", isNullValue ? true : filterValue);
+
+          if (!this._isRenderAsApp()) {
+            if (col.find(".filter .dropdown").is(".ipt")) {
+              col.find(".filter input").val(isNullValue ? "" : filterValue);
+            } else if (!isNullValue) {
+              col.find(".filter li[data-val='" + filterValue + "']").addClass("selected");
+            }
+          }
+
+          if (Utils.isArray(column.filter)) {
+            var filterItem = Utils.findBy(column.filter, "value", filterValue) || {};
+            if (filterItem.icon) col.find(".filter > i").css("backgroundImage", "url(" + filterItem.icon + ")");
+            isCustom = Utils.isTrue(filterItem.custom);
+          }
+        }
+      }
+    }
+
+    if (Utils.isFunction(filterFunction)) {
+      var _filterFunction = filterFunction;
+
+      filterFunction = function filterFunction(_column, _data, _value) {
+        return _filterFunction(_data, _value, _column);
+      };
+    } else if (!isNullValue && !isCustom) {
+      filterFunction = this._getFilterFunction(column, filterValue);
+    }
+
+    var colName = column && column.name || "";
+
+    if (this.currentFilters) {
+      if (!isNullValue || Utils.isFunction(filterFunction)) {
+        var filter = Utils.findBy(this.currentFilters, "name", colName);
+
+        if (!filter) {
+          filter = {
+            name: colName,
+            column: column
+          };
+          this.currentFilters.push(filter);
+        }
+
+        filter.value = filterValue;
+        filter.fn = filterFunction;
+      } else {
+        Utils.removeBy(this.currentFilters, "name", colName);
+      }
+    }
+
+    if (!isCustom) {
+      renderBySortAndFilter.call(this, true);
+    }
+
+    this.trigger("filter", colName, filterValue);
+  };
+
+  var renderBySortAndFilter = function renderBySortAndFilter(hasFilterChanged) {
+    var datas = this.getData(true);
+
+    if (hasFilterChanged || !this.lastFilterDatas) {
+      var _datas2 = [].concat(datas);
+
+      if (_datas2 && _datas2.length > 0) {
+        if (!this.currentFilters) initCurrentFilters.call(this);
+        Utils.each(this.currentFilters, function (filter) {
+          _datas2 = Utils.filter(_datas2, function (data) {
+            return filter.fn(filter.column, data, filter.value);
+          });
+        });
+      }
+
+      this.lastFilterDatas = _datas2;
+    }
+
+    var _datas = this.lastFilterDatas;
+    if (!this.currentSort) initCurrentSort.call(this);
+
+    if (this.currentSort && Utils.isFunction(this.currentSort.fn)) {
+      var _sort = this.currentSort;
+      _datas = _datas.slice(0).sort(function (a, b) {
+        return _sort.fn(_sort.column, a, b, _sort.type);
+      });
+    } // 对应原数据集中的索引
+
+
+    var _indexs = Utils.map(_datas, function (data) {
+      return Utils.index(datas, function (temp) {
+        return temp == data;
+      });
+    }); // 当前选中项对应筛选、排序后的新索引
+
+
+    var _selectedIndexs = []; // 当前展开的原数据集索引
+
+    var expandIndexs = [];
+    Utils.each(this._getItems(), function (item) {
+      if (item.is(".selected")) {
+        var index = parseInt(item.attr("opt-ind")) || 0;
+        var data = datas && datas[index];
+
+        if (data) {
+          index = Utils.index(_datas, function (temp) {
+            return temp == data;
+          });
+          if (index >= 0) _selectedIndexs.push(index);
+        }
+      }
+
+      if (item.is(".expand")) expandIndexs.push(item.attr("opt-ind"));
+    });
+    renderItems.call(this, $, this.$el, _datas, _indexs, _selectedIndexs);
+    selectedChanged.call(this);
+
+    if (hasFilterChanged) {
+      UI._items.checkIfEmpty.call(this);
+    }
+
+    if (expandIndexs.length > 0) {
+      Utils.each(this._getItems(), function (item) {
+        if (expandIndexs.indexOf(item.attr("opt-ind")) >= 0) item.children(".col-exp").children(".expbtn").trigger("tap");
+      });
+    }
+  };
+
+  var initCurrentSort = function initCurrentSort() {
+    var col = Utils.find(getHeaders.call(this), function (col) {
+      return !!col.attr("opt-sort");
+    });
+    this.currentSort = null;
+
+    if (col && col.length > 0) {
+      var colName = col.attr("col-name");
+      var sortType = col.attr("opt-sort");
+      var column = getColumnInfo.call(this, colName);
+
+      var sortFunction = this._getSortFunction(column, sortType);
+
+      this.currentSort = {
+        name: colName,
+        column: column,
+        type: sortType,
+        fn: sortFunction
+      };
+    }
+  };
+
+  var initCurrentFilters = function initCurrentFilters() {
+    var _this11 = this;
+
+    var filters = this.currentFilters = [];
+    Utils.each(getHeaders.call(this), function (col) {
+      var colName = col.attr("col-name");
+      var filterValue = col.attr("opt-filter");
+
+      if (colName && Utils.isNotNull(filterValue) && filterValue !== false) {
+        var column = getColumnInfo.call(_this11, colName);
+
+        var filterFunction = _this11._getFilterFunction(column, filterValue);
+
+        filters.push({
+          name: colName,
+          column: column,
+          value: filterValue,
+          fn: filterFunction
+        });
+      }
+    });
+  };
+
+  var getHeaders = function getHeaders() {
+    return this.gridHead.children("table").children("thead").children("tr").children("th");
+  }; // ====================================================
+  // 显示 排序 和 筛选 对话框
+
+
+  var showSortAndFilterDialog = function showSortAndFilterDialog(column, col) {
+    $("body").addClass("ui-scrollless");
+    var dialogView = $("<div class='sort-and-filter'></div>").appendTo(this.$el);
+    var container = $("<div class='container'></div>").appendTo(dialogView);
+    dialogView.data("column", column);
+    var isSortable = Utils.isTrue(column.sortable);
+    var isFilterable = Utils.isTrue(column.filter);
+    if (isSortable) showDialogSortView.call(this, container, column, col.attr("opt-sort"));
+    if (isFilterable) showDialogFilterView.call(this, container, column, col.attr("opt-filter"));
+
+    if (!isSortable && isFilterable && column.filter != "enum" && !Utils.isArray(column.filter)) {
+      dialogView.addClass("inputing");
+      dialogView.find(".filter").focus();
+    }
+
+    setTimeout(function () {
+      dialogView.addClass("show");
+    }, 0);
+  };
+
+  var showDialogSortView = function showDialogSortView(container, column, sortType) {
+    var target = $("<div class='sort'></div>").appendTo(container);
+    target.append("<div class='title'>排序</div>");
+    var sorts = column.sortable;
+
+    if (!Utils.isArray(sorts)) {
+      sorts = [{
+        label: "升序",
+        type: "asc"
+      }, {
+        label: "降序",
+        type: "desc"
+      }];
+    }
+
+    var content = $("<div class='content'></div>").appendTo(target);
+    Utils.each(sorts, function (data) {
+      var item = $("<div class='item'></div>").appendTo(content);
+      item.attr("data-type", data.type);
+      var icon = $("<i></i>").appendTo(item);
+      var iconUrl = data.icon || defaultIcons[data.type];
+      if (iconUrl) icon.css("backgroundImage", "url(" + iconUrl + ")");
+      $("<span></span>").appendTo(item).text(data.label || "无");
+      if (data.type == sortType) item.addClass("selected");
+    });
+  };
+
+  var showDialogFilterView = function showDialogFilterView(container, column, filterValue) {
+    var target = $("<div class='filter'></div>").appendTo(container);
+    target.append("<div class='title'>筛选</div>");
+    var filters = column.filter;
+
+    if (column.filter == "enum") {
+      filters = getColumnValueSet.call(this, column);
+
+      if (filters && filters.length > 0) {
+        filters = Utils.map(filters, function (temp) {
+          return {
+            label: temp,
+            value: temp
+          };
+        });
+      } else {
+        filters = [{
+          label: "无选项",
+          value: ""
+        }];
+      }
+    }
+
+    var content = $("<div class='content'></div>").appendTo(target);
+
+    if (Utils.isArray(filters)) {
+      Utils.each(filters, function (data) {
+        var item = $("<div class='item'></div>").appendTo(content);
+        item.attr("data-val", data.value);
+        var icon = $("<i></i>").appendTo(item);
+        if (data.icon) icon.css("backgroundImage", "url(" + data.icon + ")");
+        $("<span></span>").appendTo(item).text(data.label || "空");
+        if (data.value == filterValue) item.addClass("selected");
+      });
+    } else {
+      var filterInput = $("<div class='filterinput'></div>").appendTo(content);
+      filterInput.append("<input placeholder='请输入文本'/>");
+      filterInput.append("<div class='clearbtn'></div>");
+      filterInput.append("<div class='submitbtn'>确定</div>");
+      if (filterValue) filterInput.children("input").val(filterValue);
+    }
+  };
+
+  var hideSortAndFilterDialog = function hideSortAndFilterDialog() {
+    $("body").removeClass("ui-scrollless");
+    var target = this.$el.children(".sort-and-filter");
+    target.removeClass("show").removeClass("inputing");
+    setTimeout(function () {
+      target.remove();
+    }, 300);
+  }; // ====================================================
+  // 实时监视表格，进行布局调整
+
+
+  var startLayoutChangeMonitor = function startLayoutChangeMonitor() {
+    var _this12 = this;
+
+    if (this.t_layout) {
+      clearTimeout(this.t_layout);
+      this.t_layout = 0;
+    }
+
+    this.t_layout = setTimeout(function () {
+      _this12.t_layout = 0;
+
+      if (_this12.isMounted()) {
+        doHeaderLayout.call(_this12);
+        checkBodyFixed.call(_this12);
+        startLayoutChangeMonitor.call(_this12);
+      }
+    }, 50);
+  };
+
+  var doHeaderLayout = function doHeaderLayout() {
+    if (this.isHeaderVisible()) {
+      var headers = getHeaders.call(this);
+      var cols = this.gridBody.children("table").children("thead").children("tr").children("th");
+      Utils.each(cols, function (col, i) {
+        var header = headers.eq(i);
+
+        if (col.is(".is-expand")) {
+          header.addClass("is-expand");
+        } else {
+          var width = col.width();
+          if (width != parseInt(header.attr("opt-w"))) header.attr("opt-w", width).width(width);
+        }
+      });
+    }
+  };
+
+  var checkBodyFixed = function checkBodyFixed() {// this.$el.removeAttr("fixed");
+    // if (!this.$el.is(".is-empty")) {
+    // 	let table = this.gridBody.parent().parent(); // .table
+    // 	let head = table.children("header"); // head
+    // 	let body = table.children("section"); // body
+    // 	if (table.width() < head.width() + body.width())
+    // 		this.$el.attr("fixed", "1");
+    // }
+  };
+
+  var selectedChanged = function selectedChanged() {
+    var snapshoot = this._snapshoot();
+
+    var indexs = Utils.map(this._getItems(".selected"), function (item) {
+      return item.index();
+    });
+
+    UI._select.setSelectedIndex.call(this, indexs);
+
+    if (this.isMultiple()) {
+      var header = this.gridHead.find("tr");
+      if (this.isAllSelected()) header.addClass("selected");else header.removeClass("selected");
+    }
+
+    snapshoot.done();
+  };
+
+  var getColumnInfo = function getColumnInfo(name) {
+    return Utils.findBy(this.__columns, "name", name);
+  }; // ====================================================
+  // 获取数据集某一列的集合
+
+
+  var getColumnValueSet = function getColumnValueSet(column, datas) {
+    var set = [];
+    var columnName = column && column.name;
+
+    if (columnName) {
+      datas = datas || this.getData(true);
+      Utils.each(datas, function (data) {
+        var value = data && data[columnName];
+        var hasValue = Utils.index(set, function (tmp) {
+          return tmp == value;
+        });
+        if (hasValue < 0) set.push(value);
+      });
+    }
+
+    return set.sort();
+  };
+
+  var getFormatColumns = function getFormatColumns(columns) {
+    columns = Utils.map(Utils.toArray(columns), formatOneColumn);
+    var sortColumn = null;
+    var isAllExpand = true;
+    Utils.each(columns, function (column) {
+      if (column.sortType) {
+        // 只允许一个列排序
+        if (sortColumn) sortColumn.sortType = null;
+        sortColumn = column;
+      }
+
+      if (!column.expand) isAllExpand = false;
+    });
+    if (isAllExpand && columns.length > 0) columns[0].expand = false;
+    return columns;
+  };
+
+  var formatOneColumn = function formatOneColumn(column, index) {
+    var _column = {};
+
+    if (Utils.isNull(column)) {
+      _column.title = "列 " + (index + 1);
+    } else if (Utils.isPrimitive(column)) {
+      _column.name = Utils.trimToEmpty(column);
+    } else {
+      _column.name = Utils.trimToEmpty(column.name);
+      _column.title = Utils.trimToNull(column.title);
+      _column.html = Utils.trimToNull(column.focusHtmlTitle);
+      _column.icon = Utils.trimToNull(column.icon);
+      _column.width = Utils.trimToNull(column.width);
+      _column.expand = Utils.isTrue(column.expand);
+      if (Utils.isTrue(column.sortable)) formatColumnSortable(_column, column);
+      if (Utils.isTrue(column.filter)) formatColumnFilterable(_column, column);
+    }
+
+    return _column;
+  };
+
+  var formatColumnSortable = function formatColumnSortable(column, data) {
+    if (Utils.isFunction(data.sortFunction)) column.sortFunction = data.sortFunction;else if (Utils.isFunction(data.sortable)) column.sortFunction = data.sortable;
+
+    if (Utils.isArray(data.sortable) && data.sortable.length > 0) {
+      column.sortable = Utils.map(data.sortable, function (tmp) {
+        return {
+          type: tmp.type,
+          label: tmp.label,
+          icon: tmp.icon,
+          handler: tmp.handler,
+          custom: tmp.custom
+        };
+      });
+    } else {
+      column.sortable = data.sortable == "custom" ? "custom" : true;
+    }
+
+    column.sortType = data.sortType ? Utils.trimToNull(data.sortType) : null;
+  };
+
+  var formatColumnFilterable = function formatColumnFilterable(column, data) {
+    if (Utils.isFunction(data.filterFunction)) column.filterFunction = data.filterFunction;else if (Utils.isFunction(data.filter)) column.filterFunction = data.filter;
+
+    if (Utils.isArray(data.filter) && data.filter.length > 0) {
+      column.filter = Utils.map(data.filter, function (tmp) {
+        return {
+          label: tmp.label,
+          value: tmp.value,
+          icon: tmp.icon,
+          handler: tmp.handler,
+          custom: tmp.custom
+        };
+      });
+    } else {
+      column.filter = /^(custom|enum)$/.test(data.filter) ? data.filter : true;
+    }
+
+    column.filterValue = data.filterValue ? Utils.trimToNull(data.filterValue) : null;
+  }; // ====================================================
+
+
+  var getSortFunction = function getSortFunction(column, type) {
+    if (column) {
+      if (Utils.isNotNull(type) && Utils.isArray(column.sortable)) {
+        var temp = Utils.findBy(column.sortable, "type", type);
+
+        if (temp && Utils.isFunction(temp.handler)) {
+          return function (_column, a, b, sortType) {
+            return temp.handler(a, b, sortType);
+          };
+        }
+      }
+
+      if (Utils.isFunction(column.sortFunction)) {
+        return function (_column, a, b, sortType) {
+          return column.sortFunction(a, b, sortType);
+        };
+      }
+    }
+
+    if (Utils.isFunction(this.options.sortFunction)) {
+      var fn = this.options.sortFunction;
+      return function (_column, a, b, sortType) {
+        return fn(a, b, sortType, _column);
+      };
+    }
+
+    return defaultSortFucntion;
+  };
+
+  var getFilterFunction = function getFilterFunction(column, value) {
+    if (column) {
+      if (Utils.isNotNull(value) && Utils.isArray(column.filter)) {
+        var temp = Utils.findBy(column.filter, "value", value);
+
+        if (temp && Utils.isFunction(temp.handler)) {
+          return function (_column, _data, _value) {
+            return temp.handler(_data, _value);
+          };
+        }
+      }
+
+      if (Utils.isFunction(column.filterFunction)) {
+        return function (_column, _data, _value) {
+          return column.filterFunction(_data, _value);
+        };
+      }
+    }
+
+    if (Utils.isFunction(this.options.filterFunction)) {
+      var fn = this.options.filterFunction;
+      return function (_column, _data, _value) {
+        return fn(_data, _value, _column);
+      };
+    }
+
+    return defaultFilterFunction;
+  };
+
+  var defaultSortFucntion = function defaultSortFucntion(column, a, b, sortType) {
+    if (column && column.name && /^(asc|desc)$/i.test(sortType)) {
+      var value_a = a ? a[column.name] : null;
+      var value_b = b ? b[column.name] : null;
+
+      var result = function () {
+        if (Utils.isNull(value_a)) return Utils.isNull(value_b) ? 0 : -1;
+        if (Utils.isNull(value_b)) return Utils.isNull(value_a) ? 0 : 1;
+        var dataType = column.dataType;
+
+        if (/date/i.test(dataType)) {
+          value_a = Utils.toDate(value_a);
+          value_b = Utils.toDate(value_b);
+          if (!value_a) return value_b ? 1 : 0;
+          if (!value_b) return value_a ? -1 : 0;
+          var format = /^date$/i.test(dataType) ? "yyyyMMddHHmmss" : "yyyyMMdd";
+          value_a = Utils.toDateString(value_a, format);
+          value_b = Utils.toDateString(value_b, format);
+          return value_a < value_b ? -1 : value_a > value_b ? 1 : 0;
+        }
+
+        if (/num/i.test(dataType) || !(isNaN(value_a) || isNaN(value_b))) {
+          return parseFloat(value_a) - parseFloat(value_b);
+        }
+
+        return value_a.localeCompare(value_b);
+      }();
+
+      return result * (/^asc$/i.test(sortType) ? 1 : -1);
+    }
+
+    return 0;
+  };
+
+  var defaultFilterFunction = function defaultFilterFunction(column, data, value) {
+    if (!(column || column.name)) return true; // 没有列信息，不做筛选
+
+    if (Utils.isNull(data)) return false;
+    var _value = data[column.name];
+    if (_value === value) return true;
+    var dataType = column.dataType;
+
+    if (/date/i.test(dataType)) {
+      value = Utils.toDate(value);
+      if (!value) return true; // 不是日期（先不筛选）
+
+      _value = Utils.toDate(_value);
+
+      if (_value) {
+        var format = /^date$/i.test(dataType) ? "yyyyMMdd" : "yyyyMMddHHmmss";
+        value = Utils.toDateString(value, format);
+        _value = Utils.toDateString(_value, format);
+        return _value.indexOf(value) === 0;
+      }
+
+      return false;
+    }
+
+    if (Utils.isNull(_value)) return Utils.isNull(value);
+    if (Utils.isNull(value)) return Utils.isNull(_value);
+
+    if (/num/i.test(dataType) || !(isNaN(value) || isNaN(_value))) {
+      return parseFloat(value) == parseFloat(_value);
+    }
+
+    if (value == _value) return true;
+    value = Utils.trimToEmpty(value);
+    _value = Utils.trimToEmpty(_value);
+    return _value.indexOf(value) >= 0;
+  }; // 组件内置默认获取表单元格内容的方法
+
+
+  var getDefaultValue = function getDefaultValue(column, data, index) {
+    if (Utils.isBlank(data)) return null;
+    if (Utils.isBlank(column.name)) return "" + data;
+    var value = data[column.name];
+
+    if (column.dataType &&
+    /*column.format && */
+    Utils.isNotBlank(value)) {
+      var type = column.dataType;
+      if (type === "localtime") value = Utils.toLocalDateString(Utils.toDate(value));else if (/^(date|datetime|time)$/.test(type)) {
+        value = Utils.toDate(value);
+        if (value) value = Utils.toDateString(value, dateFormats[type]);
+      } else if (type === "money") {
+        value = parseFloat(value);
+        if (isNaN(value)) value = null;else {
+          value = value.toFixed(2).split(".");
+          value = "<span class='val'>￥<span class='v1'>" + value[0] + "</span>.<span class='v2'>" + value[1] + "</span></span>";
+        }
+      } else if (type === "number" || type === "num") {
+        value = parseFloat(value);
+        if (isNaN(value)) value = null;else {
+          var decimals = parseFloat(column.decimals);
+          if (isNaN(decimals) || decimals < 0) decimals = 0;
+          value = value.toFixed(decimals);
+        }
+      }
+    }
+
+    return value;
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UIDatagrid = UIDatagrid;
+    UI.init(".ui-datagrid", UIDatagrid, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");

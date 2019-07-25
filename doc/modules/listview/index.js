@@ -177,7 +177,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("使用项渲染器可以将列表显示成任意你想要的样子。");
 		description.push("属性 <>itemRender</> 指定一个方法，返回列表显示的内容。");
 
-		let isApp = this.isApp;
+		let _isApp = this.isApp;
 		let myItemRenderer = function ($, item, data) {
 			var item = $("<div style='padding:10px 0px 10px 55px;'></div>");
 			var icon = $("<img style='position:absolute; width:48px; height:48px; left:0px; top:10px'>").appendTo(item);
@@ -190,6 +190,7 @@ const ModuleView = BaseModule.extend(module, {
 			infos.text(data.size.toFixed(2) + "M，版本号：V" + data.version + "，更新时间：" + data.date);
 			desc.text(data.desc);
 
+			let isApp = (typeof _isApp != "undefined") ? _isApp : VRender.ENV.isApp;
 			if (isApp) {
 				item.css({padding: "0.1rem 0px 0.1rem 0.55rem"});
 				icon.css({width: "0.48rem", height: "0.48rem", top: "0.1rem"});
