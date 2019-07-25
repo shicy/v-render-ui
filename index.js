@@ -30,6 +30,7 @@ const UITabbar = require("./src/components/tabbar");
 const UIPanel = require("./src/components/panel");
 const UIListView = require("./src/components/listview");
 const UIDatagrid = require("./src/components/datagrid");
+const UIScrollBox = require("./src/components/scrollbox");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
@@ -60,6 +61,7 @@ module.exports = {
 		VRender.UIPopupMenu = UIPopupMenu;
 		VRender.UIRadiobox = UIRadiobox;
 		VRender.UIRadioGroup = UIRadioGroup;
+		VRender.UIScrollBox = UIScrollBox;
 		VRender.UITabbar = UITabbar;
 		VRender.UITextView = UITextView;
 		VRender.UITimeInput = UITimeInput;
