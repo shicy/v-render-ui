@@ -13,6 +13,12 @@ input {
 	-moz-box-sizing: border-box;
 }
 
+.vrender-ui * {
+    position: relative;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
 .vrender-ui div,
 .vrender-ui ul {
 	-webkit-overflow-scrolling : touch;
