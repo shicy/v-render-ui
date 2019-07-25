@@ -54,6 +54,7 @@ const menus = [{
 }, {
 	name: "数据集",
 	children: [
+		{name: "datagrid", title: "Datagrid", subTitle: "数据网络"},
 		{name: "listview", title: "ListView", subTitle: "列表视图"}
 	]
 }, {

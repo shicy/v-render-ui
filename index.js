@@ -29,10 +29,11 @@ const UIPaginator = require("./src/components/paginator");
 const UITabbar = require("./src/components/tabbar");
 const UIPanel = require("./src/components/panel");
 const UIListView = require("./src/components/listview");
+const UIDatagrid = require("./src/components/datagrid");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190724";
+const distVersion = "190725";
 
 module.exports = {
 	install: function () {
@@ -42,6 +43,7 @@ module.exports = {
 		VRender.UICombobox = UICombobox;
 		VRender.UIConfirm = UIConfirm;
 		VRender.UIContainer = UIContainer;
+		VRender.UIDatagrid = UIDatagrid;
 		VRender.UIDateInput = UIDateInput;
 		VRender.UIDatePicker = UIDatePicker;
 		VRender.UIDateRange = UIDateRange;
