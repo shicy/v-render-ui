@@ -55,7 +55,8 @@ const menus = [{
 	name: "数据集",
 	children: [
 		{name: "datagrid", title: "Datagrid", subTitle: "数据网络"},
-		{name: "listview", title: "ListView", subTitle: "列表视图"}
+		{name: "listview", title: "ListView", subTitle: "列表视图"},
+		{name: "treeview", title: "TreeView", subTitle: "树形视图"}
 	]
 }, {
 	name: "容器",
@@ -71,6 +72,7 @@ const menus = [{
 	name: "导航",
 	children: [
 		{name: "paginator", title: "Paginator", subTitle: "分页"},
+		{name: "popupmenu", title: "PopupMenu", subTitle: "弹出菜单"},
 		{name: "tabbar", title: "Tabbar", subTitle: "标签栏"}
 	]
 }, {
@@ -79,7 +81,6 @@ const menus = [{
 		{name: "confirm", title: "Confirm", subTitle: "确认对话框"},
 		{name: "dialog", title: "Dialog", subTitle: "对话框"},
 		{name: "notice", title: "Notice", subTitle: "通知"},
-		{name: "popupmenu", title: "PopupMenu", subTitle: "弹出菜单"},
 		{name: "tooltip", title: "Tooltip", subTitle: "提示框"}
 	]
 }];

@@ -31,6 +31,7 @@ const UIPanel = require("./src/components/panel");
 const UIListView = require("./src/components/listview");
 const UIDatagrid = require("./src/components/datagrid");
 const UIScrollBox = require("./src/components/scrollbox");
+const UITreeView = require("./src/components/treeview");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
@@ -66,6 +67,7 @@ module.exports = {
 		VRender.UITextView = UITextView;
 		VRender.UITimeInput = UITimeInput;
 		VRender.UITooltip = UITooltip;
+		VRender.UITreeView = UITreeView;
 		VRender.UIVGroup = UIGroup.VGroup;
 	},
 
