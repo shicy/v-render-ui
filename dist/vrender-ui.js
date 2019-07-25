@@ -15554,3 +15554,1604 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     module.exports = Renderer;
   }
 })(typeof window !== "undefined");
+"use strict";
+
+// 2019-07-25
+// treeview
+(function (frontend) {
+  if (frontend && VRender.Component.ui.treeview) return;
+  var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
+
+  var UITreeView = UI.treeview = function (view, options) {
+    return UI._select.call(this, view, options);
+  };
+
+  var _UITreeView = UITreeView.prototype = new UI._select(false);
+
+  _UITreeView.init = function (target, options) {
+    UI._select.init.call(this, target, options);
+
+    this.$el.on("tap", ".tree-node", onNodeClickHandler.bind(this));
+    this.$el.on("tap", ".tree-node > .chkbox", onChkboxClickHandler.bind(this));
+    this.$el.on("tap", "li.more > div", onMoreBtnClickHandler.bind(this));
+
+    if (!this._isRenderAsApp()) {
+      this.$el.on("tap", ".tree-node > .ep", onExpandClickHandler.bind(this));
+    }
+
+    doInit.call(this);
+  }; // ====================================================
+
+
+  _UITreeView.getDataAt = function (index, deep) {
+    var item = getItemByIndex.call(this, index, deep);
+    return !!item ? this._getItemData(item) : null;
+  };
+
+  _UITreeView.getDataIndex = function (data, deep) {
+    var item = getItemByData.call(this, data, deep);
+    return !!item ? getItemIndex.call(this, item, deep) : -1;
+  };
+
+  _UITreeView.getDataById = function (value, deep) {
+    var item = getItemById.call(this, value, deep);
+    return !!item ? this._getItemData(item) : null;
+  };
+
+  _UITreeView.getIndexById = function (value, deep) {
+    var item = getItemById.call(this, value, deep);
+    return !!item ? getItemIndex.call(this, item, deep) : -1;
+  };
+
+  _UITreeView.getDataByName = function (value, deep) {
+    var _this = this;
+
+    if (Utils.isBlank(value)) return null;
+    var findData = null;
+    doLoop.call(this, function (item) {
+      var data = _this._getItemData(item);
+
+      if (data && data.name == value) {
+        findData = data;
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    return findData;
+  };
+
+  _UITreeView.getIndexByName = function (value, deep) {
+    var _this2 = this;
+
+    if (Utils.isBlank(value)) return -1;
+    var findIndex = -1;
+    doLoop.call(this, function (item, index) {
+      var data = _this2._getItemData(item);
+
+      if (data && data.name == value) {
+        findIndex = index;
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    return findIndex;
+  };
+
+  _UITreeView.isChkboxVisible = function () {
+    return this.$el.attr("opt-chk") == "1";
+  };
+
+  _UITreeView.setChkboxVisible = function (value) {
+    value = Utils.isNull(value) ? true : Utils.isTrue(value);
+
+    if (this.isChkboxVisible() != value) {
+      var snapshoot = this._snapshoot();
+
+      var nodes = this.$el.find(".tree-node");
+
+      if (value) {
+        this.$el.attr("opt-chk", "1");
+        nodes.children(".ep").after("<span class='chkbox'><i></i></span>");
+      } else {
+        this.$el.removeAttr("opt-chk");
+        nodes.parent().removeClass("selected").removeClass("selected_");
+        nodes.children(".chkbox").remove();
+      }
+
+      snapshoot.done();
+    }
+  };
+
+  _UITreeView.getChildrenField = function () {
+    return this.$el.attr("opt-child") || null;
+  };
+
+  _UITreeView.getLeafField = function () {
+    return this.options.leafField;
+  };
+
+  _UITreeView.getSelectedIndex = function (needArray, deep) {
+    var indexs = [];
+
+    var _hasChkbox = this.isChkboxVisible();
+
+    var _isMultiple = this.isMultiple();
+
+    doLoop.call(this, function (item, index) {
+      if (_hasChkbox) {
+        if (item.is(".selected")) {
+          indexs.push(index);
+
+          if (_isMultiple) {
+            if (!deep) return true;
+          } else {
+            return false;
+          }
+        }
+      } else if (item.children(".tree-node").is(".active")) {
+        indexs.push(index);
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    if (needArray || _isMultiple) return indexs.length > 0 ? indexs : null;
+    return indexs.length > 0 ? indexs[0] : -1;
+  };
+
+  _UITreeView.setSelectedIndex = function (value, deep) {
+    var _hasChkbox = this.isChkboxVisible();
+
+    var _isMultiple = this.isMultiple();
+
+    var indexs = Fn.getIntValues(value, 0);
+    if (indexs.length > 1 && !(_hasChkbox && _isMultiple)) indexs = [indexs.pop()];
+
+    var snapshoot = this._snapshoot();
+
+    var nodes = this.$el.find(".tree-node");
+    if (_hasChkbox) nodes.parent().removeClass("selected").removeClass("selected_");else nodes.removeClass("active");
+
+    if (indexs.length > 0) {
+      doLoop.call(this, function (item, index) {
+        if (indexs.indexOf(index) >= 0) {
+          if (_hasChkbox) {
+            if (!item.is(".selected")) {
+              item.addClass("selected");
+              setParentSelected(item);
+
+              if (_isMultiple) {
+                setChildrenSelected(item, true);
+              } else {
+                return false;
+              }
+            }
+          } else {
+            item.children(".tree-node").addClass("active");
+            return false;
+          }
+        }
+
+        if (!deep && !item.is(".open")) return true;
+      });
+    }
+
+    snapshoot.done();
+  };
+
+  _UITreeView.getSelectedKey = function (needArray, deep) {
+    var _this3 = this;
+
+    var ids = [];
+
+    var _hasChkbox = this.isChkboxVisible();
+
+    var _isMultiple = this.isMultiple();
+
+    doLoop.call(this, function (item) {
+      if (_hasChkbox) {
+        if (item.is(".selected")) {
+          ids.push(getItemId.call(_this3, item));
+
+          if (_isMultiple) {
+            if (!deep) return true;
+          } else {
+            return false;
+          }
+        }
+      } else if (item.children(".tree-node").is(".active")) {
+        ids.push(getItemId.call(_this3, item));
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    if (needArray || _isMultiple) return ids.length > 0 ? ids : null;
+    return ids.length > 0 ? ids[0] : null;
+  };
+
+  _UITreeView.setSelectedKey = function (value, deep) {
+    var _this4 = this;
+
+    var _hasChkbox = this.isChkboxVisible();
+
+    var _isMultiple = this.isMultiple();
+
+    var ids = Utils.isArray(value) ? value : Utils.isBlank(value) ? [] : Utils.trimToEmpty(value).split(",");
+    if (ids.length > 1 && !(_hasChkbox && _isMultiple)) ids = [ids.pop()];
+
+    var snapshoot = this._snapshoot();
+
+    var nodes = this.$el.find(".tree-node");
+    if (_hasChkbox) nodes.parent().removeClass("selected").removeClass("selected_");else nodes.removeClass("active");
+
+    if (ids.length > 0) {
+      doLoop.call(this, function (item, index) {
+        var _id = getItemId.call(_this4, item);
+
+        var _hasSelected = Utils.index(ids, function (tmp) {
+          return tmp == _id;
+        }) >= 0;
+
+        if (_hasSelected) {
+          if (_hasChkbox) {
+            if (!item.is(".selected")) {
+              item.addClass("selected");
+              setParentSelected(item);
+
+              if (_isMultiple) {
+                setChildrenSelected(item, true);
+              } else {
+                return false;
+              }
+            }
+          } else {
+            item.children(".tree-node").addClass("active");
+            return false;
+          }
+        }
+
+        if (!deep && !item.is(".open")) return true;
+      });
+    }
+
+    snapshoot.done();
+  };
+
+  _UITreeView.getSelectedData = function (needArray, deep) {
+    var _this5 = this;
+
+    var datas = [];
+
+    var _hasChkbox = this.isChkboxVisible();
+
+    var _isMultiple = this.isMultiple();
+
+    doLoop.call(this, function (item) {
+      if (_hasChkbox) {
+        if (item.is(".selected")) {
+          datas.push(getItemData.call(_this5, item));
+
+          if (_isMultiple) {
+            if (!deep) return true;
+          } else {
+            return false;
+          }
+        }
+      } else if (item.children(".tree-node").is(".active")) {
+        datas.push(getItemData.call(_this5, item));
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    if (needArray || _isMultiple) return datas.length > 0 ? datas : null;
+    return datas.length > 0 ? datas[0] : null;
+  };
+
+  _UITreeView.isAllSelected = function () {
+    var _allSelected = true;
+    doLoop.call(this, function (item) {
+      if (!item.is(".selected")) {
+        _allSelected = false;
+        return false;
+      }
+
+      return true;
+    });
+    return _allSelected;
+  }; // ====================================================
+
+
+  _UITreeView.open = function (data) {
+    var item = getItemByData.call(this, data, true);
+
+    if (item) {
+      doOpen.call(this, item);
+    }
+  };
+
+  _UITreeView.openAt = function (index, deep) {
+    var item = getItemByIndex.call(this, index, deep);
+
+    if (item) {
+      doOpen.call(this, item);
+    }
+  };
+
+  _UITreeView.openById = function (value) {
+    var item = getItemById.call(this, value, true);
+
+    if (item) {
+      doOpen.call(this, item);
+    }
+  };
+
+  _UITreeView.close = function (data) {
+    var item = getItemByData.call(this, data, true);
+
+    if (item) {
+      doClose.call(this, item);
+    }
+  };
+
+  _UITreeView.closeAt = function (index, deep) {
+    var item = getItemByIndex.call(this, index, deep);
+
+    if (item) {
+      doClose.call(this, item);
+    }
+  };
+
+  _UITreeView.closeById = function (value) {
+    var item = getItemById.call(this, value, true);
+
+    if (item) {
+      doClose.call(this, item);
+    }
+  }; // ====================================================
+
+
+  _UITreeView.addItem = function (data, pdata, index) {
+    if (Utils.isBlank(data)) return false;
+
+    var container = this._getItemContainer();
+
+    if (Utils.isNotBlank(pdata)) {
+      var item = getItemByData.call(this, pdata, true);
+
+      if (item) {
+        container = item.children("ul");
+
+        if (!(container && container.length > 0)) {
+          container = $("<ul></ul>").appendTo(item);
+          container.attr("level", parseInt(item.parent().attr("level")) + 1);
+        }
+      }
+    }
+
+    var children = container.children();
+    var nodeIndex = container.is(".root") ? 0 : getItemIndex.call(this, container.parent(), true);
+    index = Utils.getIndexValue(index);
+    if (index >= 0 && index < children.length - 1) nodeIndex += index;
+
+    var snapshoot = this._snapshoot();
+
+    addItem.call(this, container, data, index, nodeIndex);
+    snapshoot.done();
+    return true;
+  };
+
+  _UITreeView.updateItem = function (data, pdata, index) {
+    var _this6 = this;
+
+    if (Utils.isBlank(data)) return false;
+
+    if (!isNaN(pdata) && (pdata || pdata === 0)) {
+      index = pdata;
+      pdata = null;
+    }
+
+    var snapshoot = this._snapshoot();
+
+    if (pdata) {
+      // 此时只修改 pdata 下的节点
+      var parentItem = getItemByData.call(this, pdata, true);
+
+      if (!parentItem) {
+        snapshoot.release();
+        return false;
+      }
+
+      var children = parentItem.children("ul").children();
+
+      if (Utils.isBlank(index)) {
+        var dataId = this._getDataKey(data);
+
+        var item = Utils.find(children, function (_item) {
+          var _data = _this6._getItemData(_item);
+
+          return data == _data || dataId == _this6._getDataKey(_data);
+        });
+        if (item) updateItem.call(this, item, data);
+      } else if (!isNaN(index)) {
+        index = parseInt(index);
+        if (index >= 0 && index < children.length) updateItem.call(this, children.eq(index), data);
+      }
+    } else if (Utils.isBlank(index)) {
+      var _item2 = getItemByData.call(this, data, true);
+
+      if (_item2) updateItem.call(this, _item2, data);
+    } else if (!isNaN(index)) {
+      // 此时 index 为展开的节点
+      index = parseInt(index);
+
+      var _item3 = getItemByIndex.call(this, index);
+
+      if (_item3) updateItem.call(this, _item3, data);
+    }
+
+    snapshoot.done();
+    return true;
+  };
+
+  _UITreeView.removeItem = function (data, pdata) {
+    var _this7 = this;
+
+    if (Utils.isBlank(data)) return false;
+
+    var snapshoot = this._snapshoot();
+
+    if (pdata) {
+      var parentItem = getItemByData.call(this, pdata, true);
+
+      if (!parentItem) {
+        snapshoot.release();
+        return false;
+      }
+
+      var dataId = this._getDataKey(data);
+
+      var children = parentItem.children("ul").children();
+      var item = Utils.find(children, function (_item) {
+        var _data = _this7._getItemData(_item);
+
+        return data == _data || dataId == _this7._getDataKey(_data);
+      });
+      if (item) removeItem.call(this, item);
+    } else {
+      var _item4 = getItemByData.call(this, data, true);
+
+      if (_item4) removeItem.call(this, _item4);
+    }
+
+    snapshoot.done();
+    return true;
+  };
+
+  _UITreeView.removeItemAt = function (index, pdata) {
+    index = Utils.getIndexValue(index);
+    if (index < 0) return false;
+
+    var snapshoot = this._snapshoot();
+
+    if (pdata) {
+      var parentItem = getItemByData.call(this, pdata, true);
+
+      if (!parentItem) {
+        snapshoot.release();
+        return false;
+      }
+
+      var children = parentItem.children("ul").children();
+      if (index < children.length) removeItem.call(this, children.eq(index));
+    } else {
+      var item = getItemByIndex.call(this, index);
+      if (item) removeItem.call(this, item);
+    }
+
+    snapshoot.done();
+    return true;
+  };
+
+  _UITreeView.addOrUpdateItem = function (data, pdata) {
+    if (Utils.isBlank(data)) return;
+    if (!this.updateItem(data, pdata)) this.addItem(data, pdata);
+  };
+
+  _UITreeView.setItems = function (datas, pdata) {
+    datas = Utils.toArray(datas);
+
+    if (pdata) {
+      var parentItem = getItemByData.call(this, pdata, true);
+      if (!parentItem) return;
+
+      var snapshoot = this._snapshoot();
+
+      var children = parentItem.children("ul").children();
+
+      for (var i = children.length - 1; i >= 0; i--) {
+        removeItem.call(this, children.eq(i));
+      }
+
+      if (datas && datas.length > 0) {
+        var container = parentItem.children("ul");
+
+        if (!(container && container.length > 0)) {
+          container = $("<ul></ul>").appendTo(parentItem);
+          container.attr("level", parseInt(parentItem.parent().attr("level")) + 1);
+        }
+
+        var nodeIndex = getItemIndex.call(this, parentItem, true);
+
+        for (var _i = 0, l = datas.length; _i < l; _i++) {
+          addItem.call(this, container, datas[_i], _i, nodeIndex);
+          nodeIndex += 1;
+        }
+      }
+
+      snapshoot.done();
+    } else {
+      this.setData(datas);
+    }
+  }; // ====================================================
+
+
+  _UITreeView.load = function (api, params, callback) {
+    var _this8 = this;
+
+    api = api || this.lastLoadApi || this.$el.attr("api-name");
+    if (Utils.isBlank(api)) return false;
+
+    var container = this._getItemContainer().empty();
+
+    loadInner.call(this, container, api, params, function (err, datas) {
+      if (!err) {
+        if (Utils.isFunction(callback)) callback(false, datas);
+      } else if (Utils.isFunction(callback)) {
+        callback(err);
+      }
+
+      _this8.trigger("loaded", err, datas);
+    });
+  };
+
+  _UITreeView.length = function () {
+    return Number.POSITIVE_INFINITY;
+  }; // ====================================================
+
+
+  _UITreeView._renderItems = function ($, itemContainer, datas) {
+    renderItems.call(this, $, this.$el, itemContainer, datas);
+  };
+
+  _UITreeView._getItemContainer = function () {
+    return this.$el.children("ul");
+  };
+
+  _UITreeView._getNewItem = function ($, itemContainer, data, index) {
+    return getNewItem.call(this, $, itemContainer, data, index);
+  };
+
+  _UITreeView._isIconVisible = function () {
+    if (Utils.isTrue(this.options.icon)) return true;
+  };
+
+  _UITreeView._getIcon = function (data, index, level) {
+    return getIcon.call(this, this.options.icon, data, index);
+  };
+
+  _UITreeView._getOpenProps = function () {
+    var params = {};
+    var indexs = this.$el.attr("opt-openinds");
+
+    if (Utils.isNotBlank(indexs)) {
+      indexs = getOpenIndex.call(this, indexs);
+      params.indexs = indexs && indexs.length > 0 ? indexs : null;
+    }
+
+    if (!params.indexs) {
+      var ids = this.$el.attr("opt-openids");
+
+      if (Utils.isNotBlank(ids)) {
+        ids = getOpenId.call(this, ids);
+        params.ids = ids && ids.length > 0 ? ids : null;
+      }
+    } // this.$el.removeAttr("opt-openinds").removeAttr("opt-openids");
+
+
+    return params;
+  };
+
+  _UITreeView._getItemData = function (item) {
+    return getItemData.call(this, item);
+  };
+
+  _UITreeView._doAdapter = function (data) {
+    var _this9 = this;
+
+    var datas = Utils.toArray(data);
+    if (datas._vr_adapter_flag) return datas;
+    var dataIndex = 0;
+    var childrenField = this.getChildrenField() || "children";
+
+    var _loopmap = function _loopmap(_datas) {
+      return Utils.map(_datas, function (_data, i) {
+        _data = Fn.doAdapter.call(_this9, _data, dataIndex++);
+        if (Utils.isArray(_data[childrenField])) _data[childrenField] = _loopmap(_data[childrenField]);
+        return _data;
+      });
+    };
+
+    datas = _loopmap(datas);
+    datas._vr_adapter_flag = true;
+    return datas;
+  };
+
+  _UITreeView._snapshoot_shoot = function (state) {
+    state.selectedIndex = this.getSelectedIndex(true);
+  };
+
+  _UITreeView._snapshoot_compare = function (state) {
+    var selectedIndex = this.getSelectedIndex(true);
+    return Fn.equalIndex(state.selectedIndex, selectedIndex);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._selectRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._selectRender(false); // ====================================================
+
+
+  _Renderer.render = function ($, target) {
+    target.addClass("ui-treeview");
+    target.append("<ul class='root' level='0'></ul>");
+
+    UI._selectRender.render.call(this, $, target);
+
+    renderOthers.call(this, $, target);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getData = function () {
+    var _this10 = this;
+
+    var datas = Utils.toArray(this.options.data);
+    if (datas._vr_adapter_flag) return datas;
+    var dataIndex = 0;
+    var childrenField = this.getChildrenField() || "children";
+
+    var _loopmap = function _loopmap(datas) {
+      return Utils.map(datas, function (data, i) {
+        data = Fn.doAdapter.call(_this10, data, dataIndex++);
+
+        if (Utils.isArray(data[childrenField])) {
+          data[childrenField] = _loopmap(data[childrenField]);
+        }
+
+        return data;
+      });
+    };
+
+    datas = _loopmap(datas);
+    datas._vr_adapter_flag = true;
+    this.options.data = datas;
+    return datas;
+  };
+
+  _Renderer.isChkboxVisible = function () {
+    return Utils.isTrue(this.options.chkbox);
+  };
+
+  _Renderer.getChildrenField = function () {
+    return this.options.childrenField;
+  };
+
+  _Renderer.getLeafField = function () {
+    return this.options.leafField;
+  }; // ====================================================
+
+
+  _Renderer._getItemContainer = function ($, target) {
+    return target.children("ul");
+  }; // 重构渲染方法，逐层显示展开节点
+
+
+  _Renderer._renderItems = function ($, target) {
+    var itemContainer = this._getItemContainer($, target);
+
+    renderItems.call(this, $, target, itemContainer, this.getData());
+  };
+
+  _Renderer._renderEmptyView = function () {// do nothing
+  };
+
+  _Renderer._renderLoadView = function () {// do nothing
+  };
+
+  _Renderer._getNewItem = function ($, itemContainer, data, index) {
+    return getNewItem.call(this, $, itemContainer, data, index);
+  };
+
+  _Renderer._isIconVisible = function () {
+    return Utils.isTrue(this.options.icon);
+  };
+
+  _Renderer._getIcon = function (data, index) {
+    return getIcon.call(this, this.options.icon, data, index);
+  };
+
+  _Renderer._getOpenProps = function () {
+    var indexs = getOpenIndex.call(this, this.options.openIndex);
+    indexs = indexs && indexs.length > 0 ? indexs : null;
+    var ids = getOpenId.call(this, this.options.openId);
+    ids = ids && ids.length > 0 ? ids : null;
+    return {
+      indexs: indexs,
+      ids: ids
+    };
+  }; ///////////////////////////////////////////////////////
+
+
+  var onNodeClickHandler = function onNodeClickHandler(e) {
+    var node = $(e.currentTarget);
+
+    if (!node.is(".active")) {
+      this.$el.find(".tree-node.active").removeClass("active");
+      node.addClass("active");
+      this.trigger("itemclick", this._getItemData(node.parent()));
+    }
+
+    if (this._isRenderAsApp()) {
+      var item = node.parent();
+
+      if (item.is(".open")) {
+        doClose.call(this, item);
+      } else {
+        doOpen.call(this, item);
+      }
+    }
+  };
+
+  var onExpandClickHandler = function onExpandClickHandler(e) {
+    var item = $(e.currentTarget).parent().parent();
+
+    if (item.is(".open")) {
+      doClose.call(this, item);
+    } else {
+      doOpen.call(this, item);
+    }
+
+    return false;
+  };
+
+  var onChkboxClickHandler = function onChkboxClickHandler(e) {
+    var snapshoot = this._snapshoot();
+
+    var item = $(e.currentTarget).parent().parent();
+    setItemSelectedOrNot.call(this, item, !item.is(".selected"));
+    snapshoot.done();
+    return false;
+  };
+
+  var onMoreBtnClickHandler = function onMoreBtnClickHandler(e) {
+    var _this11 = this;
+
+    var btn = $(e.currentTarget).parent();
+    var params = {
+      p_no: parseInt(btn.attr("page-no")) + 1
+    };
+    var parentItem = btn.parent();
+
+    if (parentItem.is(".root")) {
+      params.pid = null;
+    } else {
+      parentItem = parentItem.parent();
+      params.pid = getItemId.call(this, parentItem);
+    }
+
+    params = Utils.extend(this.lastLoadParams, params);
+
+    var parentItemData = this._getItemData(parentItem);
+
+    doLoad.call(this, parentItem, this.lastLoadApi, params, function (err, datas) {
+      _this11.trigger("loaded", err, datas, parentItemData);
+    });
+  }; // ====================================================
+
+
+  var renderItems = function renderItems($, target, itemContainer, datas) {
+    renderTreeNodes.call(this, $, itemContainer, datas, 0, 1); // renderNodeOpend.call(this, $, itemContainer);
+
+    renderNodeSelected.call(this, $, itemContainer);
+
+    if (!frontend) {
+      itemContainer.find("li").removeData("_node_data");
+    }
+  }; // nodeIndex 为起始索引，返回最后一个渲染节点的索引
+
+
+  var renderTreeNodes = function renderTreeNodes($, itemContainer, datas, nodeIndex, nodeLevel) {
+    var _this12 = this;
+
+    var childrenField = this.getChildrenField() || "children";
+    Utils.each(datas, function (data) {
+      var item = _this12._getNewItem($, itemContainer, data, nodeIndex);
+
+      renderOneNode.call(_this12, $, item, data, nodeIndex, nodeLevel);
+      nodeIndex += 1;
+      var children = data && data[childrenField];
+
+      if (Utils.isArray(children) && children.length > 0) {
+        var _container = $("<ul></ul>").appendTo(item);
+
+        _container.attr("level", nodeLevel);
+
+        nodeIndex = renderTreeNodes.call(_this12, $, _container, children, nodeIndex, nodeLevel + 1);
+      }
+    });
+    return nodeIndex;
+  };
+
+  var renderOneNode = function renderOneNode($, item, data, index, level) {
+    if (!frontend) {
+      item.data("_node_data", data);
+    }
+
+    var leafField = this.getLeafField() || "leaf";
+    if (Utils.isTrue(data && data[leafField])) item.addClass("is-leaf");
+    var node = item.children(".tree-node");
+    var icon = node.children(".ic");
+
+    if (icon && icon.length > 0) {
+      var iconUrl = this._getIcon(data, index);
+
+      if (Utils.isNotBlank(iconUrl)) icon.children("i").css("backgroundImage", "url(" + iconUrl + ")");
+    }
+
+    var container = node.children(".lbl"); // 不做选取设置，树选择比较复杂，需要统一处理
+
+    UI._itemsRender.renderOneItem.call(this, $, node, container, data, index);
+  }; // const renderNodeOpend = function ($, itemContainer) {
+  // 	let openProps = this._getOpenProps() || {};
+  // 	let openIndexs = openProps.indexs;
+  // 	if (openIndexs && openIndexs.length > 0) { // 0,1,2,3 将逐层展开第一个节点（而非展开第一层的相应节点）
+  // 		for (let i = 0, l = openIndexs.length; i < l; i++) {
+  // 			let item = findItemByIndex.call(this, itemContainer, openIndexs[i], true);
+  // 			if (item) {
+  // 				item.addClass("open");
+  // 			}
+  // 		}
+  // 	}
+  // 	else {
+  // 		let openIds = openProps.ids;
+  // 		if (openIds && openIds.length > 0) {
+  // 			for (let i = 0, l = openIds.length; i < l; i++) {
+  // 				let item = findItemById.call(this, itemContainer, openIds[i]);
+  // 				if (item) {
+  // 					item.addClass("open");
+  // 					while (true) {
+  // 						let container = item.parent();
+  // 						if (container.is(".root"))
+  // 							break;
+  // 						item = container.parent();
+  // 						item.addClass("open");
+  // 					}
+  // 				}
+  // 			}
+  // 		}
+  // 	}
+  // };
+
+
+  var renderNodeSelected = function renderNodeSelected($, itemContainer) {
+    var selectedIndexs = this.getSelectedIndex(true);
+
+    if (selectedIndexs) {
+      for (var i = 0, l = selectedIndexs.length; i < l; i++) {
+        var item = findItemByIndex.call(this, itemContainer, selectedIndexs[i], true);
+
+        if (item) {
+          item.addClass("selected");
+          if (!this.isMultiple()) break;
+        }
+      }
+    } else {
+      var selectedIds = this.getSelectedKey(true);
+
+      if (selectedIds) {
+        for (var _i2 = 0, _l = selectedIds.length; _i2 < _l; _i2++) {
+          var _item5 = findItemById.call(this, itemContainer, selectedIds[_i2]);
+
+          if (_item5) {
+            _item5.addClass("selected");
+
+            if (!this.isMultiple()) break;
+          }
+        }
+      }
+    }
+
+    checkChildrenSelect.call(this, itemContainer, false);
+  };
+
+  var renderOthers = function renderOthers($, target) {
+    if (this.isChkboxVisible()) target.attr("opt-chk", "1");
+    var childrenField = this.getChildrenField();
+    if (Utils.isNotBlank(childrenField)) target.attr("opt-child", childrenField);
+    var openProps = this._getOpenProps() || {};
+    var indexs = openProps.indexs && openProps.indexs.join(",");
+    target.attr("opt-openinds", indexs || null);
+    var ids = openProps.ids && openProps.ids.join(",");
+    target.attr("opt-openids", ids || null);
+
+    if (!frontend) {
+      var icon = this.options.icon;
+      if (Utils.isFunction(icon)) icon = escape(icon);else if (typeof icon != "string") icon = Utils.isTrue(icon) ? 1 : 0;
+      if (icon) target.attr("opt-icon", icon);
+    }
+  }; // ====================================================
+
+
+  var doInit = function doInit() {
+    if (!this.options.hasOwnProperty("icon")) {
+      var icon = this.$el.attr("opt-icon");
+      if (icon == "1") icon = true;else if (/^function/.test(icon)) icon = new Function("var Utils=VRender.Utils;return (" + unescape(icon) + ");")();else if (Utils.isBlank(icon)) icon = false;
+      this.options.icon = icon;
+    }
+
+    this.$el.removeAttr("opt-icon"); // 随着节点展开和关闭，索引值一直会变
+
+    this.$el.removeAttr("data-inds").removeAttr("data-ids");
+    this.openProps = this._getOpenProps();
+    tryAutoOpen.call(this);
+  };
+
+  var doLoad = function doLoad(item, api, params, callback) {
+    var _this13 = this;
+
+    var container = item;
+
+    if (item.is("li")) {
+      container = item.children("ul");
+
+      if (!(container && container.length > 0)) {
+        container = $("<ul></ul>").appendTo(item);
+        container.attr("level", parseInt(item.parent().attr("level")) + 1);
+      }
+    }
+
+    if (item.is(".is-loaded,.is-loading")) return false;
+    item.addClass("is-loading");
+    var loadingItem = $("<li class='loading'></li>").appendTo(container);
+    loadingItem.append("<div>" + (this.loadingText || "正在加载...") + "</div>");
+    container.children(".more").remove();
+    var nodeIndex = getItemIndex.call(this, item.is("li") ? item : item.children().last);
+    VRender.Component.load.call(this, api, params, function (err, data) {
+      loadingItem.remove();
+      var datas = !err ? Utils.toArray(data) : null;
+
+      if (datas && datas.length > 0) {
+        Utils.each(datas, function (data) {
+          addItem.call(_this13, container, data, -1, nodeIndex);
+          nodeIndex += 1;
+        });
+
+        if (_this13.hasMore()) {
+          var moreItem = $("<li class='more'></li>").appendTo(container);
+          moreItem.append("<div>" + (_this13.moreText || "加载更多..") + "</div>");
+          moreItem.attr("page-no", _this13._pageInfo.page);
+        } else {
+          item.addClass("is-loaded");
+        }
+      } else {
+        item.addClass("is-loaded");
+        if (container.children().length == 0) item.addClass("is-leaf").removeClass("open");
+      }
+
+      item.removeClass("is-loading");
+      if (Utils.isFunction(callback)) callback(err, datas);
+    });
+  };
+
+  var doOpen = function doOpen(item) {
+    var _this14 = this;
+
+    var parentItems = [];
+
+    var _item = item.parent(); // ul
+
+
+    while (!_item.is(".root")) {
+      _item = _item.parent(); // li
+
+      parentItems.push(_item);
+      _item = _item.parent(); // ul
+    }
+
+    Utils.each(parentItems, function (_item) {
+      if (!_item.is(".open")) {
+        _item.addClass("open");
+
+        _this14.trigger("open", _this14._getItemData(_item));
+      }
+    });
+
+    if (!item.is(".open") && !item.is(".is-leaf")) {
+      doNodeShowAnimate.call(this, item);
+
+      var itemData = this._getItemData(item);
+
+      var api = this.lastLoadApi || this.$el.attr("api-name");
+
+      if (api && !item.is(".is-loaded")) {
+        if (item.children("ul").children().length == 0) {
+          var params = {
+            pid: getItemId.call(this, item),
+            p_no: 1
+          };
+          params = Utils.extend(this.lastLoadParams, params);
+          doLoad.call(this, item, api, params, function (err, datas) {
+            _this14.trigger("loaded", err, datas, itemData);
+          });
+        }
+      }
+
+      this.trigger("open", itemData);
+    }
+  };
+
+  var doClose = function doClose(item) {
+    if (item.is(".open")) {
+      doNodeHideAnimate.call(this, item);
+      this.trigger("close", this._getItemData(item));
+    }
+  }; // ====================================================
+
+
+  var setItemSelectedOrNot = function setItemSelectedOrNot(item, beSelected) {
+    var _isMultiple = this.isMultiple();
+
+    if (beSelected) {
+      if (item.is(".selected")) return;
+
+      if (!_isMultiple) {
+        this.$el.find("li.selected").removeClass("selected");
+        this.$el.find("li.selected_").removeClass("selected_");
+      }
+
+      item.addClass("selected").removeClass("selected_");
+
+      if (_isMultiple) {
+        setChildrenSelected(item, true);
+        setParentSelected(item);
+      } else {
+        // 单选状态，设置父节点为半选
+        while (true) {
+          var container = item.parent();
+          if (container.is(".root")) break;
+          item = container.parent();
+          item.addClass("selected_");
+        }
+      }
+    } else {
+      if (item.is(".selected")) item.removeClass("selected");else if (item.is(".selected_")) item.removeClass(".selected_");else return;
+
+      if (_isMultiple) {
+        setChildrenSelected(item, false);
+      }
+
+      setParentSelected(item);
+    }
+  };
+
+  var setChildrenSelected = function setChildrenSelected(item, beSelected) {
+    Utils.each(item.children("ul").children(), function (item) {
+      if (item.is(".more,.loading")) return;
+      item.removeClass("selected_");
+      if (beSelected) item.addClass("selected");else item.removeClass("selected");
+      setChildrenSelected(item, beSelected);
+    });
+  };
+
+  var setParentSelected = function setParentSelected(item) {
+    var container = item.parent();
+
+    if (!container.is(".root")) {
+      var hasSelected = false;
+      var allSelected = true;
+      Utils.each(container.children(), function (_item) {
+        if (_item.is(".more,.loading")) return;
+
+        if (_item.is(".selected")) {
+          hasSelected = true;
+        } else if (_item.is(".selected_")) {
+          hasSelected = true;
+          allSelected = false;
+        } else {
+          allSelected = false;
+        }
+      });
+      var parentItem = container.parent();
+      parentItem.removeClass("selected").removeClass("selected_");
+      if (allSelected) parentItem.addClass("selected");else if (hasSelected) parentItem.addClass("selected_");
+      setParentSelected(parentItem);
+    }
+  }; // ====================================================
+
+
+  var addItem = function addItem(itemContainer, data, index, nodeIndex) {
+    index = Utils.getIndexValue(index);
+
+    var item = this._getNewItem($, itemContainer, data, nodeIndex);
+
+    if (index >= 0 && index < itemContainer.children().length - 1) itemContainer.children().eq(index).before(item);
+    var nodeLevel = parseInt(itemContainer.attr("level"));
+    renderOneNode.call(this, $, item, data, nodeIndex, nodeLevel);
+
+    if (!itemContainer.is(".root")) {
+      var parentItem = itemContainer.parent().removeClass("is-leaf");
+      if (this.isChkboxVisible() && this.isMultiple() && parentItem.is(".selected")) item.addClass("selected");
+    }
+
+    var datas = null;
+    if (itemContainer.is(".root")) datas = this.getData();else {
+      datas = this._getItemData(itemContainer.parent());
+
+      if (datas) {
+        var childrenField = this.getChildrenField() || "children";
+        if (!Utils.isArray(datas[childrenField])) datas[childrenField] = [];
+        datas = datas[childrenField];
+      }
+    }
+
+    if (Utils.isArray(datas)) {
+      if (index >= 0 && index < datas.length) datas.splice(index, 0, data);else datas.push(data);
+    }
+  };
+
+  var updateItem = function updateItem(item, data) {
+    var container = item.parent();
+    var nodeIndex = getItemIndex.call(this, item, true);
+    item.children(".tree-node .lbl").empty();
+    var nodeLevel = parseInt(container.attr("level"));
+    renderOneNode.call(this, $, item, data, nodeIndex, nodeLevel);
+    var datas = null;
+    if (container.is(".root")) datas = this.getData();else datas = this._getItemData(container.parent());
+    var index = item.index();
+
+    if (Utils.isArray(datas) && index < datas.length) {
+      var childrenField = this.getChildrenField() || "children";
+      if (!Utils.isArray(data[childrenField])) data[childrenField] = datas[index][childrenField];
+      datas.splice(index, 1, data);
+    }
+  };
+
+  var removeItem = function removeItem(item) {
+    var _this15 = this;
+
+    doNodeHideAnimate.call(this, item);
+    var container = item.parent();
+    var index = item.index();
+
+    if (container.is(".root")) {
+      var datas = this.getData();
+      if (datas && index < datas.length) datas.splice(index, 1);
+    } else {
+      var data = this._getItemData(container.parent());
+
+      var childrenField = this.getChildrenField() || "children";
+      if (Utils.isArray(data[childrenField]) && index < data[childrenField].length) data[childrenField].splice(index, 1);
+    }
+
+    setTimeout(function () {
+      item.remove();
+
+      if (!container.is(".root")) {
+        item = container.parent();
+        var children = container.children();
+
+        if (children.length > 0) {
+          setParentSelected.call(_this15, children.eq(0));
+        } else {
+          container.remove();
+
+          if (item.is(".selected_")) {
+            item.removeClass("selected_");
+            setParentSelected.call(_this15, item);
+          }
+        }
+      }
+    }, 220);
+  };
+
+  var getItemByIndex = function getItemByIndex(index, deep) {
+    index = Utils.getIndexValue(index);
+    if (index < 0) return null;
+    var findItem = null;
+    doLoop.call(this, function (item, nodeIndex) {
+      if (index == nodeIndex) {
+        findItem = item;
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    return findItem;
+  };
+
+  var getItemById = function getItemById(id, deep) {
+    var _this16 = this;
+
+    if (Utils.isBlank(id)) return null;
+    var findItem = null;
+    doLoop.call(this, function (item) {
+      var _id = getItemId.call(_this16, item);
+
+      if (id == _id) {
+        findItem = item;
+        return false;
+      }
+
+      if (!deep && !item.is(".open")) return true;
+    });
+    return findItem;
+  };
+
+  var getItemByData = function getItemByData(data, deep) {
+    var _this17 = this;
+
+    var findItem = null;
+
+    var dataId = this._getDataKey(data);
+
+    doLoop.call(this, function (item) {
+      var _data = _this17._getItemData(item);
+
+      var isMatch = data == _data;
+
+      if (!isMatch) {
+        var _id = _this17._getDataKey(_data);
+
+        isMatch = _id == dataId;
+      }
+
+      if (isMatch) {
+        findItem = item;
+        return false;
+      } else if (!deep && !item.is(".open")) {
+        return true;
+      }
+    });
+    return findItem;
+  };
+
+  var getItemIndex = function getItemIndex(item, deep) {
+    var index = -1;
+
+    if (item && item.length > 0) {
+      doLoop.call(this, function (_item, _index) {
+        if (_item.is(item)) {
+          index = _index;
+          return false;
+        }
+
+        if (!deep && !_item.is(".open")) return true;
+      });
+    }
+
+    return index;
+  };
+
+  var getItemId = function getItemId(item) {
+    return this._getDataKey(this._getItemData(item));
+  };
+
+  var getItemData = function getItemData(item) {
+    var data = item.children(".tree-node").data("itemData");
+
+    if (Utils.isBlank(data)) {
+      var index = 0;
+      var nodeIndex = getItemIndex.call(this, item, true);
+      var childrenField = this.getChildrenField() || "children";
+
+      var _loop = function _loop(datas) {
+        for (var i = 0, l = datas.length; i < l; i++) {
+          var _data2 = datas[i];
+          if (index == nodeIndex) return _data2;
+          index += 1;
+
+          if (Utils.isArray(_data2[childrenField])) {
+            _data2 = _loop(_data2[childrenField]);
+            if (_data2) return _data2;
+          }
+        }
+      };
+
+      data = _loop(this.getData());
+    }
+
+    return data;
+  }; // 遍历树，
+  // callback 返回true时结束本节点（包括子节点）的遍历，并继续遍历其他节点。返回false时结束本次遍历
+
+
+  var doLoop = function doLoop(callback) {
+    var nodeIndex = 0;
+
+    var _loop = function _loop(container) {
+      var nodeLevel = parseInt(container.attr("level")) || 0;
+      var items = container.children();
+
+      for (var i = 0, l = items.length; i < l; i++) {
+        var item = items.eq(i);
+        if (item.is(".more,.loading")) continue;
+        var result = callback(item, nodeIndex, nodeLevel);
+        nodeIndex += 1;
+        if (result === false) return true;
+
+        if (result !== true) {
+          result = _loop(item.children("ul"));
+          if (result) return true;
+        }
+      }
+    };
+
+    _loop(this._getItemContainer());
+  }; // ====================================================
+
+
+  var findItemByIndex = function findItemByIndex(itemContainer, index, beOpen) {
+    var nodeIndex = 0;
+
+    var _find = function _find(container) {
+      var items = container.children();
+
+      for (var i = 0, l = items.length; i < l; i++) {
+        var item = items.eq(i);
+        if (nodeIndex == index) return item;
+        nodeIndex += 1;
+
+        if (!beOpen || item.is(".open")) {
+          item = _find(item.children("ul"));
+          if (item) return item;
+        }
+      }
+
+      return null;
+    };
+
+    return _find(itemContainer);
+  };
+
+  var findItemById = function findItemById(itemContainer, id, beOpen) {
+    var _this18 = this;
+
+    var _find = function _find(container) {
+      var items = container.children();
+
+      for (var i = 0, l = items.length; i < l; i++) {
+        var item = items.eq(i);
+        var data = item.data(frontend ? "itemData" : "_node_data");
+
+        var _id = _this18._getDataKey(data);
+
+        if (_id == id) return item;
+
+        if (!beOpen || item.is(".open")) {
+          item = _find(item.children("ul"));
+          if (item) return item;
+        }
+      }
+
+      return null;
+    };
+
+    return _find(itemContainer);
+  };
+
+  var getNewItem = function getNewItem($, itemContainer, data, index) {
+    var item = $("<li></li>").appendTo(itemContainer);
+    var title = $("<div class='tree-node'></div>").appendTo(item);
+    title.append("<span class='ep'></span>");
+    if (this.isChkboxVisible()) title.append("<span class='chkbox'><i></i></span>");
+    if (this._isIconVisible()) title.append("<span class='ic'><i></i></span>");
+    title.append("<div class='lbl'></div>");
+    return item;
+  };
+
+  var loadInner = function loadInner(container, api, params, callback) {
+    var _this19 = this;
+
+    doLoad.call(this, container, api, params, function (err, datas) {
+      if (Utils.isFunction(callback)) {
+        callback(err, datas);
+      }
+
+      tryAutoOpen.call(_this19);
+    });
+  };
+
+  var tryAutoOpen = function tryAutoOpen() {
+    var item = null;
+    var openProps = this.openProps || {};
+
+    if (openProps.indexs && openProps.indexs.length > 0) {
+      item = getItemByIndex.call(this, openProps.indexs[0], true);
+
+      if (item) {
+        openProps.indexs.shift();
+      }
+    } else if (openProps.ids) {
+      for (var i = 0; i < openProps.ids.length; i++) {
+        item = getItemById.call(this, openProps.ids[i], true);
+
+        if (item) {
+          openProps.ids.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    if (item) {
+      item.addClass("open");
+      var node = item.parent();
+
+      while (node && node.length > 0 && !node.is(".root")) {
+        node = node.parent().addClass("open").parent();
+      }
+
+      if (!item.is(".is-loaded") && item.children("ul").children().length == 0) {
+        var api = this.lastLoadApi || this.$el.attr("api-name");
+
+        if (Utils.isBlank(api)) {
+          tryAutoOpen.call(this);
+        } else {
+          var params = this.lastLoadParams || this.getInitParams();
+          params = Utils.extend({}, params, {
+            pid: getItemId.call(this, item)
+          });
+          loadInner.call(this, item, api, params);
+        }
+      } else {
+        tryAutoOpen.call(this);
+      }
+    }
+  }; // ====================================================
+
+
+  var doNodeShowAnimate = function doNodeShowAnimate(nodeItem) {
+    nodeItem.addClass("open");
+    var target = nodeItem.children("ul");
+
+    if (target && target.length > 0) {
+      target.height(0);
+      Utils.nextTick(function () {
+        target.addClass("animate-in");
+        target.height(target[0].scrollHeight);
+        setTimeout(function () {
+          target.css("height", "");
+        }, 300);
+      });
+    }
+  };
+
+  var doNodeHideAnimate = function doNodeHideAnimate(nodeItem) {
+    var target = nodeItem.children("ul");
+
+    if (target && target.length > 0) {
+      target.addClass("animate-out");
+      target.height(target[0].scrollHeight);
+      setTimeout(function () {
+        target.height(0);
+        setTimeout(function () {
+          nodeItem.removeClass("open");
+          target.removeClass("animate-in").removeClass("animate-out");
+          target.css("height", "");
+        }, 300);
+      }, 0);
+    } else {
+      nodeItem.removeClass("open");
+    }
+  }; // ====================================================
+  // 检查所有节点的选中状态(存在连带状态)
+  // 根据当前选中的节点，上下反推所有节点的选中状态
+
+
+  var checkChildrenSelect = function checkChildrenSelect(itemContainer, isParentSelected) {
+    var items = itemContainer.children();
+
+    if (items && items.length > 0) {
+      var hasSelected = false;
+      var allSelected = true;
+
+      for (var i = 0, l = items.length; i < l; i++) {
+        var item = items.eq(i); // item.removeClass("selected").removeClass("selected_");
+
+        var subContainer = item.children("ul");
+
+        if (isParentSelected || item.is(".selected")) {
+          hasSelected = true;
+          item.addClass("selected"); // 向下选中所有子节点
+
+          if (this.isMultiple()) checkChildrenSelect.call(this, subContainer, true);
+        } else {
+          // 看看子节点有没有选中的
+          var state = checkChildrenSelect.call(this, subContainer, false);
+
+          if (state == "all") {
+            // 全部子节点都选中了，当然父节点也要选中
+            item.addClass(this.isMultiple() ? "selected" : "selected_");
+            hasSelected = true;
+          } else if (state == "part") {
+            item.addClass("selected_"); // 部分子节点选中，当前父节点做标记
+
+            hasSelected = true;
+            allSelected = false;
+          } else {
+            allSelected = false;
+          }
+        }
+      }
+
+      return allSelected ? "all" : hasSelected ? "part" : null;
+    }
+
+    return null;
+  };
+
+  var getOpenIndex = function getOpenIndex(value) {
+    if (Utils.isBlank(value)) return [];
+    if (!Utils.isArray(value)) value = ("" + value).split(",");
+    var indexs = [];
+    Utils.each(value, function (tmp) {
+      if (isNaN(tmp)) return;
+      tmp = parseInt(tmp);
+
+      if (!isNaN(tmp) && tmp >= 0) {
+        indexs.push(tmp);
+      }
+    });
+    return indexs;
+  };
+
+  var getOpenId = function getOpenId(value) {
+    if (Utils.isBlank(value)) return [];
+    if (!Utils.isArray(value)) value = ("" + value).split(",");
+    var ids = [];
+    Utils.each(value, function (tmp) {
+      if (tmp || tmp === 0) {
+        ids.push(isNaN(tmp) ? tmp : parseInt(tmp));
+      }
+    });
+    return ids;
+  };
+
+  var getIcon = function getIcon(value, data, index) {
+    if (Utils.isFunction(value)) return value(data, index);
+    if (value === true || value == 1) value = "icon";
+
+    if (typeof value == "string") {
+      if (/\/|\./.test(value)) // 文件路径
+        return value;
+      return data && data[value] || null;
+    }
+
+    return null;
+  }; ///////////////////////////////////////////////////////
+
+
+  if (frontend) {
+    window.UITreeView = UITreeView;
+    UI.init(".ui-treeview", UITreeView, Renderer);
+  } else {
+    module.exports = Renderer;
+  }
+})(typeof window !== "undefined");
