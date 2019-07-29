@@ -32,10 +32,11 @@ const UIListView = require("./src/components/listview");
 const UIDatagrid = require("./src/components/datagrid");
 const UIScrollBox = require("./src/components/scrollbox");
 const UITreeView = require("./src/components/treeview");
+const UITreeCombobox = require("./src/components/treecombobox");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190725";
+const distVersion = "190729";
 
 module.exports = {
 	install: function () {
@@ -67,6 +68,7 @@ module.exports = {
 		VRender.UITextView = UITextView;
 		VRender.UITimeInput = UITimeInput;
 		VRender.UITooltip = UITooltip;
+		VRender.UITreeCombobox = UITreeCombobox;
 		VRender.UITreeView = UITreeView;
 		VRender.UIVGroup = UIGroup.VGroup;
 	},
