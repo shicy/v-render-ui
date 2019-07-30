@@ -521,6 +521,10 @@
 		});
 	};
 
+	// _UITreeView.tryAutoLoad = function () {
+	// 	UI._base.tryAutoLoad.call(this);
+	// };
+
 	_UITreeView.length = function () {
 		return Number.POSITIVE_INFINITY;
 	};
@@ -751,9 +755,7 @@
 	// ====================================================
 	const renderItems = function ($, target, itemContainer, datas) {
 		renderTreeNodes.call(this, $, itemContainer, datas, 0, 1);
-		// renderNodeOpend.call(this, $, itemContainer);
-		renderNodeSelected.call(this, $, itemContainer);
-
+		renderNodeSelected.call(this, $, target, itemContainer);
 		if (!frontend) {
 			itemContainer.find("li").removeData("_node_data");
 		}
@@ -800,48 +802,26 @@
 		UI._itemsRender.renderOneItem.call(this, $, node, container, data, index);
 	};
 
-	// const renderNodeOpend = function ($, itemContainer) {
-	// 	let openProps = this._getOpenProps() || {};
-	// 	let openIndexs = openProps.indexs;
-	// 	if (openIndexs && openIndexs.length > 0) { // 0,1,2,3 将逐层展开第一个节点（而非展开第一层的相应节点）
-	// 		for (let i = 0, l = openIndexs.length; i < l; i++) {
-	// 			let item = findItemByIndex.call(this, itemContainer, openIndexs[i], true);
-	// 			if (item) {
-	// 				item.addClass("open");
-	// 			}
-	// 		}
-	// 	}
-	// 	else {
-	// 		let openIds = openProps.ids;
-	// 		if (openIds && openIds.length > 0) {
-	// 			for (let i = 0, l = openIds.length; i < l; i++) {
-	// 				let item = findItemById.call(this, itemContainer, openIds[i]);
-	// 				if (item) {
-	// 					item.addClass("open");
-	// 					while (true) {
-	// 						let container = item.parent();
-	// 						if (container.is(".root"))
-	// 							break;
-	// 						item = container.parent();
-	// 						item.addClass("open");
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// };
-
-	const renderNodeSelected = function ($, itemContainer) {
+	const renderNodeSelected = function ($, target, itemContainer) {
+		let _hasChkbox = this.isChkboxVisible();
+		let _isMultiple = this.isMultiple();
 		let selectedIndexs = this.getSelectedIndex(true);
+		let setItemSelected = function (item) {
+			if (_hasChkbox)
+				item.addClass("selected");
+			else
+				item.children(".tree-node").addClass("active");
+		};
 		if (selectedIndexs) {
 			for (let i = 0, l = selectedIndexs.length; i < l; i++) {
 				let item = findItemByIndex.call(this, itemContainer, selectedIndexs[i], true);
 				if (item) {
-					item.addClass("selected");
-					if (!this.isMultiple())
+					setItemSelected(item);
+					if (!_isMultiple)
 						break;
 				}
 			}
+			target.attr("opt-loadinds", selectedIndexs.join(","));
 		}
 		else {
 			let selectedIds = this.getSelectedKey(true);
@@ -849,11 +829,12 @@
 				for (let i = 0, l = selectedIds.length; i < l; i++) {
 					let item = findItemById.call(this, itemContainer, selectedIds[i]);
 					if (item) {
-						item.addClass("selected");
-						if (!this.isMultiple())
+						setItemSelected(item);
+						if (!_isMultiple)
 							break;
 					}
 				}
+				target.attr("opt-loadids", selectedIds.join(","));
 			}
 		}
 		checkChildrenSelect.call(this, itemContainer, false);
@@ -923,13 +904,26 @@
 
 		container.children(".more").remove();
 
-		let nodeIndex = getItemIndex.call(this, (item.is("li") ? item : item.children().last));
+		let loadSelectedIds = this.$el.attr("opt-loadids") || "";
+		loadSelectedIds = loadSelectedIds ? loadSelectedIds.split(",") : [];
+		let loadSelectedIndexs = this.$el.attr("opt-loadinds") || "";
+		loadSelectedIndexs = loadSelectedIndexs ? loadSelectedIndexs.split(",") : null;
+
+		let nodeIndex = getItemIndex.call(this, (item.is("li") ? item : item.children().last()));
 		VRender.Component.load.call(this, api, params, (err, data) => {
 			loadingItem.remove();
 			let datas = !err ? Utils.toArray(data) : null;
 			if (datas && datas.length > 0) {
+				let snapshoot = this._snapshoot();
 				Utils.each(datas, (data) => {
-					addItem.call(this, container, data, -1, nodeIndex);
+					let _item = addItem.call(this, container, data, -1, nodeIndex);
+					if (!_item.is(".selected")) {
+						let index = !loadSelectedIndexs ? -1 : getItemIndex.call(this, _item);
+						let selected = this._isSelected(data, index, loadSelectedIndexs, loadSelectedIds);
+						if (selected) {
+							setItemSelectedOrNot.call(this, _item, true);
+						}
+					}
 					nodeIndex += 1;
 				});
 				if (this.hasMore()) {
@@ -940,6 +934,7 @@
 				else {
 					item.addClass("is-loaded");
 				}
+				snapshoot.done();
 			}
 			else {
 				item.addClass("is-loaded");
@@ -995,30 +990,38 @@
 
 	// ====================================================
 	const setItemSelectedOrNot = function (item, beSelected) {
+		let _hasChkbox = this.isChkboxVisible();
 		let _isMultiple = this.isMultiple();
+		let node = item.children(".tree-node");
 		if (beSelected) {
-			if (item.is(".selected"))
+			if (item.is(".selected") || node.is(".active"))
 				return ;
-			if (!_isMultiple) {
-				this.$el.find("li.selected").removeClass("selected");
-				this.$el.find("li.selected_").removeClass("selected_");
-			}
-			item.addClass("selected").removeClass("selected_");
-			if (_isMultiple) {
-				setChildrenSelected(item, true);
-				setParentSelected(item);
-			}
-			else { // 单选状态，设置父节点为半选
-				while (true) {
-					let container = item.parent();
-					if (container.is(".root"))
-						break;
-					item = container.parent();
-					item.addClass("selected_");
+			if (_hasChkbox) {
+				if (!_isMultiple) {
+					this.$el.find("li.selected").removeClass("selected");
+					this.$el.find("li.selected_").removeClass("selected_");
+				}
+				item.addClass("selected").removeClass("selected_");
+				if (_isMultiple) {
+					setChildrenSelected(item, true);
+					setParentSelected(item);
+				}
+				else { // 单选状态，设置父节点为半选
+					while (true) {
+						let container = item.parent();
+						if (container.is(".root"))
+							break;
+						item = container.parent();
+						item.addClass("selected_");
+					}
 				}
 			}
+			else {
+				this.$el.find(".active").removeClass("active");
+				node.addClass("active");
+			}
 		}
-		else {
+		else if (_hasChkbox) {
 			if (item.is(".selected"))
 				item.removeClass("selected");
 			else if (item.is(".selected_"))
@@ -1029,6 +1032,9 @@
 				setChildrenSelected(item, false);
 			}
 			setParentSelected(item);
+		}
+		else {
+			node.removeClass("active");
 		}
 	};
 
@@ -1109,6 +1115,8 @@
 			else
 				datas.push(data);
 		}
+
+		return item;
 	};
 
 	const updateItem = function (item, data) {
@@ -1157,13 +1165,13 @@
 				item = container.parent();
 				let children = container.children();
 				if (children.length > 0) {
-					setParentSelected.call(this, children.eq(0));
+					setParentSelected(children.eq(0));
 				}
 				else {
 					container.remove();
 					if (item.is(".selected_")) {
 						item.removeClass("selected_");
-						setParentSelected.call(this, item);
+						setParentSelected(item);
 					}
 				}
 			}

@@ -138,10 +138,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("基本使用");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData }));
+		demo.append(new UITreeView(this, { data: exampleData, selectedIndex: 0 }));
 
 		let source = [];
-		source.push("new UITreeView([context], { data: dataSource });");
+		source.push("new UITreeView([context], {\n  data: dataSource,\n  selectedIndex: 0\n});");
 
 		render(demo, source, description);
 	},
@@ -315,7 +315,7 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		demo.append(new UITreeView(this, { data: exampleData, keyField: "code", chkbox: true, openId: "120100,130000", 
-			selectedId: "110107,120100,220000", multi: true, labelFunction: myLabelFunction }));
+			selectedKey: "110107,120100,220000", multi: true, labelFunction: myLabelFunction }));
 
 		let source = [];
 		source.push("new UITreeView([context], {");
@@ -323,7 +323,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  keyField: 'code',");
 		source.push("  chkbox: true,");
 		source.push("  openId: '120100,130000',");
-		source.push("  selectedId: '110107,120100,220000',");
+		source.push("  selectedKey: '110107,120100,220000',");
 		source.push("  multi: true,");
 		source.push("  labelFunction: function (data) {");
 		source.push("    return data.value + ' ' + data.code;");
@@ -339,13 +339,14 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		demo.append(new UITreeView(this, { apiName: "data.component.tree", chkbox: true, openIndex: "1,0,2",
-			apiParams: { total: 10, p_size: 3 } }));
+			apiParams: { total: 10, p_size: 3 }, selectedKey: "122" }));
 
 		let source = [];
 		source.push("new UITreeView([context], {");
 		source.push("  apiName: 'data.component.tree',");
 		source.push("  chkbox: true,");
 		source.push("  openIndex: '1,0,2',");
+		source.push("  selectedKey: '122',");
 		source.push("  apiParams: {");
 		source.push("    total: 10,");
 		source.push("    p_size: 3");

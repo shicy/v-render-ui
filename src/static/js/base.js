@@ -102,7 +102,7 @@
 		doInit.call(this, target, options);
 
 		setTimeout(() => {
-			tryAutoLoad.call(this);
+			this.tryAutoLoad();
 		});
 	};
 
@@ -129,6 +129,63 @@
 		}
 		this.$el.removeAttr("api-autoload");
 		return Utils.isTrue(this.options.autoLoad);
+	};
+
+	// 组件初始化时，视图自动加载异步数据
+	UIBase.tryAutoLoad = function () {
+		if (UIBase.isAutoLoad.call(this) && Utils.isFunction(this.load)) {
+			let apiName = this.options.api || this.$el.attr("api-name");
+
+			let params = $.extend({}, this.getInitParams());
+
+			let pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
+			if (pager) {
+				if (!params.p_no && Utils.isFunction(pager.getPage))
+					params.p_no = pager.getPage();
+				if (!params.p_size && Utils.isFunction(pager.getSize))
+					params.p_size = pager.getSize();
+			}
+
+			// let searcher = Utils.isFunction(this.getSearcher) && this.getSearcher();
+			// if (searcher && Utils.isFunction(searcher.getParams)) {
+			// 	params = $.extend(params, searcher.getParams());
+			// }
+
+			this.load(apiName, params, () => {
+				setTimeout(() => {
+					UIBase.tryAutoSelect.call(this);
+				});
+			});
+		}
+	};
+
+	// 组件初始化时，异步加载完成后，自动选择列表项
+	UIBase.tryAutoSelect = function () {
+		let setByIndex = (value) => {
+			if (Utils.isFunction(this.setSelectedIndex)) {
+				this.setSelectedIndex(value);
+			}
+		};
+		let setById = (value) => {
+			if (Utils.isFunction(this.setSelectedKey)) {
+				this.setSelectedKey(value);
+			}
+		};
+
+		let options = this.options || {};
+		if (options.hasOwnProperty("selectedIndex"))
+			setByIndex(options.selectedIndex);
+		else if (Utils.isNotBlank(this.$el.attr("data-tryindex")))
+			setByIndex(this.$el.attr("data-tryindex"));
+		else if (options.hasOwnProperty("selectedId"))
+			setById(options.selectedId);
+		else if (Utils.isNotBlank(this.$el.attr("data-tryid")))
+			setById(this.$el.attr("data-tryid"));
+
+		delete options.selectedIndex;
+		delete options.selectedId;
+		this.$el.removeAttr("data-tryindex");
+		this.$el.removeAttr("data-tryid");
 	};
 
 	// ====================================================
@@ -257,6 +314,10 @@
 		return this.$el.is(".is-loading");
 	};
 
+	_UIBase.tryAutoLoad = function () {
+		UIBase.tryAutoLoad.call(this);
+	};
+
 	///////////////////////////////////////////////////////
 	const Renderer = UI._baseRender = function (context, options) {
 		if (arguments.length > 0 && context !== false) {
@@ -336,62 +397,5 @@
 			}
 		}
 		this.$el.removeAttr("data-items");
-	};
-
-	// 组件初始化时，视图自动加载异步数据
-	const tryAutoLoad = function () {
-		if (UIBase.isAutoLoad.call(this) && Utils.isFunction(this.load)) {
-			let apiName = this.options.api || this.$el.attr("api-name");
-
-			let params = $.extend({}, this.getInitParams());
-
-			let pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
-			if (pager) {
-				if (!params.p_no && Utils.isFunction(pager.getPage))
-					params.p_no = pager.getPage();
-				if (!params.p_size && Utils.isFunction(pager.getSize))
-					params.p_size = pager.getSize();
-			}
-
-			// let searcher = Utils.isFunction(this.getSearcher) && this.getSearcher();
-			// if (searcher && Utils.isFunction(searcher.getParams)) {
-			// 	params = $.extend(params, searcher.getParams());
-			// }
-
-			this.load(apiName, params, () => {
-				setTimeout(() => {
-					tryAutoSelect.call(this);
-				});
-			});
-		}
-	};
-
-	// 组件初始化时，异步加载完成后，自动选择列表项
-	const tryAutoSelect = function () {
-		let setByIndex = (value) => {
-			if (Utils.isFunction(this.setSelectedIndex)) {
-				this.setSelectedIndex(value);
-			}
-		};
-		let setById = (value) => {
-			if (Utils.isFunction(this.setSelectedKey)) {
-				this.setSelectedKey(value);
-			}
-		};
-
-		let options = this.options || {};
-		if (options.hasOwnProperty("selectedIndex"))
-			setByIndex(options.selectedIndex);
-		else if (Utils.isNotBlank(this.$el.attr("data-tryindex")))
-			setByIndex(this.$el.attr("data-tryindex"));
-		else if (options.hasOwnProperty("selectedId"))
-			setById(options.selectedId);
-		else if (Utils.isNotBlank(this.$el.attr("data-tryid")))
-			setById(this.$el.attr("data-tryid"));
-
-		delete options.selectedIndex;
-		delete options.selectedId;
-		this.$el.removeAttr("data-tryindex");
-		this.$el.removeAttr("data-tryid");
 	};
 })(typeof window !== "undefined");

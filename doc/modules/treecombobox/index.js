@@ -144,10 +144,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("多选");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeCombobox(this, { data: exampleData, multi: true }));
+		demo.append(new UITreeCombobox(this, { data: exampleData, multi: true, selectedKey: "120104,130102" }));
 
 		let source = [];
-		source.push("new UITreeCombobox([context], {\n  data: dataSource,\n  multi: true\n});");
+		source.push("new UITreeCombobox([context], {\n  data: dataSource,\n  multi: true,\n  selectedKey: '120104,130102'\n});");
 
 		render(demo, source, description);
 	},
@@ -158,7 +158,7 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		demo.append(new UITreeCombobox(this, { apiName: "data.component.tree", openIndex: "1,0,2",
-			apiParams: {total: 10, p_size: 3} }));
+			apiParams: {total: 10, p_size: 3}, selectedKey: "122" }));
 
 		let source = [];
 		source.push("new UITreeCombobox([context], {");
@@ -166,7 +166,8 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  apiParams: {");
 		source.push("    p_size: 3");
 		source.push("  }");
-		source.push("  openIndex: '1,0,2'");
+		source.push("  openIndex: '1,0,2',");
+		source.push("  selectedKey: '122'");
 		source.push("});");
 
 		render(demo, source, description);

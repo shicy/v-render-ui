@@ -28,6 +28,10 @@
 		if (this._isRenderAsApp()) {
 			this.$el.on("tap", ".dropdown", dropdownTouchHandler.bind(this));
 		}
+
+		var selectedIndex = this.getSelectedIndex();
+		if (selectedIndex && selectedIndex.length > 0)
+			itemChanged.call(this);
 	};
 
 	// ====================================================
@@ -353,6 +357,7 @@
 	};
 
 	const itemChanged = function () {
+		// 树型的 index 比较复杂，这里不用 snapshoot 了
 		// let snapshoot = this._snapshoot();
 
 		// let indexs = this.getSelectedIndex(true);

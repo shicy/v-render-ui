@@ -368,7 +368,7 @@
 	Renderer.getSelectedKey = function (needArray) {
 		let selectedKey = this.options.selectedKey;
 		if (Utils.isBlank(selectedKey)) {
-			return (needArray || this.isMultiple()) ? [] : null;
+			return null;
 		}
 		if (!Utils.isArray(selectedKey))
 			selectedKey = ("" + selectedKey).split(",");
