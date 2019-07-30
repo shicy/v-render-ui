@@ -17,7 +17,7 @@
 	_UITreeSelect.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
-		this.tree = UI.treeview.find(this.$el)[0];
+		this.tree = UI.tree.find(this.$el)[0];
 
 		this.$el.on("tap", ".ipt", iptClickHandler.bind(this));
 		this.$el.on("change", ".dropdown", function () { return false; });
@@ -305,12 +305,12 @@
 
 		let treeOptions = getTreeOptions.call(this, this.options);
 		if (!frontend) {
-			let UITreeView = require("../treeview/index");
-			new UITreeView(this, treeOptions).render(target);
+			let UITree = require("../tree/index");
+			new UITree(this, treeOptions).render(target);
 		}
 		else {
 			treeOptions.target = target;
-			UI.treeview.create(treeOptions);
+			UI.tree.create(treeOptions);
 		}
 	};
 	

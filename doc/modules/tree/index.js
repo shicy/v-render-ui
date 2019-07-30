@@ -6,7 +6,7 @@ const BaseModule = require("../BaseModule");
 
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
-const UITreeView = VRender.UITreeView;
+const UITree = VRender.UITree;
 
 const exampleData = [{
 	code: "110000", value: "北京市", icon: "/icons/c02.png",
@@ -111,7 +111,7 @@ const exampleData = [{
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UITreeView 树形视图";
+		return "UITree 树形视图";
 	},
 
 	getDescription: function () {
@@ -138,10 +138,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("基本使用");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, selectedIndex: 0 }));
+		demo.append(new UITree(this, { data: exampleData, selectedIndex: 0 }));
 
 		let source = [];
-		source.push("new UITreeView([context], {\n  data: dataSource,\n  selectedIndex: 0\n});");
+		source.push("new UITree([context], {\n  data: dataSource,\n  selectedIndex: 0\n});");
 
 		render(demo, source, description);
 	},
@@ -151,10 +151,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("选择框");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, chkbox: true, selectedKey: "110100" }));
+		demo.append(new UITree(this, { data: exampleData, chkbox: true, selectedKey: "110100" }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  selectedKey: '110100'");
@@ -168,10 +168,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("多选");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, chkbox: true, multi: true, selectedIndex: "1,2" }));
+		demo.append(new UITree(this, { data: exampleData, chkbox: true, multi: true, selectedIndex: "1,2" }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  multi: true,");
@@ -190,10 +190,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, labelFunction: myLabelFunction }));
+		demo.append(new UITree(this, { data: exampleData, labelFunction: myLabelFunction }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  labelFunction: function (data) {");
 		source.push("    return data.code + '_' + data.value;");
@@ -217,10 +217,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, chkbox: true, itemRenderer: myItemRenderer }));
+		demo.append(new UITree(this, { data: exampleData, chkbox: true, itemRenderer: myItemRenderer }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  itemRenderer: function (data) {");
@@ -242,10 +242,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("图标");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, chkbox: true, icon: "icon" }));
+		demo.append(new UITree(this, { data: exampleData, chkbox: true, icon: "icon" }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  icon: 'icon'");
@@ -267,10 +267,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, chkbox: true, icon: myIconFunction }));
+		demo.append(new UITree(this, { data: exampleData, chkbox: true, icon: myIconFunction }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  icon: function (data) {}");
@@ -290,11 +290,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("默认展开和选择（按索引）");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, chkbox: true, openIndex: "0,1", 
+		demo.append(new UITree(this, { data: exampleData, chkbox: true, openIndex: "0,1", 
 			selectedIndex: "3,8", multi: true }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  openIndex: '0,1',");
@@ -314,11 +314,11 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { data: exampleData, keyField: "code", chkbox: true, openId: "120100,130000", 
+		demo.append(new UITree(this, { data: exampleData, keyField: "code", chkbox: true, openId: "120100,130000", 
 			selectedKey: "110107,120100,220000", multi: true, labelFunction: myLabelFunction }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  data: dataSource,");
 		source.push("  keyField: 'code',");
 		source.push("  chkbox: true,");
@@ -338,11 +338,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("动态加载");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeView(this, { apiName: "data.component.tree", chkbox: true, openIndex: "1,0,2",
+		demo.append(new UITree(this, { apiName: "data.component.tree", chkbox: true, openIndex: "1,0,2",
 			apiParams: { total: 10, p_size: 3 }, selectedKey: "122" }));
 
 		let source = [];
-		source.push("new UITreeView([context], {");
+		source.push("new UITree([context], {");
 		source.push("  apiName: 'data.component.tree',");
 		source.push("  chkbox: true,");
 		source.push("  openIndex: '1,0,2',");

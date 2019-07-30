@@ -31,7 +31,7 @@ const UIPanel = require("./src/components/panel");
 const UIListView = require("./src/components/listview");
 const UIDatagrid = require("./src/components/datagrid");
 const UIScrollBox = require("./src/components/scrollbox");
-const UITreeView = require("./src/components/treeview");
+const UITree = require("./src/components/tree");
 const UITreeSelect = require("./src/components/treeselect");
 
 
@@ -68,8 +68,8 @@ module.exports = {
 		VRender.UITabbar = UITabbar;
 		VRender.UITextView = UITextView;
 		VRender.UITimeInput = UITimeInput;
+		VRender.UITree = UITree;
 		VRender.UITreeSelect = UITreeSelect;
-		VRender.UITreeView = UITreeView;
 		VRender.UIVGroup = UIGroup.VGroup;
 	},
 

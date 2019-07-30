@@ -1,20 +1,20 @@
 // 2019-07-25
-// treeview
+// tree(原treeview)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.treeview)
+	if (frontend && VRender.Component.ui.tree)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UITreeView = UI.treeview = function (view, options) {
+	const UITree = UI.tree = function (view, options) {
 		return UI._select.call(this, view, options);
 	};
-	const _UITreeView = UITreeView.prototype = new UI._select(false);
+	const _UITree = UITree.prototype = new UI._select(false);
 
-	_UITreeView.init = function (target, options) {
+	_UITree.init = function (target, options) {
 		UI._select.init.call(this, target, options);
 
 		this.$el.on("tap", ".tree-node", onNodeClickHandler.bind(this));
@@ -29,27 +29,27 @@
 	};
 
 	// ====================================================
-	_UITreeView.getDataAt = function (index, deep) {
+	_UITree.getDataAt = function (index, deep) {
 		let item = getItemByIndex.call(this, index, deep);
 		return !!item ? this._getItemData(item) : null;
 	};
 
-	_UITreeView.getDataIndex = function (data, deep) {
+	_UITree.getDataIndex = function (data, deep) {
 		let item = getItemByData.call(this, data, deep);
 		return !!item ? getItemIndex.call(this, item, deep) : -1;
 	};
 
-	_UITreeView.getDataById = function (value, deep) {
+	_UITree.getDataById = function (value, deep) {
 		let item = getItemById.call(this, value, deep);
 		return !!item ? this._getItemData(item) : null;
 	};
 
-	_UITreeView.getIndexById = function (value, deep) {
+	_UITree.getIndexById = function (value, deep) {
 		let item = getItemById.call(this, value, deep);
 		return !!item ? getItemIndex.call(this, item, deep) : -1;
 	};
 
-	_UITreeView.getDataByName = function (value, deep) {
+	_UITree.getDataByName = function (value, deep) {
 		if (Utils.isBlank(value))
 			return null;
 		let findData = null;
@@ -65,7 +65,7 @@
 		return findData;
 	};
 
-	_UITreeView.getIndexByName = function (value, deep) {
+	_UITree.getIndexByName = function (value, deep) {
 		if (Utils.isBlank(value))
 			return -1;
 		let findIndex = -1;
@@ -81,10 +81,10 @@
 		return findIndex;
 	};
 
-	_UITreeView.isChkboxVisible = function () {
+	_UITree.isChkboxVisible = function () {
 		return this.$el.attr("opt-chk") == "1";
 	};
-	_UITreeView.setChkboxVisible = function (value) {
+	_UITree.setChkboxVisible = function (value) {
 		value = Utils.isNull(value) ? true : Utils.isTrue(value);
 		if (this.isChkboxVisible() != value) {
 			let snapshoot = this._snapshoot();
@@ -102,15 +102,15 @@
 		}
 	};
 
-	_UITreeView.getChildrenField = function () {
+	_UITree.getChildrenField = function () {
 		return this.$el.attr("opt-child") || null;
 	};
 
-	_UITreeView.getLeafField = function () {
+	_UITree.getLeafField = function () {
 		return this.options.leafField;
 	};
 
-	_UITreeView.getSelectedIndex = function (needArray, deep) {
+	_UITree.getSelectedIndex = function (needArray, deep) {
 		let indexs = [];
 		let _hasChkbox = this.isChkboxVisible();
 		let _isMultiple = this.isMultiple();
@@ -138,7 +138,7 @@
 			return indexs.length > 0 ? indexs : null;
 		return indexs.length > 0 ? indexs[0] : -1;
 	};
-	_UITreeView.setSelectedIndex = function (value, deep) {
+	_UITree.setSelectedIndex = function (value, deep) {
 		let _hasChkbox = this.isChkboxVisible();
 		let _isMultiple = this.isMultiple();
 
@@ -182,7 +182,7 @@
 		snapshoot.done();
 	};
 
-	_UITreeView.getSelectedKey = function (needArray, deep) {
+	_UITree.getSelectedKey = function (needArray, deep) {
 		let ids = [];
 		let _hasChkbox = this.isChkboxVisible();
 		let _isMultiple = this.isMultiple();
@@ -210,7 +210,7 @@
 			return ids.length > 0 ? ids : null;
 		return ids.length > 0 ? ids[0] : null;
 	};
-	_UITreeView.setSelectedKey = function (value, deep) {
+	_UITree.setSelectedKey = function (value, deep) {
 		let _hasChkbox = this.isChkboxVisible();
 		let _isMultiple = this.isMultiple();
 
@@ -258,7 +258,7 @@
 		snapshoot.done();
 	};
 
-	_UITreeView.getSelectedData = function (needArray, deep) {
+	_UITree.getSelectedData = function (needArray, deep) {
 		let datas = [];
 		let _hasChkbox = this.isChkboxVisible();
 		let _isMultiple = this.isMultiple();
@@ -287,7 +287,7 @@
 		return datas.length > 0 ? datas[0] : null;
 	};
 
-	_UITreeView.isAllSelected = function () {
+	_UITree.isAllSelected = function () {
 		let _allSelected = true;
 		doLoop.call(this, (item) => {
 			if (!item.is(".selected")) {
@@ -300,42 +300,42 @@
 	};
 
 	// ====================================================
-	_UITreeView.open = function (data) {
+	_UITree.open = function (data) {
 		let item = getItemByData.call(this, data, true);
 		if (item) {
 			doOpen.call(this, item);
 		}
 	};
 
-	_UITreeView.openAt = function (index, deep) {
+	_UITree.openAt = function (index, deep) {
 		let item = getItemByIndex.call(this, index, deep);
 		if (item) {
 			doOpen.call(this, item);
 		}
 	};
 
-	_UITreeView.openById = function (value) {
+	_UITree.openById = function (value) {
 		let item = getItemById.call(this, value, true);
 		if (item) {
 			doOpen.call(this, item);
 		}
 	};
 
-	_UITreeView.close = function (data) {
+	_UITree.close = function (data) {
 		let item = getItemByData.call(this, data, true);
 		if (item) {
 			doClose.call(this, item);
 		}
 	};
 
-	_UITreeView.closeAt = function (index, deep) {
+	_UITree.closeAt = function (index, deep) {
 		let item = getItemByIndex.call(this, index, deep);
 		if (item) {
 			doClose.call(this, item);
 		}
 	};
 
-	_UITreeView.closeById = function (value) {
+	_UITree.closeById = function (value) {
 		let item = getItemById.call(this, value, true);
 		if (item) {
 			doClose.call(this, item);
@@ -343,7 +343,7 @@
 	};
 
 	// ====================================================
-	_UITreeView.addItem = function (data, pdata, index) {
+	_UITree.addItem = function (data, pdata, index) {
 		if (Utils.isBlank(data))
 			return false;
 		let container = this._getItemContainer();
@@ -368,7 +368,7 @@
 		return true;
 	};
 
-	_UITreeView.updateItem = function (data, pdata, index) {
+	_UITree.updateItem = function (data, pdata, index) {
 		if (Utils.isBlank(data))
 			return false;
 		if (!isNaN(pdata) && (pdata || pdata === 0)) {
@@ -413,7 +413,7 @@
 		return true;
 	};
 
-	_UITreeView.removeItem = function (data, pdata) {
+	_UITree.removeItem = function (data, pdata) {
 		if (Utils.isBlank(data))
 			return false;
 		let snapshoot = this._snapshoot();
@@ -441,7 +441,7 @@
 		return true;
 	};
 
-	_UITreeView.removeItemAt = function (index, pdata) {
+	_UITree.removeItemAt = function (index, pdata) {
 		index = Utils.getIndexValue(index);
 		if (index < 0)
 			return false;
@@ -465,14 +465,14 @@
 		return true;
 	};
 
-	_UITreeView.addOrUpdateItem = function (data, pdata) {
+	_UITree.addOrUpdateItem = function (data, pdata) {
 		if (Utils.isBlank(data))
 			return ;
 		if (!this.updateItem(data, pdata))
 			this.addItem(data, pdata);
 	};
 
-	_UITreeView.setItems = function (datas, pdata) {
+	_UITree.setItems = function (datas, pdata) {
 		datas = Utils.toArray(datas);
 		if (pdata) {
 			let parentItem = getItemByData.call(this, pdata, true);
@@ -503,7 +503,7 @@
 	};
 
 	// ====================================================
-	_UITreeView.load = function (api, params, callback) {
+	_UITree.load = function (api, params, callback) {
 		api = api || this.lastLoadApi || this.$el.attr("api-name");
 		if (Utils.isBlank(api))
 			return false;
@@ -521,37 +521,37 @@
 		});
 	};
 
-	// _UITreeView.tryAutoLoad = function () {
+	// _UITree.tryAutoLoad = function () {
 	// 	UI._base.tryAutoLoad.call(this);
 	// };
 
-	_UITreeView.length = function () {
+	_UITree.length = function () {
 		return Number.POSITIVE_INFINITY;
 	};
 
 	// ====================================================
-	_UITreeView._renderItems = function ($, itemContainer, datas) {
+	_UITree._renderItems = function ($, itemContainer, datas) {
 		renderItems.call(this, $, this.$el, itemContainer, datas);
 	};
 
-	_UITreeView._getItemContainer = function () {
+	_UITree._getItemContainer = function () {
 		return this.$el.children("ul");
 	};
 
-	_UITreeView._getNewItem = function ($, itemContainer, data, index) {
+	_UITree._getNewItem = function ($, itemContainer, data, index) {
 		return getNewItem.call(this, $, itemContainer, data, index);
 	};
 
-	_UITreeView._isIconVisible = function () {
+	_UITree._isIconVisible = function () {
 		if (Utils.isTrue(this.options.icon))
 			return true;
 	};
 
-	_UITreeView._getIcon = function (data, index, level) {
+	_UITree._getIcon = function (data, index, level) {
 		return getIcon.call(this, this.options.icon, data, index);
 	};
 
-	_UITreeView._getOpenProps = function () {
+	_UITree._getOpenProps = function () {
 		let params = {};
 		let indexs = this.$el.attr("opt-openinds");
 		if (Utils.isNotBlank(indexs)) {
@@ -569,11 +569,11 @@
 		return params;
 	};
 
-	_UITreeView._getItemData = function (item) {
+	_UITree._getItemData = function (item) {
 		return getItemData.call(this, item);
 	};
 
-	_UITreeView._doAdapter = function (data) {
+	_UITree._doAdapter = function (data) {
 		let datas = Utils.toArray(data);
 		if (datas._vr_adapter_flag)
 			return datas;
@@ -594,11 +594,11 @@
 		return datas;
 	};
 
-	_UITreeView._snapshoot_shoot = function (state) {
+	_UITree._snapshoot_shoot = function (state) {
 		state.selectedIndex = this.getSelectedIndex(true);
 	};
 
-	_UITreeView._snapshoot_compare = function (state) {
+	_UITree._snapshoot_compare = function (state) {
 		let selectedIndex = this.getSelectedIndex(true);
 		return Fn.equalIndex(state.selectedIndex, selectedIndex);
 	};
@@ -667,7 +667,7 @@
 
 	// ====================================================
 	_Renderer.render = function ($, target) {
-		target.addClass("ui-treeview");
+		target.addClass("ui-tree");
 		target.append("<ul class='root' level='0'></ul>");
 		UI._selectRender.render.call(this, $, target);
 		renderOthers.call(this, $, target);
@@ -1525,8 +1525,8 @@
 	
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UITreeView = UITreeView;
-		UI.init(".ui-treeview", UITreeView, Renderer);
+		window.UITree = UITree;
+		UI.init(".ui-tree", UITree, Renderer);
 	}
 	else {
 		module.exports = Renderer;

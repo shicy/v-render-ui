@@ -1,22 +1,22 @@
 
-.ui-treeview {
+.ui-tree {
 	overflow: auto;
 }
 
-.ui-treeview .tree-node {
+.ui-tree .tree-node {
 	display: flex;
     align-items: center;
     height: 0.4rem;
 }
 
-.ui-treeview .tree-node > .ep {
+.ui-tree .tree-node > .ep {
 	flex: none;
     display: inline-block;
     width: 0.2rem;
     height: 0.2rem;
 }
 
-.ui-treeview .tree-node > .ep:before {
+.ui-tree .tree-node > .ep:before {
 	content: "";
     position: absolute;
     width: 0.16rem;
@@ -31,14 +31,14 @@
     /*transition: transform 0.2s;*/ /* 影响性能了 */
 }
 
-.ui-treeview .tree-node > .chkbox {
+.ui-tree .tree-node > .chkbox {
 	flex: none;
     display: inline-block;
     width: 0.2rem;
     height: 0.2rem;
 }
 
-.ui-treeview .tree-node > .chkbox > i {
+.ui-tree .tree-node > .chkbox > i {
 	position: absolute;
     width: 0.14rem;
     height: 0.14rem;
@@ -52,18 +52,18 @@
     transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.ui-treeview .tree-node > .chkbox:active > i {
+.ui-tree .tree-node > .chkbox:active > i {
     box-shadow: 0px 0px 0px 0.03rem #ddd;
 }
 
-.ui-treeview .tree-node > .ic {
+.ui-tree .tree-node > .ic {
 	flex: none;
     display: inline-block;
     width: 0.2rem;
     height: 0.2rem;
 }
 
-.ui-treeview .tree-node > .ic > i {
+.ui-tree .tree-node > .ic > i {
 	position: absolute;
     width: 0.16rem;
     height: 0.16rem;
@@ -75,84 +75,84 @@
     background-position: center;
 }
 
-.ui-treeview .tree-node > .lbl {
+.ui-tree .tree-node > .lbl {
 	flex: auto;
 }
 
-.ui-treeview .tree-node.active {
+.ui-tree .tree-node.active {
 	color: #fff;
 	background-color: #333444;
 }
 
-.ui-treeview .tree-node.active > .ep:before {
+.ui-tree .tree-node.active > .ep:before {
 	background-image: url(/VRender/icons/025b.png);
     opacity: 0.75;
 }
 
-.ui-treeview ul {
+.ui-tree ul {
     overflow: hidden;
     height: 0px;
     transition: height 0.25s;
 }
 
-.ui-treeview ul.root {
+.ui-tree ul.root {
     height: auto;
 }
 
-.ui-treeview ul.animate-in {
+.ui-tree ul.animate-in {
 }
 
-.ui-treeview ul.animate-out {
+.ui-tree ul.animate-out {
 }
 
-.ui-treeview li.open > ul {
+.ui-tree li.open > ul {
     height: auto;
 }
 
-.ui-treeview li.open > .tree-node > .ep:before {
+.ui-tree li.open > .tree-node > .ep:before {
 	transform: rotate(90deg);
 }
 
-.ui-treeview li.is-leaf > .tree-node > .ep:before {
+.ui-tree li.is-leaf > .tree-node > .ep:before {
 	background-image: url(/VRender/icons/027a.png);
     background-size: 0.06rem;
     opacity: 0.25;
 }
 
-.ui-treeview li.is-leaf > .tree-node.active > .ep:before {
+.ui-tree li.is-leaf > .tree-node.active > .ep:before {
 	background-image: url(/VRender/icons/027b.png);
     opacity: 0.75;
 }
 
-.ui-treeview li.selected_ > .tree-node > .chkbox > i {
+.ui-tree li.selected_ > .tree-node > .chkbox > i {
 	background-color: #333444;
     background-image: url(/VRender/icons/027b.png);
     background-size: 0.1rem;
     box-shadow: 0px 0px 0.03rem 0px #222;
 }
 
-.ui-treeview li.selected > .tree-node > .chkbox > i {
+.ui-tree li.selected > .tree-node > .chkbox > i {
 	background-color: #333444;
     background-image: url(/VRender/icons/003b.png);
     background-size: 0.1rem;
     box-shadow: 0px 0px 0.03rem 0px #222;
 }
 
-.ui-treeview li > .tree-node.active > .chkbox > i {
+.ui-tree li > .tree-node.active > .chkbox > i {
 	border: 1px solid #ccc;
     box-shadow: none;
 }
 
-.ui-treeview li > .tree-node.active > .chkbox:active > i {
+.ui-tree li > .tree-node.active > .chkbox:active > i {
     box-shadow: 0px 0px 0px 0.03rem #787878;
 }
 
-.ui-treeview li.loading > div {
+.ui-tree li.loading > div {
 	color: #333444;
 	padding-left: 0.25rem;
 }
 
-.ui-treeview li.loading > div:before {
+.ui-tree li.loading > div:before {
 	content: "";
     position: absolute;
     width: 0.16rem;
@@ -168,11 +168,11 @@
     -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
 }
 
-.ui-treeview li.more:active {
+.ui-tree li.more:active {
 	background-color: #f0f0f0;
 }
 
-.ui-treeview li.more > div {
+.ui-tree li.more > div {
 	color: #0048ff;
     font-size: 0.14rem;
     font-style: italic;
@@ -180,74 +180,74 @@
     padding-left: 0.2rem;
 }
 
-.ui-treeview ul[level='1'] > li > .tree-node {
+.ui-tree ul[level='1'] > li > .tree-node {
 	padding-left: 0.15rem;
 }
 
-.ui-treeview ul[level='2'] > li > .tree-node {
+.ui-tree ul[level='2'] > li > .tree-node {
 	padding-left: 0.30rem;
 }
 
-.ui-treeview ul[level='3'] > li > .tree-node {
+.ui-tree ul[level='3'] > li > .tree-node {
 	padding-left: 0.45rem;
 }
 
-.ui-treeview ul[level='4'] > li > .tree-node {
+.ui-tree ul[level='4'] > li > .tree-node {
 	padding-left: 0.60rem;
 }
 
-.ui-treeview ul[level='5'] > li > .tree-node {
+.ui-tree ul[level='5'] > li > .tree-node {
 	padding-left: 0.75rem;
 }
 
-.ui-treeview ul[level='6'] > li > .tree-node {
+.ui-tree ul[level='6'] > li > .tree-node {
 	padding-left: 0.90rem;
 }
 
-.ui-treeview ul[level^='6-'] > li > .tree-node {
+.ui-tree ul[level^='6-'] > li > .tree-node {
 	padding-left: 1.05rem;
 }
 
-.ui-treeview ul[level='1'] > li.loading {
+.ui-tree ul[level='1'] > li.loading {
 	padding-left: 0.15rem;
 }
-.ui-treeview ul[level='2'] > li.loading {
+.ui-tree ul[level='2'] > li.loading {
 	padding-left: 0.30rem;
 }
-.ui-treeview ul[level='3'] > li.loading {
+.ui-tree ul[level='3'] > li.loading {
 	padding-left: 0.45rem;
 }
-.ui-treeview ul[level='4'] > li.loading {
+.ui-tree ul[level='4'] > li.loading {
 	padding-left: 0.60rem;
 }
-.ui-treeview ul[level='5'] > li.loading {
+.ui-tree ul[level='5'] > li.loading {
 	padding-left: 0.75rem;
 }
-.ui-treeview ul[level='6'] > li.loading {
+.ui-tree ul[level='6'] > li.loading {
 	padding-left: 0.90rem;
 }
-.ui-treeview ul[level^='6-'] > li.loading {
+.ui-tree ul[level^='6-'] > li.loading {
 	padding-left: 1.05rem;
 }
 
-.ui-treeview ul[level='1'] > li.more {
+.ui-tree ul[level='1'] > li.more {
 	padding-left: 0.15rem;
 }
-.ui-treeview ul[level='2'] > li.more {
+.ui-tree ul[level='2'] > li.more {
 	padding-left: 0.30rem;
 }
-.ui-treeview ul[level='3'] > li.more {
+.ui-tree ul[level='3'] > li.more {
 	padding-left: 0.45rem;
 }
-.ui-treeview ul[level='4'] > li.more {
+.ui-tree ul[level='4'] > li.more {
 	padding-left: 0.60rem;
 }
-.ui-treeview ul[level='5'] > li.more {
+.ui-tree ul[level='5'] > li.more {
 	padding-left: 0.75rem;
 }
-.ui-treeview ul[level='6'] > li.more {
+.ui-tree ul[level='6'] > li.more {
 	padding-left: 0.90rem;
 }
-.ui-treeview ul[level^='6-'] > li.more {
+.ui-tree ul[level^='6-'] > li.more {
 	padding-left: 1.05rem;
 }

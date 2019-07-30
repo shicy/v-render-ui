@@ -69,7 +69,7 @@ function buildJs() {
 	jsFiles.push("src/components/listview/render.js");
 	jsFiles.push("src/components/datagrid/render.js");
 	jsFiles.push("src/components/scrollbox/render.js");
-	jsFiles.push("src/components/treeview/render.js");
+	jsFiles.push("src/components/tree/render.js");
 	jsFiles.push("src/components/treeselect/render.js");
 
 	let result = Gulp.src(jsFiles)

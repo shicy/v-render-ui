@@ -11,9 +11,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UITreeView = UISelectable.extend(module, {
+const UITree = UISelectable.extend(module, {
 	renderView: function () {
-		UITreeView.super(this);
+		UITree.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 
