@@ -11,9 +11,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UITooltip = UIBase.extend(module, {
+const UIMessage = UIBase.extend(module, {
 	renderView: function () {
-		UITooltip.super(this);
+		UIMessage.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

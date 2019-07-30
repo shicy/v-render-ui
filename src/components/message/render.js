@@ -1,27 +1,27 @@
 // 2019-06-10
-// tooltip
+// message(原tooltip)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.tooltip)
+	if (frontend && VRender.Component.ui.message)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UITooltip = UI.tooltip = function (view, options) {
+	const UIMessage = UI.message = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UITooltip = UITooltip.prototype = new UI._base(false);
+	const _UIMessage = UIMessage.prototype = new UI._base(false);
 
-	_UITooltip.init = function (target, options) {
+	_UIMessage.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
 		this.open();
 	};
 
 	// ====================================================
-	_UITooltip.open = function () {
+	_UIMessage.open = function () {
 		doOpen.call(this);
 
 		if (this._isRenderAsApp()) {
@@ -36,7 +36,7 @@
 		}
 	};
 
-	_UITooltip.close = function () {
+	_UIMessage.close = function () {
 		doClose.call(this);
 	};
 
@@ -76,7 +76,7 @@
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-tooltip");
+		target.addClass("ui-message");
 
 		let type = this.getType();
 		if (type)
@@ -137,9 +137,9 @@
 
 	///////////////////////////////////////////////////////
 	const doOpen = function () {
-		let wrapper = $("body").children(".ui-tooltip-wrap");
+		let wrapper = $("body").children(".ui-message-wrap");
 		if (!wrapper || wrapper.length == 0)
-			wrapper = $("<div class='ui-tooltip-wrap'></div>").appendTo("body");
+			wrapper = $("<div class='ui-message-wrap'></div>").appendTo("body");
 
 		let target = this.$el.appendTo(wrapper);
 		
@@ -155,7 +155,7 @@
 		setTimeout(() => {
 			target.removeClass("animate-in").removeClass("animate-out");
 			target.remove();
-			let wrapper = $("body").children(".ui-tooltip-wrap");
+			let wrapper = $("body").children(".ui-message-wrap");
 			if (wrapper.children().length == 0)
 				wrapper.remove();
 		}, 500);
@@ -184,8 +184,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UITooltip = UITooltip;
-		UI.init(".ui-tooltip", UITooltip, Renderer);
+		window.UIMessage = UIMessage;
+		UI.init(".ui-message", UIMessage, Renderer);
 	}
 	else {
 		module.exports = Renderer;

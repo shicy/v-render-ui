@@ -585,7 +585,7 @@
 	};
 
 	const showError = function (message, duration) {
-		UI.tooltip.create({type: "danger", content: message, duration: duration});
+		UI.message.create({type: "danger", content: message, duration: duration});
 	};
 
 	///////////////////////////////////////////////////////

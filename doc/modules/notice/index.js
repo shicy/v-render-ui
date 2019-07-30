@@ -37,7 +37,7 @@ const ModuleView = BaseModule.extend(module, {
 		let source = [];
 		source.push("// 前端代码");
 		source.push("var button = new UIButton({\n  label: '点击打开通知'\n});");
-		source.push("button.on('tap', function () {\n  new UITooltip({\n    title: '标题'," +
+		source.push("button.on('tap', function () {\n  new UINotice({\n    title: '标题'," +
 			"\n    content: '这里是内容！！'\n  });\n});");
 
 		render(demo, source, description);

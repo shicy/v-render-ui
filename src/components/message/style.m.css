@@ -1,5 +1,5 @@
 
-.ui-tooltip-wrap {
+.ui-message-wrap {
 	position: fixed;
     z-index: 2100;
     left: 0px;
@@ -8,7 +8,7 @@
     bottom: 0px;
 }
 
-.ui-tooltip {
+.ui-message {
 	position: absolute;
     left: 0px;
     right: 0px;
@@ -16,7 +16,7 @@
     bottom: 0px;
 }
 
-.ui-tooltip > .container {
+.ui-message > .container {
 	position: absolute;
 	width: 1.6rem;
     left: 50%;
@@ -32,7 +32,7 @@
     transition: opacity 0.5s;
 }
 
-.ui-tooltip > .container > .img {
+.ui-message > .container > .img {
 	display: none;
     position: absolute;
     width: 0.5rem;
@@ -45,43 +45,43 @@
     background-position: center;
 }
 
-.ui-tooltip > .container > .content {
+.ui-message > .container > .content {
 	max-height: 4rem;
     overflow: auto;
 }
 
-.ui-tooltip > .container > .closebtn {
+.ui-message > .container > .closebtn {
 	display: none;
 }
 
-.ui-tooltip.show-icon > .container {
+.ui-message.show-icon > .container {
 	padding: 0.8rem 0.1rem 0.1rem;
 }
 
-.ui-tooltip.show-icon > .container > .img {
+.ui-message.show-icon > .container > .img {
 	display: block;
 }
 
-.ui-tooltip[opt-type='success'] > .container > .img {
+.ui-message[opt-type='success'] > .container > .img {
 	background-image: url(/vrender-ui/icons/034b.png);
 }
 
-.ui-tooltip[opt-type='error'] > .container > .img {
+.ui-message[opt-type='error'] > .container > .img {
 	background-image: url(/vrender-ui/icons/035b.png);
 }
 
-.ui-tooltip[opt-type='warn'] > .container > .img {
+.ui-message[opt-type='warn'] > .container > .img {
 	background-image: url(/vrender-ui/icons/036b.png);
 }
 
-.ui-tooltip[opt-type='info'] > .container > .img {
+.ui-message[opt-type='info'] > .container > .img {
 	background-image: url(/vrender-ui/icons/037b.png);
 }
 
-.ui-tooltip.animate-in > .container {
+.ui-message.animate-in > .container {
 	opacity: 1;
 }
 
-.ui-tooltip.animate-out > .container {
+.ui-message.animate-out > .container {
 	opacity: 0;
 }
