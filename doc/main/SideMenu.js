@@ -55,7 +55,7 @@ const menus = [{
 	name: "数据集",
 	children: [
 		{name: "datagrid", title: "Datagrid", subTitle: "数据网络"},
-		{name: "listview", title: "ListView", subTitle: "列表视图"},
+		{name: "list", title: "List", subTitle: "列表视图"},
 		{name: "tree", title: "Tree", subTitle: "树形视图"},
 		{name: "treeselect", title: "TreeSelect", subTitle: "树形下拉选择框"}
 	]

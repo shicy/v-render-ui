@@ -5,21 +5,21 @@
     overflow: auto;
 }
 
-.ui-scrollbox > .container > .ui-listview {
+.ui-scrollbox > .container > .ui-list {
 	min-height: 0px;
 	border: 0px;
 }
 
-.ui-scrollbox > .container > .ui-listview > ul {
+.ui-scrollbox > .container > .ui-list > ul {
 	opacity: 1;
 	pointer-events: inherit;
 }
 
-.ui-scrollbox > .container > .ui-listview > .ui-load {
+.ui-scrollbox > .container > .ui-list > .ui-load {
 	display: none;
 }
 
-.ui-scrollbox > .container > .ui-listview > .ui-empty {
+.ui-scrollbox > .container > .ui-list > .ui-empty {
 	display: none;
 }
 

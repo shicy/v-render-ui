@@ -6,7 +6,7 @@ const BaseModule = require("../BaseModule");
 
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
-const UIListView = VRender.UIListView;
+const UIList = VRender.UIList;
 const UIPaginator = VRender.UIPaginator;
 
 let exampleData = [];
@@ -45,7 +45,7 @@ exampleData.push({name: "饿了么", title: "饿了么", type: "生活",
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UIListView 列表视图";
+		return "UIList 列表视图";
 	},
 
 	getDescription: function () {
@@ -75,10 +75,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("基本使用");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, {data: ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]}));
+		demo.append(new UIList(this, {data: ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]}));
 
 		let source = [];
-		source.push("new UIListView([context], {\n  data: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']\n});");
+		source.push("new UIList([context], {\n  data: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']\n});");
 
 		render(demo, source, description);
 	},
@@ -89,10 +89,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>data</> 给定一个数组类型的对象集，默认显示对象中的 <>label</> 或 <>name</> 值。")
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData }));
+		demo.append(new UIList(this, { data: exampleData }));
 
 		let source = [];
-		source.push("new UIListView([context], {\n  data: dataSource\n});");
+		source.push("new UIList([context], {\n  data: dataSource\n});");
 
 		render(demo, source, description);
 	},
@@ -103,10 +103,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("设置属性 <>chkbox</> 为 <>true</> 列表将显示选择框");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, chkbox: true, selectedIndex: 2 }));
+		demo.append(new UIList(this, { data: exampleData, chkbox: true, selectedIndex: 2 }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  selectedIndex: 2");
@@ -121,10 +121,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>chkbox</> 为 <>true</> 时，同时设置属性 <>multi</> 为 <>true</> ");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, chkbox: true, multi: true, selectedIndex: [2, 3] }));
+		demo.append(new UIList(this, { data: exampleData, chkbox: true, multi: true, selectedIndex: [2, 3] }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  multi: true,");
@@ -140,10 +140,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>labelField</> 可以指定数据集中的一个属性名称，该属性值作为默认显示内容");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, labelField: "title" }));
+		demo.append(new UIList(this, { data: exampleData, labelField: "title" }));
 
 		let source = [];
-		source.push("new UIListView([context], {\n  data: dataSource,\n  labelField: 'title'\n});");
+		source.push("new UIList([context], {\n  data: dataSource,\n  labelField: 'title'\n});");
 
 		render(demo, source, description);
 	},
@@ -158,10 +158,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, labelFunction: labelFunction }));
+		demo.append(new UIList(this, { data: exampleData, labelFunction: labelFunction }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  labelFunction: function (data) {");
 		source.push("    return '<a href=\"' + data.url + '\">【' + data.type + '】' + data.name + ' V' + data.version + '</a>';");
@@ -203,10 +203,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
+		demo.append(new UIList(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  itemRenderer: function ($, item, data) {");
@@ -232,16 +232,16 @@ const ModuleView = BaseModule.extend(module, {
 		let description = [];
 		description.push("内置项渲染器（简单）");
 
-		let myItemRenderer = UIListView.item_renderer_simple("title");
+		let myItemRenderer = UIList.item_renderer_simple("title");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
+		demo.append(new UIList(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
-		source.push("  itemRenderer: UIListView.item_renderer_simple('title')");
+		source.push("  itemRenderer: UIList.item_renderer_simple('title')");
 		source.push("});");
 
 		render(demo, source, description);
@@ -251,16 +251,16 @@ const ModuleView = BaseModule.extend(module, {
 		let description = [];
 		description.push("内置项渲染器（图标）");
 
-		let myItemRenderer = UIListView.item_renderer_icon({title: "name"});
+		let myItemRenderer = UIList.item_renderer_icon({title: "name"});
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
+		demo.append(new UIList(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
-		source.push("  itemRenderer: UIListView.item_renderer_icon({title: 'name'})");
+		source.push("  itemRenderer: UIList.item_renderer_icon({title: 'name'})");
 		source.push("});");
 
 		render(demo, source, description);
@@ -271,16 +271,16 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("内置项渲染器（按钮）");
 
 		let buttons = [{name: "download", label: "立即下载", type: "primary"}, {name: "install", label: "安装到手机"}];
-		let myItemRenderer = UIListView.item_renderer_button(buttons);
+		let myItemRenderer = UIList.item_renderer_button(buttons);
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
+		demo.append(new UIList(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
-		source.push("  itemRenderer: UIListView.item_renderer_button([");
+		source.push("  itemRenderer: UIList.item_renderer_button([");
 		source.push("    { name: 'download', label: '立即下载', type: 'primary' },");
 		source.push("    { name: 'install', label: '安装到手机' }");
 		source.push("  ])");
@@ -294,16 +294,16 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("内置项渲染器（图标+按钮）");
 
 		let buttons = [{name: "download", label: "立即下载", type: "primary"}, {name: "install", label: "安装到手机"}];
-		let myItemRenderer = UIListView.item_renderer_icon_button("icon", buttons, "name");
+		let myItemRenderer = UIList.item_renderer_icon_button("icon", buttons, "name");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
+		demo.append(new UIList(this, { data: exampleData, itemRenderer: myItemRenderer, chkbox: true }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
-		source.push("  itemRenderer: UIListView.item_renderer_icon_button('icon', [");
+		source.push("  itemRenderer: UIList.item_renderer_icon_button('icon', [");
 		source.push("    { name: 'download', label: '立即下载', type: 'primary' },");
 		source.push("    { name: 'install', label: '安装到手机' }");
 		source.push("  ], 'name')");
@@ -317,13 +317,13 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("异步数据（分页加载）");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		let list = demo.add(new UIListView(this, { apiName: "data.component.items" }));
+		let list = demo.add(new UIList(this, { apiName: "data.component.items" }));
 		let pager = demo.add(new UIPaginator(this, { size: 10 }));
 		list.setPaginator(pager);
 
 		let source = [];
 		source.push("var pager = new UIPaginator([context], { size: 10 });");
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  apiName: 'data.component.items',");
 		source.push("  paginator: pager");
 		source.push("});");
@@ -337,10 +337,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("空列表");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIListView(this, { empty: "你还没有相关信息" }));
+		demo.append(new UIList(this, { empty: "你还没有相关信息" }));
 
 		let source = [];
-		source.push("new UIListView([context], {");
+		source.push("new UIList([context], {");
 		source.push("  empty: '你还没有相关信息'");
 		source.push("});");
 

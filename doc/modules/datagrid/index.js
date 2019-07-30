@@ -46,7 +46,7 @@ exampleData.push({id: 6, name: "饿了么", title: "饿了么", type: "生活",
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UIListView 列表视图";
+		return "UIDatagrid 数据网格";
 	},
 
 	getDescription: function () {

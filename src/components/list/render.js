@@ -1,40 +1,40 @@
 // 2019-07-23
-// listview
+// list(原listview)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.listview)
+	if (frontend && VRender.Component.ui.list)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UIListView = UI.listview = function (view, options) {
+	const UIList = UI.list = function (view, options) {
 		return UI._select.call(this, view, options);
 	};
-	const _UIListView = UIListView.prototype = new UI._select(false);
+	const _UIList = UIList.prototype = new UI._select(false);
 
-	_UIListView.init = function (target, options) {
+	_UIList.init = function (target, options) {
 		UI._select.init.call(this, target, options);
 
 		let list = this.list = this.$el.children("ul");
 
 		list.on("tap", "li", itemClickHandler.bind(this));
-		list.on("tap", ".ui-listview-item3 .btnbar", function () { return false; });
-		list.on("tap", ".ui-listview-item4 .btnbar", function () { return false; });
+		list.on("tap", ".ui-list-item3 .btnbar", function () { return false; });
+		list.on("tap", ".ui-list-item4 .btnbar", function () { return false; });
 	};
 
 	// ====================================================
-	_UIListView.isChkboxVisible = function () {
+	_UIList.isChkboxVisible = function () {
 		return this.$el.is(".show-chkbox");
 	};
 	
 	// ====================================================
-	_UIListView._getItemContainer = function () {
+	_UIList._getItemContainer = function () {
 		return this.$el.children("ul");
 	};
 
-	_UIListView._renderOneItem = function ($, item, data, index, bSelected) {
+	_UIList._renderOneItem = function ($, item, data, index, bSelected) {
 		renderOneItem.call(this, $, item, data, index, bSelected);
 	};
 
@@ -73,7 +73,7 @@
 
 	// options: titleField, descField
 	Renderer.itemRenderer_simple = function (options) {
-		let _options = {style: "ui-listview-item1", title: null, desc: null};
+		let _options = {style: "ui-list-item1", title: null, desc: null};
 		if (typeof options === "string") {
 			_options.title = options;
 			_options.desc = arguments && arguments[1];
@@ -87,7 +87,7 @@
 
 	// options: iconField, titleField, descField, defaultIconUrl
 	Renderer.itemRenderer_icon = function (options) {
-		let _options = {style: "ui-listview-item2", icon: null, title: null, desc: null};
+		let _options = {style: "ui-list-item2", icon: null, title: null, desc: null};
 		if (typeof options == "string") {
 			_options.icon = options;
 			_options.title = arguments && arguments[1];
@@ -104,7 +104,7 @@
 
 	// options: buttons, titleField, descField
 	Renderer.itemRenderer_button = function (options) {
-		let _options = {style: "ui-listview-item3", buttons: null, title: null, desc: null};
+		let _options = {style: "ui-list-item3", buttons: null, title: null, desc: null};
 		if (typeof options == "string") {
 			_options.title = options;
 			_options.desc = arguments && arguments[1];
@@ -124,7 +124,7 @@
 
 	// options: iconField, buttons, titleField, descField
 	Renderer.itemRenderer_icon_button = function (options) {
-		let _options = {style: "ui-listview-item4", buttons: null, icon: null, title: null, desc: null};
+		let _options = {style: "ui-list-item4", buttons: null, icon: null, title: null, desc: null};
 		if (typeof options == "string") {
 			_options.icon = options;
 			_options.buttons = arguments && arguments[1];
@@ -204,7 +204,7 @@
 
 	// ====================================================
 	_Renderer.render = function ($, target) {
-		target.addClass("ui-listview");
+		target.addClass("ui-list");
 		if (this.isChkboxVisible())
 			target.addClass("show-chkbox");
 
@@ -246,8 +246,8 @@
 	
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UIListView = UIListView;
-		UI.init(".ui-listview", UIListView, Renderer);
+		window.UIList = UIList;
+		UI.init(".ui-list", UIList, Renderer);
 	}
 	else {
 		module.exports = Renderer;

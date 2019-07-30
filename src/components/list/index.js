@@ -11,9 +11,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UIListView = UISelectable.extend(module, {
+const UIList = UISelectable.extend(module, {
 	renderView: function () {
-		UIListView.super(this);
+		UIList.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 
@@ -35,10 +35,10 @@ const UIListView = UISelectable.extend(module, {
 	}
 });
 
-UIListView.item_renderer_simple = Renderer.itemRenderer_simple;
+UIList.item_renderer_simple = Renderer.itemRenderer_simple;
 
-UIListView.item_renderer_icon = Renderer.itemRenderer_icon;
+UIList.item_renderer_icon = Renderer.itemRenderer_icon;
 
-UIListView.item_renderer_button = Renderer.itemRenderer_button;
+UIList.item_renderer_button = Renderer.itemRenderer_button;
 
-UIListView.item_renderer_icon_button = Renderer.itemRenderer_icon_button;
+UIList.item_renderer_icon_button = Renderer.itemRenderer_icon_button;

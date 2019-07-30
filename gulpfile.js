@@ -66,7 +66,7 @@ function buildJs() {
 	jsFiles.push("src/components/paginator/render.js");
 	jsFiles.push("src/components/tabbar/render.js");
 	jsFiles.push("src/components/panel/render.js");
-	jsFiles.push("src/components/listview/render.js");
+	jsFiles.push("src/components/list/render.js");
 	jsFiles.push("src/components/datagrid/render.js");
 	jsFiles.push("src/components/scrollbox/render.js");
 	jsFiles.push("src/components/tree/render.js");

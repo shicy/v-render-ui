@@ -1,9 +1,9 @@
 
-.ui-listview {
+.ui-list {
 	border: 1px solid #eee;
 }
 
-.ui-listview > ul > li {
+.ui-list > ul > li {
 	display: table;
 	table-layout: fixed;
     position: relative;
@@ -13,15 +13,15 @@
     border-top: 1px solid #eee;
 }
 
-.ui-listview > ul > li:first-child {
+.ui-list > ul > li:first-child {
 	border-top: 0px;
 }
 
-.ui-listview > ul > li.selected {
+.ui-list > ul > li.selected {
 	background-color: #fafafa;
 }
 
-.ui-listview > ul > li > .chkbox {
+.ui-list > ul > li > .chkbox {
     position: absolute;
     width: 14px;
     height: 14px;
@@ -33,7 +33,7 @@
     box-shadow: 0px 0px 1px 1px #eee;
 }
 
-.ui-listview > ul > li.selected > .chkbox {
+.ui-list > ul > li.selected > .chkbox {
     border-color: #333;
     background-color: #333444 !important;
     background-image: url(/VRender/icons/003b.png);
@@ -42,26 +42,26 @@
     background-position: center;
 }
 
-.ui-listview > ul > li > .box {
+.ui-list > ul > li > .box {
 	display: table-cell;
     vertical-align: middle;
     width: 100%;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item1 {
+.ui-list > ul > li > .box > .ui-list-item1 {
 	padding: 10px 0px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item1 > .content > .desc {
+.ui-list > ul > li > .box > .ui-list-item1 > .content > .desc {
 	color: #999;
 	margin-top: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item2 {
+.ui-list > ul > li > .box > .ui-list-item2 {
 	padding: 10px 0px 10px 30px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item2 > .icon {
+.ui-list > ul > li > .box > .ui-list-item2 > .icon {
 	position: absolute;
     width: 20px;
     height: 20px;
@@ -69,41 +69,41 @@
     top: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item2 > .content > .desc {
+.ui-list > ul > li > .box > .ui-list-item2 > .content > .desc {
 	color: #999;
 	margin-top: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item3 {
+.ui-list > ul > li > .box > .ui-list-item3 {
 	display: flex;
     align-items: center;
     padding: 10px 0px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item3 > .content {
+.ui-list > ul > li > .box > .ui-list-item3 > .content {
 	flex: auto;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item3 > .content > .desc {
+.ui-list > ul > li > .box > .ui-list-item3 > .content > .desc {
 	color: #999;
 	margin-top: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item3 > .btnbar {
+.ui-list > ul > li > .box > .ui-list-item3 > .btnbar {
 	flex: none;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item3 > .btnbar > * {
+.ui-list > ul > li > .box > .ui-list-item3 > .btnbar > * {
 	margin-left: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item4 {
+.ui-list > ul > li > .box > .ui-list-item4 {
 	display: flex;
 	align-items: center;
 	padding: 10px 0px 10px 30px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item4 > .icon {
+.ui-list > ul > li > .box > .ui-list-item4 > .icon {
 	position: absolute;
     width: 20px;
     height: 20px;
@@ -111,33 +111,33 @@
     top: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item4 > .content {
+.ui-list > ul > li > .box > .ui-list-item4 > .content {
 	flex: auto;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item4 > .content > .desc {
+.ui-list > ul > li > .box > .ui-list-item4 > .content > .desc {
 	color: #999;
 	margin-top: 10px;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item4 > .btnbar {
+.ui-list > ul > li > .box > .ui-list-item4 > .btnbar {
 	flex: none;
 }
 
-.ui-listview > ul > li > .box > .ui-listview-item4 > .btnbar > * {
+.ui-list > ul > li > .box > .ui-list-item4 > .btnbar > * {
 	margin-left: 10px;
 }
 
-.ui-listview > ul > li[disabled] {
+.ui-list > ul > li[disabled] {
     opacity: 0.5;
     pointer-events: none;
 }
 
-.ui-listview > ul > li[disabled] > .chkbox {
+.ui-list > ul > li[disabled] > .chkbox {
     background-color: #ddd;
 }
 
-.ui-listview > .ui-empty {
+.ui-list > .ui-empty {
     position: absolute;
     height: auto;
     left: 0px;
@@ -146,28 +146,28 @@
     bottom: 0px;
 }
 
-.ui-listview.show-chkbox > ul > li {
+.ui-list.show-chkbox > ul > li {
 	padding-left: 32px;
 }
 
-.ui-listview.is-empty {
+.ui-list.is-empty {
     min-height: 120px;
 }
 
-.ui-listview.is-loading {
+.ui-list.is-loading {
     min-height: 120px;
 }
 
-.ui-listview.is-loading > ul {
+.ui-list.is-loading > ul {
 	opacity: 0.65;
 	pointer-events: none;
 }
 
-.ui-listview.is-loading > .ui-empty {
+.ui-list.is-loading > .ui-empty {
 	display: none;
 }
 
-.ui-listview.is-loading > .ui-load > .ui-loaddef:before {
+.ui-list.is-loading > .ui-load > .ui-loaddef:before {
 	animation: ui-loading-animate 1s steps(8, end) infinite;
     -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
 }
