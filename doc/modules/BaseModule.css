@@ -23,7 +23,7 @@
 .module-view > .module-group > .module-demo {
 	margin-top: 30px;
     font-size: 16px;
-    border: 1px solid #ddd;
+    border: 1px solid #eee;
     border-radius: 5px;
     background-color: #fff;
 }
@@ -32,10 +32,10 @@
 	margin-top: 10px;
 }
 
-.module-view > .module-group > .module-demo:hover {
+/*.module-view > .module-group > .module-demo:hover {
 	border-color: #ababab;
     box-shadow: 0px 0px 0px 2px rgba(204, 204, 204, 0.5);
-}
+}*/
 
 .module-view > .module-group > .module-demo .demo-lbl {
 	display: block;
@@ -88,9 +88,9 @@
     cursor: pointer;
 }
 
-.module-view > .module-group > .module-demo > .source > .expand:hover {
+/*.module-view > .module-group > .module-demo > .source > .expand:hover {
 	background-color: #eee;
-}
+}*/
 
 /*.module-view > .module-group > .module-demo > .source > .expand i {
 	position: absolute;
