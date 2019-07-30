@@ -1,20 +1,20 @@
 // 2019-05-29
-// combobox
+// select(原combobox)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.combobox)
+	if (frontend && VRender.Component.ui.select)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UICombobox = UI.combobox = function (view, options) {
+	const UISelect = UI.select = function (view, options) {
 		return UI._select.call(this, view, options);
 	};
-	const _UICombobox = UICombobox.prototype = new UI._select(false);
+	const _UISelect = UISelect.prototype = new UI._select(false);
 
-	_UICombobox.init = function (target, options) {
+	_UISelect.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
 		target = this.$el;
@@ -39,7 +39,7 @@
 	};
 
 	// ====================================================
-	_UICombobox.val = function (value) {
+	_UISelect.val = function (value) {
 		if (Utils.isNull(value)) {
 			let selectedIndex = this.getSelectedIndex(true);
 			if (selectedIndex && selectedIndex.length > 0) {
@@ -64,7 +64,7 @@
 		return this;
 	};
 
-	_UICombobox.getData = function (original) {
+	_UISelect.getData = function (original) {
 		if (original) {
 			this.options.data = this._doAdapter(this.options.data);
 			return this.options.data;
@@ -73,12 +73,12 @@
 	};
 
 	// 修改数据，
-	_UICombobox.setDataSilent = function (value) {
+	_UISelect.setDataSilent = function (value) {
 		this.options.data = value;
 		rerenderSilent.call(this);
 	};
 
-	_UICombobox.setSelectedIndex = function (value) {
+	_UISelect.setSelectedIndex = function (value) {
 		let snapshoot = this._snapshoot();
 		let indexs = UI._select.setSelectedIndex.call(this, value);
 		Utils.each(this._getItems(), (item, i) => {
@@ -91,10 +91,10 @@
 		snapshoot.done();
 	};
 
-	_UICombobox.getPrompt = function () {
+	_UISelect.getPrompt = function () {
 		return this.$el.children(".ipt").find(".prompt").text();
 	};
-	_UICombobox.setPrompt = function (value) {
+	_UISelect.setPrompt = function (value) {
 		let target = this.$el.children(".ipt");
 		target.find(".prompt").remove();
 		if (Utils.isNotBlank(value)) {
@@ -103,7 +103,7 @@
 	};
 
 	// ====================================================
-	_UICombobox.addItem = function (data, index) {
+	_UISelect.addItem = function (data, index) {
 		index = Utils.getIndexValue(index);
 		data = Fn.doAdapter.call(this, data, index) || {};
 
@@ -136,7 +136,7 @@
 		return newItem;
 	};
 
-	_UICombobox.updateItem = function (data, index) {
+	_UISelect.updateItem = function (data, index) {
 		data = Fn.doAdapter.call(this, data, index);
 		if (!index && index !== 0)
 			index = this.getDataIndex(data);
@@ -167,7 +167,7 @@
 		return index;
 	};
 
-	_UICombobox.removeItemAt = function (index) {
+	_UISelect.removeItemAt = function (index) {
 		index = Utils.getIndexValue(index);
 		if (index >= 0) {
 			let item = this._getItems().eq(index);
@@ -202,21 +202,21 @@
 	};
 
 	// ====================================================
-	_UICombobox.isNative = function () {
+	_UISelect.isNative = function () {
 		return this.$el.attr("opt-native") == 1;
 	};
 
-	_UICombobox.isEditable = function () {
+	_UISelect.isEditable = function () {
 		return this.$el.is(".editable");
 	};
 
 	// 可输入的情况是否强制匹配项
-	_UICombobox.isMatchRequired = function () {
+	_UISelect.isMatchRequired = function () {
 		return this.$el.attr("opt-match") == 1;
 	};
 
-	_UICombobox.rerender = function () {
-		Utils.debounce("combobox_render-" + this.getViewId(), () => {
+	_UISelect.rerender = function () {
+		Utils.debounce("select_render-" + this.getViewId(), () => {
 			let input = this.$el.find(".ipt > input");
 			let inputValue = input.val() || "";
 
@@ -237,16 +237,16 @@
 	};
 
 	// ====================================================
-	_UICombobox._getItemContainer = function () {
+	_UISelect._getItemContainer = function () {
 		return this.$el.children(".dropdown").children(".box");
 	};
 
-	_UICombobox._renderItems = function ($, itemContainer, datas) {
+	_UISelect._renderItems = function ($, itemContainer, datas) {
 		datas = datas || this.getData(true);
 		renderItems.call(this, $, this.$el, itemContainer, datas);
 	};
 
-	_UICombobox._renderOneItem = function ($, item, data, index) {
+	_UISelect._renderOneItem = function ($, item, data, index) {
 		if (this._isRenderAsApp() && this.isNative()) {
 			item.text(this._getDataLabel(data, index));
 		}
@@ -255,7 +255,7 @@
 		}
 	};
 
-	_UICombobox._getNewItem = function ($, itemContainer, data, index) {
+	_UISelect._getNewItem = function ($, itemContainer, data, index) {
 		if (this._isRenderAsApp() && this.isNative()) {
 			let select = itemContainer.children("select");
 			return $("<option class='item'></option>").appendTo(select);
@@ -268,22 +268,22 @@
 		}
 	};
 
-	_UICombobox._getItems = function (selector) {
+	_UISelect._getItems = function (selector) {
 		let items = this._getItemContainer().find(".item");
 		if (selector)
 			items = items.filter(selector);
 		return items;
 	};
 
-	_UICombobox._isItemSelected = function (item) {
+	_UISelect._isItemSelected = function (item) {
 		return item.is(".selected") || item.is(":selected");
 	};
 
-	_UICombobox._setItemSelected = function (item, beSelected) {
+	_UISelect._setItemSelected = function (item, beSelected) {
 		setItemActive.call(this, item, beSelected);
 	};
 
-	_UICombobox._loadBefore = function () {
+	_UISelect._loadBefore = function () {
 		if (this._isRenderAsApp() && this.isNative())
 			return ;
 		let itemContainer = this._getItemContainer();
@@ -301,7 +301,7 @@
 		}
 	};
 
-	_UICombobox._loadAfter = function () {
+	_UISelect._loadAfter = function () {
 		if (this._isRenderAsApp() && this.isNative())
 			return ;
 		let itemContainer = this._getItemContainer();
@@ -326,13 +326,13 @@
 	};
 
 	// ====================================================
-	_UICombobox._snapshoot_shoot = function (state) {
+	_UISelect._snapshoot_shoot = function (state) {
 		state.selectedIndex = this.getSelectedIndex();
 		state.value = this.$el.find(".ipt > input").val() || "";
 		state.data = this.getSelectedData();
 	};
 
-	_UICombobox._snapshoot_compare = function (state) {
+	_UISelect._snapshoot_compare = function (state) {
 		let value = this.$el.find(".ipt > input").val() || "";
 		if (state.value != value)
 			return false;
@@ -340,7 +340,7 @@
 		return Fn.equalIndex(selectedIndex, state.selectedIndex);
 	};
 
-	_UICombobox._doAdapter = function (datas) {
+	_UISelect._doAdapter = function (datas) {
 		return doAdapter.call(this, datas);
 	};
 
@@ -499,7 +499,7 @@
 	const _Renderer = Renderer.prototype = new UI._selectRender(false);
 
 	_Renderer.render = function ($, target) {
-		target.addClass("ui-combobox");
+		target.addClass("ui-select");
 
 		let options = this.options || {};
 
@@ -661,7 +661,7 @@
 	};
 
 	const rerenderSilent = function () {
-		Utils.debounce("combobox_silent-" + this.getViewId(), () => {
+		Utils.debounce("select_silent-" + this.getViewId(), () => {
 			let selectedIndex = this.getSelectedIndex();
 
 			let itemContainer = this._getItemContainer();
@@ -843,8 +843,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UICombobox = UICombobox;
-		UI.init(".ui-combobox", UICombobox, Renderer);
+		window.UISelect = UISelect;
+		UI.init(".ui-select", UISelect, Renderer);
 	}
 	else {
 		module.exports = Renderer;

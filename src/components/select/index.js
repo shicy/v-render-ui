@@ -11,9 +11,9 @@ const UISelectable = require("../../common/UISelectable");
 const Renderer = require("./render");
 
 
-const UICombobox = UISelectable.extend(module, {
+const UISelect = UISelectable.extend(module, {
 	renderView: function () {
-		UICombobox.super(this);
+		UISelect.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

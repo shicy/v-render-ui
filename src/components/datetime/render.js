@@ -382,12 +382,12 @@
 			UI.datepicker.create({target: picker, min: this.getMinDate(), max: this.getMaxDate()});
 
 			let timeBar = $("<div class='timebar'></div>").appendTo(picker);
-			let hourCombo = UI.combobox.create({target: timeBar, name: "hour", data: this.getHours()});
+			let hourCombo = UI.select.create({target: timeBar, name: "hour", data: this.getHours()});
 			timeBar.append("<span class='tip'>时</span>");
-			let minuteCombo = UI.combobox.create({target: timeBar, name: "minute", data: this.getMinutes()});
+			let minuteCombo = UI.select.create({target: timeBar, name: "minute", data: this.getMinutes()});
 			timeBar.append("<span class='tip'>分</span>");
 			if (this.isSecondVisible()) {
-				let secondCombo = UI.combobox.create({target: timeBar, name: "second", data: this.getSeconds()});
+				let secondCombo = UI.select.create({target: timeBar, name: "second", data: this.getSeconds()});
 				timeBar.append("<span class='tip'>秒</span>");
 			}
 		}

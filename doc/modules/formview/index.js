@@ -7,7 +7,7 @@ const BaseModule = require("../BaseModule");
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
 const UITextView = VRender.UITextView;
-const UICombobox = VRender.UICombobox;
+const UISelect = VRender.UISelect;
 const UIDateInput = VRender.UIDateInput;
 const UIDateRange = VRender.UIDateRange;
 const UICheckbox = VRender.UICheckbox;
@@ -41,7 +41,7 @@ const ModuleView = BaseModule.extend(module, {
 			data: [
 				{ name: "a", label: "文本", content: "文本内容" },
 				{ name: "b", label: "输入框", content: new UITextView(this) },
-				{ name: "c", label: "下拉选择框", content: new UICombobox(this, { data: ["选项1", "选项2", "选项3"] }) },
+				{ name: "c", label: "下拉选择框", content: new UISelect(this, { data: ["选项1", "选项2", "选项3"] }) },
 				{ name: "d", label: "日期", content: new UIDateInput(this) },
 				{ name: "e", label: "日期范围", content: new UIDateRange(this) },
 				{ name: "f", label: "单选", content: new UIRadiobox(this, { label: "单选", value: "radbox" }) },
@@ -74,7 +74,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  }, {");
 		source.push("    name: 'c',");
 		source.push("    label: '下拉选择框',");
-		source.push("    content: new UICombobox([context], {");
+		source.push("    content: new UISelect([context], {");
 		source.push("      data: ['选项1', '选项2', '选项3']");
 		source.push("    })");
 		source.push("  }, {");
@@ -197,7 +197,7 @@ const ModuleView = BaseModule.extend(module, {
 					validate: function (value, callback) {
 						callback(/^1\d{10}$/.test(value) ? false : "手机号必须是1开始的11位数字");
 					}},
-				{ name: "c", label: "下拉选择框", content: new UICombobox(this, { data: ["选项1", "选项2"] }), required: true },
+				{ name: "c", label: "下拉选择框", content: new UISelect(this, { data: ["选项1", "选项2"] }), required: true },
 				{ name: "d", label: "单选", content: new UIRadioGroup(this, { data: "ABCDEF".split("") }), required: true },
 				{ name: "e", label: "日期", content: new UIDateInput(this), required: true },
 				{ name: "f", label: "日期范围", content: new UIDateRange(this), required: true },
@@ -225,7 +225,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  }, {");
 		source.push("    name: 'c',");
 		source.push("    label: '下拉选择框',");
-		source.push("    content: new UICombobox([context], {");
+		source.push("    content: new UISelect([context], {");
 		source.push("      data: ['选项1', '选项2']");
 		source.push("    }),");
 		source.push("    required: true");
@@ -319,7 +319,7 @@ const ModuleView = BaseModule.extend(module, {
 			orientation: this.isApp ? UIFormView.HORIZONTIAL : null,
 			data: [
 				{name: "a", label: "输入框", content: new UITextView(this), required: true},
-				{name: "b", label: "下拉选择框", content: new UICombobox(this, {data: ["选项1", "选项2"]})}
+				{name: "b", label: "下拉选择框", content: new UISelect(this, {data: ["选项1", "选项2"]})}
 			],
 			buttons: [{label: "确定", type: "submit"}]
 		}));
@@ -336,7 +336,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  }, {");
 		source.push("    name: 'b',");
 		source.push("    label: '下拉选择框',");
-		source.push("    content: new UICombobox(context, {");
+		source.push("    content: new UISelect(context, {");
 		source.push("      data: ['选项1', '选项2']");
 		source.push("    })");
 		source.push("  }],");

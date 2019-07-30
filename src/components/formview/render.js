@@ -181,7 +181,7 @@
 					else if (contentView instanceof UI.daterange) {
 						params[name] = contentView.getDateRange("yyyy-MM-dd");
 					}
-					else if (contentView instanceof UI.combobox) {
+					else if (contentView instanceof UI.select) {
 						params[name] = contentView.val();
 					}
 					else if (contentView instanceof UI._select) {
@@ -628,7 +628,7 @@
 			else if (contentView instanceof UI.daterange) {
 				validateDateRangeView.call(this, item, contentView, callback);
 			}
-			else if (contentView instanceof UI.combobox) {
+			else if (contentView instanceof UI.select) {
 				validateComboboxView.call(this, item, contentView, callback);
 			}
 			else if (contentView instanceof UI._select) {

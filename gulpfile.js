@@ -50,7 +50,7 @@ function buildJs() {
 	jsFiles.push("src/components/radiobox/render.js");
 	jsFiles.push("src/components/radiogroup/render.js");
 	jsFiles.push("src/components/textview/render.js");
-	jsFiles.push("src/components/combobox/render.js");
+	jsFiles.push("src/components/select/render.js");
 	jsFiles.push("src/components/datepicker/render.js");
 	jsFiles.push("src/components/dateinput/render.js");
 	jsFiles.push("src/components/daterange/render.js");

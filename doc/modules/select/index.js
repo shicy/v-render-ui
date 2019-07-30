@@ -7,7 +7,7 @@ const BaseModule = require("../BaseModule");
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
 const UIVGroup = VRender.UIVGroup;
-const UICombobox = VRender.UICombobox;
+const UISelect = VRender.UISelect;
 
 const exampleData = [["选项1", "选项2"], "选项3", ["选项4", "选项5"], "选项6", "选项7"];
 const exampleData2 = [{ id: 1, value: "val1", label: "选项1" }, { id: 2, value: "val2", label: "选项2" },
@@ -19,7 +19,7 @@ const strExampleData2 = "[\n  { id: 1, value: 'val1', label: '选项1' }," +
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UICombobox 下拉选择框";
+		return "UISelect 下拉选择框";
 	},
 
 	renderDemos: function (target, render) {
@@ -40,11 +40,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>data</> 是一个数组，作为下拉列表的数据源。（支持数据源分组）");
 
 		let demo = new UIGroup(this);
-		demo.append(new UICombobox(this, { data: exampleData, prompt: "请选择.." }));
+		demo.append(new UISelect(this, { data: exampleData, prompt: "请选择.." }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: items,\n  prompt: '请选择..'\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  prompt: '请选择..'\n});");
 
 		render(demo, source, description);
 	},
@@ -64,19 +64,19 @@ const ModuleView = BaseModule.extend(module, {
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("默认"))
-			.append(new UICombobox(this, { data: exampleData2, selectedIndex: 0 }));
+			.append(new UISelect(this, { data: exampleData2, selectedIndex: 0 }));
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("使用 labelField"))
-			.append(new UICombobox(this, { data: exampleData2, labelField: "value", selectedIndex: 0 }));
+			.append(new UISelect(this, { data: exampleData2, labelField: "value", selectedIndex: 0 }));
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("使用 labelFunction"))
-			.append(new UICombobox(this, { data: exampleData2, labelFunction: labelFunction, selectedIndex: 0 }));
+			.append(new UISelect(this, { data: exampleData2, labelFunction: labelFunction, selectedIndex: 0 }));
 
 		let source = [];
 		source.push("var items = " + strExampleData2);
-		source.push("new UICombobox([context], {\n  data: items,\n  selectedIndex: 0\n});");
-		source.push("new UICombobox([context], {\n  data: items,\n  labelField: 'value',\n  selectedIndex: 0\n});");
-		source.push("new UICombobox([context], {\n  data: items,\n  labelFunction: function (data) {" +
+		source.push("new UISelect([context], {\n  data: items,\n  selectedIndex: 0\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  labelField: 'value',\n  selectedIndex: 0\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  labelFunction: function (data) {" +
 			"\n    return '==  ' + data.label + '(' + data.value + ')  ==';\n  },\n  selectedIndex: 0\n});");
 
 		render(demo, source, description);
@@ -92,25 +92,25 @@ const ModuleView = BaseModule.extend(module, {
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("使用 selectedIndex"))
-			.append(new UICombobox(this, { data: exampleData2, selectedIndex: 2 }));
+			.append(new UISelect(this, { data: exampleData2, selectedIndex: 2 }));
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("使用 selectedIndex(分组)"))
-			.append(new UICombobox(this, { data: exampleData, selectedIndex: 2 }));
+			.append(new UISelect(this, { data: exampleData, selectedIndex: 2 }));
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("使用 selectedKey"))
-			.append(new UICombobox(this, { data: exampleData2, selectedKey: 2 }));
+			.append(new UISelect(this, { data: exampleData2, selectedKey: 2 }));
 		demo.add(new UIVGroup(this))
 			.append($("label.demo-lbl").text("使用 keyField"))
-			.append(new UICombobox(this, { data: exampleData2, selectedKey: "val2", keyField: "value" }));
+			.append(new UISelect(this, { data: exampleData2, selectedKey: "val2", keyField: "value" }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
 		source.push("var items2 = " + strExampleData2);
 		source.push("// -----------------------------------------------------");
-		source.push("new UICombobox([context], {\n  data:items2,\n  selectedIndex: 2\n});");
-		source.push("new UICombobox([context], {\n  data:items,\n  selectedIndex: 2\n});");
-		source.push("new UICombobox([context], {\n  data:items2,\n  selectedKey: 2\n});");
-		source.push("new UICombobox([context], {\n  data:items2,\n  selectedKey: 'val2',\n  keyField: 'value'\n});");
+		source.push("new UISelect([context], {\n  data:items2,\n  selectedIndex: 2\n});");
+		source.push("new UISelect([context], {\n  data:items,\n  selectedIndex: 2\n});");
+		source.push("new UISelect([context], {\n  data:items2,\n  selectedKey: 2\n});");
+		source.push("new UISelect([context], {\n  data:items2,\n  selectedKey: 'val2',\n  keyField: 'value'\n});");
 
 		render(demo, source, description);
 	},
@@ -122,11 +122,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("多选情况的多个默认选项使用逗号(,)分隔，如：<>{selectedIndex: '1,3'}</>。");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICombobox(this, { data: exampleData, multi: true, selectedIndex: "1,3" }));
+		demo.append(new UISelect(this, { data: exampleData, multi: true, selectedIndex: "1,3" }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: items,\n  multi: true,\n  selectedIndex: '1,3'\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  multi: true,\n  selectedIndex: '1,3'\n});");
 
 		render(demo, source, description);
 	},
@@ -139,13 +139,13 @@ const ModuleView = BaseModule.extend(module, {
 			"即当输入内容与选项不匹配时自动清空内容。");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICombobox(this, { data: exampleData, prompt: "请输入..", editable: true }));
-		demo.append(new UICombobox(this, { data: exampleData, prompt: "请输入选择..", editable: true, needMatch: true}));
+		demo.append(new UISelect(this, { data: exampleData, prompt: "请输入..", editable: true }));
+		demo.append(new UISelect(this, { data: exampleData, prompt: "请输入选择..", editable: true, needMatch: true}));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: items,\n  prompt: '请输入..',\n  editable: true\n});");
-		source.push("new UICombobox([context], {\n  data: items,\n  prompt: '请输入..',\n  " +
+		source.push("new UISelect([context], {\n  data: items,\n  prompt: '请输入..',\n  editable: true\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  prompt: '请输入..',\n  " +
 			"editable: true,\n  needMatch: true\n});");
 
 		render(demo, source, description);
@@ -158,11 +158,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("注：仅适用于移到端");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICombobox(this, { data: exampleData, selectedIndex: 1, native: true }));
+		demo.append(new UISelect(this, { data: exampleData, selectedIndex: 1, native: true }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: exampleData,\n  selectedIndex: 1,\n  native: true\n});");
+		source.push("new UISelect([context], {\n  data: exampleData,\n  selectedIndex: 1,\n  native: true\n});");
 
 		render(demo, source, description);
 	},
@@ -173,11 +173,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("异步获取远程数据集作为选项列表。在浏览器端组件渲染完成之后发起异步请求，等待接口返回之后渲染选项列表。");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICombobox(this, { apiName: "data.component.items", prompt: "请选择..", 
+		demo.append(new UISelect(this, { apiName: "data.component.items", prompt: "请选择..", 
 			selectedIndex: 3, labelField: "c1" }));
 
 		let source = [];
-		source.push("new UICombobox([context], {\n  apiName: 'data.component.items',\n  prompt: '请选择..'," +
+		source.push("new UISelect([context], {\n  apiName: 'data.component.items',\n  prompt: '请选择..'," +
 			"\n  selectedIndex: 3,\n  labelField: 'c1'\n);");
 
 		render(demo, source, description);
@@ -189,11 +189,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("设置属性 <>disabled</> 为 <>true</>。");
 
 		let demo = new UIGroup(this, { gap: 10, orientation: this.suggestOrientation });
-		demo.append(new UICombobox(this, { data: exampleData, selectedIndex: 5, disabled: true }));
+		demo.append(new UISelect(this, { data: exampleData, selectedIndex: 5, disabled: true }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UICombobox([context], {\n  data: items,\n  selectedIndex: 5,\n  disabled: true\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  selectedIndex: 5,\n  disabled: true\n});");
 
 		render(demo, source, description);
 	}

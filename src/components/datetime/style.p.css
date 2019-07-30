@@ -106,18 +106,18 @@
     background-color: #f4f5f9;
 }
 
-.ui-datetime > .picker > .timebar > .ui-combobox {
+.ui-datetime > .picker > .timebar > .ui-select {
     width: 50px;
 }
 
-.ui-datetime > .picker > .timebar > .ui-combobox > .ipt > input {
+.ui-datetime > .picker > .timebar > .ui-select > .ipt > input {
     height: 28px;
     padding-left: 6px;
     font-size: 14px;
     border-color: #eee;
 }
 
-.ui-datetime > .picker > .timebar > .ui-combobox > .ipt > .dropdownbtn {
+.ui-datetime > .picker > .timebar > .ui-select > .ipt > .dropdownbtn {
     width: 20px;
     background-size: 8px;
     opacity: 0.5;
