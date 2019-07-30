@@ -2272,12 +2272,13 @@
 
   _Renderer.getAlign = function () {
     return this.options.align;
-  }; ///////////////////////////////////////////////////////
+  }; // ====================================================
 
 
   var renderSubViews = function renderSubViews($, target) {
     showSubViews.call(this, $, target, getChildren.call(this));
-  };
+  }; ///////////////////////////////////////////////////////
+
 
   var getChildren = function getChildren() {
     return this.options.children || this.options.subViews || this.options.views;
@@ -2431,7 +2432,7 @@
     }
 
     return this;
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var setCss = function setCss(target, name, value, useREM) {
@@ -2459,7 +2460,8 @@
 (function (frontend) {
   if (frontend && VRender.Component.ui.button) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
-  var Utils = UI.util; // 默认按钮样式
+  var Fn = UI.fn,
+      Utils = UI.util; // 默认按钮样式
 
   var ButtonStyles = ["ui-btn-default", "ui-btn-primary", "ui-btn-success", "ui-btn-danger", "ui-btn-warn", "ui-btn-info", "ui-btn-link", "ui-btn-text"]; // 按钮大小定义
 
@@ -2496,7 +2498,8 @@
     if (Utils.isNotBlank(value)) {
       $("<span></span>").appendTo(button).text(Utils.trimToEmpty(value) || " ");
     }
-  };
+  }; // 使按钮等待（或取消等待），time为0时取消等待，小于0时无限等待
+
 
   _UIButton.waiting = function (time) {
     if (Utils.isNull(time) || time === true) time = parseInt(this.$el.attr("opt-wait")) || -1;else time = Math.max(0, parseInt(time)) || 0;
@@ -2505,57 +2508,13 @@
 
   _UIButton.isWaiting = function () {
     return this.$el.is(".waiting");
-  };
+  }; // 设置默认等待的毫秒数（非开启等待），小于0时无限等待
+
 
   _UIButton.setWaiting = function (value) {
     if (value === true || Utils.isNull(value)) value = -1;else value = Math.max(0, parseInt(value)) || 0;
     this.$el.attr("opt-wait", value);
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-btn");
-    var options = this.options || {};
-    var size = options.size;
-    if (size && ButtonSizes.indexOf(size) >= 0) target.addClass(size); // 如果是内置 style 就用该样式，否则通过 type 获取一个样式
-    // 注：style 样式已在 base 或 UIView 中添加
-
-    var style = options.style || "";
-
-    if (ButtonStyles.indexOf(style) < 0) {
-      target.addClass(getTypeStyle(options.type)); // 会返回一个默认样式
-    }
-
-    if (Utils.isTrue(options.toggle)) target.attr("opt-toggle", "1");
-    if (Utils.isNotBlank(options.link)) target.attr("data-lnk", Utils.trimToNull(options.link));
-    var mainBtn = $("<button class='btn'></button>").appendTo(target);
-    var iconUrl = getIconUrl.call(this);
-
-    if (Utils.isNotBlank(iconUrl)) {
-      var icon = $("<i class='icon'></i>").appendTo(mainBtn);
-      icon.css(frontend ? "backgroundImage" : "background-image", "url(" + iconUrl + ")");
-    }
-
-    if (Utils.isNotBlank(options.label)) {
-      $("<span></span>").appendTo(mainBtn).text(Utils.trimToEmpty(options.label) || " ");
-    }
-
-    renderWaitingInfos.call(this, $, target);
-    renderDropdowns.call(this, $, target);
-    return this;
-  };
-
-  _Renderer.getItems = function () {
-    return Utils.toArray(this.options.items);
-  }; ///////////////////////////////////////////////////////
+  }; // ====================================================
 
 
   var onBtnClickHandler = function onBtnClickHandler(e) {
@@ -2612,6 +2571,51 @@
 
   var onMouseHandler = function onMouseHandler(e) {
     UI.fn.mouseDebounce(e, hideDropdown.bind(this));
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-btn");
+    var options = this.options || {};
+    var size = options.size;
+    if (size && ButtonSizes.indexOf(size) >= 0) target.addClass(size); // 如果是内置 style 就用该样式，否则通过 type 获取一个样式
+    // 注：style 样式已在 base 或 UIView 中添加
+
+    var style = options.style || "";
+
+    if (ButtonStyles.indexOf(style) < 0) {
+      target.addClass(getTypeStyle(options.type)); // 会返回一个默认样式
+    }
+
+    if (Utils.isTrue(options.toggle)) target.attr("opt-toggle", "1");
+    if (Utils.isNotBlank(options.link)) target.attr("data-lnk", Utils.trimToNull(options.link));
+    var mainBtn = $("<button class='btn'></button>").appendTo(target);
+    var iconUrl = getIconUrl.call(this);
+
+    if (Utils.isNotBlank(iconUrl)) {
+      var icon = $("<i class='icon'></i>").appendTo(mainBtn);
+      icon.css(frontend ? "backgroundImage" : "background-image", "url(" + iconUrl + ")");
+    }
+
+    if (Utils.isNotBlank(options.label)) {
+      $("<span></span>").appendTo(mainBtn).text(Utils.trimToEmpty(options.label) || " ");
+    }
+
+    renderWaitingInfos.call(this, $, target);
+    renderDropdowns.call(this, $, target);
+    return this;
+  };
+
+  _Renderer.getItems = function () {
+    return Utils.toArray(this.options.items);
   }; // ====================================================
 
 
@@ -2643,7 +2647,8 @@
         }
       });
     }
-  };
+  }; ///////////////////////////////////////////////////////
+
 
   var doWaiting = function doWaiting(time) {
     var _this = this;
@@ -2665,8 +2670,7 @@
     } else {
       this.$el.removeClass("waiting");
     }
-  }; // ====================================================
-
+  };
 
   var showDropdown = function showDropdown() {
     if (this.$el.is(".show-dropdown")) return;
@@ -2754,7 +2758,8 @@
 (function (frontend) {
   if (frontend && VRender.Component.ui.checkbox) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
-  var Utils = UI.util; ///////////////////////////////////////////////////////
+  var Fn = UI.fn,
+      Utils = UI.util; ///////////////////////////////////////////////////////
 
   var UICheckbox = UI.checkbox = function (view, options) {
     return UI._base.call(this, view, options);
@@ -2795,6 +2800,12 @@
   _UICheckbox.setLabel = function (value) {
     this.$el.children("span").remove();
     if (Utils.isNotBlank(value)) $("<span></span>").appendTo(this.$el).text(value);
+  }; // ====================================================
+  // 复选框状态变更事件
+
+
+  var chkboxChangeHandler = function chkboxChangeHandler(e) {
+    if ($(e.currentTarget).is(":checked")) this.$el.addClass("checked");else this.$el.removeClass("checked");
   }; ///////////////////////////////////////////////////////
 
 
@@ -2820,12 +2831,6 @@
     if (Utils.isNotNull(options.label)) $("<span></span>").appendTo(target).text(options.label);
     input.attr("name", Utils.trimToNull(options.name));
     return this;
-  }; ///////////////////////////////////////////////////////
-  // 复选框状态变更事件
-
-
-  var chkboxChangeHandler = function chkboxChangeHandler(e) {
-    if ($(e.currentTarget).is(":checked")) this.$el.addClass("checked");else this.$el.removeClass("checked");
   }; ///////////////////////////////////////////////////////
 
 
@@ -2916,6 +2921,22 @@
 
   _UICheckGroup._renderOneItem = function ($, item, data, index) {
     renderOneItem.call(this, $, item, data, index);
+  }; // ====================================================
+
+
+  var selectedChangeHandler = function selectedChangeHandler(e) {
+    e.stopPropagation();
+
+    var snapshoot = this._snapshoot();
+
+    var indexs = [];
+    Utils.each(this.$el.find("input"), function (input, i) {
+      if (input.is(":checked")) indexs.push(i);
+    });
+
+    UI._select.setSelectedIndex.call(this, indexs);
+
+    snapshoot.done();
   }; ///////////////////////////////////////////////////////
 
 
@@ -2965,22 +2986,6 @@
   };
 
   _Renderer._renderLoadView = function () {// do nothing
-  }; ///////////////////////////////////////////////////////
-
-
-  var selectedChangeHandler = function selectedChangeHandler(e) {
-    e.stopPropagation();
-
-    var snapshoot = this._snapshoot();
-
-    var indexs = [];
-    Utils.each(this.$el.find("input"), function (input, i) {
-      if (input.is(":checked")) indexs.push(i);
-    });
-
-    UI._select.setSelectedIndex.call(this, indexs);
-
-    snapshoot.done();
   }; // ====================================================
 
 
@@ -3011,7 +3016,7 @@
       params.target = item;
       return UI.checkbox.create(params);
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var getNewItem = function getNewItem($, target) {
@@ -3078,6 +3083,25 @@
   _UIRadiobox.setLabel = function (value) {
     this.$el.children("span").remove();
     if (Utils.isNotBlank(value)) $("<span></span>").appendTo(this.$el).text(value);
+  }; // ====================================================
+
+
+  var radboxChangeHandler = function radboxChangeHandler(e) {
+    var _isChecked = this.isChecked();
+
+    if (_isChecked) {
+      this.input.parent().addClass("checked");
+      var name = this.input.attr("name");
+
+      if (Utils.isNotBlank(name)) {
+        var radios = $("input[name='" + name + "']").not(this.input);
+        radios.parent().removeClass("checked");
+      }
+    } else {
+      this.$el.removeClass("checked");
+    }
+
+    this.trigger("change");
   }; ///////////////////////////////////////////////////////
 
 
@@ -3103,25 +3127,6 @@
     if (Utils.isNotNull(options.label)) $("<span></span>").appendTo(target).text(options.label);
     input.attr("name", Utils.trimToNull(options.name));
     return this;
-  }; ///////////////////////////////////////////////////////
-
-
-  var radboxChangeHandler = function radboxChangeHandler(e) {
-    var _isChecked = this.isChecked();
-
-    if (_isChecked) {
-      this.input.parent().addClass("checked");
-      var name = this.input.attr("name");
-
-      if (Utils.isNotBlank(name)) {
-        var radios = $("input[name='" + name + "']").not(this.input);
-        radios.parent().removeClass("checked");
-      }
-    } else {
-      this.$el.removeClass("checked");
-    }
-
-    this.trigger("change");
   }; ///////////////////////////////////////////////////////
 
 
@@ -3222,6 +3227,21 @@
 
   _UIRadioGroup._renderOneItem = function ($, item, data, index) {
     renderOneItem.call(this, $, item, data, index);
+  }; // ====================================================
+
+
+  var selectedChangeHandler = function selectedChangeHandler(e) {
+    e.stopPropagation();
+
+    var snapshoot = this._snapshoot();
+
+    var index = Utils.index(this.$el.find("input"), function (input) {
+      return input.is(":checked");
+    });
+
+    UI._select.setSelectedIndex.call(this, index);
+
+    snapshoot.done();
   }; ///////////////////////////////////////////////////////
 
 
@@ -3254,8 +3274,7 @@
 
   _Renderer._getRadioName = function () {
     return this.radioGroupId;
-  }; // ====================================================
-
+  };
 
   _Renderer._renderItems = function ($, target) {
     var itemContainer = this._getItemContainer($, target);
@@ -3277,21 +3296,6 @@
   };
 
   _Renderer._renderLoadView = function () {// do nothing
-  }; ///////////////////////////////////////////////////////
-
-
-  var selectedChangeHandler = function selectedChangeHandler(e) {
-    e.stopPropagation();
-
-    var snapshoot = this._snapshoot();
-
-    var index = Utils.index(this.$el.find("input"), function (input) {
-      return input.is(":checked");
-    });
-
-    UI._select.setSelectedIndex.call(this, index);
-
-    snapshoot.done();
   }; // ====================================================
 
 
@@ -3323,7 +3327,7 @@
       params.target = item;
       return UI.radiobox.create(params);
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var getNewItem = function getNewItem($, target) {
@@ -3594,68 +3598,7 @@
       this.$el.removeAttr("opt-pwd");
       if (this.input.attr("type") == "password") this.input.attr("type", "text");
     }
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-textview");
-    var options = this.options || {};
-    var ipt = $("<div class='ipt'></div>").appendTo(target);
-    var input = renderInput.call(this, $, target, ipt);
-    var width = Utils.getFormatSize(options.width, this._isRenderAsRem());
-    if (width) target.attr("opt-fixed", "1").css("width", width);
-
-    if (Utils.isTrue(options.readonly)) {
-      target.attr("opt-readonly", "1");
-      input.attr("readonly", "readonly");
-    }
-
-    if (Utils.isTrue(options.required)) target.attr("opt-required", "1");
-    if (this.isDisplayAsPassword()) target.attr("opt-pwd", "1");
-    var maxSize = parseInt(options.maxSize) || 0;
-
-    if (maxSize > 0) {
-      target.addClass("show-size").attr("opt-size", maxSize);
-      var len = Utils.trimToEmpty(input.val()).length;
-      $("<span class='size'></span>").appendTo(ipt).text(len + "/" + maxSize);
-    }
-
-    if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);
-    if (Utils.isNotBlank(options.tips)) $("<span class='tips'></span>").appendTo(ipt).html(options.tips);
-    var description = options.description || options.desc;
-    if (Utils.isNotBlank(description)) $("<div class='desc'></div>").appendTo(target).html(description);
-    renderErrorMsg.call(this, $, target);
-    if (Utils.isTrue(options.autoHeight) && this.isMultiline()) renderAsAutoHeight.call(this, $, target, input);
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getDecimals = function () {
-    if (this.isDisplayAsPassword()) return 0;
-    var options = this.options || {};
-    var type = options.dataType || options.type;
-    if (type === "int") return 0;
-    if (options.hasOwnProperty("decimals")) return parseInt(options.decimals) || 0;
-    return 2;
-  };
-
-  _Renderer.isDisplayAsPassword = function () {
-    return Utils.isTrue(this.options.displayAsPwd);
-  };
-
-  _Renderer.isMultiline = function () {
-    var options = this.options || {};
-    if (options.hasOwnProperty("multiple")) return Utils.isTrue(options.multiple);
-    return Utils.isTrue(options.multi);
-  }; ///////////////////////////////////////////////////////
 
 
   var onKeyDownHandler = function onKeyDownHandler(e) {
@@ -3773,6 +3716,67 @@
     setTimeout(function () {
       _this4.input.focus();
     });
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-textview");
+    var options = this.options || {};
+    var ipt = $("<div class='ipt'></div>").appendTo(target);
+    var input = renderInput.call(this, $, target, ipt);
+    var width = Utils.getFormatSize(options.width, this._isRenderAsRem());
+    if (width) target.attr("opt-fixed", "1").css("width", width);
+
+    if (Utils.isTrue(options.readonly)) {
+      target.attr("opt-readonly", "1");
+      input.attr("readonly", "readonly");
+    }
+
+    if (Utils.isTrue(options.required)) target.attr("opt-required", "1");
+    if (this.isDisplayAsPassword()) target.attr("opt-pwd", "1");
+    var maxSize = parseInt(options.maxSize) || 0;
+
+    if (maxSize > 0) {
+      target.addClass("show-size").attr("opt-size", maxSize);
+      var len = Utils.trimToEmpty(input.val()).length;
+      $("<span class='size'></span>").appendTo(ipt).text(len + "/" + maxSize);
+    }
+
+    if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);
+    if (Utils.isNotBlank(options.tips)) $("<span class='tips'></span>").appendTo(ipt).html(options.tips);
+    var description = options.description || options.desc;
+    if (Utils.isNotBlank(description)) $("<div class='desc'></div>").appendTo(target).html(description);
+    renderErrorMsg.call(this, $, target);
+    if (Utils.isTrue(options.autoHeight) && this.isMultiline()) renderAsAutoHeight.call(this, $, target, input);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getDecimals = function () {
+    if (this.isDisplayAsPassword()) return 0;
+    var options = this.options || {};
+    var type = options.dataType || options.type;
+    if (type === "int") return 0;
+    if (options.hasOwnProperty("decimals")) return parseInt(options.decimals) || 0;
+    return 2;
+  };
+
+  _Renderer.isDisplayAsPassword = function () {
+    return Utils.isTrue(this.options.displayAsPwd);
+  };
+
+  _Renderer.isMultiline = function () {
+    var options = this.options || {};
+    if (options.hasOwnProperty("multiple")) return Utils.isTrue(options.multiple);
+    return Utils.isTrue(options.multi);
   }; // ====================================================
 
 
@@ -3847,7 +3851,7 @@
     if (maxHeight) {
       input.css("maxHeight", maxHeight);
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doValidate = function doValidate(value, callback) {
@@ -4232,8 +4236,7 @@
 
   _UICombobox.isMatchRequired = function () {
     return this.$el.attr("opt-match") == 1;
-  }; // ====================================================
-
+  };
 
   _UICombobox.rerender = function () {
     var _this2 = this;
@@ -4258,7 +4261,8 @@
         setValueFlag.call(_this2, Utils.isNotBlank(inputValue));
       }
     });
-  };
+  }; // ====================================================
+
 
   _UICombobox._getItemContainer = function () {
     return this.$el.children(".dropdown").children(".box");
@@ -4367,63 +4371,7 @@
 
   _UICombobox._doAdapter = function (datas) {
     return doAdapter.call(this, datas);
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._selectRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._selectRender(false);
-
-  _Renderer.render = function ($, target) {
-    target.addClass("ui-combobox");
-    var options = this.options || {};
-    if (this.isNative()) target.attr("opt-native", "1");
-    if (Utils.isTrue(options.needMatch)) target.attr("opt-match", "1"); // 容器，用于下拉列表定位
-
-    target.attr("opt-box", options.container);
-    renderTextView.call(this, $, target);
-    target.append("<div class='dropdown'><div class='box'></div></div>");
-
-    UI._selectRender.render.call(this, $, target);
-
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getSelectedData = function (needArray) {
-    return UI._selectRender.getSelectedData.call(this, needArray, getDataFlat.call(this));
-  };
-
-  _Renderer.isNative = function () {
-    return Utils.isTrue(this.options["native"]);
-  }; // ====================================================
-
-
-  _Renderer._getItemContainer = function ($, target) {
-    return target.children(".dropdown").children(".box");
-  };
-
-  _Renderer._renderItems = function ($, target) {
-    var itemContainer = this._getItemContainer($, target);
-
-    renderItems.call(this, $, target, itemContainer, this.getData());
-  };
-
-  _Renderer._renderEmptyView = function ($, target) {// prevent default
-  };
-
-  _Renderer._renderLoadView = function ($, target) {// prevent default
-  };
-
-  _Renderer._setItemSelected = function (item, beSelected) {
-    if (beSelected) item.addClass("selected").attr("selected", "selected");else item.removeClass("selected").removeAttr("selected");
-  };
-
-  _Renderer._doAdapter = function (datas) {
-    return doAdapter.call(this, datas);
-  }; ///////////////////////////////////////////////////////
 
 
   var iptClickHandler = function iptClickHandler(e) {
@@ -4573,6 +4521,62 @@
 
     selectChanged.call(this);
     snapshoot.done();
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._selectRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._selectRender(false);
+
+  _Renderer.render = function ($, target) {
+    target.addClass("ui-combobox");
+    var options = this.options || {};
+    if (this.isNative()) target.attr("opt-native", "1");
+    if (Utils.isTrue(options.needMatch)) target.attr("opt-match", "1"); // 容器，用于下拉列表定位
+
+    target.attr("opt-box", options.container);
+    renderTextView.call(this, $, target);
+    target.append("<div class='dropdown'><div class='box'></div></div>");
+
+    UI._selectRender.render.call(this, $, target);
+
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getSelectedData = function (needArray) {
+    return UI._selectRender.getSelectedData.call(this, needArray, getDataFlat.call(this));
+  };
+
+  _Renderer.isNative = function () {
+    return Utils.isTrue(this.options["native"]);
+  }; // ====================================================
+
+
+  _Renderer._getItemContainer = function ($, target) {
+    return target.children(".dropdown").children(".box");
+  };
+
+  _Renderer._renderItems = function ($, target) {
+    var itemContainer = this._getItemContainer($, target);
+
+    renderItems.call(this, $, target, itemContainer, this.getData());
+  };
+
+  _Renderer._renderEmptyView = function ($, target) {// prevent default
+  };
+
+  _Renderer._renderLoadView = function ($, target) {// prevent default
+  };
+
+  _Renderer._setItemSelected = function (item, beSelected) {
+    if (beSelected) item.addClass("selected").attr("selected", "selected");else item.removeClass("selected").removeAttr("selected");
+  };
+
+  _Renderer._doAdapter = function (datas) {
+    return doAdapter.call(this, datas);
   }; // ====================================================
 
 
@@ -4705,7 +4709,7 @@
         if (item && item.length > 0) setItemActive.call(_this8, item, true);
       }
     });
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var selectChanged = function selectChanged() {
@@ -5041,56 +5045,7 @@
     }
 
     return !(date || state.selectedDate);
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-datepicker");
-    var options = this.options || {};
-    var minDate = Utils.toDate(options.min);
-    if (minDate) target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
-    var maxDate = Utils.toDate(options.max);
-    if (maxDate) target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
-    var date = getValidDate.call(this);
-
-    if (this.isRangeDate()) {
-      target.addClass("is-range");
-
-      if (date) {
-        target.attr("data-start", Utils.toDateString(date[0], "yyyy-MM-dd"));
-        target.attr("data-end", Utils.toDateString(date[1], "yyyy-MM-dd"));
-      }
-    } else if (date) {
-      target.attr("data-dt", Utils.toDateString(date, "yyyy-MM-dd"));
-    }
-
-    renderHeader.call(this, $, target);
-    renderTables.call(this, $, target);
-    renderFooter.call(this, $, target);
-    renderDate.call(this, $, target, date);
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getMinDate = function () {
-    return Utils.toDate(this.options.min);
-  };
-
-  _Renderer.getMaxDate = function () {
-    return Utils.toDate(this.options.max);
-  };
-
-  _Renderer.isRangeDate = function () {
-    return Utils.isTrue(this.options.range);
-  }; ///////////////////////////////////////////////////////
 
 
   var onSwitchBtnHandler = function onSwitchBtnHandler(e) {
@@ -5287,6 +5242,55 @@
         }, delay);
       }
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-datepicker");
+    var options = this.options || {};
+    var minDate = Utils.toDate(options.min);
+    if (minDate) target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
+    var maxDate = Utils.toDate(options.max);
+    if (maxDate) target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
+    var date = getValidDate.call(this);
+
+    if (this.isRangeDate()) {
+      target.addClass("is-range");
+
+      if (date) {
+        target.attr("data-start", Utils.toDateString(date[0], "yyyy-MM-dd"));
+        target.attr("data-end", Utils.toDateString(date[1], "yyyy-MM-dd"));
+      }
+    } else if (date) {
+      target.attr("data-dt", Utils.toDateString(date, "yyyy-MM-dd"));
+    }
+
+    renderHeader.call(this, $, target);
+    renderTables.call(this, $, target);
+    renderFooter.call(this, $, target);
+    renderDate.call(this, $, target, date);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getMinDate = function () {
+    return Utils.toDate(this.options.min);
+  };
+
+  _Renderer.getMaxDate = function () {
+    return Utils.toDate(this.options.max);
+  };
+
+  _Renderer.isRangeDate = function () {
+    return Utils.isTrue(this.options.range);
   }; // ====================================================
 
 
@@ -5528,7 +5532,8 @@
 
       if (dt.getMonth() > m || dt.getFullYear() > y) break;
     }
-  };
+  }; ///////////////////////////////////////////////////////
+
 
   var checkRangeHeadBtns = function checkRangeHeadBtns($, target, start, end) {
     target = target.children("header");
@@ -5784,35 +5789,7 @@
     }
 
     return date == state.data;
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-dateipt");
-    var options = this.options || {};
-    if (Utils.isTrue(options["native"])) target.attr("opt-native", "1"); // 容器，用于下拉列表定位
-
-    target.attr("opt-box", options.container);
-    var minDate = Utils.toDate(options.min);
-    target.attr("opt-min", minDate ? Utils.toDateString(minDate, "yyyy-MM-dd") : null);
-    var maxDate = Utils.toDate(options.max);
-    target.attr("opt-max", maxDate ? Utils.toDateString(maxDate, "yyyy-MM-dd") : null);
-    renderView.call(this, $, target, Utils.toDate(options.date));
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getDateFormat = function () {
-    return this.options.dateFormat || this.options.format;
-  }; ///////////////////////////////////////////////////////
 
 
   var iptClickHandler = function iptClickHandler(e) {
@@ -5847,6 +5824,34 @@
   var onPickerChangeHandler = function onPickerChangeHandler(e) {
     // e.stopPropagation();
     return false;
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-dateipt");
+    var options = this.options || {};
+    if (Utils.isTrue(options["native"])) target.attr("opt-native", "1"); // 容器，用于下拉列表定位
+
+    target.attr("opt-box", options.container);
+    var minDate = Utils.toDate(options.min);
+    target.attr("opt-min", minDate ? Utils.toDateString(minDate, "yyyy-MM-dd") : null);
+    var maxDate = Utils.toDate(options.max);
+    target.attr("opt-max", maxDate ? Utils.toDateString(maxDate, "yyyy-MM-dd") : null);
+    renderView.call(this, $, target, Utils.toDate(options.date));
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getDateFormat = function () {
+    return this.options.dateFormat || this.options.format;
   }; // ====================================================
 
 
@@ -5876,7 +5881,8 @@
     var dateInput = $("<input class='origin-dateipt' type='date'/>").appendTo(this.inputTag);
     updatePicker.call(this, this.getDate(), this.getMinDate(), this.getMaxDate());
     dateInput.on("change", originDateChangeHandler.bind(this));
-  };
+  }; ///////////////////////////////////////////////////////
+
 
   var updatePicker = function updatePicker(date, min, max) {
     var _this = this;
@@ -6163,64 +6169,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     return !(state.data || range);
   }; // ====================================================
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-daterange");
-    var options = this.options || {};
-    if (Utils.isTrue(options.dropdown)) target.addClass("tools-dropdown");
-    if (Utils.isTrue(options["native"])) target.attr("opt-native", "1");
-    var minDate = Utils.toDate(options.min);
-    if (minDate) target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
-    var maxDate = Utils.toDate(options.max);
-    if (maxDate) target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
-    var start = Utils.toDate(options.start),
-        end = null;
-
-    if (start) {
-      end = Utils.toDate(options.end) || new Date(start.getTime());
-      if (minDate && getTime(minDate) > getTime(start)) start = minDate;
-      if (maxDate && getTime(maxDate) < getTime(end)) end = maxDate;
-      if (getTime(start) > getTime(end)) start = end = null;
-    }
-
-    var defVal = parseInt(options.quickDef) || 0;
-
-    if (start && end) {
-      defVal = 0;
-    } else if (defVal) {
-      end = new Date();
-      start = new Date();
-      start.setDate(start.getDate() - defVal);
-    }
-
-    if (start && end) {
-      target.addClass("has-val");
-      target.attr("data-start", Utils.toDateString(start, "yyyy-MM-dd"));
-      target.attr("data-end", Utils.toDateString(end, "yyyy-MM-dd"));
-    }
-
-    renderShortcuts.call(this, $, target, this.getShortcutDates(), defVal);
-    renderDateInput.call(this, $, target, start, end);
-    return this;
-  }; // ====================================================
-
-
-  _Renderer.getDateFormat = function () {
-    return this.options.dateFormat || this.options.format;
-  };
-
-  _Renderer.getShortcutDates = function () {
-    return this.options.shortcuts || this.options.quickDates;
-  }; ///////////////////////////////////////////////////////
   // 点击输入框显示日历
 
 
@@ -6297,6 +6245,64 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var end = input.is(".end") ? date : this.getEndDate();
     setDateInner.call(this, start, end);
     updateShortcuts.call(this, start, end);
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-daterange");
+    var options = this.options || {};
+    if (Utils.isTrue(options.dropdown)) target.addClass("tools-dropdown");
+    if (Utils.isTrue(options["native"])) target.attr("opt-native", "1");
+    var minDate = Utils.toDate(options.min);
+    if (minDate) target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
+    var maxDate = Utils.toDate(options.max);
+    if (maxDate) target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
+    var start = Utils.toDate(options.start),
+        end = null;
+
+    if (start) {
+      end = Utils.toDate(options.end) || new Date(start.getTime());
+      if (minDate && getTime(minDate) > getTime(start)) start = minDate;
+      if (maxDate && getTime(maxDate) < getTime(end)) end = maxDate;
+      if (getTime(start) > getTime(end)) start = end = null;
+    }
+
+    var defVal = parseInt(options.quickDef) || 0;
+
+    if (start && end) {
+      defVal = 0;
+    } else if (defVal) {
+      end = new Date();
+      start = new Date();
+      start.setDate(start.getDate() - defVal);
+    }
+
+    if (start && end) {
+      target.addClass("has-val");
+      target.attr("data-start", Utils.toDateString(start, "yyyy-MM-dd"));
+      target.attr("data-end", Utils.toDateString(end, "yyyy-MM-dd"));
+    }
+
+    renderShortcuts.call(this, $, target, this.getShortcutDates(), defVal);
+    renderDateInput.call(this, $, target, start, end);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getDateFormat = function () {
+    return this.options.dateFormat || this.options.format;
+  };
+
+  _Renderer.getShortcutDates = function () {
+    return this.options.shortcuts || this.options.quickDates;
   }; // ====================================================
 
 
@@ -6343,7 +6349,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     updatePicker.call(this, this.getStartDate(), this.getEndDate(), this.getMinDate(), this.getMaxDate());
     startDateInput.on("change", originDateChangeHandler.bind(this));
     endDateInput.on("change", originDateChangeHandler.bind(this));
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var updateShortcuts = function updateShortcuts(start, end) {
@@ -6719,41 +6725,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIDateTime.rerender = function () {
     rerender.call(this);
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-datetime");
-    var options = this.options || {}; // 容器，用于下拉列表定位
-
-    target.attr("opt-box", options.container);
-    if (this.isSecondVisible()) target.attr("opt-sec", "1");
-    var minDate = Utils.toDate(options.min);
-    target.attr("opt-min", minDate ? minDate.getTime() : null);
-    var maxDate = Utils.toDate(options.max);
-    target.attr("opt-max", maxDate ? maxDate.getTime() : null);
-    if (Utils.isArray(options.hours)) target.attr("opt-hours", options.hours.join(",") || null);
-    if (Utils.isArray(options.minutes)) target.attr("opt-minutes", options.minutes.join(",") || null);
-    if (Utils.isArray(options.seconds)) target.attr("opt-seconds", options.seconds.join(",") || null);
-    renderView.call(this, $, target, options.date);
-    return this;
-  };
-
-  _Renderer.isSecondVisible = function () {
-    return Utils.isTrue(this.options.showSecond);
-  };
-
-  _Renderer.getDateFormat = function () {
-    return this.options.dateFormat || this.options.format;
-  }; ///////////////////////////////////////////////////////
+  }; // ====================================================
 
 
   var iptClickHandler = function iptClickHandler(e) {
@@ -6849,6 +6821,40 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         waitToStop();
       }
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-datetime");
+    var options = this.options || {}; // 容器，用于下拉列表定位
+
+    target.attr("opt-box", options.container);
+    if (this.isSecondVisible()) target.attr("opt-sec", "1");
+    var minDate = Utils.toDate(options.min);
+    target.attr("opt-min", minDate ? minDate.getTime() : null);
+    var maxDate = Utils.toDate(options.max);
+    target.attr("opt-max", maxDate ? maxDate.getTime() : null);
+    if (Utils.isArray(options.hours)) target.attr("opt-hours", options.hours.join(",") || null);
+    if (Utils.isArray(options.minutes)) target.attr("opt-minutes", options.minutes.join(",") || null);
+    if (Utils.isArray(options.seconds)) target.attr("opt-seconds", options.seconds.join(",") || null);
+    renderView.call(this, $, target, options.date);
+    return this;
+  };
+
+  _Renderer.isSecondVisible = function () {
+    return Utils.isTrue(this.options.showSecond);
+  };
+
+  _Renderer.getDateFormat = function () {
+    return this.options.dateFormat || this.options.format;
   }; // ====================================================
 
 
@@ -6953,7 +6959,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     updatePickerDays.call(this, picker, date ? date.getFullYear() : null, date ? date.getMonth() + 1 : null);
     setPickerDate.call(this, picker, date);
     checkPickerEnabled.call(this, picker);
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var showDatePicker = function showDatePicker() {
@@ -7391,46 +7397,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       setTimeInner.call(_this, _this.getTime());
       if (_this.picker) renderPicker.call(_this, _this.picker.empty());
     });
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-timeipt");
-    var options = this.options || {}; // 容器，用于下拉列表定位
-
-    target.attr("opt-box", options.container);
-    if (this.isSecondVisible()) target.attr("opt-sec", "1");
-    if (this.isUse12Hour()) target.attr("opt-h12", "1");
-
-    if (Utils.isTrue(options.readonly)) {
-      target.attr("opt-readonly", "1");
-    }
-
-    target.attr("opt-min", getTime(options.min, true) || null);
-    target.attr("opt-max", getTime(options.max, true) || null);
-    if (Utils.isArray(options.hours)) target.attr("opt-hours", options.hours.join(",") || null);
-    if (Utils.isArray(options.minutes)) target.attr("opt-minutes", options.minutes.join(",") || null);
-    if (Utils.isArray(options.seconds)) target.attr("opt-seconds", options.seconds.join(",") || null);
-    renderTimeInput.call(this, $, target, options.time);
-    return this;
   }; // ====================================================
-
-
-  _Renderer.isSecondVisible = function () {
-    return Utils.isTrue(this.options.showSecond);
-  };
-
-  _Renderer.isUse12Hour = function () {
-    return Utils.isTrue(this.options.use12Hour);
-  }; ///////////////////////////////////////////////////////
 
 
   var iptClickHandler = function iptClickHandler(e) {
@@ -7514,6 +7481,45 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var time = getPickerTime.call(this, this.picker);
     setTimeInner.call(this, getLimitTime.call(this, time));
     return false;
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-timeipt");
+    var options = this.options || {}; // 容器，用于下拉列表定位
+
+    target.attr("opt-box", options.container);
+    if (this.isSecondVisible()) target.attr("opt-sec", "1");
+    if (this.isUse12Hour()) target.attr("opt-h12", "1");
+
+    if (Utils.isTrue(options.readonly)) {
+      target.attr("opt-readonly", "1");
+    }
+
+    target.attr("opt-min", getTime(options.min, true) || null);
+    target.attr("opt-max", getTime(options.max, true) || null);
+    if (Utils.isArray(options.hours)) target.attr("opt-hours", options.hours.join(",") || null);
+    if (Utils.isArray(options.minutes)) target.attr("opt-minutes", options.minutes.join(",") || null);
+    if (Utils.isArray(options.seconds)) target.attr("opt-seconds", options.seconds.join(",") || null);
+    renderTimeInput.call(this, $, target, options.time);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.isSecondVisible = function () {
+    return Utils.isTrue(this.options.showSecond);
+  };
+
+  _Renderer.isUse12Hour = function () {
+    return Utils.isTrue(this.options.use12Hour);
   }; // ====================================================
 
 
@@ -7566,7 +7572,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         renderPicker.call(_this3, _this3.picker.empty());
       });
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var setTimeInner = function setTimeInner(time) {
@@ -7996,7 +8002,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIFileUpload.setFilter = function (value) {
     this.$el.attr("opt-filter", Utils.trimToEmpty(value));
     var input = this.$el.children("input");
-    var accept = FileUploadRender.getAccept.call(this);
+    var accept = getAccept.call(this);
     if (accept) input.attr("accept", accept);else input.removeAttr("accept");
   };
 
@@ -8031,6 +8037,84 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIFileUpload.setMixed = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-mixed", "1");else this.$el.removeAttr("opt-mixed");
+  }; // ====================================================
+
+
+  var onBrowserClickHandler = function onBrowserClickHandler() {
+    if (this.isUploading) {
+      showError("正在上传，请稍候..");
+    } else {
+      this.browser();
+    }
+  };
+
+  var onFileChangeHandler = function onFileChangeHandler(e) {
+    var input = $(e.currentTarget);
+    var files = validateFiles.call(this, input[0].files);
+    if (!files || files.length == 0) return;
+    var fileLocalId = Date.now();
+    var multiple = input.attr("multiple") == "multiple";
+
+    if (multiple) {
+      this.files = Utils.toArray(this.files);
+
+      for (var i = 0; i < files.length; i++) {
+        files[i].localId = fileLocalId++;
+        this.files.push(files[i]);
+      }
+    } else {
+      files[0].localId = fileLocalId++;
+      this.files = [files[0]];
+    }
+
+    input.remove();
+    var newInput = $("<input type='file'/>").appendTo(this.$el);
+    if (multiple) newInput.attr("multiple", "multiple");
+    newInput.attr("accept", input.attr("accept"));
+    this.trigger("change", this.files);
+
+    if (this.isAutoUpload()) {
+      if (Utils.isNotBlank(this.getAction())) this.upload();
+    }
+  };
+
+  var uploadSuccessHandler = function uploadSuccessHandler(e, file, callback) {
+    file[0].uploader = null;
+    callback(file.errorMsg, file.resultMsg);
+  }; // 好像不会进这里来
+
+
+  var uploadErrorHandler = function uploadErrorHandler(e, file, callback) {
+    file[0].uploader = null;
+    callback(e);
+  };
+
+  var uploadStateHandler = function uploadStateHandler(e, file) {
+    var xhr = file[0].uploader;
+
+    if (xhr.readyState == 4) {
+      var data = xhr.responseText;
+
+      if (data) {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {}
+      }
+
+      if (xhr.status == 200) {
+        file.resultMsg = data || xhr.responseText;
+      } else {
+        // 出错了，出错会进入 onload
+        console.error(xhr.responseText);
+        file.errorMsg = data || xhr.responseText || "文件上传失败！";
+      }
+    }
+  };
+
+  var uploadProgressHandler = function uploadProgressHandler(e, file) {
+    this.totalSend += e.loaded;
+    if (this.totalSend > this.totalSize) this.totalSend = this.totalSize;
+    this.trigger("progress", file, this.totalSend, this.totalSize);
   }; ///////////////////////////////////////////////////////
 
 
@@ -8096,45 +8180,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _Renderer.isMixed = function () {
     return Utils.isTrue(this.options.mixed);
-  }; ///////////////////////////////////////////////////////
-
-
-  var onBrowserClickHandler = function onBrowserClickHandler() {
-    if (this.isUploading) {
-      showError("正在上传，请稍候..");
-    } else {
-      this.browser();
-    }
-  };
-
-  var onFileChangeHandler = function onFileChangeHandler(e) {
-    var input = $(e.currentTarget);
-    var files = validateFiles.call(this, input[0].files);
-    if (!files || files.length == 0) return;
-    var fileLocalId = Date.now();
-    var multiple = input.attr("multiple") == "multiple";
-
-    if (multiple) {
-      this.files = Utils.toArray(this.files);
-
-      for (var i = 0; i < files.length; i++) {
-        files[i].localId = fileLocalId++;
-        this.files.push(files[i]);
-      }
-    } else {
-      files[0].localId = fileLocalId++;
-      this.files = [files[0]];
-    }
-
-    input.remove();
-    var newInput = $("<input type='file'/>").appendTo(this.$el);
-    if (multiple) newInput.attr("multiple", "multiple");
-    newInput.attr("accept", input.attr("accept"));
-    this.trigger("change", this.files);
-
-    if (this.isAutoUpload()) {
-      if (Utils.isNotBlank(this.getAction())) this.upload();
-    }
   }; // ====================================================
 
 
@@ -8142,47 +8187,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var input = $("<input type='file'/>").appendTo(target);
     if (this.isMultiple()) input.attr("multiple", "multiple");
     input.attr("accept", Utils.trimToNull(getAccept.call(this)));
-  };
-
-  var uploadSuccessHandler = function uploadSuccessHandler(e, file, callback) {
-    file[0].uploader = null;
-    callback(file.errorMsg, file.resultMsg);
-  }; // 好像不会进这里来
-
-
-  var uploadErrorHandler = function uploadErrorHandler(e, file, callback) {
-    console.log(e);
-    file[0].uploader = null;
-    callback(e);
-  };
-
-  var uploadStateHandler = function uploadStateHandler(e, file) {
-    var xhr = file[0].uploader;
-
-    if (xhr.readyState == 4) {
-      var data = xhr.responseText;
-
-      if (data) {
-        try {
-          data = JSON.parse(data);
-        } catch (e) {}
-      }
-
-      if (xhr.status == 200) {
-        file.resultMsg = data || xhr.responseText;
-      } else {
-        // 出错了，出错会进入 onload
-        console.error(xhr.responseText);
-        file.errorMsg = data || xhr.responseText || "文件上传失败！";
-      }
-    }
-  };
-
-  var uploadProgressHandler = function uploadProgressHandler(e, file) {
-    this.totalSend += e.loaded;
-    if (this.totalSend > this.totalSize) this.totalSend = this.totalSize;
-    this.trigger("progress", file, this.totalSend, this.totalSize);
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var validateFiles = function validateFiles(files) {
@@ -8781,6 +8786,74 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIFormView._getItems = function () {
     return this.$el.children(".items").children();
+  }; // ====================================================
+
+
+  var onButtonClickHandler = function onButtonClickHandler(e) {
+    var btn = $(e.currentTarget);
+
+    if (btn.parent().is(".is-submit")) {
+      this.submit();
+    }
+
+    var btnName = btn.attr("name");
+
+    if (btnName) {
+      this.trigger("btn_" + btnName);
+      this.trigger("btnclick", btnName, btn);
+    }
+  };
+
+  var onNativeInputKeyHandler = function onNativeInputKeyHandler(e) {
+    var input = $(e.currentTarget);
+    if (!input.is("input, textarea")) return; // console.log("onNativeInputKeyHandler");
+
+    var item = Utils.parentUntil(input, ".form-item");
+    hideErrorMsg.call(this, item);
+  };
+
+  var onNativeInputFocusHandler = function onNativeInputFocusHandler(e) {
+    var input = $(e.currentTarget);
+    if (!input.is("input, textarea")) return; // console.log("onNativeInputFocusHandler");
+
+    var item = Utils.parentUntil(input, ".form-item");
+    validateInput.call(this, item, input);
+  };
+
+  var onTextViewKeyHandler = function onTextViewKeyHandler(e) {
+    var item = Utils.parentUntil(e.currentTarget, ".form-item");
+    item.removeClass("is-error");
+  };
+
+  var onTextViewFocusHandler = function onTextViewFocusHandler(e) {
+    var input = $(e.currentTarget);
+    var item = Utils.parentUntil(input, ".form-item");
+    var textView = VRender.Component.get(input.parent().parent());
+    validateTextView.call(this, item, textView);
+  };
+
+  var onValueChangeHandler = function onValueChangeHandler(e) {
+    var target = $(e.currentTarget);
+    if (target.is("input, textarea, .ui-textview")) return; // console.log("onValueChangeHandler");
+
+    var item = Utils.parentUntil(target, ".form-item");
+    validateItem.call(this, item);
+  };
+
+  var onItemMouseHandler = function onItemMouseHandler(e) {
+    var item = Utils.parentUntil(e.currentTarget, ".form-item");
+
+    if (item.is(".is-error")) {
+      stopErrorFadeout.call(this, item);
+
+      if (e.type == "mouseenter") {
+        item.children(".errmsg").removeClass("animate-out");
+      } else
+        /*if (e.type == "mouseleave")*/
+        {
+          startErrorFadeout.call(this, item);
+        }
+    }
   }; ///////////////////////////////////////////////////////
 
 
@@ -8887,74 +8960,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var orientation = this.options.orientation;
     if (VERTICAL == orientation || HORIZONTIAL == orientation) return orientation;
     return this._isRenderAsApp() ? VERTICAL : HORIZONTIAL;
-  }; ///////////////////////////////////////////////////////
-
-
-  var onButtonClickHandler = function onButtonClickHandler(e) {
-    var btn = $(e.currentTarget);
-
-    if (btn.parent().is(".is-submit")) {
-      this.submit();
-    }
-
-    var btnName = btn.attr("name");
-
-    if (btnName) {
-      this.trigger("btn_" + btnName);
-      this.trigger("btnclick", btnName, btn);
-    }
-  };
-
-  var onNativeInputKeyHandler = function onNativeInputKeyHandler(e) {
-    var input = $(e.currentTarget);
-    if (!input.is("input, textarea")) return; // console.log("onNativeInputKeyHandler");
-
-    var item = Utils.parentUntil(input, ".form-item");
-    hideErrorMsg.call(this, item);
-  };
-
-  var onNativeInputFocusHandler = function onNativeInputFocusHandler(e) {
-    var input = $(e.currentTarget);
-    if (!input.is("input, textarea")) return; // console.log("onNativeInputFocusHandler");
-
-    var item = Utils.parentUntil(input, ".form-item");
-    validateInput.call(this, item, input);
-  };
-
-  var onTextViewKeyHandler = function onTextViewKeyHandler(e) {
-    var item = Utils.parentUntil(e.currentTarget, ".form-item");
-    item.removeClass("is-error");
-  };
-
-  var onTextViewFocusHandler = function onTextViewFocusHandler(e) {
-    var input = $(e.currentTarget);
-    var item = Utils.parentUntil(input, ".form-item");
-    var textView = VRender.Component.get(input.parent().parent());
-    validateTextView.call(this, item, textView);
-  };
-
-  var onValueChangeHandler = function onValueChangeHandler(e) {
-    var target = $(e.currentTarget);
-    if (target.is("input, textarea, .ui-textview")) return; // console.log("onValueChangeHandler");
-
-    var item = Utils.parentUntil(target, ".form-item");
-    validateItem.call(this, item);
-  };
-
-  var onItemMouseHandler = function onItemMouseHandler(e) {
-    var item = Utils.parentUntil(e.currentTarget, ".form-item");
-
-    if (item.is(".is-error")) {
-      stopErrorFadeout.call(this, item);
-
-      if (e.type == "mouseenter") {
-        item.children(".errmsg").removeClass("animate-out");
-      } else
-        /*if (e.type == "mouseleave")*/
-        {
-          startErrorFadeout.call(this, item);
-        }
-    }
   }; // ====================================================
 
 
@@ -9033,7 +9038,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       });
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var validateItem = function validateItem(item, contentView, callback) {
@@ -9370,6 +9375,33 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UITooltip.close = function () {
     doClose.call(this);
+  }; // ====================================================
+
+
+  var onClickHandler = function onClickHandler(e) {
+    if ($(e.target).is(this.$el)) {
+      doClose.call(this);
+    }
+  };
+
+  var onCloseBtnHandler = function onCloseBtnHandler() {
+    doClose.call(this);
+  };
+
+  var onContentClickHandler = function onContentClickHandler() {
+    this.$el.addClass("active");
+  };
+
+  var onMouseHandler = function onMouseHandler(e) {
+    if (e.type == "mouseenter") {
+      if (this.t_close) {
+        clearTimeout(this.t_close);
+        this.t_close = null;
+      }
+    } else {
+      this.$el.removeClass("active");
+      waitToClose.call(this);
+    }
   }; ///////////////////////////////////////////////////////
 
 
@@ -9406,33 +9438,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer.isClosable = function () {
     if (Utils.isNull(this.options.closable)) return true;
     return Utils.isTrue(this.options.closable);
-  }; ///////////////////////////////////////////////////////
-
-
-  var onClickHandler = function onClickHandler(e) {
-    if ($(e.target).is(this.$el)) {
-      doClose.call(this);
-    }
-  };
-
-  var onCloseBtnHandler = function onCloseBtnHandler() {
-    doClose.call(this);
-  };
-
-  var onContentClickHandler = function onContentClickHandler() {
-    this.$el.addClass("active");
-  };
-
-  var onMouseHandler = function onMouseHandler(e) {
-    if (e.type == "mouseenter") {
-      if (this.t_close) {
-        clearTimeout(this.t_close);
-        this.t_close = null;
-      }
-    } else {
-      this.$el.removeClass("active");
-      waitToClose.call(this);
-    }
   }; // ====================================================
 
 
@@ -9453,7 +9458,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       target.addClass("show-icon");
       icon.css("backgroundImage", "url(" + this.options.icon + ")");
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doOpen = function doOpen() {
@@ -9539,6 +9544,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UINotice.close = function () {
     doClose.call(this);
+  }; // ====================================================
+
+
+  var onCloseBtnHandler = function onCloseBtnHandler() {
+    doClose.call(this);
+  };
+
+  var onMouseHandler = function onMouseHandler(e) {
+    if (e.type == "mouseenter") {
+      if (this.t_close) {
+        clearTimeout(this.t_close);
+        this.t_close = null;
+      }
+    } else {
+      waitToClose.call(this);
+    }
   }; ///////////////////////////////////////////////////////
 
 
@@ -9575,22 +9596,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer.isClosable = function () {
     if (Utils.isNull(this.options.closable)) return true;
     return Utils.isTrue(this.options.closable);
-  }; ///////////////////////////////////////////////////////
-
-
-  var onCloseBtnHandler = function onCloseBtnHandler() {
-    doClose.call(this);
-  };
-
-  var onMouseHandler = function onMouseHandler(e) {
-    if (e.type == "mouseenter") {
-      if (this.t_close) {
-        clearTimeout(this.t_close);
-        this.t_close = null;
-      }
-    } else {
-      waitToClose.call(this);
-    }
   }; // ====================================================
 
 
@@ -9614,7 +9619,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       target.addClass("show-icon");
       icon.css("backgroundImage", "url(" + this.options.icon + ")");
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doOpen = function doOpen() {
@@ -9940,50 +9945,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIDialog._isTouchCloseable = function () {
     return this.options.touchCloseEnabled !== false;
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-dialog").css("display", "none");
-    target.attr("opt-trans", "translate");
-    var options = this.options || {};
-    if (/^small|big|auto$/.test(options.size)) target.attr("opt-size", options.size);
-    if (Utils.isTrue(options.fill)) target.attr("opt-fill", "1");
-    target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
-    var container = $("<div class='dialog-container'></div>").appendTo(target);
-    var dialogView = $("<div class='dialog-view'></div>").appendTo(container);
-    renderDialogHeader.call(this, $, target, dialogView);
-    renderDialogContent.call(this, $, target, dialogView);
-    renderDialogFooter.call(this, $, target, dialogView);
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getTitle = function () {
-    var title = this.options.title;
-    if (Utils.isNull(title)) return "标题";
-    if (Utils.isBlank(title)) return "&nbsp;";
-    return title;
-  };
-
-  _Renderer.getActiveButton = function () {
-    var button = this.options.openbtn;
-
-    if (!frontend && button) {
-      if (typeof button == "string") return button;
-      if (Utils.isFunction(button.getViewId)) return "[vid='" + button.getViewId() + "']";
-    }
-
-    return null;
-  }; ///////////////////////////////////////////////////////
 
 
   var closeBtnHandler = function closeBtnHandler(e) {
@@ -10053,6 +10015,49 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if ($(e.target).is(this.$el)) {
       if (this._isTouchCloseable()) this.close();
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-dialog").css("display", "none");
+    target.attr("opt-trans", "translate");
+    var options = this.options || {};
+    if (/^small|big|auto$/.test(options.size)) target.attr("opt-size", options.size);
+    if (Utils.isTrue(options.fill)) target.attr("opt-fill", "1");
+    target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
+    var container = $("<div class='dialog-container'></div>").appendTo(target);
+    var dialogView = $("<div class='dialog-view'></div>").appendTo(container);
+    renderDialogHeader.call(this, $, target, dialogView);
+    renderDialogContent.call(this, $, target, dialogView);
+    renderDialogFooter.call(this, $, target, dialogView);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getTitle = function () {
+    var title = this.options.title;
+    if (Utils.isNull(title)) return "标题";
+    if (Utils.isBlank(title)) return "&nbsp;";
+    return title;
+  };
+
+  _Renderer.getActiveButton = function () {
+    var button = this.options.openbtn;
+
+    if (!frontend && button) {
+      if (typeof button == "string") return button;
+      if (Utils.isFunction(button.getViewId)) return "[vid='" + button.getViewId() + "']";
+    }
+
+    return null;
   }; // ====================================================
 
 
@@ -10117,7 +10122,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       });
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var initContentEvents = function initContentEvents() {
@@ -10245,6 +10250,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIConfirm.onCancel = function (handler) {
     this.cancelHandler = handler;
     return this;
+  }; // ====================================================
+
+
+  var onCloseBtnHandler = function onCloseBtnHandler(e) {
+    doCancel.call(this);
+  };
+
+  var onButtonClickHandler = function onButtonClickHandler(e) {
+    if ($(e.currentTarget).attr("name") == "ok") {
+      doSubmit.call(this);
+    } else {
+      doCancel.call(this);
+    }
   }; ///////////////////////////////////////////////////////
 
 
@@ -10269,19 +10287,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _Renderer.getCancelLabel = function () {
     return Utils.trimToNull(this.options.cancelLabel) || "取消";
-  }; ///////////////////////////////////////////////////////
-
-
-  var onCloseBtnHandler = function onCloseBtnHandler(e) {
-    doCancel.call(this);
-  };
-
-  var onButtonClickHandler = function onButtonClickHandler(e) {
-    if ($(e.currentTarget).attr("name") == "ok") {
-      doSubmit.call(this);
-    } else {
-      doCancel.call(this);
-    }
   }; // ====================================================
 
 
@@ -10309,21 +10314,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       label: this.getCancelLabel()
     });
     $("<span class='closebtn'></span>").appendTo(container);
-  };
-
-  var addButton = function addButton($, target, data) {
-    target = $("<div></div>").appendTo(target);
-
-    if (!frontend) {
-      var UIButton = require("../button/index");
-
-      new UIButton(this.context, data).render(target);
-    } else {
-      UI.button.create(Utils.extend(data, {
-        target: target
-      }));
-    }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doOpen = function doOpen() {
@@ -10356,6 +10347,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     doClose.call(this);
     if (Utils.isFunction(this.cancelHandler)) this.cancelHandler();
     this.trigger("cancel");
+  }; // ====================================================
+
+
+  var addButton = function addButton($, target, data) {
+    target = $("<div></div>").appendTo(target);
+
+    if (!frontend) {
+      var UIButton = require("../button/index");
+
+      new UIButton(this.context, data).render(target);
+    } else {
+      UI.button.create(Utils.extend(data, {
+        target: target
+      }));
+    }
   }; ///////////////////////////////////////////////////////
 
 
@@ -10582,79 +10588,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   _UIPopupMenu._checkIfEmpty = function () {// do nothing
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._itemsRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._itemsRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-popupmenu");
-    var options = this.options || {};
-
-    if (!frontend) {
-      var actionTarget = options.actionTarget;
-
-      if (actionTarget) {
-        if (typeof actionTarget == "string") target.attr("opt-target", Utils.trimToEmpty(actionTarget));else if (Utils.isFunction(actionTarget.getViewId)) target.attr("opt-target", "[vid='" + actionTarget.getViewId() + "']");
-      }
-
-      if (options.actionType) target.attr("opt-trigger", options.actionType);
-      var iconFunction = options.iconFunction;
-      if (Utils.isFunction(iconFunction)) BaseRender.fn.renderFunction(target, "icfunc", iconFunction);else if (options.iconField) target.attr("opt-ic", options.iconField);
-      if (options.childrenField) target.attr("opt-child", options.childrenField);
-      if (options.disabledField) target.attr("opt-disable", options.disabledField);
-      if (options.offsetLeft) target.attr("opt-offsetl", options.offsetLeft);
-      if (options.offsetTop) target.attr("opt-offsett", options.offsetTop);
-    }
-
-    return this;
   }; // ====================================================
-
-
-  _Renderer.doAdapter = function (data, i) {
-    var _this3 = this;
-
-    if (Utils.isArray(data)) {
-      var _data = Utils.map(data, function (temp) {
-        return Fn.doAdapter.call(_this3, temp);
-      });
-
-      if (data.title) {
-        if (backend) _data.unshift({
-          __group__: data.title
-        });else _data.title = data.title;
-      }
-
-      return _data;
-    }
-
-    return Fn.doAdapter.call(this, data, i);
-  }; // ====================================================
-
-
-  _Renderer._renderItems = function ($, target) {// 统一在前端渲染
-    // target.empty();
-    // let datas = this.getData();
-    // if (datas && datas.length > 0) {
-    // 	let container = $("<div class='menu-container'></div>").appendTo(target);
-    // 	container.append("<div class='btn up'></div>");
-    // 	container.append("<ul class='menus'></ul>");
-    // 	container.append("<div class='btn down'></div>");
-    // 	renderItems.call(this, $, container.children("ul"), datas);
-    // }
-  };
-
-  _Renderer._renderEmptyView = function () {// do nothing
-  };
-
-  _Renderer._renderLoadView = function () {// do nothing
-  }; ///////////////////////////////////////////////////////
 
 
   var onActionTargetHandler = function onActionTargetHandler(e) {
@@ -10677,7 +10611,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var onItemClickHandler = function onItemClickHandler(e) {
-    var _this4 = this;
+    var _this3 = this;
 
     var item = $(e.currentTarget);
     if (item.is(".disabled")) return;
@@ -10697,7 +10631,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               } else {
                 if (_data.toggle === data.toggle) _data.checked = false;
 
-                _loop(getSubDatas.call(_this4, _data));
+                _loop(getSubDatas.call(_this3, _data));
               }
             });
           };
@@ -10828,6 +10762,78 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       clearTimeout(timerId);
       container.removeAttr("t_scroll");
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._itemsRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._itemsRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-popupmenu");
+    var options = this.options || {};
+
+    if (!frontend) {
+      var actionTarget = options.actionTarget;
+
+      if (actionTarget) {
+        if (typeof actionTarget == "string") target.attr("opt-target", Utils.trimToEmpty(actionTarget));else if (Utils.isFunction(actionTarget.getViewId)) target.attr("opt-target", "[vid='" + actionTarget.getViewId() + "']");
+      }
+
+      if (options.actionType) target.attr("opt-trigger", options.actionType);
+      var iconFunction = options.iconFunction;
+      if (Utils.isFunction(iconFunction)) BaseRender.fn.renderFunction(target, "icfunc", iconFunction);else if (options.iconField) target.attr("opt-ic", options.iconField);
+      if (options.childrenField) target.attr("opt-child", options.childrenField);
+      if (options.disabledField) target.attr("opt-disable", options.disabledField);
+      if (options.offsetLeft) target.attr("opt-offsetl", options.offsetLeft);
+      if (options.offsetTop) target.attr("opt-offsett", options.offsetTop);
+    }
+
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.doAdapter = function (data, i) {
+    var _this4 = this;
+
+    if (Utils.isArray(data)) {
+      var _data = Utils.map(data, function (temp) {
+        return Fn.doAdapter.call(_this4, temp);
+      });
+
+      if (data.title) {
+        if (backend) _data.unshift({
+          __group__: data.title
+        });else _data.title = data.title;
+      }
+
+      return _data;
+    }
+
+    return Fn.doAdapter.call(this, data, i);
+  }; // ====================================================
+
+
+  _Renderer._renderItems = function ($, target) {// 统一在前端渲染
+    // target.empty();
+    // let datas = this.getData();
+    // if (datas && datas.length > 0) {
+    // 	let container = $("<div class='menu-container'></div>").appendTo(target);
+    // 	container.append("<div class='btn up'></div>");
+    // 	container.append("<ul class='menus'></ul>");
+    // 	container.append("<div class='btn down'></div>");
+    // 	renderItems.call(this, $, container.children("ul"), datas);
+    // }
+  };
+
+  _Renderer._renderEmptyView = function () {// do nothing
+  };
+
+  _Renderer._renderLoadView = function () {// do nothing
   }; // ====================================================
 
 
@@ -10894,7 +10900,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (!!getSubDatas.call(this, data)) item.addClass("has-child");
     if (this._isDisabled(data)) item.addClass("disabled").attr("disabled", "disabled");
     if (this._isChecked(data)) item.addClass("checked");
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doOpen = function doOpen(item) {
@@ -11099,24 +11105,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     return null;
-  };
-
-  var hasSubDatas = function hasSubDatas(data) {
-    var datas = getSubDatas.call(this, data);
-    if (!!datas) return true;
-
-    if (data) {
-      if (data.hasOwnProperty("hasChild")) {
-        if (Utils.isTrue(data.hasChild)) return true;
-      }
-
-      if (data.hasOwnProperty("leaf")) {
-        if (Utils.isTrue(data.leaf)) return false;
-      }
-    }
-
-    return false;
-  }; ///////////////////////////////////////////////////////
+  }; // const hasSubDatas = function (data) {
+  // 	let datas = getSubDatas.call(this, data);
+  // 	if (!!datas)
+  // 		return true;
+  // 	if (data) {
+  // 		if (data.hasOwnProperty("hasChild")) {
+  // 			if (Utils.isTrue(data.hasChild))
+  // 				return true;
+  // 		}
+  // 		if (data.hasOwnProperty("leaf")) {
+  // 			if (Utils.isTrue(data.leaf))
+  // 				return false;
+  // 		}
+  // 	}
+  // 	return false;
+  // };
+  ///////////////////////////////////////////////////////
 
 
   if (frontend) {
@@ -11303,77 +11308,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIPaginator._isLast = function () {
     return this.$el.is(".is-last");
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-paginator");
-    var pageInfo = getPageInfos.call(this);
-    target.attr("data-no", pageInfo.pageNo);
-    target.attr("data-size", pageInfo.pageSize);
-    target.attr("data-pages", pageInfo.pageCount);
-    target.attr("data-total", pageInfo.totalCount);
-    target.attr("opt-mode", pageInfo.mode || "");
-    target.attr("opt-nums", pageInfo.showNum);
-    if (pageInfo.status) target.attr("opt-status", pageInfo.status);
-    if (pageInfo.skip) target.attr("opt-skip", pageInfo.skip);
-    if (pageInfo.pageSizes.length > 1) target.attr("opt-sizes", pageInfo.pageSizes.join(","));
-    renderView.call(this, $, target, pageInfo);
-
-    if (!frontend) {
-      var buttons = this.options.buttons;
-      if (buttons === false) target.attr("opt-btns", "");else if (buttons !== true) {
-        if (Utils.isNotBlank(buttons)) target.attr("opt-btns", JSON.stringify(buttons));
-      }
-    }
-
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getButtons = function () {
-    return this.options.buttons;
-  };
-
-  _Renderer.getTotal = function () {
-    return Math.max(0, parseInt(this.options.total) || 0);
-  };
-
-  _Renderer.getSize = function () {
-    return parseInt(this.options.size) || 0;
-  };
-
-  _Renderer.getSizes = function () {
-    return getSizes(this.options.sizes) || [];
-  };
-
-  _Renderer.getPageNo = function () {
-    return parseInt(this.options.page) || 0;
-  };
-
-  _Renderer.getMode = function () {
-    return getMode(this.options.mode);
-  };
-
-  _Renderer.getShowNum = function () {
-    return getShowNum(this.options.showNum);
-  };
-
-  _Renderer.getStatus = function () {
-    return getStatus(this.options.status);
-  };
-
-  _Renderer.getSkip = function () {
-    return getSkip(this.options.skip);
-  }; ///////////////////////////////////////////////////////
 
 
   var buttonClickHandler = function buttonClickHandler(e) {
@@ -11460,6 +11395,76 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       return Utils.isControlKey(e) || Utils.isNumberKey(e);
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-paginator");
+    var pageInfo = getPageInfos.call(this);
+    target.attr("data-no", pageInfo.pageNo);
+    target.attr("data-size", pageInfo.pageSize);
+    target.attr("data-pages", pageInfo.pageCount);
+    target.attr("data-total", pageInfo.totalCount);
+    target.attr("opt-mode", pageInfo.mode || "");
+    target.attr("opt-nums", pageInfo.showNum);
+    if (pageInfo.status) target.attr("opt-status", pageInfo.status);
+    if (pageInfo.skip) target.attr("opt-skip", pageInfo.skip);
+    if (pageInfo.pageSizes.length > 1) target.attr("opt-sizes", pageInfo.pageSizes.join(","));
+    renderView.call(this, $, target, pageInfo);
+
+    if (!frontend) {
+      var buttons = this.options.buttons;
+      if (buttons === false) target.attr("opt-btns", "");else if (buttons !== true) {
+        if (Utils.isNotBlank(buttons)) target.attr("opt-btns", JSON.stringify(buttons));
+      }
+    }
+
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getButtons = function () {
+    return this.options.buttons;
+  };
+
+  _Renderer.getTotal = function () {
+    return Math.max(0, parseInt(this.options.total) || 0);
+  };
+
+  _Renderer.getSize = function () {
+    return parseInt(this.options.size) || 0;
+  };
+
+  _Renderer.getSizes = function () {
+    return getSizes(this.options.sizes) || [];
+  };
+
+  _Renderer.getPageNo = function () {
+    return parseInt(this.options.page) || 0;
+  };
+
+  _Renderer.getMode = function () {
+    return getMode(this.options.mode);
+  };
+
+  _Renderer.getShowNum = function () {
+    return getShowNum(this.options.showNum);
+  };
+
+  _Renderer.getStatus = function () {
+    return getStatus(this.options.status);
+  };
+
+  _Renderer.getSkip = function () {
+    return getSkip(this.options.skip);
   }; // ====================================================
 
 
@@ -11582,7 +11587,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (Utils.isNotBlank(skips[1])) $("<span class='txt t2'></span>").appendTo(container).text(skips[1]);
     var skipBtn = getButtonLabel.call(this, "skip") || "GO";
     $("<button class='btn skip'></button>").appendTo(container).text(skipBtn);
-  }; // 重新渲染视图
+  }; // ====================================================
+  // 重新渲染视图
 
 
   var reRenderView = function reRenderView() {
@@ -11627,7 +11633,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (statusContainer && statusContainer.length > 0) renderPageStatusBar.call(_this3, $, _this3.$el, statusContainer, pageInfos);
     }, 0);
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var showPageDropdown = function showPageDropdown() {
@@ -11944,50 +11950,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UITabbar._renderOneItem = function ($, item, data, index) {
     return renderOneItem.call(this, $, item, data, index);
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._selectRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._selectRender(false);
-
-  _Renderer.render = function ($, target) {
-    target.addClass("ui-tabbar");
-    var tabbar = $("<div class='bar'></div>").appendTo(target);
-    tabbar.append("<ul class='tabs'></ul>");
-    tabbar.append("<div class='thumb'></div>");
-
-    UI._selectRender.render.call(this, $, target);
-
-    renderButtons.call(this, $, target);
-    return this;
   }; // ====================================================
-
-
-  _Renderer.isMultiple = function () {
-    return false;
-  }; // ====================================================
-
-
-  _Renderer._renderOneItem = function ($, item, data, index) {
-    renderOneItem.call(this, $, item, data, index);
-  };
-
-  _Renderer._getItemContainer = function ($, target) {
-    return target.find(".tabs");
-  };
-
-  _Renderer._getNewItem = function ($, target) {
-    return getNewItem.call(this, $, target);
-  };
-
-  _Renderer._renderEmptyView = function () {// do nothing
-  };
-
-  _Renderer._renderLoadView = function () {// do nothing
-  }; ///////////////////////////////////////////////////////
 
 
   var itemClickHandler = function itemClickHandler(e) {
@@ -12050,6 +12013,49 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     } else {
       $(window).off("resize._" + this.getViewId());
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._selectRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._selectRender(false);
+
+  _Renderer.render = function ($, target) {
+    target.addClass("ui-tabbar");
+    var tabbar = $("<div class='bar'></div>").appendTo(target);
+    tabbar.append("<ul class='tabs'></ul>");
+    tabbar.append("<div class='thumb'></div>");
+
+    UI._selectRender.render.call(this, $, target);
+
+    renderButtons.call(this, $, target);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.isMultiple = function () {
+    return false;
+  }; // ====================================================
+
+
+  _Renderer._renderOneItem = function ($, item, data, index) {
+    renderOneItem.call(this, $, item, data, index);
+  };
+
+  _Renderer._getItemContainer = function ($, target) {
+    return target.find(".tabs");
+  };
+
+  _Renderer._getNewItem = function ($, target) {
+    return getNewItem.call(this, $, target);
+  };
+
+  _Renderer._renderEmptyView = function () {// do nothing
+  };
+
+  _Renderer._renderLoadView = function () {// do nothing
   }; // ====================================================
 
 
@@ -12063,17 +12069,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (Utils.isTrue(data.closable)) item.addClass("closable").append("<i class='close'></i>");
   };
 
-  var getNewItem = function getNewItem($, target) {
-    var item = $("<li class='tab'></li>").appendTo(target);
-    item.append("<div class='box'></div>");
-    return item;
-  };
-
   var renderButtons = function renderButtons($, target) {
     target = $("<div class='btns'></div>").appendTo(target);
     target.append("<span class='btn prev'>&lt;</span>");
     target.append("<span class='btn next'>&gt;</span>");
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var initResizeEvents = function initResizeEvents() {
@@ -12246,6 +12246,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     layoutChanged.call(this);
   };
 
+  var getNewItem = function getNewItem($, target) {
+    var item = $("<li class='tab'></li>").appendTo(target);
+    item.append("<div class='box'></div>");
+    return item;
+  };
+
   var getSelectedTab = function getSelectedTab() {
     return this.tabsView.find(".tab.selected");
   }; ///////////////////////////////////////////////////////
@@ -12363,33 +12369,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIPanel.setViewActive = function (name) {
     if (Utils.isNotBlank(name)) showViewport.call(this, name);
   }; // ====================================================
-  // ====================================================
-  ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    UI._baseRender.render.call(this, $, target);
-
-    target.addClass("ui-panel");
-    this._viewports = getFormatViewports.call(this, this.options.viewports);
-    renderHeader.call(this, $, target);
-    renderContent.call(this, $, target);
-    return this;
-  }; // ====================================================
-
-
-  _Renderer.getTitle = function () {
-    if (this.options.hasOwnProperty("title")) return this.options.title;
-    if (this._viewports && this._viewports.length > 0) return false;
-    return "标题";
-  }; // ====================================================
-  ///////////////////////////////////////////////////////
 
 
   var onButtonClickHandler = function onButtonClickHandler(e) {
@@ -12477,6 +12456,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var onTabClickHandler = function onTabClickHandler(e) {
     var item = $(e.currentTarget);
     if (!item.is(".selected")) showViewport.call(this, item.attr("name"));
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    UI._baseRender.render.call(this, $, target);
+
+    target.addClass("ui-panel");
+    this._viewports = getFormatViewports.call(this, this.options.viewports);
+    renderHeader.call(this, $, target);
+    renderContent.call(this, $, target);
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getTitle = function () {
+    if (this.options.hasOwnProperty("title")) return this.options.title;
+    if (this._viewports && this._viewports.length > 0) return false;
+    return "标题";
   }; // ====================================================
 
 
@@ -12611,7 +12614,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       });
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doInit = function doInit() {
@@ -12781,6 +12784,32 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIListView._renderOneItem = function ($, item, data, index, bSelected) {
     renderOneItem.call(this, $, item, data, index, bSelected);
+  }; // ====================================================
+
+
+  var itemClickHandler = function itemClickHandler(e) {
+    var item = $(e.currentTarget);
+
+    if (item.parent().is(this.list)) {
+      if (item.is(".disabled")) return;
+
+      var snapshoot = this._snapshoot();
+
+      if (item.is(".selected")) {
+        item.removeClass("selected");
+      } else {
+        item.addClass("selected");
+        if (!this.isMultiple()) item.siblings().removeClass("selected");
+      }
+
+      var indexs = Utils.map(this.list.children(".selected"), function (item) {
+        return item.index();
+      });
+
+      UI._select.setSelectedIndex.call(this, indexs);
+
+      snapshoot.done();
+    }
   }; ///////////////////////////////////////////////////////
 
 
@@ -12976,32 +13005,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _Renderer._renderLoadView = function ($, target) {
     UI._itemsRender.renderLoadView.call(this, $, target);
-  }; ///////////////////////////////////////////////////////
-
-
-  var itemClickHandler = function itemClickHandler(e) {
-    var item = $(e.currentTarget);
-
-    if (item.parent().is(this.list)) {
-      if (item.is(".disabled")) return;
-
-      var snapshoot = this._snapshoot();
-
-      if (item.is(".selected")) {
-        item.removeClass("selected");
-      } else {
-        item.addClass("selected");
-        if (!this.isMultiple()) item.siblings().removeClass("selected");
-      }
-
-      var indexs = Utils.map(this.list.children(".selected"), function (item) {
-        return item.index();
-      });
-
-      UI._select.setSelectedIndex.call(this, indexs);
-
-      snapshoot.done();
-    }
   }; // ====================================================
 
 
@@ -13052,7 +13055,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     UI._select.init.call(this, target, options);
 
     this.__columns = this.getColumns(); // 解析一次
-    // console.log(this.getColumns());
+    // console.log(this.__columns);
 
     target = this.$el;
     var ghead = this.gridHead = target.children(".table").children("header").children();
@@ -13476,168 +13479,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIDatagrid._snapshoot_change = function () {
     selectedChanged.call(this);
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._selectRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._selectRender(false); // 行渲染
-
-
-  Renderer.rowRenderer = function ($, item, data, index) {
-    renderRow.call(this, $, item, this.__columns, data, index);
-  };
-
-  Renderer.rowRenderer._state = 1; // 内部渲染器标志
-  // ====================================================
-
-  _Renderer.render = function ($, target) {
-    target.addClass("ui-datagrid");
-    var height = Utils.getFormatSize(this.options.height, this._isRenderAsRem());
-
-    if (height) {
-      target.attr("opt-fixed", "1").css("height", height);
-    }
-
-    if (this.isChkboxVisible()) target.attr("opt-chk", "1");
-    var expandColspan = parseInt(this.options.expandcols);
-    if (expandColspan) target.attr("opt-expcols", expandColspan);
-    var table = $("<div class='table'></div>").appendTo(target);
-    table.append("<header><div></div></header>");
-    table.append("<section><div><table><thead></thead><tbody></tbody></table></div></section>");
-    var columns = this.__columns = this.getColumns();
-
-    UI._selectRender.render.call(this, $, target);
-
-    renderHeader.call(this, $, target, columns);
-    renderOthers.call(this, $, target, columns);
-    this.renderComplete = true; // 首次渲染完成
-
-    return this;
   }; // ====================================================
-
-
-  _Renderer.getColumns = function () {
-    return getFormatColumns(this.options.columns);
-  };
-
-  _Renderer.isChkboxVisible = function () {
-    return Utils.isTrue(this.options.chkbox);
-  };
-
-  _Renderer.isHeaderVisible = function () {
-    if (this.options.hasOwnProperty("showHeader")) return Utils.isTrue(this.options.showHeader);
-    return true;
-  };
-
-  _Renderer.getHeadRenderer = function () {
-    return this.options.headRenderer;
-  };
-
-  _Renderer.getColumnRenderer = function () {
-    return this.options.columnRenderer || this.options.renderer;
-  };
-
-  _Renderer.getExpandRenderer = function () {
-    return this.options.expandRenderer;
-  };
-
-  _Renderer.getRowStyleFunction = function () {
-    return this.options.rowStyleFunction;
-  };
-
-  _Renderer.getCellStyleFunction = function () {
-    return this.options.cellStyleFunction;
-  };
-
-  _Renderer.getItemRenderer = function () {
-    return Renderer.rowRenderer;
-  }; // ====================================================
-
-
-  _Renderer._getItemContainer = function ($, target) {
-    target = target.children(".table").children("section").children();
-    return target.children("table").children("tbody");
-  };
-
-  _Renderer._getNewItem = function ($, itemContainer, data, index) {
-    return $("<tr class='datagrid-row'></tr>").appendTo(itemContainer);
-  };
-
-  _Renderer._renderItems = function ($, target) {
-    var _this2 = this;
-
-    var datas = this.getData();
-    var hasFilterOrSort = false;
-    var _indexs = null;
-
-    var _datas = [].concat(datas); // 下面需要排序、筛选，保证原数据集不变
-
-
-    if (datas && datas.length > 0) {
-      // doFilter
-      Utils.each(this.__columns, function (column) {
-        if (Utils.isTrue(column.filter) && Utils.isNotBlank(column.filterValue)) {
-          var filterFunction = _this2._getFilterFunction(column, column.filterValue);
-
-          _datas = Utils.filter(_datas, function (data, i) {
-            return filterFunction(column, data, column.filterValue);
-          });
-          hasFilterOrSort = true;
-        }
-      }); // doSort
-
-      var sortColumn = Utils.find(this.__columns, function (column) {
-        return Utils.isTrue(column.sortable) && column.sortType;
-      });
-
-      if (sortColumn) {
-        var sortFunction = this._getSortFunction(sortColumn, sortColumn.sortType);
-
-        _datas.sort(function (a, b) {
-          return sortFunction(sortColumn, a, b, sortColumn.sortType);
-        });
-
-        hasFilterOrSort = true;
-      }
-    }
-
-    if (hasFilterOrSort) {
-      // 获取对象在原数据集中的索引
-      _indexs = Utils.map(_datas, function (data) {
-        return Utils.index(datas, function (temp) {
-          return temp == data;
-        });
-      });
-    }
-
-    this._renderDatas = _datas;
-    renderItems.call(this, $, target, _datas, _indexs);
-  };
-
-  _Renderer._renderEmptyView = function ($, target) {
-    UI._itemsRender.renderEmptyView.call(this, $, target);
-  };
-
-  _Renderer._renderLoadView = function ($, target) {
-    UI._itemsRender.renderLoadView.call(this, $, target);
-  };
-
-  _Renderer._getSortFunction = function (column, type) {
-    return getSortFunction.call(this, column, type);
-  };
-
-  _Renderer._getFilterFunction = function (column, value) {
-    return getFilterFunction.call(this, column, value);
-  };
-
-  _Renderer._hasExpand = function () {
-    return Utils.index(this.__columns, function (column) {
-      return !!column.expand;
-    }) >= 0;
-  }; ///////////////////////////////////////////////////////
 
 
   var itemClickHandler = function itemClickHandler(e) {
@@ -13833,6 +13675,167 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (e.which == 13) {
       this.$el.children(".sort-and-filter").find(".submitbtn").tap();
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._selectRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._selectRender(false); // 行渲染
+
+
+  Renderer.rowRenderer = function ($, item, data, index) {
+    renderRow.call(this, $, item, this.__columns, data, index);
+  };
+
+  Renderer.rowRenderer._state = 1; // 内部渲染器标志
+  // ====================================================
+
+  _Renderer.render = function ($, target) {
+    target.addClass("ui-datagrid");
+    var height = Utils.getFormatSize(this.options.height, this._isRenderAsRem());
+
+    if (height) {
+      target.attr("opt-fixed", "1").css("height", height);
+    }
+
+    if (this.isChkboxVisible()) target.attr("opt-chk", "1");
+    var expandColspan = parseInt(this.options.expandcols);
+    if (expandColspan) target.attr("opt-expcols", expandColspan);
+    var table = $("<div class='table'></div>").appendTo(target);
+    table.append("<header><div></div></header>");
+    table.append("<section><div><table><thead></thead><tbody></tbody></table></div></section>");
+    var columns = this.__columns = this.getColumns();
+
+    UI._selectRender.render.call(this, $, target);
+
+    renderHeader.call(this, $, target, columns);
+    renderOthers.call(this, $, target, columns);
+    this.renderComplete = true; // 首次渲染完成
+
+    return this;
+  }; // ====================================================
+
+
+  _Renderer.getColumns = function () {
+    return getFormatColumns(this.options.columns);
+  };
+
+  _Renderer.isChkboxVisible = function () {
+    return Utils.isTrue(this.options.chkbox);
+  };
+
+  _Renderer.isHeaderVisible = function () {
+    if (this.options.hasOwnProperty("showHeader")) return Utils.isTrue(this.options.showHeader);
+    return true;
+  };
+
+  _Renderer.getHeadRenderer = function () {
+    return this.options.headRenderer;
+  };
+
+  _Renderer.getColumnRenderer = function () {
+    return this.options.columnRenderer || this.options.renderer;
+  };
+
+  _Renderer.getExpandRenderer = function () {
+    return this.options.expandRenderer;
+  };
+
+  _Renderer.getRowStyleFunction = function () {
+    return this.options.rowStyleFunction;
+  };
+
+  _Renderer.getCellStyleFunction = function () {
+    return this.options.cellStyleFunction;
+  };
+
+  _Renderer.getItemRenderer = function () {
+    return Renderer.rowRenderer;
+  }; // ====================================================
+
+
+  _Renderer._getItemContainer = function ($, target) {
+    target = target.children(".table").children("section").children();
+    return target.children("table").children("tbody");
+  };
+
+  _Renderer._getNewItem = function ($, itemContainer, data, index) {
+    return $("<tr class='datagrid-row'></tr>").appendTo(itemContainer);
+  };
+
+  _Renderer._renderItems = function ($, target) {
+    var _this2 = this;
+
+    var datas = this.getData();
+    var hasFilterOrSort = false;
+    var _indexs = null;
+
+    var _datas = [].concat(datas); // 下面需要排序、筛选，保证原数据集不变
+
+
+    if (datas && datas.length > 0) {
+      // doFilter
+      Utils.each(this.__columns, function (column) {
+        if (Utils.isTrue(column.filter) && Utils.isNotBlank(column.filterValue)) {
+          var filterFunction = _this2._getFilterFunction(column, column.filterValue);
+
+          _datas = Utils.filter(_datas, function (data, i) {
+            return filterFunction(column, data, column.filterValue);
+          });
+          hasFilterOrSort = true;
+        }
+      }); // doSort
+
+      var sortColumn = Utils.find(this.__columns, function (column) {
+        return Utils.isTrue(column.sortable) && column.sortType;
+      });
+
+      if (sortColumn) {
+        var sortFunction = this._getSortFunction(sortColumn, sortColumn.sortType);
+
+        _datas.sort(function (a, b) {
+          return sortFunction(sortColumn, a, b, sortColumn.sortType);
+        });
+
+        hasFilterOrSort = true;
+      }
+    }
+
+    if (hasFilterOrSort) {
+      // 获取对象在原数据集中的索引
+      _indexs = Utils.map(_datas, function (data) {
+        return Utils.index(datas, function (temp) {
+          return temp == data;
+        });
+      });
+    }
+
+    this._renderDatas = _datas;
+    renderItems.call(this, $, target, _datas, _indexs);
+  };
+
+  _Renderer._renderEmptyView = function ($, target) {
+    UI._itemsRender.renderEmptyView.call(this, $, target);
+  };
+
+  _Renderer._renderLoadView = function ($, target) {
+    UI._itemsRender.renderLoadView.call(this, $, target);
+  };
+
+  _Renderer._getSortFunction = function (column, type) {
+    return getSortFunction.call(this, column, type);
+  };
+
+  _Renderer._getFilterFunction = function (column, value) {
+    return getFilterFunction.call(this, column, value);
+  };
+
+  _Renderer._hasExpand = function () {
+    return Utils.index(this.__columns, function (column) {
+      return !!column.expand;
+    }) >= 0;
   }; // ====================================================
 
 
@@ -14086,69 +14089,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       Fn.renderFunction(target, "rstyle", this.getRowStyleFunction());
       Fn.renderFunction(target, "cstyle", this.getCellStyleFunction());
     }
-  }; // ====================================================
-
-
-  var rerender = function rerender() {
-    var _this6 = this;
-
-    if (this.t_rerender) {
-      clearTimeout(this.t_rerender);
-      this.t_rerender = 0;
-    }
-
-    if (this.t_rerenderheader) {
-      clearTimeout(this.t_rerenderheader);
-      this.t_rerenderheader = 0;
-    }
-
-    if (this.t_rerenderitems) {
-      clearTimeout(this.t_rerenderitems);
-      this.t_rerenderitems = 0;
-    }
-
-    this.t_rerender = setTimeout(function () {
-      _this6.t_rerender = 0;
-      renderHeader.call(_this6, $, _this6.$el, _this6.__columns);
-      renderBySortAndFilter.call(_this6, true);
-    }, 0);
-  };
-
-  var rerenderHeader = function rerenderHeader() {
-    var _this7 = this;
-
-    if (this.t_rerender) return;
-
-    if (this.t_rerenderheader) {
-      clearTimeout(this.t_rerenderheader);
-      this.t_rerenderheader = 0;
-    }
-
-    this.t_rerenderheader = setTimeout(function () {
-      _this7.t_rerenderheader = 0;
-      renderHeader.call(_this7, $, _this7.$el, _this7.__columns);
-    }, 0);
-  };
-
-  var rerenderItems = function rerenderItems() {
-    var _this8 = this;
-
-    if (this.t_rerender) return;
-
-    if (this.t_rerenderitems) {
-      clearTimeout(this.t_rerenderitems);
-      this.t_rerenderitems = 0;
-    }
-
-    this.t_rerenderitems = setTimeout(function () {
-      _this8.t_rerenderitems = 0;
-      renderBySortAndFilter.call(_this8, true);
-      rerenderEnumFilters.call(_this8);
-    }, 0);
   };
 
   var renderExpandView = function renderExpandView($, row, data, rowIndex) {
-    var _this9 = this;
+    var _this6 = this;
 
     var expandRow = $("<tr class='row-expand'></tr>").insertAfter(row);
     var expandCell = $("<td></td>").appendTo(expandRow);
@@ -14174,11 +14118,70 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           item = $("<dl></dl>").appendTo(item);
           $("<dt></dt>").appendTo(item).text(column.title || column.name || "");
           var content = $("<dd></dd>").appendTo(item);
-          renderCell.call(_this9, $, content, column, data, rowIndex, i);
+          renderCell.call(_this6, $, content, column, data, rowIndex, i);
           item.removeClass("col-" + i).removeAttr("col-name");
         }
       });
     }
+  }; // ====================================================
+
+
+  var rerender = function rerender() {
+    var _this7 = this;
+
+    if (this.t_rerender) {
+      clearTimeout(this.t_rerender);
+      this.t_rerender = 0;
+    }
+
+    if (this.t_rerenderheader) {
+      clearTimeout(this.t_rerenderheader);
+      this.t_rerenderheader = 0;
+    }
+
+    if (this.t_rerenderitems) {
+      clearTimeout(this.t_rerenderitems);
+      this.t_rerenderitems = 0;
+    }
+
+    this.t_rerender = setTimeout(function () {
+      _this7.t_rerender = 0;
+      renderHeader.call(_this7, $, _this7.$el, _this7.__columns);
+      renderBySortAndFilter.call(_this7, true);
+    }, 0);
+  };
+
+  var rerenderHeader = function rerenderHeader() {
+    var _this8 = this;
+
+    if (this.t_rerender) return;
+
+    if (this.t_rerenderheader) {
+      clearTimeout(this.t_rerenderheader);
+      this.t_rerenderheader = 0;
+    }
+
+    this.t_rerenderheader = setTimeout(function () {
+      _this8.t_rerenderheader = 0;
+      renderHeader.call(_this8, $, _this8.$el, _this8.__columns);
+    }, 0);
+  };
+
+  var rerenderItems = function rerenderItems() {
+    var _this9 = this;
+
+    if (this.t_rerender) return;
+
+    if (this.t_rerenderitems) {
+      clearTimeout(this.t_rerenderitems);
+      this.t_rerenderitems = 0;
+    }
+
+    this.t_rerenderitems = setTimeout(function () {
+      _this9.t_rerenderitems = 0;
+      renderBySortAndFilter.call(_this9, true);
+      rerenderEnumFilters.call(_this9);
+    }, 0);
   };
 
   var rerenderEnumFilters = function rerenderEnumFilters() {
@@ -14193,7 +14196,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (column && column.filter == "enum") {
           var filterBtn = col.find(".toolbar .filter");
-          var filterItems = DatagridRender.getColumnValueSet.call(_this10, column);
+          var filterItems = getColumnValueSet.call(_this10, column);
           var filterValue = col.attr("opt-filter");
 
           if (filterItems && filterItems.length > 0) {
@@ -14215,7 +14218,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       }
     });
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doInit = function doInit() {
@@ -14921,8 +14924,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     UI._base.init.call(this, target, options);
 
     doInit.call(this);
-  }; // ====================================================
-
+  };
 
   _UIScrollBox.reset = function () {}; // ====================================================
 
@@ -15031,47 +15033,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     this.options.bottomDistance = value;
     this.$el.removeAttr("opt-bottom");
     this.bottomDistance = null;
-  }; ///////////////////////////////////////////////////////
-
-
-  var Renderer = function Renderer(context, options) {
-    UI._baseRender.call(this, context, options);
-  };
-
-  var _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-  _Renderer.render = function ($, target) {
-    target.addClass("ui-scrollbox");
-    target.append("<div class='top'></div>");
-    target.append("<div class='container'></div>");
-    target.append("<div class='bottom'></div>");
-
-    UI._baseRender.render.call(this, $, target);
-
-    renderContentView.call(this, $, target);
-    renderTopView.call(this, $, target);
-    renderBottomView.call(this, $, target);
-    renderEmptyView.call(this, $, target);
-
-    if (!frontend) {
-      var options = this.options || {};
-      var scrollContainer = getScrollContainer.call(this);
-      if (scrollContainer) target.attr("opt-scroll", scrollContainer);
-      if (options.topDistance || options.topDistance === 0) target.attr("opt-top", options.topDistance);
-      if (options.bottomDistance || options.bottomDistance === 0) target.attr("opt-bottom", options.bottomDistance);
-      Fn.renderFunction(target, "refresh", options.refreshFunction);
-      Fn.renderFunction(target, "more", options.moreFunction);
-    }
-
-    return this;
-  }; ///////////////////////////////////////////////////////
+  }; // ====================================================
 
 
   var onScrollHandler = function onScrollHandler(e) {
     var state = getScrollState.call(this, e);
 
     if (state.isUp) {
-      if (state.bottom <= this.getBottomDistance()) moreHandler.call(this, state);
+      if (state.bottom <= this.getBottomDistance()) doMore.call(this, state);
     }
   };
 
@@ -15112,9 +15081,42 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     if (container.outerHeight() < this.$el.height()) {
       setTimeout(function () {
-        moreHandler.call(_this);
+        doMore.call(_this);
       }, 10);
     }
+  }; ///////////////////////////////////////////////////////
+
+
+  var Renderer = function Renderer(context, options) {
+    UI._baseRender.call(this, context, options);
+  };
+
+  var _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+  _Renderer.render = function ($, target) {
+    target.addClass("ui-scrollbox");
+    target.append("<div class='top'></div>");
+    target.append("<div class='container'></div>");
+    target.append("<div class='bottom'></div>");
+
+    UI._baseRender.render.call(this, $, target);
+
+    renderContentView.call(this, $, target);
+    renderTopView.call(this, $, target);
+    renderBottomView.call(this, $, target);
+    renderEmptyView.call(this, $, target);
+
+    if (!frontend) {
+      var options = this.options || {};
+      var scrollContainer = getScrollContainer.call(this);
+      if (scrollContainer) target.attr("opt-scroll", scrollContainer);
+      if (options.topDistance || options.topDistance === 0) target.attr("opt-top", options.topDistance);
+      if (options.bottomDistance || options.bottomDistance === 0) target.attr("opt-bottom", options.bottomDistance);
+      Fn.renderFunction(target, "refresh", options.refreshFunction);
+      Fn.renderFunction(target, "more", options.moreFunction);
+    }
+
+    return this;
   }; // ====================================================
 
 
@@ -15192,7 +15194,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var renderView = function renderView(target, view) {
     if (Utils.isFunction(view.render)) view.render(target);else target.append(view.$el || view);
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doInit = function doInit() {
@@ -15262,7 +15264,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  var refreshHandler = function refreshHandler() {
+  var doRefresh = function doRefresh() {
     var _this3 = this;
 
     if (this.$el.is(".is-refresh, .is-loading")) return;
@@ -15305,7 +15307,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var moreHandler = function moreHandler(state) {
+  var doMore = function doMore(state) {
     var _this4 = this;
 
     if (this.$el.is(".is-loading, .is-refresh, .no-more")) return;
@@ -15460,7 +15462,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       if (content.attr("state") == "drop") {
         content.attr("state", "load");
         refreshView.height(this.getTopDistance());
-        refreshHandler.call(this);
+        doRefresh.call(this);
       } else {
         _hide();
       }
@@ -16199,6 +16201,73 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UITreeView._snapshoot_compare = function (state) {
     var selectedIndex = this.getSelectedIndex(true);
     return Fn.equalIndex(state.selectedIndex, selectedIndex);
+  }; // ====================================================
+
+
+  var onNodeClickHandler = function onNodeClickHandler(e) {
+    var node = $(e.currentTarget);
+
+    if (!node.is(".active")) {
+      this.$el.find(".tree-node.active").removeClass("active");
+      node.addClass("active");
+      this.trigger("itemclick", this._getItemData(node.parent()));
+    }
+
+    if (this._isRenderAsApp()) {
+      var item = node.parent();
+
+      if (item.is(".open")) {
+        doClose.call(this, item);
+      } else {
+        doOpen.call(this, item);
+      }
+    }
+  };
+
+  var onExpandClickHandler = function onExpandClickHandler(e) {
+    var item = $(e.currentTarget).parent().parent();
+
+    if (item.is(".open")) {
+      doClose.call(this, item);
+    } else {
+      doOpen.call(this, item);
+    }
+
+    return false;
+  };
+
+  var onChkboxClickHandler = function onChkboxClickHandler(e) {
+    var snapshoot = this._snapshoot();
+
+    var item = $(e.currentTarget).parent().parent();
+    setItemSelectedOrNot.call(this, item, !item.is(".selected"));
+    snapshoot.done();
+    return false;
+  };
+
+  var onMoreBtnClickHandler = function onMoreBtnClickHandler(e) {
+    var _this10 = this;
+
+    var btn = $(e.currentTarget).parent();
+    var params = {
+      p_no: parseInt(btn.attr("page-no")) + 1
+    };
+    var parentItem = btn.parent();
+
+    if (parentItem.is(".root")) {
+      params.pid = null;
+    } else {
+      parentItem = parentItem.parent();
+      params.pid = getItemId.call(this, parentItem);
+    }
+
+    params = Utils.extend(this.lastLoadParams, params);
+
+    var parentItemData = this._getItemData(parentItem);
+
+    doLoad.call(this, parentItem, this.lastLoadApi, params, function (err, datas) {
+      _this10.trigger("loaded", err, datas, parentItemData);
+    });
   }; ///////////////////////////////////////////////////////
 
 
@@ -16221,7 +16290,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   _Renderer.getData = function () {
-    var _this10 = this;
+    var _this11 = this;
 
     var datas = Utils.toArray(this.options.data);
     if (datas._vr_adapter_flag) return datas;
@@ -16230,7 +16299,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var _loopmap = function _loopmap(datas) {
       return Utils.map(datas, function (data, i) {
-        data = Fn.doAdapter.call(_this10, data, dataIndex++);
+        data = Fn.doAdapter.call(_this11, data, dataIndex++);
 
         if (Utils.isArray(data[childrenField])) {
           data[childrenField] = _loopmap(data[childrenField]);
@@ -16297,73 +16366,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       indexs: indexs,
       ids: ids
     };
-  }; ///////////////////////////////////////////////////////
-
-
-  var onNodeClickHandler = function onNodeClickHandler(e) {
-    var node = $(e.currentTarget);
-
-    if (!node.is(".active")) {
-      this.$el.find(".tree-node.active").removeClass("active");
-      node.addClass("active");
-      this.trigger("itemclick", this._getItemData(node.parent()));
-    }
-
-    if (this._isRenderAsApp()) {
-      var item = node.parent();
-
-      if (item.is(".open")) {
-        doClose.call(this, item);
-      } else {
-        doOpen.call(this, item);
-      }
-    }
-  };
-
-  var onExpandClickHandler = function onExpandClickHandler(e) {
-    var item = $(e.currentTarget).parent().parent();
-
-    if (item.is(".open")) {
-      doClose.call(this, item);
-    } else {
-      doOpen.call(this, item);
-    }
-
-    return false;
-  };
-
-  var onChkboxClickHandler = function onChkboxClickHandler(e) {
-    var snapshoot = this._snapshoot();
-
-    var item = $(e.currentTarget).parent().parent();
-    setItemSelectedOrNot.call(this, item, !item.is(".selected"));
-    snapshoot.done();
-    return false;
-  };
-
-  var onMoreBtnClickHandler = function onMoreBtnClickHandler(e) {
-    var _this11 = this;
-
-    var btn = $(e.currentTarget).parent();
-    var params = {
-      p_no: parseInt(btn.attr("page-no")) + 1
-    };
-    var parentItem = btn.parent();
-
-    if (parentItem.is(".root")) {
-      params.pid = null;
-    } else {
-      parentItem = parentItem.parent();
-      params.pid = getItemId.call(this, parentItem);
-    }
-
-    params = Utils.extend(this.lastLoadParams, params);
-
-    var parentItemData = this._getItemData(parentItem);
-
-    doLoad.call(this, parentItem, this.lastLoadApi, params, function (err, datas) {
-      _this11.trigger("loaded", err, datas, parentItemData);
-    });
   }; // ====================================================
 
 
@@ -16497,7 +16499,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       if (Utils.isFunction(icon)) icon = escape(icon);else if (typeof icon != "string") icon = Utils.isTrue(icon) ? 1 : 0;
       if (icon) target.attr("opt-icon", icon);
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var doInit = function doInit() {
@@ -17378,6 +17380,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UITreeCombobox.length = function () {
     return this.tree.length();
+  }; // ====================================================
+
+
+  var iptClickHandler = function iptClickHandler(e) {
+    showDropdown.call(this);
+  };
+
+  var dropdownTouchHandler = function dropdownTouchHandler(e) {
+    if ($(e.target).is(".dropdown")) hideDropdown.call(this);
+  };
+
+  var treeChangeHandler = function treeChangeHandler(e) {
+    itemChanged.call(this);
+  };
+
+  var treeItemClickHandler = function treeItemClickHandler(e, data) {
+    if (!this.isMultiple()) {
+      itemChanged.call(this);
+      if (data.leaf || !this._isRenderAsApp()) hideDropdown.call(this);
+    }
+  };
+
+  var comboMouseHandler = function comboMouseHandler(e) {
+    Fn.mouseDebounce(e, hideDropdown.bind(this));
   }; ///////////////////////////////////////////////////////
 
 
@@ -17413,30 +17439,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _Renderer.isMultiple = function () {
     return Fn.isMultiple.call(this);
-  }; ///////////////////////////////////////////////////////
-
-
-  var iptClickHandler = function iptClickHandler(e) {
-    showDropdown.call(this);
-  };
-
-  var dropdownTouchHandler = function dropdownTouchHandler(e) {
-    if ($(e.target).is(".dropdown")) hideDropdown.call(this);
-  };
-
-  var treeChangeHandler = function treeChangeHandler(e) {
-    itemChanged.call(this);
-  };
-
-  var treeItemClickHandler = function treeItemClickHandler(e, data) {
-    if (!this.isMultiple()) {
-      itemChanged.call(this);
-      if (data.leaf || !this._isRenderAsApp()) hideDropdown.call(this);
-    }
-  };
-
-  var comboMouseHandler = function comboMouseHandler(e) {
-    Fn.mouseDebounce(e, hideDropdown.bind(this));
   }; // ====================================================
 
 
@@ -17460,7 +17462,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       treeOptions.target = target;
       UI.treeview.create(treeOptions);
     }
-  }; // ====================================================
+  }; ///////////////////////////////////////////////////////
 
 
   var isDropdownVisible = function isDropdownVisible() {

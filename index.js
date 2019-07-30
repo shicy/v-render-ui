@@ -36,7 +36,7 @@ const UITreeCombobox = require("./src/components/treecombobox");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190729";
+const distVersion = "190730";
 
 module.exports = {
 	install: function () {

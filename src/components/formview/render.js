@@ -351,15 +351,6 @@
 		hideErrorMsg.call(this, item);
 	};
 
-	const onNativeInputKeyHandler = function (e) {
-		let input = $(e.currentTarget);
-		if (!input.is("input, textarea"))
-			return ;
-		// console.log("onNativeInputKeyHandler");
-		let item = Utils.parentUntil(input, ".form-item");
-		hideErrorMsg.call(this, item);
-	};
-
 	const onNativeInputFocusHandler = function (e) {
 		let input = $(e.currentTarget);
 		if (!input.is("input, textarea"))
