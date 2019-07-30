@@ -6,7 +6,7 @@ const BaseModule = require("../BaseModule");
 
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
-const UITreeCombobox = VRender.UITreeCombobox;
+const UITreeSelect = VRender.UITreeSelect;
 
 const exampleData = [{
 	code: "110000", value: "北京市", icon: "/icons/c02.png",
@@ -111,7 +111,7 @@ const exampleData = [{
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UITreeCombobox 树形下拉选择框";
+		return "UITreeSelect 树形下拉选择框";
 	},
 
 	getDescription: function () {
@@ -131,10 +131,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("基本使用");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeCombobox(this, { data: exampleData, prompt: "请选择" }));
+		demo.append(new UITreeSelect(this, { data: exampleData, prompt: "请选择" }));
 
 		let source = [];
-		source.push("new UITreeCombobox([context], {\n  data: dataSource,\n  prompt: '请选择'\n});");
+		source.push("new UITreeSelect([context], {\n  data: dataSource,\n  prompt: '请选择'\n});");
 
 		render(demo, source, description);
 	},
@@ -144,10 +144,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("多选");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeCombobox(this, { data: exampleData, multi: true, selectedKey: "120104,130102" }));
+		demo.append(new UITreeSelect(this, { data: exampleData, multi: true, selectedKey: "120104,130102" }));
 
 		let source = [];
-		source.push("new UITreeCombobox([context], {\n  data: dataSource,\n  multi: true,\n  selectedKey: '120104,130102'\n});");
+		source.push("new UITreeSelect([context], {\n  data: dataSource,\n  multi: true,\n  selectedKey: '120104,130102'\n});");
 
 		render(demo, source, description);
 	},
@@ -157,11 +157,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("动态加载");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeCombobox(this, { apiName: "data.component.tree", openIndex: "1,0,2",
+		demo.append(new UITreeSelect(this, { apiName: "data.component.tree", openIndex: "1,0,2",
 			apiParams: {total: 10, p_size: 3}, selectedKey: "122" }));
 
 		let source = [];
-		source.push("new UITreeCombobox([context], {");
+		source.push("new UITreeSelect([context], {");
 		source.push("  apiName: 'data.component.tree',");
 		source.push("  apiParams: {");
 		source.push("    p_size: 3");

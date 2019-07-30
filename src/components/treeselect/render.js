@@ -1,20 +1,20 @@
 // 2019-07-29
-// treecombobox
+// treeselect(原treecombobox)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.treecombobox)
+	if (frontend && VRender.Component.ui.treeselect)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UITreeCombobox = UI.treecombobox = function (view, options) {
+	const UITreeSelect = UI.treeselect = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UITreeCombobox = UITreeCombobox.prototype = new UI._base(false);
+	const _UITreeSelect = UITreeSelect.prototype = new UI._base(false);
 
-	_UITreeCombobox.init = function (target, options) {
+	_UITreeSelect.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
 		this.tree = UI.treeview.find(this.$el)[0];
@@ -35,17 +35,17 @@
 	};
 
 	// ====================================================
-	_UITreeCombobox.getData = function () {
+	_UITreeSelect.getData = function () {
 		return this.tree.getData();
 	};
-	_UITreeCombobox.setData = function (value) {
+	_UITreeSelect.setData = function (value) {
 		this.tree.setData(value);
 	};
 
-	_UITreeCombobox.getPrompt = function () {
+	_UITreeSelect.getPrompt = function () {
 		return this.$el.children(".ipt").find(".prompt").text();
 	};
-	_UITreeCombobox.setPrompt = function (value) {
+	_UITreeSelect.setPrompt = function (value) {
 		let target = this.$el.children(".ipt");
 		target.find(".prompt").remove();
 		if (Utils.isNotBlank(value)) {
@@ -53,131 +53,131 @@
 		}
 	};
 
-	_UITreeCombobox.getDataAdapter = function () {
+	_UITreeSelect.getDataAdapter = function () {
 		return this.tree.getDataAdapter();
 	};
-	_UITreeCombobox.setDataAdapter = function (value) {
+	_UITreeSelect.setDataAdapter = function (value) {
 		this.tree.setDataAdapter(value);
 	};
 
-	_UITreeCombobox.getDataMapper = function () {
+	_UITreeSelect.getDataMapper = function () {
 		return this.tree.getDataMapper();
 	};
-	_UITreeCombobox.setDataMapper = function (value) {
+	_UITreeSelect.setDataMapper = function (value) {
 		this.tree.setDataMapper(value);
 	};
 
 	// ====================================================
-	_UITreeCombobox.load = function (api, params, callback) {
+	_UITreeSelect.load = function (api, params, callback) {
 		this.tree.load(api, params, callback);
 	};
 
-	_UITreeCombobox.reload = function (page, callback) {
+	_UITreeSelect.reload = function (page, callback) {
 		this.tree.reload(page, callback);
 	};
 
-	_UITreeCombobox.isLoading = function () {
+	_UITreeSelect.isLoading = function () {
 		return this.tree.isLoading();
 	};
 
-	_UITreeCombobox.getDataAt = function (index) {
+	_UITreeSelect.getDataAt = function (index) {
 		return this.tree.getDataAt(index);
 	};
 
-	_UITreeCombobox.getDataIndex = function (data) {
+	_UITreeSelect.getDataIndex = function (data) {
 		return this.tree.getDataIndex(data);
 	};
 
-	_UITreeCombobox.getDataByKey = function (key) {
+	_UITreeSelect.getDataByKey = function (key) {
 		return this.tree.getDataByKey(key);
 	};
 
-	_UITreeCombobox.getIndexByKey = function (key) {
+	_UITreeSelect.getIndexByKey = function (key) {
 		return this.tree.getIndexByKey(key);
 	};
 
-	_UITreeCombobox.getDataByName = function (name) {
+	_UITreeSelect.getDataByName = function (name) {
 		return this.tree.getDataByName(name);
 	};
 
-	_UITreeCombobox.getIndexByName = function (name) {
+	_UITreeSelect.getIndexByName = function (name) {
 		return this.tree.getIndexByName(name);
 	};
 
-	_UITreeCombobox.getKeyField = function () {
+	_UITreeSelect.getKeyField = function () {
 		return this.tree.getKeyField();
 	};
 
-	_UITreeCombobox.setKeyField = function (value) {
+	_UITreeSelect.setKeyField = function (value) {
 		this.tree.setKeyField(value);
 	};
 
-	_UITreeCombobox.getLabelField = function () {
+	_UITreeSelect.getLabelField = function () {
 		return this.tree.getLabelField;
 	};
 
-	_UITreeCombobox.setLabelField = function (value) {
+	_UITreeSelect.setLabelField = function (value) {
 		this.tree.setLabelField(value);
 	};
 
-	_UITreeCombobox.getLabelFunction = function () {
+	_UITreeSelect.getLabelFunction = function () {
 		return this.tree.getLabelFunction();
 	};
 
-	_UITreeCombobox.setLabelFunction = function (value) {
+	_UITreeSelect.setLabelFunction = function (value) {
 		this.tree.setLabelFunction(value);
 	};
 
-	_UITreeCombobox.getItemRenderer = function () {
+	_UITreeSelect.getItemRenderer = function () {
 		return this.tree.getItemRenderer();
 	};
 
-	_UITreeCombobox.setItemRenderer = function (value) {
+	_UITreeSelect.setItemRenderer = function (value) {
 		this.tree.setItemRenderer(value);
 	};
 
-	_UITreeCombobox.isDisabled = function (index) {
+	_UITreeSelect.isDisabled = function (index) {
 		return this.tree.isDisabled(index);
 	};
 
-	_UITreeCombobox.setDisabled = function (disabled, index) {
+	_UITreeSelect.setDisabled = function (disabled, index) {
 		this.tree.setDisabled(disabled, index);
 	};
 
-	_UITreeCombobox.addItem = function (data, index) {
+	_UITreeSelect.addItem = function (data, index) {
 		return this.tree.addItem(data, index);
 	};
 
-	_UITreeCombobox.updateItem = function (data, index) {
+	_UITreeSelect.updateItem = function (data, index) {
 		return this.tree.updateItem(data, index);
 	};
 
-	_UITreeCombobox.removeItem = function (data) {
+	_UITreeSelect.removeItem = function (data) {
 		return this.tree.removeItem(data);
 	};
 
-	_UITreeCombobox.removeItemAt = function (index) {
+	_UITreeSelect.removeItemAt = function (index) {
 		return this.tree.removeItemAt(index);
 	};
 
-	_UITreeCombobox.addOrUpdateItem = function (data) {
+	_UITreeSelect.addOrUpdateItem = function (data) {
 		this.tree.addOrUpdateItem(data);
 	};
 
-	_UITreeCombobox.getItemData = function (target) {
+	_UITreeSelect.getItemData = function (target) {
 		return this.tree.getItemData(target);
 	};
 
-	_UITreeCombobox.isEmpty = function () {
+	_UITreeSelect.isEmpty = function () {
 		return this.tree.isEmpty();
 	};
 
 	// ====================================================
-	_UITreeCombobox.isMultiple = function () {
+	_UITreeSelect.isMultiple = function () {
 		return this.$el.attr("multiple") == "multiple";
 	};
 
-	_UITreeCombobox.setMultiple = function (value) {
+	_UITreeSelect.setMultiple = function (value) {
 		value = (Utils.isNull(value) || Utils.isTrue(value)) ? true : false;
 		if (this.isMultiple() != value) {
 			if (value)
@@ -188,39 +188,39 @@
 		}
 	};
 
-	_UITreeCombobox.getSelectedIndex = function (needArray) {
+	_UITreeSelect.getSelectedIndex = function (needArray) {
 		return this.tree.getSelectedIndex(needArray, true);
 	};
 
-	_UITreeCombobox.setSelectedIndex = function (value) {
+	_UITreeSelect.setSelectedIndex = function (value) {
 		this.tree.setSelectedIndex(value, true);
 	};
 
-	_UITreeCombobox.getSelectedKey = function (needArray) {
+	_UITreeSelect.getSelectedKey = function (needArray) {
 		return this.tree.getSelectedKey(needArray, true);
 	};
 
-	_UITreeCombobox.setSelectedKey = function (value) {
+	_UITreeSelect.setSelectedKey = function (value) {
 		this.tree.setSelectedKey(value, true);
 	};
 
-	_UITreeCombobox.getSelectedData = function (needArray) {
+	_UITreeSelect.getSelectedData = function (needArray) {
 		return this.tree.getSelectedData(needArray, true);
 	};
 
-	_UITreeCombobox.isSelectedIndex = function (index) {
+	_UITreeSelect.isSelectedIndex = function (index) {
 		return this.tree.isSelectedIndex(index);
 	};
 
-	_UITreeCombobox.isSelectedKey = function (value) {
+	_UITreeSelect.isSelectedKey = function (value) {
 		return this.tree.isSelectedKey(value);
 	};
 
-	_UITreeCombobox.isAllSelected = function () {
+	_UITreeSelect.isAllSelected = function () {
 		return this.tree.isAllSelected();
 	};
 
-	_UITreeCombobox.length = function () {
+	_UITreeSelect.length = function () {
 		return this.tree.length();
 	};
 	
@@ -258,7 +258,7 @@
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-treecombobox");
+		target.addClass("ui-treeselect");
 
 		// 容器，用于下拉列表定位
 		target.attr("opt-box", this.options.container);
@@ -417,8 +417,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UITreeCombobox = UITreeCombobox;
-		UI.init(".ui-treecombobox", UITreeCombobox, Renderer);
+		window.UITreeSelect = UITreeSelect;
+		UI.init(".ui-treeselect", UITreeSelect, Renderer);
 	}
 	else {
 		module.exports = Renderer;

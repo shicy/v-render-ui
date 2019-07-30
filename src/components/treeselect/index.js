@@ -11,9 +11,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UITreeCombobox = UIBase.extend(module, {
+const UITreeSelect = UIBase.extend(module, {
 	renderView: function () {
-		UITreeCombobox.super(this);
+		UITreeSelect.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

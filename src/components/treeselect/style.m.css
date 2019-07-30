@@ -1,15 +1,15 @@
 
-.ui-treecombobox {
+.ui-treeselect {
 	font-size: 0.16rem;
 }
 
-.ui-treecombobox > .ipt {
+.ui-treeselect > .ipt {
     height: 0.44rem;
 	border: 1px solid #ddd;
     border-radius: 0.03rem;
 }
 
-.ui-treecombobox > .ipt > input {
+.ui-treeselect > .ipt > input {
 	width: 100%;
     height: 100%;
     color: inherit;
@@ -21,7 +21,7 @@
     outline: none;
 }
 
-.ui-treecombobox > .ipt > .dropdownbtn {
+.ui-treeselect > .ipt > .dropdownbtn {
 	position: absolute;
     width: 0.3rem;
     height: 0.42rem;
@@ -40,7 +40,7 @@
     z-index: 1;
 }
 
-.ui-treecombobox > .ipt > .prompt {
+.ui-treeselect > .ipt > .prompt {
 	position: absolute;
     top: 50%;
     left: 0.14rem;
@@ -50,7 +50,7 @@
     pointer-events: none;
 }
 
-.ui-treecombobox > .dropdown {
+.ui-treeselect > .dropdown {
     display: none;
     position: fixed;
     z-index: 2000;
@@ -61,7 +61,7 @@
     background-color: rgba(0, 0, 0, 0.75);
 }
 
-.ui-treecombobox > .dropdown > * {
+.ui-treeselect > .dropdown > * {
     position: absolute;
     max-height: 80%;
     overflow: auto;
@@ -72,43 +72,43 @@
     background-color: #fff;
 }
 
-.ui-treecombobox.has-val > .ipt > .prompt {
+.ui-treeselect.has-val > .ipt > .prompt {
 	display: none;
 }
 
-.ui-treecombobox.show-dropdown > .dropdown {
+.ui-treeselect.show-dropdown > .dropdown {
 	display: block;
     background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.2s;
 }
 
-.ui-treecombobox.show-dropdown > .dropdown > * {
+.ui-treeselect.show-dropdown > .dropdown > * {
     max-height: 0px;
     transition: max-height 0.2s;
 }
 
-.ui-treecombobox.animate-in > .dropdown {
+.ui-treeselect.animate-in > .dropdown {
     background-color: rgba(0, 0, 0, 0.75);
 }
 
-.ui-treecombobox.animate-in > .dropdown > * {
+.ui-treeselect.animate-in > .dropdown > * {
     max-height: 80%;
 }
 
-.ui-treecombobox.animate-out > .dropdown {
+.ui-treeselect.animate-out > .dropdown {
     background-color: rgba(0, 0, 0, 0);
 }
 
-.ui-treecombobox.animate-out > .dropdown > * {
+.ui-treeselect.animate-out > .dropdown > * {
     max-height: 0px;
 }
 
-.ui-treecombobox[disabled] > .ipt {
+.ui-treeselect[disabled] > .ipt {
     opacity: 0.5;
     pointer-events: none;
     background-color: #f0f0f0;
 }
 
-.ui-treecombobox[disabled] > select {
+.ui-treeselect[disabled] > select {
     display: none;
 }
