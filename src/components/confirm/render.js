@@ -42,6 +42,20 @@
 		return this;
 	};
 
+	// ====================================================
+	const onCloseBtnHandler = function (e) {
+		doCancel.call(this);
+	};
+
+	const onButtonClickHandler = function (e) {
+		if ($(e.currentTarget).attr("name") == "ok") {
+			doSubmit.call(this);
+		}
+		else {
+			doCancel.call(this);
+		}
+	};
+
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -65,20 +79,6 @@
 
 	_Renderer.getCancelLabel = function () {
 		return Utils.trimToNull(this.options.cancelLabel) || "取消";
-	};
-
-	///////////////////////////////////////////////////////
-	const onCloseBtnHandler = function (e) {
-		doCancel.call(this);
-	};
-
-	const onButtonClickHandler = function (e) {
-		if ($(e.currentTarget).attr("name") == "ok") {
-			doSubmit.call(this);
-		}
-		else {
-			doCancel.call(this);
-		}
 	};
 
 	// ====================================================
@@ -105,18 +105,7 @@
 		$("<span class='closebtn'></span>").appendTo(container);
 	};
 
-	const addButton = function ($, target, data) {
-		target = $("<div></div>").appendTo(target);
-		if (!frontend) {
-			let UIButton = require("../button/index");
-			new UIButton(this.context, data).render(target);
-		}
-		else {
-			UI.button.create(Utils.extend(data, {target: target}));
-		}
-	};
-
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doOpen = function () {
 		let wrapper = $("body").children(".ui-confirm-wrap");
 		if (!wrapper || wrapper.length == 0)
@@ -155,6 +144,17 @@
 		this.trigger("cancel");
 	};
 	
+	// ====================================================
+	const addButton = function ($, target, data) {
+		target = $("<div></div>").appendTo(target);
+		if (!frontend) {
+			let UIButton = require("../button/index");
+			new UIButton(this.context, data).render(target);
+		}
+		else {
+			UI.button.create(Utils.extend(data, {target: target}));
+		}
+	};
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

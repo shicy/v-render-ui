@@ -88,7 +88,7 @@
 		return this;
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	let setCss = function (target, name, value, useREM) {
 		if (Utils.isNotBlank(value)) {
 			if (!isNaN(value)) {
@@ -97,7 +97,6 @@
 			target.css(name, value);
 		}
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

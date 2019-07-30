@@ -214,94 +214,8 @@
 	_UIPopupMenu._checkIfEmpty = function () {
 		// do nothing
 	};
-	
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._itemsRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._itemsRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-popupmenu");
-
-		let options = this.options || {};
-
-		if (!frontend) {
-			let actionTarget = options.actionTarget;
-			if (actionTarget) {
-				if (typeof actionTarget == "string")
-					target.attr("opt-target", Utils.trimToEmpty(actionTarget));
-				else if (Utils.isFunction(actionTarget.getViewId))
-					target.attr("opt-target", "[vid='" + actionTarget.getViewId() + "']");
-			}
-
-			if (options.actionType)
-				target.attr("opt-trigger", options.actionType);
-
-			let iconFunction = options.iconFunction;
-			if (Utils.isFunction(iconFunction))
-				BaseRender.fn.renderFunction(target, "icfunc", iconFunction);
-			else if (options.iconField)
-				target.attr("opt-ic", options.iconField);
-
-			if (options.childrenField)
-				target.attr("opt-child", options.childrenField);
-
-			if (options.disabledField)
-				target.attr("opt-disable", options.disabledField);
-
-			if (options.offsetLeft)
-				target.attr("opt-offsetl", options.offsetLeft);
-			if (options.offsetTop)
-				target.attr("opt-offsett", options.offsetTop);
-		}
-
-		return this;
-	};
 
 	// ====================================================
-	_Renderer.doAdapter = function (data, i) {
-		if (Utils.isArray(data)) {
-			let _data = Utils.map(data, (temp) => {
-				return Fn.doAdapter.call(this, temp);
-			});
-			if (data.title) {
-				if (backend)
-					_data.unshift({__group__: data.title});
-				else
-					_data.title = data.title;
-			}
-			return _data;
-		}
-		return Fn.doAdapter.call(this, data, i);
-	};
-
-	// ====================================================
-	_Renderer._renderItems = function ($, target) {
-		// 统一在前端渲染
-		// target.empty();
-		// let datas = this.getData();
-		// if (datas && datas.length > 0) {
-		// 	let container = $("<div class='menu-container'></div>").appendTo(target);
-		// 	container.append("<div class='btn up'></div>");
-		// 	container.append("<ul class='menus'></ul>");
-		// 	container.append("<div class='btn down'></div>");
-		// 	renderItems.call(this, $, container.children("ul"), datas);
-		// }
-	};
-
-	_Renderer._renderEmptyView = function () {
-		// do nothing
-	};
-
-	_Renderer._renderLoadView = function () {
-		// do nothing
-	};
-
-
-	///////////////////////////////////////////////////////
 	const onActionTargetHandler = function (e) {
 		if (!this.isMounted(this.$el)) {
 			this.setActionTarget(null);
@@ -480,6 +394,90 @@
 		}
 	};
 
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._itemsRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._itemsRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-popupmenu");
+
+		let options = this.options || {};
+
+		if (!frontend) {
+			let actionTarget = options.actionTarget;
+			if (actionTarget) {
+				if (typeof actionTarget == "string")
+					target.attr("opt-target", Utils.trimToEmpty(actionTarget));
+				else if (Utils.isFunction(actionTarget.getViewId))
+					target.attr("opt-target", "[vid='" + actionTarget.getViewId() + "']");
+			}
+
+			if (options.actionType)
+				target.attr("opt-trigger", options.actionType);
+
+			let iconFunction = options.iconFunction;
+			if (Utils.isFunction(iconFunction))
+				BaseRender.fn.renderFunction(target, "icfunc", iconFunction);
+			else if (options.iconField)
+				target.attr("opt-ic", options.iconField);
+
+			if (options.childrenField)
+				target.attr("opt-child", options.childrenField);
+
+			if (options.disabledField)
+				target.attr("opt-disable", options.disabledField);
+
+			if (options.offsetLeft)
+				target.attr("opt-offsetl", options.offsetLeft);
+			if (options.offsetTop)
+				target.attr("opt-offsett", options.offsetTop);
+		}
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.doAdapter = function (data, i) {
+		if (Utils.isArray(data)) {
+			let _data = Utils.map(data, (temp) => {
+				return Fn.doAdapter.call(this, temp);
+			});
+			if (data.title) {
+				if (backend)
+					_data.unshift({__group__: data.title});
+				else
+					_data.title = data.title;
+			}
+			return _data;
+		}
+		return Fn.doAdapter.call(this, data, i);
+	};
+
+	// ====================================================
+	_Renderer._renderItems = function ($, target) {
+		// 统一在前端渲染
+		// target.empty();
+		// let datas = this.getData();
+		// if (datas && datas.length > 0) {
+		// 	let container = $("<div class='menu-container'></div>").appendTo(target);
+		// 	container.append("<div class='btn up'></div>");
+		// 	container.append("<ul class='menus'></ul>");
+		// 	container.append("<div class='btn down'></div>");
+		// 	renderItems.call(this, $, container.children("ul"), datas);
+		// }
+	};
+
+	_Renderer._renderEmptyView = function () {
+		// do nothing
+	};
+
+	_Renderer._renderLoadView = function () {
+		// do nothing
+	};
+
 	// ====================================================
 	const renderMenuItems = function (menuContainer, datas) {
 		if (!datas || datas.length == 0)
@@ -521,7 +519,7 @@
 			});
 		}
 	};
-
+	
 	const renderOneMenuItem = function (item, data) {
 		item.data("itemData", data);
 
@@ -551,7 +549,7 @@
 			item.addClass("checked");
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doOpen = function (item) {
 		let data = getItemData.call(this, item);
 		let subDatas = getItemSubDatas.call(this, item);
@@ -645,7 +643,6 @@
 		}
 	};
 	
-
 	// ====================================================
 	const tryLoadData = function (item) {
 		let apiName = getLoadApi.call(this);
@@ -754,24 +751,23 @@
 		return null;
 	};
 
-	const hasSubDatas = function (data) {
-		let datas = getSubDatas.call(this, data);
-		if (!!datas)
-			return true;
-		if (data) {
-			if (data.hasOwnProperty("hasChild")) {
-				if (Utils.isTrue(data.hasChild))
-					return true;
-			}
-			if (data.hasOwnProperty("leaf")) {
-				if (Utils.isTrue(data.leaf))
-					return false;
-			}
-		}
-		return false;
-	};
+	// const hasSubDatas = function (data) {
+	// 	let datas = getSubDatas.call(this, data);
+	// 	if (!!datas)
+	// 		return true;
+	// 	if (data) {
+	// 		if (data.hasOwnProperty("hasChild")) {
+	// 			if (Utils.isTrue(data.hasChild))
+	// 				return true;
+	// 		}
+	// 		if (data.hasOwnProperty("leaf")) {
+	// 			if (Utils.isTrue(data.leaf))
+	// 				return false;
+	// 		}
+	// 	}
+	// 	return false;
+	// };
 	
-
 	///////////////////////////////////////////////////////
 	if (frontend) {
 		window.UIPopupMenu = UIPopupMenu;

@@ -135,11 +135,12 @@
 		return this.options.align;
 	};
 
-	///////////////////////////////////////////////////////
+	// ====================================================
 	const renderSubViews = function ($, target) {
 		showSubViews.call(this, $, target, getChildren.call(this));
 	};
 
+	///////////////////////////////////////////////////////
 	const getChildren = function () {
 		return this.options.children || this.options.subViews || this.options.views;
 	};

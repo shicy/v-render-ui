@@ -177,53 +177,7 @@
 		rerender.call(this);
 	};
 	
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-datetime");
-
-		let options = this.options || {};
-
-		// 容器，用于下拉列表定位
-		target.attr("opt-box", options.container);
-
-		if (this.isSecondVisible())
-			target.attr("opt-sec", "1");
-
-		let minDate = Utils.toDate(options.min);
-		target.attr("opt-min", minDate ? minDate.getTime() : null);
-
-		let maxDate = Utils.toDate(options.max);
-		target.attr("opt-max", maxDate ? maxDate.getTime() : null);
-
-		if (Utils.isArray(options.hours))
-			target.attr("opt-hours", options.hours.join(",") || null);
-		if (Utils.isArray(options.minutes))
-			target.attr("opt-minutes", options.minutes.join(",") || null);
-		if (Utils.isArray(options.seconds))
-			target.attr("opt-seconds", options.seconds.join(",") || null);
-
-		renderView.call(this, $, target, options.date);
-
-		return this;
-	};
-
-	_Renderer.isSecondVisible = function () {
-		return Utils.isTrue(this.options.showSecond);
-	};
-
-	_Renderer.getDateFormat = function () {
-		return this.options.dateFormat || this.options.format;
-	};
-
-
-	///////////////////////////////////////////////////////
+	// ====================================================
 	const iptClickHandler = function (e) {
 		showDatePicker.call(this);
 	};
@@ -310,6 +264,50 @@
 				waitToStop();
 			}
 		}
+	};
+
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-datetime");
+
+		let options = this.options || {};
+
+		// 容器，用于下拉列表定位
+		target.attr("opt-box", options.container);
+
+		if (this.isSecondVisible())
+			target.attr("opt-sec", "1");
+
+		let minDate = Utils.toDate(options.min);
+		target.attr("opt-min", minDate ? minDate.getTime() : null);
+
+		let maxDate = Utils.toDate(options.max);
+		target.attr("opt-max", maxDate ? maxDate.getTime() : null);
+
+		if (Utils.isArray(options.hours))
+			target.attr("opt-hours", options.hours.join(",") || null);
+		if (Utils.isArray(options.minutes))
+			target.attr("opt-minutes", options.minutes.join(",") || null);
+		if (Utils.isArray(options.seconds))
+			target.attr("opt-seconds", options.seconds.join(",") || null);
+
+		renderView.call(this, $, target, options.date);
+
+		return this;
+	};
+
+	_Renderer.isSecondVisible = function () {
+		return Utils.isTrue(this.options.showSecond);
+	};
+
+	_Renderer.getDateFormat = function () {
+		return this.options.dateFormat || this.options.format;
 	};
 
 	// ====================================================
@@ -401,7 +399,7 @@
 		checkPickerEnabled.call(this, picker);
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const showDatePicker = function () {
 		if (!this.picker) {
 			this.picker = $("<div class='picker'></div>").appendTo(this.$el);
@@ -647,7 +645,6 @@
 		}
 		return days;
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

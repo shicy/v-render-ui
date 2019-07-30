@@ -6,7 +6,7 @@
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
-	const Utils = UI.util;
+	const Fn = UI.fn, Utils = UI.util;
 
 	// 默认按钮样式
 	const ButtonStyles = ["ui-btn-default", "ui-btn-primary", "ui-btn-success", "ui-btn-danger", 
@@ -36,16 +36,16 @@
 	_UIButton.getLabel = function () {
 		return this.options.label;
 	};
-
 	_UIButton.setLabel = function (value) {
 		this.options.label = value;
-		var button = this.$el.children(".btn");
+		let button = this.$el.children(".btn");
 		button.children("span").remove();
 		if (Utils.isNotBlank(value)) {
 			$("<span></span>").appendTo(button).text(Utils.trimToEmpty(value) || " ");
 		}
 	};
 
+	// 使按钮等待（或取消等待），time为0时取消等待，小于0时无限等待
 	_UIButton.waiting = function (time) {
 		if (Utils.isNull(time) || time === true)
 			time = parseInt(this.$el.attr("opt-wait")) || -1;
@@ -53,11 +53,10 @@
 			time = Math.max(0, parseInt(time)) || 0;
 		doWaiting.call(this, time);
 	};
-
 	_UIButton.isWaiting = function () {
 		return this.$el.is(".waiting");
 	};
-
+	// 设置默认等待的毫秒数（非开启等待），小于0时无限等待
 	_UIButton.setWaiting = function (value) {
 		if (value === true || Utils.isNull(value))
 			value = -1;
@@ -66,58 +65,7 @@
 		this.$el.attr("opt-wait", value);
 	};
 
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-btn");
-
-		let options = this.options || {};
-
-		let size = options.size;
-		if (size && ButtonSizes.indexOf(size) >= 0)
-			target.addClass(size);
-
-		// 如果是内置 style 就用该样式，否则通过 type 获取一个样式
-		// 注：style 样式已在 base 或 UIView 中添加
-		let style = options.style || "";
-		if (ButtonStyles.indexOf(style) < 0) {
-			target.addClass(getTypeStyle(options.type)); // 会返回一个默认样式
-		}
-
-		if (Utils.isTrue(options.toggle))
-			target.attr("opt-toggle", "1");
-
-		if (Utils.isNotBlank(options.link))
-			target.attr("data-lnk", Utils.trimToNull(options.link));
-
-		let mainBtn = $("<button class='btn'></button>").appendTo(target);
-		let iconUrl = getIconUrl.call(this);
-		if (Utils.isNotBlank(iconUrl)) {
-			let icon = $("<i class='icon'></i>").appendTo(mainBtn);
-			icon.css((frontend ? "backgroundImage" : "background-image"), "url(" + iconUrl + ")");
-		}
-		if (Utils.isNotBlank(options.label)) {
-			$("<span></span>").appendTo(mainBtn).text(Utils.trimToEmpty(options.label) || " ");
-		}
-
-		renderWaitingInfos.call(this, $, target);
-		renderDropdowns.call(this, $, target);
-
-		return this;
-	};
-
-	_Renderer.getItems = function () {
-		return Utils.toArray(this.options.items);
-	};
-
-
-	///////////////////////////////////////////////////////
+	// ====================================================
 	const onBtnClickHandler = function (e) {
 		if (this.$el.is(".disabled, .waiting"))
 			return ;
@@ -178,6 +126,56 @@
 		UI.fn.mouseDebounce(e, hideDropdown.bind(this));
 	};
 
+
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-btn");
+
+		let options = this.options || {};
+
+		let size = options.size;
+		if (size && ButtonSizes.indexOf(size) >= 0)
+			target.addClass(size);
+
+		// 如果是内置 style 就用该样式，否则通过 type 获取一个样式
+		// 注：style 样式已在 base 或 UIView 中添加
+		let style = options.style || "";
+		if (ButtonStyles.indexOf(style) < 0) {
+			target.addClass(getTypeStyle(options.type)); // 会返回一个默认样式
+		}
+
+		if (Utils.isTrue(options.toggle))
+			target.attr("opt-toggle", "1");
+
+		if (Utils.isNotBlank(options.link))
+			target.attr("data-lnk", Utils.trimToNull(options.link));
+
+		let mainBtn = $("<button class='btn'></button>").appendTo(target);
+		let iconUrl = getIconUrl.call(this);
+		if (Utils.isNotBlank(iconUrl)) {
+			let icon = $("<i class='icon'></i>").appendTo(mainBtn);
+			icon.css((frontend ? "backgroundImage" : "background-image"), "url(" + iconUrl + ")");
+		}
+		if (Utils.isNotBlank(options.label)) {
+			$("<span></span>").appendTo(mainBtn).text(Utils.trimToEmpty(options.label) || " ");
+		}
+
+		renderWaitingInfos.call(this, $, target);
+		renderDropdowns.call(this, $, target);
+
+		return this;
+	};
+
+	_Renderer.getItems = function () {
+		return Utils.toArray(this.options.items);
+	};
+
 	// ====================================================
 	const renderWaitingInfos = function ($, target) {
 		let waitTime = getWaitTime.call(this);
@@ -211,6 +209,7 @@
 		}
 	};
 
+	///////////////////////////////////////////////////////
 	const doWaiting = function (time) {
 		if (this.t_wait) {
 			clearTimeout(this.t_wait);
@@ -230,7 +229,6 @@
 		}
 	};
 
-	// ====================================================
 	const showDropdown = function () {
 		if (this.$el.is(".show-dropdown"))
 			return ;

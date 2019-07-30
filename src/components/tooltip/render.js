@@ -40,6 +40,33 @@
 		doClose.call(this);
 	};
 
+	// ====================================================
+	const onClickHandler = function (e) {
+		if ($(e.target).is(this.$el)) {
+			doClose.call(this);
+		}
+	};
+
+	const onCloseBtnHandler = function () {
+		doClose.call(this);
+	};
+
+	const onContentClickHandler = function () {
+		this.$el.addClass("active");
+	};
+
+	const onMouseHandler = function (e) {
+		if (e.type == "mouseenter") {
+			if (this.t_close) {
+				clearTimeout(this.t_close);
+				this.t_close = null;
+			}
+		}
+		else {
+			this.$el.removeClass("active");
+			waitToClose.call(this);
+		}
+	};
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -85,35 +112,6 @@
 		return Utils.isTrue(this.options.closable);
 	}
 
-
-	///////////////////////////////////////////////////////
-	const onClickHandler = function (e) {
-		if ($(e.target).is(this.$el)) {
-			doClose.call(this);
-		}
-	};
-
-	const onCloseBtnHandler = function () {
-		doClose.call(this);
-	};
-
-	const onContentClickHandler = function () {
-		this.$el.addClass("active");
-	};
-
-	const onMouseHandler = function (e) {
-		if (e.type == "mouseenter") {
-			if (this.t_close) {
-				clearTimeout(this.t_close);
-				this.t_close = null;
-			}
-		}
-		else {
-			this.$el.removeClass("active");
-			waitToClose.call(this);
-		}
-	};
-
 	// ====================================================
 	const renderView = function ($, target) {
 		let container = $("<div class='container'></div>").appendTo(target);
@@ -137,7 +135,7 @@
 		}
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doOpen = function () {
 		let wrapper = $("body").children(".ui-tooltip-wrap");
 		if (!wrapper || wrapper.length == 0)
@@ -183,7 +181,6 @@
 			}, duration);
 		}
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

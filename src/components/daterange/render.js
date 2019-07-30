@@ -10,7 +10,6 @@
 
 	const cn_month = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"];
 
-
 	///////////////////////////////////////////////////////
 	const UIDateRange = UI.daterange = function (view, options) {
 		return UI._base.call(this, view, options);
@@ -154,77 +153,7 @@
 		return !(state.data || range);
 	};
 	
-
 	// ====================================================
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-daterange");
-
-		let options = this.options || {};
-
-		if (Utils.isTrue(options.dropdown))
-			target.addClass("tools-dropdown");
-
-		if (Utils.isTrue(options.native))
-			target.attr("opt-native", "1");
-
-		let minDate = Utils.toDate(options.min);
-		if (minDate)
-			target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
-
-		let maxDate = Utils.toDate(options.max);
-		if (maxDate)
-			target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
-
-		let start = Utils.toDate(options.start), end = null;
-		if (start) {
-			end = Utils.toDate(options.end) || new Date(start.getTime());
-			if (minDate && getTime(minDate) > getTime(start))
-				start = minDate;
-			if (maxDate && getTime(maxDate) < getTime(end))
-				end = maxDate;
-			if (getTime(start) > getTime(end))
-				start = end = null;
-		}
-
-		let defVal = parseInt(options.quickDef) || 0;
-		if (start && end) {
-			defVal = 0;
-		}
-		else if (defVal) {
-			end = new Date();
-			start = new Date();
-			start.setDate(start.getDate() - defVal);
-		}
-
-		if (start && end) {
-			target.addClass("has-val");
-			target.attr("data-start", Utils.toDateString(start, "yyyy-MM-dd"));
-			target.attr("data-end", Utils.toDateString(end, "yyyy-MM-dd"));
-		}
-
-		renderShortcuts.call(this, $, target, this.getShortcutDates(), defVal);
-		renderDateInput.call(this, $, target, start, end);
-
-		return this;
-	};
-
-	// ====================================================
-	_Renderer.getDateFormat = function () {
-		return this.options.dateFormat || this.options.format;
-	};
-
-	_Renderer.getShortcutDates = function () {
-		return this.options.shortcuts || this.options.quickDates;
-	};
-
-
-	///////////////////////////////////////////////////////
 	// 点击输入框显示日历
 	const iptClickHandler = function (e) {
 		showDatePicker.call(this);
@@ -298,6 +227,74 @@
 		updateShortcuts.call(this, start, end);
 	};
 
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-daterange");
+
+		let options = this.options || {};
+
+		if (Utils.isTrue(options.dropdown))
+			target.addClass("tools-dropdown");
+
+		if (Utils.isTrue(options.native))
+			target.attr("opt-native", "1");
+
+		let minDate = Utils.toDate(options.min);
+		if (minDate)
+			target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
+
+		let maxDate = Utils.toDate(options.max);
+		if (maxDate)
+			target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
+
+		let start = Utils.toDate(options.start), end = null;
+		if (start) {
+			end = Utils.toDate(options.end) || new Date(start.getTime());
+			if (minDate && getTime(minDate) > getTime(start))
+				start = minDate;
+			if (maxDate && getTime(maxDate) < getTime(end))
+				end = maxDate;
+			if (getTime(start) > getTime(end))
+				start = end = null;
+		}
+
+		let defVal = parseInt(options.quickDef) || 0;
+		if (start && end) {
+			defVal = 0;
+		}
+		else if (defVal) {
+			end = new Date();
+			start = new Date();
+			start.setDate(start.getDate() - defVal);
+		}
+
+		if (start && end) {
+			target.addClass("has-val");
+			target.attr("data-start", Utils.toDateString(start, "yyyy-MM-dd"));
+			target.attr("data-end", Utils.toDateString(end, "yyyy-MM-dd"));
+		}
+
+		renderShortcuts.call(this, $, target, this.getShortcutDates(), defVal);
+		renderDateInput.call(this, $, target, start, end);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getDateFormat = function () {
+		return this.options.dateFormat || this.options.format;
+	};
+
+	_Renderer.getShortcutDates = function () {
+		return this.options.shortcuts || this.options.quickDates;
+	};
+
 	// ====================================================
 	const renderShortcuts = function ($, target, shortcuts, defVal) {
 		target.removeClass("has-tools").children(".tools").remove();
@@ -351,7 +348,7 @@
 		endDateInput.on("change", originDateChangeHandler.bind(this));
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const updateShortcuts = function (start, end) {
 		let shortcuts = this.$el.children(".tools");
 		if (shortcuts && shortcuts.length > 0) {

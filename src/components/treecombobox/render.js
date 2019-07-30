@@ -220,6 +220,31 @@
 		return this.tree.length();
 	};
 	
+	// ====================================================
+	const iptClickHandler = function (e) {
+		showDropdown.call(this);
+	};
+
+	const dropdownTouchHandler = function (e) {
+		if ($(e.target).is(".dropdown"))
+			hideDropdown.call(this);
+	};
+
+	const treeChangeHandler = function (e) {
+		itemChanged.call(this);
+	};
+
+	const treeItemClickHandler = function (e, data) {
+		if (!this.isMultiple()) {
+			itemChanged.call(this);
+			if (data.leaf || !this._isRenderAsApp())
+				hideDropdown.call(this);
+		}
+	};
+
+	const comboMouseHandler = function (e) {
+		Fn.mouseDebounce(e, hideDropdown.bind(this));
+	};
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -260,33 +285,6 @@
 		return Fn.isMultiple.call(this);
 	};
 
-
-	///////////////////////////////////////////////////////
-	const iptClickHandler = function (e) {
-		showDropdown.call(this);
-	};
-
-	const dropdownTouchHandler = function (e) {
-		if ($(e.target).is(".dropdown"))
-			hideDropdown.call(this);
-	};
-
-	const treeChangeHandler = function (e) {
-		itemChanged.call(this);
-	};
-
-	const treeItemClickHandler = function (e, data) {
-		if (!this.isMultiple()) {
-			itemChanged.call(this);
-			if (data.leaf || !this._isRenderAsApp())
-				hideDropdown.call(this);
-		}
-	};
-
-	const comboMouseHandler = function (e) {
-		Fn.mouseDebounce(e, hideDropdown.bind(this));
-	};
-
 	// ====================================================
 	const renderTextView = function ($, target) {
 		let ipttag = $("<div class='ipt'></div>").appendTo(target);
@@ -311,8 +309,8 @@
 			UI.treeview.create(treeOptions);
 		}
 	};
-
-	// ====================================================
+	
+	///////////////////////////////////////////////////////
 	const isDropdownVisible = function () {
 		return this.$el.is(".show-dropdown");
 	};
@@ -411,7 +409,6 @@
 		_options.openId = options.openId;
 		return _options;
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

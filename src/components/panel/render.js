@@ -104,42 +104,6 @@
 	};
 	
 	// ====================================================
-	
-	// ====================================================
-	
-	
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-panel");
-
-		this._viewports = getFormatViewports.call(this, this.options.viewports);
-
-		renderHeader.call(this, $, target);
-		renderContent.call(this, $, target);
-
-		return this;
-	};
-
-	// ====================================================
-	_Renderer.getTitle = function () {
-		if (this.options.hasOwnProperty("title"))
-			return this.options.title;
-		if (this._viewports && this._viewports.length > 0)
-			return false;
-		return "标题";
-	};
-
-	
-	// ====================================================
-	
-
-	///////////////////////////////////////////////////////
 	const onButtonClickHandler = function (e) {
 		let btn = $(e.currentTarget);
 		let item = btn.parent();
@@ -214,13 +178,40 @@
 			item.attr("timerid", timerId);
 		}
 	};
-
+	
 	const onTabClickHandler = function (e) {
 		let item = $(e.currentTarget);
 		if (!item.is(".selected"))
 			showViewport.call(this, item.attr("name"));
 	};
 	
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-panel");
+
+		this._viewports = getFormatViewports.call(this, this.options.viewports);
+
+		renderHeader.call(this, $, target);
+		renderContent.call(this, $, target);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getTitle = function () {
+		if (this.options.hasOwnProperty("title"))
+			return this.options.title;
+		if (this._viewports && this._viewports.length > 0)
+			return false;
+		return "标题";
+	};
+
 	// ====================================================
 	const renderHeader = function ($, target) {
 		let options = this.options || {};
@@ -244,7 +235,7 @@
 		let buttons = Utils.toArray(this.options.buttons);
 		renderButtons.call(this, $, target, buttons);
 	};
-
+	
 	const renderTabs = function ($, target, viewports) {
 		let header = target.children("header");
 		header.children(".tabbar").remove();
@@ -372,9 +363,8 @@
 			});
 		}
 	};
-	
-	
-	// ====================================================
+
+	///////////////////////////////////////////////////////
 	const doInit = function () {
 		this.getButtons(); // 初始化
 
@@ -502,7 +492,6 @@
 		});
 		return viewports;
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

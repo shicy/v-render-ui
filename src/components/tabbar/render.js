@@ -116,53 +116,8 @@
 	_UITabbar._renderOneItem = function ($, item, data, index) {
 		return renderOneItem.call(this, $, item, data, index);
 	};
-	
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._selectRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._selectRender(false);
-
-	_Renderer.render = function ($, target) {
-		target.addClass("ui-tabbar");
-
-		let tabbar = $("<div class='bar'></div>").appendTo(target);
-		tabbar.append("<ul class='tabs'></ul>");
-		tabbar.append("<div class='thumb'></div>");
-
-		UI._selectRender.render.call(this, $, target);
-		renderButtons.call(this, $, target);
-
-		return this;
-	};
 
 	// ====================================================
-	_Renderer.isMultiple = function () {
-		return false;
-	};
-	
-	// ====================================================
-	_Renderer._renderOneItem = function ($, item, data, index) {
-		renderOneItem.call(this, $, item, data, index);
-	};
-
-	_Renderer._getItemContainer = function ($, target) {
-		return target.find(".tabs");
-	};
-
-	_Renderer._getNewItem = function ($, target) {
-		return getNewItem.call(this, $, target);
-	};
-
-	_Renderer._renderEmptyView = function () {
-		// do nothing
-	};
-
-	_Renderer._renderLoadView = function () {
-		// do nothing
-	};
-
-	///////////////////////////////////////////////////////
 	const itemClickHandler = function (e) {
 		let item = $(e.currentTarget);
 		if (item.is(".disabled"))
@@ -229,6 +184,51 @@
 		}
 	};
 	
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._selectRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._selectRender(false);
+
+	_Renderer.render = function ($, target) {
+		target.addClass("ui-tabbar");
+
+		let tabbar = $("<div class='bar'></div>").appendTo(target);
+		tabbar.append("<ul class='tabs'></ul>");
+		tabbar.append("<div class='thumb'></div>");
+
+		UI._selectRender.render.call(this, $, target);
+		renderButtons.call(this, $, target);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.isMultiple = function () {
+		return false;
+	};
+	
+	// ====================================================
+	_Renderer._renderOneItem = function ($, item, data, index) {
+		renderOneItem.call(this, $, item, data, index);
+	};
+
+	_Renderer._getItemContainer = function ($, target) {
+		return target.find(".tabs");
+	};
+
+	_Renderer._getNewItem = function ($, target) {
+		return getNewItem.call(this, $, target);
+	};
+
+	_Renderer._renderEmptyView = function () {
+		// do nothing
+	};
+
+	_Renderer._renderLoadView = function () {
+		// do nothing
+	};
+
 	// ====================================================
 	const renderOneItem = function ($, item, data, index) {
 		let box = item.children(".box");
@@ -240,19 +240,13 @@
 			item.addClass("closable").append("<i class='close'></i>");
 	};
 
-	const getNewItem = function ($, target) {
-		let item = $("<li class='tab'></li>").appendTo(target);
-		item.append("<div class='box'></div>");
-		return item;
-	};
-
 	const renderButtons = function ($, target) {
 		target = $("<div class='btns'></div>").appendTo(target);
 		target.append("<span class='btn prev'>&lt;</span>");
 		target.append("<span class='btn next'>&gt;</span>");
 	};
-	
-	// ====================================================
+
+	///////////////////////////////////////////////////////
 	const initResizeEvents = function () {
 		let eventName = "resize._" + this.getViewId();
 		let _window = $(window).off(eventName);
@@ -418,6 +412,12 @@
 			this.trigger("change", nextData, itemData);
 
 		layoutChanged.call(this);
+	};
+
+	const getNewItem = function ($, target) {
+		let item = $("<li class='tab'></li>").appendTo(target);
+		item.append("<div class='box'></div>");
+		return item;
 	};
 
 	const getSelectedTab = function () {

@@ -37,7 +37,33 @@
 	_UIListView._renderOneItem = function ($, item, data, index, bSelected) {
 		renderOneItem.call(this, $, item, data, index, bSelected);
 	};
-	
+
+	// ====================================================
+	const itemClickHandler = function (e) {
+		let item = $(e.currentTarget);
+		if (item.parent().is(this.list)) {
+			if (item.is(".disabled"))
+				return ;
+
+			let snapshoot = this._snapshoot();
+
+			if (item.is(".selected")) {
+				item.removeClass("selected");
+			}
+			else {
+				item.addClass("selected");
+				if (!this.isMultiple())
+					item.siblings().removeClass("selected");
+			}
+
+			let indexs = Utils.map(this.list.children(".selected"), (item) => {
+				return item.index();
+			});
+			UI._select.setSelectedIndex.call(this, indexs);
+
+			snapshoot.done();
+		}
+	};
 	
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -209,34 +235,6 @@
 		UI._itemsRender.renderLoadView.call(this, $, target);
 	};
 	
-	
-	///////////////////////////////////////////////////////
-	const itemClickHandler = function (e) {
-		let item = $(e.currentTarget);
-		if (item.parent().is(this.list)) {
-			if (item.is(".disabled"))
-				return ;
-
-			let snapshoot = this._snapshoot();
-
-			if (item.is(".selected")) {
-				item.removeClass("selected");
-			}
-			else {
-				item.addClass("selected");
-				if (!this.isMultiple())
-					item.siblings().removeClass("selected");
-			}
-
-			let indexs = Utils.map(this.list.children(".selected"), (item) => {
-				return item.index();
-			});
-			UI._select.setSelectedIndex.call(this, indexs);
-
-			snapshoot.done();
-		}
-	};
-	
 	// ====================================================
 	const renderOneItem = function ($, item, data, index) {
 		let container = $("<div class='box'></div>").appendTo(item);
@@ -245,7 +243,6 @@
 			item.prepend("<span class='chkbox'></span>");
 		}
 	};
-	
 	
 	///////////////////////////////////////////////////////
 	if (frontend) {

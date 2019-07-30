@@ -35,6 +35,22 @@
 		doClose.call(this);
 	};
 
+	// ====================================================
+	const onCloseBtnHandler = function () {
+		doClose.call(this);
+	};
+
+	const onMouseHandler = function (e) {
+		if (e.type == "mouseenter") {
+			if (this.t_close) {
+				clearTimeout(this.t_close);
+				this.t_close = null;
+			}
+		}
+		else {
+			waitToClose.call(this);
+		}
+	};
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -80,24 +96,6 @@
 		return Utils.isTrue(this.options.closable);
 	}
 
-
-	///////////////////////////////////////////////////////
-	const onCloseBtnHandler = function () {
-		doClose.call(this);
-	};
-
-	const onMouseHandler = function (e) {
-		if (e.type == "mouseenter") {
-			if (this.t_close) {
-				clearTimeout(this.t_close);
-				this.t_close = null;
-			}
-		}
-		else {
-			waitToClose.call(this);
-		}
-	};
-	
 	// ====================================================
 	const renderView = function ($, target) {
 		let container = $("<div class='container'></div>").appendTo(target);
@@ -125,8 +123,8 @@
 			icon.css("backgroundImage", "url(" + this.options.icon + ")");
 		}
 	};
-	
-	// ====================================================
+
+	///////////////////////////////////////////////////////
 	const doOpen = function () {
 		let wrapper = $("body").children(".ui-notice-wrap");
 		if (!wrapper || wrapper.length == 0)
@@ -194,7 +192,6 @@
 			}, duration);
 		}
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

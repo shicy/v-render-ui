@@ -77,6 +77,19 @@
 	_UICheckGroup._renderOneItem = function ($, item, data, index) {
 		renderOneItem.call(this, $, item, data, index);
 	};
+
+	// ====================================================
+	const selectedChangeHandler = function (e) {
+		e.stopPropagation();
+		let snapshoot = this._snapshoot();
+		let indexs = [];
+		Utils.each(this.$el.find("input"), (input, i) => {
+			if (input.is(":checked"))
+				indexs.push(i);
+		});
+		UI._select.setSelectedIndex.call(this, indexs);
+		snapshoot.done();
+	};
 	
 
 	///////////////////////////////////////////////////////
@@ -129,21 +142,6 @@
 	_Renderer._renderLoadView = function () {
 		// do nothing
 	};
-	
-
-	///////////////////////////////////////////////////////
-	const selectedChangeHandler = function (e) {
-		e.stopPropagation();
-		let snapshoot = this._snapshoot();
-		let indexs = [];
-		Utils.each(this.$el.find("input"), (input, i) => {
-			if (input.is(":checked"))
-				indexs.push(i);
-		});
-		UI._select.setSelectedIndex.call(this, indexs);
-		snapshoot.done();
-	};
-
 
 	// ====================================================
 	const renderItems = function ($, itemContainer, datas) {
@@ -153,7 +151,7 @@
 		delete this._cache_selected_indexs;
 		delete this._cache_selected_ids;
 	};
-
+	
 	const renderOneItem = function ($, item, data, index) {
 		if (typeof data == "string")
 			data = {label: data};
@@ -170,13 +168,11 @@
 			return UI.checkbox.create(params);
 		}
 	};
-	
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const getNewItem = function ($, target) {
 		return $("<div class='item'></div>").appendTo(target);
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

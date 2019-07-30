@@ -21,7 +21,7 @@
 		UI._select.init.call(this, target, options);
 
 		this.__columns = this.getColumns(); // 解析一次
-		// console.log(this.getColumns());
+		// console.log(this.__columns);
 		
 		target = this.$el;
 		let ghead = this.gridHead = target.children(".table").children("header").children();
@@ -440,7 +440,202 @@
 	_UIDatagrid._snapshoot_change = function () {
 		selectedChanged.call(this);
 	};
+
+	// ====================================================
+	const itemClickHandler = function (e) {
+		let item = $(e.currentTarget);
+		if (item.parent().is(this._getItemContainer())) {
+			if (item.is(".disabled"))
+				return ;
+
+			if (item.is(".selected")) {
+				item.removeClass("selected");
+			}
+			else {
+				item.addClass("selected");
+				if (!this.isMultiple())
+					item.siblings().removeClass("selected");
+			}
+
+			selectedChanged.call(this);
+		}
+	};
+
+	const headTouchHandler = function (e) {
+		let col = $(e.currentTarget);
+		let colName = col.attr("col-name");
+		let column = colName && getColumnInfo.call(this, colName);
+		if (column) {
+			if (column.filter || Utils.isArray(column.sortable))
+				showSortAndFilterDialog.call(this, column, col);
+			else if (column.sortable) {
+				let sortType = col.attr("opt-sort");
+				sortType = sortType == "desc" ? null : (sortType == "asc" ? "desc" : "asc");
+				doSort.call(this, column, sortType);
+			}
+		}
+	};
+
+	const allChkboxClickHandler = function (e) {
+		let header = this.gridHead.find("tr");
+		let selectedIndex = [];
+		if (header.is(".selected")) {
+			header.removeClass("selected");
+		}
+		else {
+			header.addClass("selected");
+			for (let i = 0, l = this.length(); i < l; i++) {
+				selectedIndex.push(i);
+			}
+		}
+		this.setSelectedIndex(selectedIndex);
+	};
+
+	const onExpandBtnHandler = function (e) {
+		let item = $(e.currentTarget).parent().parent();
+		if (item.parent().is(this._getItemContainer())) {
+			if (item.is(".disabled"))
+				return false;
+
+			if (item.is(".expand")) {
+				item.removeClass("expand");
+				item.next().remove();
+			}
+			else {
+				item.addClass("expand");
+				let index = parseInt(item.attr("opt-ind")) || 0;
+				let data = this._getItemData(item, index);
+				renderExpandView.call(this, $, item, data, index);
+			}
+
+			return false;
+		}
+	};
+
+	const toolbtnClickHandler = function (e) {
+		let btn = $(e.currentTarget);
+		let col = btn.parent().parent();
+		let column = getColumnInfo.call(this, col.attr("col-name"));
+
+		let dropdown = btn.children(".dropdown");
+		if (dropdown && dropdown.length > 0) {
+			btn.addClass("show-dropdown");
+			if (dropdown.is(".ipt")) {
+				let input = dropdown.find("input").focus();
+				input.off("keydown").on("keydown", filterInputKeyHandler.bind(this));
+			}
+		}
+		else if (btn.is(".sort")) {
+			let sortType = col.attr("opt-sort");
+			sortType = sortType == "desc" ? null : (sortType == "asc" ? "desc" : "asc");
+			doSort.call(this, column, sortType);
+		}
+		else if (btn.is(".filter")) {
+			// 默认都有 dropdown
+		}
+	};
+
+	const toolbtnMouseHandler = function (e) {
+		let btn = $(e.currentTarget);
+		let timerId = parseInt(btn.attr("opt-t")) || 0;
+		if (timerId) {
+			clearTimeout(timerId);
+			btn.removeAttr("opt-t");
+		}
+		if (e.type == "mouseleave") {
+			timerId = setTimeout(() => {
+				btn.removeClass("show-dropdown");
+				btn.removeAttr("opt-t");
+				if (btn.is(".filter")) {
+					let input = btn.find("input");
+					if (input && input.length > 0)
+						VRender.onInputChange(input, null);
+				}
+			}, 400);
+			btn.attr("opt-t", timerId);
+		}
+	};
+
+	const toolDropdownClickHandler = function (e) {
+		let item = $(e.currentTarget);
+		let toolbtn = item.parent().parent();
+		let col = toolbtn.parent().parent();
+		let column = getColumnInfo.call(this, col.attr("col-name"));
+
+		let timerId = parseInt(toolbtn.attr("opt-t")) || 0;
+		if (timerId)
+			clearTimeout(timerId);
+		toolbtn.removeClass("show-dropdown").removeAttr("opt-t");
+
+		if (toolbtn.is(".sort")) {
+			doSort.call(this, column, (item.is(".selected") ? null : item.attr("data-type")));
+		}
+		else if (toolbtn.is(".filter")) {
+			doFilter.call(this, column, (item.is(".selected") ? null : item.attr("data-val")));
+		}
+
+		return false;
+	};
+
+	const filterInputKeyHandler = function (e) {
+		if (e.which == 13) {
+			let input = $(e.currentTarget);
+			let colName = Utils.parentUntil(input, "th").attr("col-name");
+			if (colName) {
+				let column = getColumnInfo.call(this, colName);
+				doFilter.call(this, column, input.val() || null);
+			}
+		}
+	};
+
+	const sortAndFilterClickHandler = function (e) {
+		if ($(e.target).is(".sort-and-filter")) {
+			hideSortAndFilterDialog.call(this);
+			return false;
+		}
+	};
+
+	const sortAndFilterItemHandler = function (e) {
+		let item = $(e.currentTarget);
+		let column = this.$el.children(".sort-and-filter").data("column");
+		if (item.parent().parent().is(".sort")) {
+			let sortType = item.is(".selected") ? null : item.attr("data-type");
+			doSort.call(this, column, sortType);
+		}
+		else {
+			let filterValue = item.is(".selected") ? null : item.attr("data-val");
+			doFilter.call(this, column, filterValue);
+		}
+		hideSortAndFilterDialog.call(this);
+	};
+
+	const sortAndFilterInputClickHandler = function (e) {
+		this.$el.children(".sort-and-filter").addClass("inputing");
+	};
+
+	const sortAndFilterClearHandler = function (e) {
+		let target = this.$el.children(".sort-and-filter");
+		let input = target.find("input").val("");
+		if (target.is(".inputing")) {
+			setTimeout(() => {
+				input.focus();
+			}, 0);
+		}
+	};
+
+	const sortAndFilterSubmitHandler = function (e) {
+		let target = this.$el.children(".sort-and-filter");
+		let column = target.data("column");
+		let filterValue = target.find("input").val() || null;
+		doFilter.call(this, column, filterValue);
+		hideSortAndFilterDialog.call(this);
+	};
 	
+	const sortAndFilterInputKeyHandler = function (e) {
+		if (e.which == 13) {
+			this.$el.children(".sort-and-filter").find(".submitbtn").tap();
+		}
+	};
 	
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -544,14 +739,14 @@
 			Utils.each(this.__columns, (column) => {
 				if (Utils.isTrue(column.filter) && Utils.isNotBlank(column.filterValue)) {
 					let filterFunction = this._getFilterFunction(column, column.filterValue);
-					_datas = Utils.filter(_datas, function (data, i) {
+					_datas = Utils.filter(_datas, (data, i) => {
 						return filterFunction(column, data, column.filterValue);
 					});
 					hasFilterOrSort = true;
 				}
 			});
 			// doSort
-			let sortColumn = Utils.find(this.__columns, function (column) {
+			let sortColumn = Utils.find(this.__columns, (column) => {
 				return Utils.isTrue(column.sortable) && column.sortType;
 			});
 			if (sortColumn) {
@@ -594,203 +789,6 @@
 		return Utils.index(this.__columns, (column) => {
 			return !!column.expand;
 		}) >= 0;
-	};
-	
-
-	///////////////////////////////////////////////////////
-	const itemClickHandler = function (e) {
-		let item = $(e.currentTarget);
-		if (item.parent().is(this._getItemContainer())) {
-			if (item.is(".disabled"))
-				return ;
-
-			if (item.is(".selected")) {
-				item.removeClass("selected");
-			}
-			else {
-				item.addClass("selected");
-				if (!this.isMultiple())
-					item.siblings().removeClass("selected");
-			}
-
-			selectedChanged.call(this);
-		}
-	};
-
-	const headTouchHandler = function (e) {
-		let col = $(e.currentTarget);
-		let colName = col.attr("col-name");
-		let column = colName && getColumnInfo.call(this, colName);
-		if (column) {
-			if (column.filter || Utils.isArray(column.sortable))
-				showSortAndFilterDialog.call(this, column, col);
-			else if (column.sortable) {
-				let sortType = col.attr("opt-sort");
-				sortType = sortType == "desc" ? null : (sortType == "asc" ? "desc" : "asc");
-				doSort.call(this, column, sortType);
-			}
-		}
-	};
-
-	const allChkboxClickHandler = function (e) {
-		let header = this.gridHead.find("tr");
-		let selectedIndex = [];
-		if (header.is(".selected")) {
-			header.removeClass("selected");
-		}
-		else {
-			header.addClass("selected");
-			for (let i = 0, l = this.length(); i < l; i++) {
-				selectedIndex.push(i);
-			}
-		}
-		this.setSelectedIndex(selectedIndex);
-	};
-
-	const onExpandBtnHandler = function (e) {
-		let item = $(e.currentTarget).parent().parent();
-		if (item.parent().is(this._getItemContainer())) {
-			if (item.is(".disabled"))
-				return false;
-
-			if (item.is(".expand")) {
-				item.removeClass("expand");
-				item.next().remove();
-			}
-			else {
-				item.addClass("expand");
-				let index = parseInt(item.attr("opt-ind")) || 0;
-				let data = this._getItemData(item, index);
-				renderExpandView.call(this, $, item, data, index);
-			}
-
-			return false;
-		}
-	};
-
-	const toolbtnClickHandler = function (e) {
-		let btn = $(e.currentTarget);
-		let col = btn.parent().parent();
-		let column = getColumnInfo.call(this, col.attr("col-name"));
-
-		let dropdown = btn.children(".dropdown");
-		if (dropdown && dropdown.length > 0) {
-			btn.addClass("show-dropdown");
-			if (dropdown.is(".ipt")) {
-				let input = dropdown.find("input").focus();
-				input.off("keydown").on("keydown", filterInputKeyHandler.bind(this));
-			}
-		}
-		else if (btn.is(".sort")) {
-			let sortType = col.attr("opt-sort");
-			sortType = sortType == "desc" ? null : (sortType == "asc" ? "desc" : "asc");
-			doSort.call(this, column, sortType);
-		}
-		else if (btn.is(".filter")) {
-			// 默认都有 dropdown
-		}
-	};
-
-	const toolbtnMouseHandler = function (e) {
-		let btn = $(e.currentTarget);
-		let timerId = parseInt(btn.attr("opt-t")) || 0;
-		if (timerId) {
-			clearTimeout(timerId);
-			btn.removeAttr("opt-t");
-		}
-		if (e.type == "mouseleave") {
-			timerId = setTimeout(function () {
-				btn.removeClass("show-dropdown");
-				btn.removeAttr("opt-t");
-				if (btn.is(".filter")) {
-					let input = btn.find("input");
-					if (input && input.length > 0)
-						VRender.onInputChange(input, null);
-				}
-			}, 400);
-			btn.attr("opt-t", timerId);
-		}
-	};
-
-	const toolDropdownClickHandler = function (e) {
-		let item = $(e.currentTarget);
-		let toolbtn = item.parent().parent();
-		let col = toolbtn.parent().parent();
-		let column = getColumnInfo.call(this, col.attr("col-name"));
-
-		let timerId = parseInt(toolbtn.attr("opt-t")) || 0;
-		if (timerId)
-			clearTimeout(timerId);
-		toolbtn.removeClass("show-dropdown").removeAttr("opt-t");
-
-		if (toolbtn.is(".sort")) {
-			doSort.call(this, column, (item.is(".selected") ? null : item.attr("data-type")));
-		}
-		else if (toolbtn.is(".filter")) {
-			doFilter.call(this, column, (item.is(".selected") ? null : item.attr("data-val")));
-		}
-
-		return false;
-	};
-
-	const filterInputKeyHandler = function (e) {
-		if (e.which == 13) {
-			let input = $(e.currentTarget);
-			let colName = Utils.parentUntil(input, "th").attr("col-name");
-			if (colName) {
-				let column = getColumnInfo.call(this, colName);
-				doFilter.call(this, column, input.val() || null);
-			}
-		}
-	};
-
-	const sortAndFilterClickHandler = function (e) {
-		if ($(e.target).is(".sort-and-filter")) {
-			hideSortAndFilterDialog.call(this);
-			return false;
-		}
-	};
-
-	const sortAndFilterItemHandler = function (e) {
-		let item = $(e.currentTarget);
-		let column = this.$el.children(".sort-and-filter").data("column");
-		if (item.parent().parent().is(".sort")) {
-			let sortType = item.is(".selected") ? null : item.attr("data-type");
-			doSort.call(this, column, sortType);
-		}
-		else {
-			let filterValue = item.is(".selected") ? null : item.attr("data-val");
-			doFilter.call(this, column, filterValue);
-		}
-		hideSortAndFilterDialog.call(this);
-	};
-
-	const sortAndFilterInputClickHandler = function (e) {
-		this.$el.children(".sort-and-filter").addClass("inputing");
-	};
-
-	const sortAndFilterClearHandler = function (e) {
-		let target = this.$el.children(".sort-and-filter");
-		let input = target.find("input").val("");
-		if (target.is(".inputing")) {
-			setTimeout(() => {
-				input.focus();
-			}, 0);
-		}
-	};
-
-	const sortAndFilterSubmitHandler = function (e) {
-		let target = this.$el.children(".sort-and-filter");
-		let column = target.data("column");
-		let filterValue = target.find("input").val() || null;
-		doFilter.call(this, column, filterValue);
-		hideSortAndFilterDialog.call(this);
-	};
-
-	const sortAndFilterInputKeyHandler = function (e) {
-		if (e.which == 13) {
-			this.$el.children(".sort-and-filter").find(".submitbtn").tap();
-		}
 	};
 	
 	// ====================================================
@@ -1082,7 +1080,37 @@
 			Fn.renderFunction(target, "cstyle", this.getCellStyleFunction());
 		}
 	};
-	
+
+	const renderExpandView = function ($, row, data, rowIndex) {
+		let expandRow = $("<tr class='row-expand'></tr>").insertAfter(row);
+		let expandCell = $("<td></td>").appendTo(expandRow);
+		expandCell.attr("colspan", row.children().length);
+		let container = $("<div class='container'></div>").appendTo(expandCell);
+
+		let expandRender = this.getExpandRenderer();
+		if (Utils.isFunction(expandRender)) {
+			let expandView = expandRender(data, rowIndex);
+			if (Utils.isNotNull(expandView)) {
+				container.append(expandView.$el || expandView);
+			}
+		}
+		else {
+			let expandView = $("<div class='datagrid-expand'></div>").appendTo(container);
+			expandView.attr("cols", this.getExpandColspan());
+			Utils.each(this.__columns, (column, i) => {
+				if (Utils.isTrue(column.expand)) {
+					let item = $("<div></div>").appendTo(expandView);
+					item.addClass("col-" + i).attr("col-name", column.name);
+					item = $("<dl></dl>").appendTo(item);
+					$("<dt></dt>").appendTo(item).text(column.title || column.name || "");
+					let content = $("<dd></dd>").appendTo(item);
+					renderCell.call(this, $, content, column, data, rowIndex, i);
+					item.removeClass("col-" + i).removeAttr("col-name");
+				}
+			});
+		}
+	};
+
 	// ====================================================
 	const rerender = function () {
 		if (this.t_rerender) {
@@ -1131,36 +1159,6 @@
 		}, 0);
 	};
 
-	const renderExpandView = function ($, row, data, rowIndex) {
-		let expandRow = $("<tr class='row-expand'></tr>").insertAfter(row);
-		let expandCell = $("<td></td>").appendTo(expandRow);
-		expandCell.attr("colspan", row.children().length);
-		let container = $("<div class='container'></div>").appendTo(expandCell);
-
-		let expandRender = this.getExpandRenderer();
-		if (Utils.isFunction(expandRender)) {
-			let expandView = expandRender(data, rowIndex);
-			if (Utils.isNotNull(expandView)) {
-				container.append(expandView.$el || expandView);
-			}
-		}
-		else {
-			let expandView = $("<div class='datagrid-expand'></div>").appendTo(container);
-			expandView.attr("cols", this.getExpandColspan());
-			Utils.each(this.__columns, (column, i) => {
-				if (Utils.isTrue(column.expand)) {
-					let item = $("<div></div>").appendTo(expandView);
-					item.addClass("col-" + i).attr("col-name", column.name);
-					item = $("<dl></dl>").appendTo(item);
-					$("<dt></dt>").appendTo(item).text(column.title || column.name || "");
-					let content = $("<dd></dd>").appendTo(item);
-					renderCell.call(this, $, content, column, data, rowIndex, i);
-					item.removeClass("col-" + i).removeAttr("col-name");
-				}
-			});
-		}
-	};
-
 	const rerenderEnumFilters = function () {
 		if (this._isRenderAsApp())
 			return ;
@@ -1170,7 +1168,7 @@
 				let column = getColumnInfo.call(this, col.attr("col-name"));
 				if (column && column.filter == "enum") {
 					let filterBtn = col.find(".toolbar .filter");
-					let filterItems = DatagridRender.getColumnValueSet.call(this, column);
+					let filterItems = getColumnValueSet.call(this, column);
 					let filterValue = col.attr("opt-filter");
 					if (filterItems && filterItems.length > 0) {
 						filterItems = Utils.map(filterItems, (tmp) => {
@@ -1187,7 +1185,7 @@
 		});
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doInit = function () {
 		this.$el.children("[name='irender']").remove();
 		// selectedChanged.call(this);

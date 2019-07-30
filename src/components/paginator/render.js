@@ -177,87 +177,8 @@
 	_UIPaginator._isLast = function () {
 		return this.$el.is(".is-last");
 	};
-	
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-paginator");
-
-		let pageInfo = getPageInfos.call(this);
-
-		target.attr("data-no", pageInfo.pageNo);
-		target.attr("data-size", pageInfo.pageSize);
-		target.attr("data-pages", pageInfo.pageCount);
-		target.attr("data-total", pageInfo.totalCount);
-
-		target.attr("opt-mode", pageInfo.mode || "");
-		target.attr("opt-nums", pageInfo.showNum);
-		if (pageInfo.status)
-			target.attr("opt-status", pageInfo.status);
-		if (pageInfo.skip)
-			target.attr("opt-skip", pageInfo.skip);
-		if (pageInfo.pageSizes.length > 1)
-			target.attr("opt-sizes", pageInfo.pageSizes.join(","));
-
-		renderView.call(this, $, target, pageInfo);
-
-		if (!frontend) {
-			let buttons = this.options.buttons;
-			if (buttons === false)
-				target.attr("opt-btns", "");
-			else if (buttons !== true) {
-				if (Utils.isNotBlank(buttons))
-					target.attr("opt-btns", JSON.stringify(buttons));
-			}
-		}
-
-		return this;
-	};
 
 	// ====================================================
-	_Renderer.getButtons = function () {
-		return this.options.buttons;
-	};
-
-	_Renderer.getTotal = function () {
-		return Math.max(0, parseInt(this.options.total) || 0);
-	};
-
-	_Renderer.getSize = function () {
-		return parseInt(this.options.size) || 0;
-	};
-
-	_Renderer.getSizes = function () {
-		return getSizes(this.options.sizes) || [];
-	};
-
-	_Renderer.getPageNo = function () {
-		return parseInt(this.options.page) || 0;
-	};
-
-	_Renderer.getMode = function () {
-		return getMode(this.options.mode);
-	};
-
-	_Renderer.getShowNum = function () {
-		return getShowNum(this.options.showNum);
-	};
-
-	_Renderer.getStatus = function () {
-		return getStatus(this.options.status);
-	};
-
-	_Renderer.getSkip = function () {
-		return getSkip(this.options.skip);
-	};
-
-
-	///////////////////////////////////////////////////////
 	const buttonClickHandler = function (e) {
 		let btn = $(e.currentTarget);
 		if (btn.is(".disabled"))
@@ -348,6 +269,84 @@
 			}
 			return Utils.isControlKey(e) || Utils.isNumberKey(e);
 		}
+	};
+	
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-paginator");
+
+		let pageInfo = getPageInfos.call(this);
+
+		target.attr("data-no", pageInfo.pageNo);
+		target.attr("data-size", pageInfo.pageSize);
+		target.attr("data-pages", pageInfo.pageCount);
+		target.attr("data-total", pageInfo.totalCount);
+
+		target.attr("opt-mode", pageInfo.mode || "");
+		target.attr("opt-nums", pageInfo.showNum);
+		if (pageInfo.status)
+			target.attr("opt-status", pageInfo.status);
+		if (pageInfo.skip)
+			target.attr("opt-skip", pageInfo.skip);
+		if (pageInfo.pageSizes.length > 1)
+			target.attr("opt-sizes", pageInfo.pageSizes.join(","));
+
+		renderView.call(this, $, target, pageInfo);
+
+		if (!frontend) {
+			let buttons = this.options.buttons;
+			if (buttons === false)
+				target.attr("opt-btns", "");
+			else if (buttons !== true) {
+				if (Utils.isNotBlank(buttons))
+					target.attr("opt-btns", JSON.stringify(buttons));
+			}
+		}
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getButtons = function () {
+		return this.options.buttons;
+	};
+
+	_Renderer.getTotal = function () {
+		return Math.max(0, parseInt(this.options.total) || 0);
+	};
+
+	_Renderer.getSize = function () {
+		return parseInt(this.options.size) || 0;
+	};
+
+	_Renderer.getSizes = function () {
+		return getSizes(this.options.sizes) || [];
+	};
+
+	_Renderer.getPageNo = function () {
+		return parseInt(this.options.page) || 0;
+	};
+
+	_Renderer.getMode = function () {
+		return getMode(this.options.mode);
+	};
+
+	_Renderer.getShowNum = function () {
+		return getShowNum(this.options.showNum);
+	};
+
+	_Renderer.getStatus = function () {
+		return getStatus(this.options.status);
+	};
+
+	_Renderer.getSkip = function () {
+		return getSkip(this.options.skip);
 	};
 
 	// ====================================================
@@ -497,6 +496,7 @@
 		$("<button class='btn skip'></button>").appendTo(container).text(skipBtn);
 	};
 
+	// ====================================================
 	// 重新渲染视图
 	const reRenderView = function () {
 		if (this.t_renderview) {
@@ -532,7 +532,7 @@
 		}, 0);
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const showPageDropdown = function () {
 		let target = this.$el.children(".pagebar");
 		if (target.is(".show-dropdown"))
@@ -762,7 +762,6 @@
 		}
 		return null;
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

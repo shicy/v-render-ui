@@ -150,62 +150,7 @@
 		return !(date || state.selectedDate);
 	};
 
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-datepicker");
-
-		let options = this.options || {};
-
-		let minDate = Utils.toDate(options.min);
-		if (minDate)
-			target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
-		let maxDate = Utils.toDate(options.max);
-		if (maxDate)
-			target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
-
-		let date = getValidDate.call(this);
-		if (this.isRangeDate()) {
-			target.addClass("is-range");
-			if (date) {
-				target.attr("data-start", Utils.toDateString(date[0], "yyyy-MM-dd"));
-				target.attr("data-end", Utils.toDateString(date[1], "yyyy-MM-dd"));
-			}
-		}
-		else if (date) {
-			target.attr("data-dt", Utils.toDateString(date, "yyyy-MM-dd"));
-		}
-
-		renderHeader.call(this, $, target);
-		renderTables.call(this, $, target);
-		renderFooter.call(this, $, target);
-
-		renderDate.call(this, $, target, date);
-
-		return this;
-	};
-
 	// ====================================================
-	_Renderer.getMinDate = function () {
-		return Utils.toDate(this.options.min);
-	};
-
-	_Renderer.getMaxDate = function () {
-		return Utils.toDate(this.options.max);
-	};
-
-	_Renderer.isRangeDate = function () {
-		return Utils.isTrue(this.options.range);
-	};
-
-
-	///////////////////////////////////////////////////////
 	const onSwitchBtnHandler = function (e) {
 		let btn = $(e.currentTarget);
 		let table = null;
@@ -405,6 +350,59 @@
 				}, delay);
 			}
 		}
+	};
+
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-datepicker");
+
+		let options = this.options || {};
+
+		let minDate = Utils.toDate(options.min);
+		if (minDate)
+			target.attr("opt-min", Utils.toDateString(minDate, "yyyy-MM-dd"));
+		let maxDate = Utils.toDate(options.max);
+		if (maxDate)
+			target.attr("opt-max", Utils.toDateString(maxDate, "yyyy-MM-dd"));
+
+		let date = getValidDate.call(this);
+		if (this.isRangeDate()) {
+			target.addClass("is-range");
+			if (date) {
+				target.attr("data-start", Utils.toDateString(date[0], "yyyy-MM-dd"));
+				target.attr("data-end", Utils.toDateString(date[1], "yyyy-MM-dd"));
+			}
+		}
+		else if (date) {
+			target.attr("data-dt", Utils.toDateString(date, "yyyy-MM-dd"));
+		}
+
+		renderHeader.call(this, $, target);
+		renderTables.call(this, $, target);
+		renderFooter.call(this, $, target);
+
+		renderDate.call(this, $, target, date);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getMinDate = function () {
+		return Utils.toDate(this.options.min);
+	};
+
+	_Renderer.getMaxDate = function () {
+		return Utils.toDate(this.options.max);
+	};
+
+	_Renderer.isRangeDate = function () {
+		return Utils.isTrue(this.options.range);
 	};
 
 	// ====================================================
@@ -621,7 +619,8 @@
 				break;
 		}
 	};
-
+	
+	///////////////////////////////////////////////////////
 	const checkRangeHeadBtns = function ($, target, start, end) {
 		target = target.children("header");
 

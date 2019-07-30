@@ -258,88 +258,7 @@
 		}
 	};
 
-	
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-textview");
-
-		let options = this.options || {};
-
-		let ipt = $("<div class='ipt'></div>").appendTo(target);
-		let input = renderInput.call(this, $, target, ipt);
-
-		let width = Utils.getFormatSize(options.width, this._isRenderAsRem());
-		if (width)
-			target.attr("opt-fixed", "1").css("width", width);
-
-		if (Utils.isTrue(options.readonly)) {
-			target.attr("opt-readonly", "1");
-			input.attr("readonly", "readonly");
-		}
-
-		if (Utils.isTrue(options.required))
-			target.attr("opt-required", "1");
-
-		if (this.isDisplayAsPassword())
-			target.attr("opt-pwd", "1");
-
-		let maxSize = parseInt(options.maxSize) || 0;
-		if (maxSize > 0) {
-			target.addClass("show-size").attr("opt-size", maxSize);
-			let len = Utils.trimToEmpty(input.val()).length;
-			$("<span class='size'></span>").appendTo(ipt).text(len + "/" + maxSize);
-		}
-
-		if (Utils.isNotBlank(options.prompt))
-			$("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);
-
-		if (Utils.isNotBlank(options.tips))
-			$("<span class='tips'></span>").appendTo(ipt).html(options.tips);
-
-		let description = options.description || options.desc;
-		if (Utils.isNotBlank(description))
-			$("<div class='desc'></div>").appendTo(target).html(description);
-		
-		renderErrorMsg.call(this, $, target);
-
-		if (Utils.isTrue(options.autoHeight) && this.isMultiline())
-			renderAsAutoHeight.call(this, $, target, input);
-
-		return this;
-	};
-
 	// ====================================================
-	_Renderer.getDecimals = function () {
-		if (this.isDisplayAsPassword())
-			return 0;
-		let options = this.options || {};
-		let type = options.dataType || options.type;
-		if (type === "int")
-			return 0;
-		if (options.hasOwnProperty("decimals"))
-			return parseInt(options.decimals) || 0;
-		return 2;
-	};
-
-	_Renderer.isDisplayAsPassword = function () {
-		return Utils.isTrue(this.options.displayAsPwd);
-	}
-
-	_Renderer.isMultiline = function () {
-		let options = this.options || {};
-		if (options.hasOwnProperty("multiple"))
-			return Utils.isTrue(options.multiple);
-		return Utils.isTrue(options.multi);
-	};
-
-
-	///////////////////////////////////////////////////////
 	const onKeyDownHandler = function (e) {
 		clearErrorMsg.call(this);
 		if (Utils.isControlKey(e))
@@ -455,6 +374,85 @@
 			this.input.focus();
 		});
 	};
+	
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-textview");
+
+		let options = this.options || {};
+
+		let ipt = $("<div class='ipt'></div>").appendTo(target);
+		let input = renderInput.call(this, $, target, ipt);
+
+		let width = Utils.getFormatSize(options.width, this._isRenderAsRem());
+		if (width)
+			target.attr("opt-fixed", "1").css("width", width);
+
+		if (Utils.isTrue(options.readonly)) {
+			target.attr("opt-readonly", "1");
+			input.attr("readonly", "readonly");
+		}
+
+		if (Utils.isTrue(options.required))
+			target.attr("opt-required", "1");
+
+		if (this.isDisplayAsPassword())
+			target.attr("opt-pwd", "1");
+
+		let maxSize = parseInt(options.maxSize) || 0;
+		if (maxSize > 0) {
+			target.addClass("show-size").attr("opt-size", maxSize);
+			let len = Utils.trimToEmpty(input.val()).length;
+			$("<span class='size'></span>").appendTo(ipt).text(len + "/" + maxSize);
+		}
+
+		if (Utils.isNotBlank(options.prompt))
+			$("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);
+
+		if (Utils.isNotBlank(options.tips))
+			$("<span class='tips'></span>").appendTo(ipt).html(options.tips);
+
+		let description = options.description || options.desc;
+		if (Utils.isNotBlank(description))
+			$("<div class='desc'></div>").appendTo(target).html(description);
+		
+		renderErrorMsg.call(this, $, target);
+
+		if (Utils.isTrue(options.autoHeight) && this.isMultiline())
+			renderAsAutoHeight.call(this, $, target, input);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getDecimals = function () {
+		if (this.isDisplayAsPassword())
+			return 0;
+		let options = this.options || {};
+		let type = options.dataType || options.type;
+		if (type === "int")
+			return 0;
+		if (options.hasOwnProperty("decimals"))
+			return parseInt(options.decimals) || 0;
+		return 2;
+	};
+
+	_Renderer.isDisplayAsPassword = function () {
+		return Utils.isTrue(this.options.displayAsPwd);
+	}
+
+	_Renderer.isMultiline = function () {
+		let options = this.options || {};
+		if (options.hasOwnProperty("multiple"))
+			return Utils.isTrue(options.multiple);
+		return Utils.isTrue(options.multi);
+	};
 
 	// ====================================================
 	const renderInput = function ($, target, parent) {
@@ -538,7 +536,7 @@
 		}
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doValidate = function (value, callback) {
 		let validateHandler = this.getValidate();
 		let defaultErrorMsg = this.getErrorMsg();
@@ -696,7 +694,6 @@
 			return !/\./.test(text) && text.length > 0;
 		return false;
 	};
-
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

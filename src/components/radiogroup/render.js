@@ -67,7 +67,6 @@
 				this.$el.removeClass("disabled").removeAttr("disabled");
 		}
 	};
-	
 
 	// ====================================================
 	_UIRadioGroup._getRadioName = function () {
@@ -89,7 +88,17 @@
 	_UIRadioGroup._renderOneItem = function ($, item, data, index) {
 		renderOneItem.call(this, $, item, data, index);
 	};
-	
+
+	// ====================================================
+	const selectedChangeHandler = function (e) {
+		e.stopPropagation();
+		let snapshoot = this._snapshoot();
+		let index = Utils.index(this.$el.find("input"), (input) => {
+			return input.is(":checked");
+		});
+		UI._select.setSelectedIndex.call(this, index);
+		snapshoot.done();
+	};
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -118,13 +127,11 @@
 		return false;
 	};
 
-
 	// ====================================================
 	_Renderer._getRadioName = function () {
 		return this.radioGroupId;
 	};
 
-	// ====================================================
 	_Renderer._renderItems = function ($, target) {
 		let itemContainer = this._getItemContainer($, target);
 		if (itemContainer) {
@@ -147,19 +154,6 @@
 	_Renderer._renderLoadView = function () {
 		// do nothing
 	};
-	
-
-	///////////////////////////////////////////////////////
-	const selectedChangeHandler = function (e) {
-		e.stopPropagation();
-		let snapshoot = this._snapshoot();
-		let index = Utils.index(this.$el.find("input"), (input) => {
-			return input.is(":checked");
-		});
-		UI._select.setSelectedIndex.call(this, index);
-		snapshoot.done();
-	};
-
 
 	// ====================================================
 	const renderItems = function ($, itemContainer, datas) {
@@ -188,11 +182,10 @@
 		}
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const getNewItem = function ($, target) {
 		return $("<div class='item'></div>").appendTo(target);
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

@@ -6,7 +6,7 @@
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
-	const Utils = UI.util;
+	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
 	const UICheckbox = UI.checkbox = function (view, options) {
@@ -34,7 +34,7 @@
 		return this.input.is(":checked");
 	};
 	_UICheckbox.setChecked = function (bool) {
-		var checked = Utils.isNull(bool) ? true : Utils.isTrue(bool);
+		let checked = Utils.isNull(bool) ? true : Utils.isTrue(bool);
 		this.input[0].checked = checked;
 		this.input.trigger("change");
 	};
@@ -46,6 +46,15 @@
 		this.$el.children("span").remove();
 		if (Utils.isNotBlank(value))
 			$("<span></span>").appendTo(this.$el).text(value);
+	};
+
+	// ====================================================
+	// 复选框状态变更事件
+	const chkboxChangeHandler = function (e) {
+		if ($(e.currentTarget).is(":checked"))
+			this.$el.addClass("checked");
+		else
+			this.$el.removeClass("checked");
 	};
 
 	///////////////////////////////////////////////////////
@@ -76,16 +85,6 @@
 		input.attr("name", Utils.trimToNull(options.name));
 
 		return this;
-	};
-
-
-	///////////////////////////////////////////////////////
-	// 复选框状态变更事件
-	var chkboxChangeHandler = function (e) {
-		if ($(e.currentTarget).is(":checked"))
-			this.$el.addClass("checked");
-		else
-			this.$el.removeClass("checked");
 	};
 
 	///////////////////////////////////////////////////////

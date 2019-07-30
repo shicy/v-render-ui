@@ -215,7 +215,6 @@
 		return this.$el.attr("opt-match") == 1;
 	};
 
-	// ====================================================
 	_UICombobox.rerender = function () {
 		Utils.debounce("combobox_render-" + this.getViewId(), () => {
 			let input = this.$el.find(".ipt > input");
@@ -237,6 +236,7 @@
 		});
 	};
 
+	// ====================================================
 	_UICombobox._getItemContainer = function () {
 		return this.$el.children(".dropdown").children(".box");
 	};
@@ -344,73 +344,7 @@
 		return doAdapter.call(this, datas);
 	};
 
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._selectRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._selectRender(false);
-
-	_Renderer.render = function ($, target) {
-		target.addClass("ui-combobox");
-
-		let options = this.options || {};
-
-		if (this.isNative())
-			target.attr("opt-native", "1");
-
-		if (Utils.isTrue(options.needMatch))
-			target.attr("opt-match", "1");
-
-		// 容器，用于下拉列表定位
-		target.attr("opt-box", options.container);
-
-		renderTextView.call(this, $, target);
-		target.append("<div class='dropdown'><div class='box'></div></div>");
-
-		UI._selectRender.render.call(this, $, target);
-
-		return this;
-	};
-
 	// ====================================================
-	_Renderer.getSelectedData = function (needArray) {
-		return UI._selectRender.getSelectedData.call(this, needArray, getDataFlat.call(this));
-	};
-
-	_Renderer.isNative = function () {
-		return Utils.isTrue(this.options.native);
-	};
-
-	// ====================================================
-	_Renderer._getItemContainer = function ($, target) {
-		return target.children(".dropdown").children(".box");
-	};
-
-	_Renderer._renderItems = function ($, target) {
-		let itemContainer = this._getItemContainer($, target);
-		renderItems.call(this, $, target, itemContainer, this.getData());
-	};
-
-	_Renderer._renderEmptyView = function ($, target) {
-		// prevent default
-	};
-
-	_Renderer._renderLoadView = function ($, target) {
-		// prevent default
-	};
-
-	_Renderer._setItemSelected = function (item, beSelected) {
-		if (beSelected)
-			item.addClass("selected").attr("selected", "selected");
-		else
-			item.removeClass("selected").removeAttr("selected");
-	};
-
-	_Renderer._doAdapter = function (datas) {
-		return doAdapter.call(this, datas);
-	};
-
-	///////////////////////////////////////////////////////
 	const iptClickHandler = function (e) {
 		let target = $(e.target);
 
@@ -556,6 +490,73 @@
 		selectChanged.call(this);
 		snapshoot.done();
 	};
+	
+
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._selectRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._selectRender(false);
+
+	_Renderer.render = function ($, target) {
+		target.addClass("ui-combobox");
+
+		let options = this.options || {};
+
+		if (this.isNative())
+			target.attr("opt-native", "1");
+
+		if (Utils.isTrue(options.needMatch))
+			target.attr("opt-match", "1");
+
+		// 容器，用于下拉列表定位
+		target.attr("opt-box", options.container);
+
+		renderTextView.call(this, $, target);
+		target.append("<div class='dropdown'><div class='box'></div></div>");
+
+		UI._selectRender.render.call(this, $, target);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getSelectedData = function (needArray) {
+		return UI._selectRender.getSelectedData.call(this, needArray, getDataFlat.call(this));
+	};
+
+	_Renderer.isNative = function () {
+		return Utils.isTrue(this.options.native);
+	};
+
+	// ====================================================
+	_Renderer._getItemContainer = function ($, target) {
+		return target.children(".dropdown").children(".box");
+	};
+
+	_Renderer._renderItems = function ($, target) {
+		let itemContainer = this._getItemContainer($, target);
+		renderItems.call(this, $, target, itemContainer, this.getData());
+	};
+
+	_Renderer._renderEmptyView = function ($, target) {
+		// prevent default
+	};
+
+	_Renderer._renderLoadView = function ($, target) {
+		// prevent default
+	};
+
+	_Renderer._setItemSelected = function (item, beSelected) {
+		if (beSelected)
+			item.addClass("selected").attr("selected", "selected");
+		else
+			item.removeClass("selected").removeAttr("selected");
+	};
+
+	_Renderer._doAdapter = function (datas) {
+		return doAdapter.call(this, datas);
+	};
 
 	// ====================================================
 	const renderTextView = function ($, target) {
@@ -612,7 +613,7 @@
 					// data.title = "标题";
 					if (data.title)
 						$("<div class='title'></div>").appendTo(group).text(data.title);
-					Utils.each(data, function (temp, j) {
+					Utils.each(data, (temp, j) => {
 						addItem(group, temp);
 					});
 				}
@@ -642,9 +643,9 @@
 				items.push({item: item, data: data, index: items.length});
 				item.text(this._getDataLabel(data));
 			};
-			Utils.each(datas, function (data) {
+			Utils.each(datas, (data) => {
 				if (Utils.isArray(data)) {
-					Utils.each(data, function (temp) {
+					Utils.each(data, (temp) => {
 						addItem(select, temp);
 					});
 				}
@@ -676,7 +677,7 @@
 		});
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const selectChanged = function () {
 		let datas = this.getSelectedData(true);
 		let labels = Utils.map(datas, (data) => {

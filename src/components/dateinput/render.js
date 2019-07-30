@@ -126,43 +126,7 @@
 		return date == state.data;
 	};
 
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-dateipt");
-
-		let options = this.options || {};
-
-		if (Utils.isTrue(options.native))
-			target.attr("opt-native", "1");
-
-		// 容器，用于下拉列表定位
-		target.attr("opt-box", options.container);
-
-		let minDate = Utils.toDate(options.min);
-		target.attr("opt-min", minDate ? Utils.toDateString(minDate, "yyyy-MM-dd") : null);
-
-		let maxDate = Utils.toDate(options.max);
-		target.attr("opt-max", maxDate ? Utils.toDateString(maxDate, "yyyy-MM-dd") : null);
-
-		renderView.call(this, $, target, Utils.toDate(options.date));
-
-		return this;
-	};
-
 	// ====================================================
-	_Renderer.getDateFormat = function () {
-		return this.options.dateFormat || this.options.format;
-	};
-
-
-	///////////////////////////////////////////////////////
 	const iptClickHandler = function (e) {
 		showDatePicker.call(this);
 	};
@@ -198,6 +162,40 @@
 		return false;
 	};
 
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-dateipt");
+
+		let options = this.options || {};
+
+		if (Utils.isTrue(options.native))
+			target.attr("opt-native", "1");
+
+		// 容器，用于下拉列表定位
+		target.attr("opt-box", options.container);
+
+		let minDate = Utils.toDate(options.min);
+		target.attr("opt-min", minDate ? Utils.toDateString(minDate, "yyyy-MM-dd") : null);
+
+		let maxDate = Utils.toDate(options.max);
+		target.attr("opt-max", maxDate ? Utils.toDateString(maxDate, "yyyy-MM-dd") : null);
+
+		renderView.call(this, $, target, Utils.toDate(options.date));
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getDateFormat = function () {
+		return this.options.dateFormat || this.options.format;
+	};
+
 	// ====================================================
 	const renderView = function ($, target, date) {
 		let iptTarget = $("<div class='ipt'></div>").appendTo(target);
@@ -222,13 +220,14 @@
 				target.write("<div class='ui-hidden format'>" + dateFormat + "</div>");
 		}
 	};
-
+	
 	const renderOriginDates = function () {
 		let dateInput = $("<input class='origin-dateipt' type='date'/>").appendTo(this.inputTag);
 		updatePicker.call(this, this.getDate(), this.getMinDate(), this.getMaxDate());
 		dateInput.on("change", originDateChangeHandler.bind(this));
 	};
 
+	///////////////////////////////////////////////////////
 	const updatePicker = function (date, min, max) {
 		Utils.debounce("dateinput_picker-" + this.getViewId(), () => {
 			if (this._isRenderAsApp() && this.isNative()) {
@@ -330,7 +329,6 @@
 		}
 		return 0;
 	};
-
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

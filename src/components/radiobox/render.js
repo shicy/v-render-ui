@@ -51,7 +51,23 @@
 		if (Utils.isNotBlank(value))
 			$("<span></span>").appendTo(this.$el).text(value);
 	};
-	
+
+	// ====================================================
+	const radboxChangeHandler = function (e) {
+		let _isChecked = this.isChecked();
+		if (_isChecked) {
+			this.input.parent().addClass("checked");
+			let name = this.input.attr("name");
+			if (Utils.isNotBlank(name)) {
+				let radios = $("input[name='" + name + "']").not(this.input);
+				radios.parent().removeClass("checked");
+			}
+		}
+		else {
+			this.$el.removeClass("checked");
+		}
+		this.trigger("change");
+	};
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -82,25 +98,6 @@
 
 		return this;
 	};
-
-
-	///////////////////////////////////////////////////////
-	const radboxChangeHandler = function (e) {
-		let _isChecked = this.isChecked();
-		if (_isChecked) {
-			this.input.parent().addClass("checked");
-			let name = this.input.attr("name");
-			if (Utils.isNotBlank(name)) {
-				let radios = $("input[name='" + name + "']").not(this.input);
-				radios.parent().removeClass("checked");
-			}
-		}
-		else {
-			this.$el.removeClass("checked");
-		}
-		this.trigger("change");
-	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

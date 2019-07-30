@@ -19,7 +19,6 @@
 		doInit.call(this);
 	};
 
-	// ====================================================
 	_UIScrollBox.reset = function () {
 	};
 
@@ -121,50 +120,13 @@
 		this.$el.removeAttr("opt-bottom");
 		this.bottomDistance = null;
 	};
-	
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
 
-	_Renderer.render = function ($, target) {
-		target.addClass("ui-scrollbox");
-
-		target.append("<div class='top'></div>");
-		target.append("<div class='container'></div>");
-		target.append("<div class='bottom'></div>");
-
-		UI._baseRender.render.call(this, $, target);
-		renderContentView.call(this, $, target);
-		renderTopView.call(this, $, target);
-		renderBottomView.call(this, $, target);
-		renderEmptyView.call(this, $, target);
-
-		if (!frontend) {
-			let options = this.options || {};
-
-			let scrollContainer = getScrollContainer.call(this);
-			if (scrollContainer)
-				target.attr("opt-scroll", scrollContainer);
-
-			if (options.topDistance || options.topDistance === 0)
-				target.attr("opt-top", options.topDistance);
-			if (options.bottomDistance || options.bottomDistance === 0)
-				target.attr("opt-bottom", options.bottomDistance);
-
-			Fn.renderFunction(target, "refresh", options.refreshFunction);
-			Fn.renderFunction(target, "more", options.moreFunction);
-		}
-		return this;
-	};
-	
-	///////////////////////////////////////////////////////
+	// ====================================================
 	const onScrollHandler = function (e) {
 		let state = getScrollState.call(this, e);
 		if (state.isUp) {
 			if (state.bottom <= this.getBottomDistance())
-				moreHandler.call(this, state);
+				doMore.call(this, state);
 		}
 	};
 
@@ -207,9 +169,46 @@
 		let container = this.$el.children(".container");
 		if (container.outerHeight() < this.$el.height()) {
 			setTimeout(() => {
-				moreHandler.call(this);
+				doMore.call(this);
 			}, 10);
 		}
+	};
+	
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		target.addClass("ui-scrollbox");
+
+		target.append("<div class='top'></div>");
+		target.append("<div class='container'></div>");
+		target.append("<div class='bottom'></div>");
+
+		UI._baseRender.render.call(this, $, target);
+		renderContentView.call(this, $, target);
+		renderTopView.call(this, $, target);
+		renderBottomView.call(this, $, target);
+		renderEmptyView.call(this, $, target);
+
+		if (!frontend) {
+			let options = this.options || {};
+
+			let scrollContainer = getScrollContainer.call(this);
+			if (scrollContainer)
+				target.attr("opt-scroll", scrollContainer);
+
+			if (options.topDistance || options.topDistance === 0)
+				target.attr("opt-top", options.topDistance);
+			if (options.bottomDistance || options.bottomDistance === 0)
+				target.attr("opt-bottom", options.bottomDistance);
+
+			Fn.renderFunction(target, "refresh", options.refreshFunction);
+			Fn.renderFunction(target, "more", options.moreFunction);
+		}
+		return this;
 	};
 	
 	// ====================================================
@@ -288,9 +287,8 @@
 		else
 			target.append(view.$el || view);
 	};
-	
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doInit = function () {
 		initEvents.call(this);
 		initContentEvents.call(this);
@@ -359,7 +357,7 @@
 	};
 	
 	// ====================================================
-	const refreshHandler = function () {
+	const doRefresh = function () {
 		if (this.$el.is(".is-refresh, .is-loading"))
 			return ;
 		let target = this.$el.addClass("is-refresh");
@@ -401,7 +399,7 @@
 		}
 	};
 
-	const moreHandler = function (state) {
+	const doMore = function (state) {
 		if (this.$el.is(".is-loading, .is-refresh, .no-more"))
 			return ;
 		let target = this.$el.addClass("is-loading");
@@ -560,7 +558,7 @@
 			if (content.attr("state") == "drop") {
 				content.attr("state", "load");
 				refreshView.height(this.getTopDistance());
-				refreshHandler.call(this);
+				doRefresh.call(this);
 			}
 			else {
 				_hide();

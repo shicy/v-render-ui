@@ -69,13 +69,13 @@
 
 		this.$el.addClass("is-loading");
 		let submitBtn = this.$el.find(".btnbar .is-submit .ui-btn");
-		Utils.each(submitBtn, function (button) {
+		Utils.each(submitBtn, (button) => {
 			VRender.Component.get(button).waiting();
 		});
 
 		let resultHandler = (err, ret, submitParams) => {
 			this.$el.removeClass("is-loading");
-			Utils.each(submitBtn, function (button) {
+			Utils.each(submitBtn, (button) => {
 				VRender.Component.get(button).waiting(0);
 			});
 			if (Utils.isFunction(callback)) {
@@ -328,7 +328,80 @@
 	_UIFormView._getItems = function () {
 		return this.$el.children(".items").children();
 	};
-	
+
+	// ====================================================
+	const onButtonClickHandler = function (e) {
+		let btn = $(e.currentTarget);
+		if (btn.parent().is(".is-submit")) {
+			this.submit();
+		}
+		let btnName = btn.attr("name");
+		if (btnName) {
+			this.trigger("btn_" + btnName);
+			this.trigger("btnclick", btnName, btn);
+		}
+	};
+
+	const onNativeInputKeyHandler = function (e) {
+		let input = $(e.currentTarget);
+		if (!input.is("input, textarea"))
+			return ;
+		// console.log("onNativeInputKeyHandler");
+		let item = Utils.parentUntil(input, ".form-item");
+		hideErrorMsg.call(this, item);
+	};
+
+	const onNativeInputKeyHandler = function (e) {
+		let input = $(e.currentTarget);
+		if (!input.is("input, textarea"))
+			return ;
+		// console.log("onNativeInputKeyHandler");
+		let item = Utils.parentUntil(input, ".form-item");
+		hideErrorMsg.call(this, item);
+	};
+
+	const onNativeInputFocusHandler = function (e) {
+		let input = $(e.currentTarget);
+		if (!input.is("input, textarea"))
+			return ;
+		// console.log("onNativeInputFocusHandler");
+		let item = Utils.parentUntil(input, ".form-item");
+		validateInput.call(this, item, input);
+	};
+
+	const onTextViewKeyHandler = function (e) {
+		let item = Utils.parentUntil(e.currentTarget, ".form-item");
+		item.removeClass("is-error");
+	};
+
+	const onTextViewFocusHandler = function (e) {
+		let input = $(e.currentTarget);
+		let item = Utils.parentUntil(input, ".form-item");
+		let textView = VRender.Component.get(input.parent().parent());
+		validateTextView.call(this, item, textView);
+	};
+
+	const onValueChangeHandler = function (e) {
+		let target = $(e.currentTarget);
+		if (target.is("input, textarea, .ui-textview"))
+			return ;
+		// console.log("onValueChangeHandler");
+		let item = Utils.parentUntil(target, ".form-item");
+		validateItem.call(this, item);
+	};
+
+	const onItemMouseHandler = function (e) {
+		let item = Utils.parentUntil(e.currentTarget, ".form-item");
+		if (item.is(".is-error")) {
+			stopErrorFadeout.call(this, item);
+			if (e.type == "mouseenter") {
+				item.children(".errmsg").removeClass("animate-out");
+			}
+			else /*if (e.type == "mouseleave")*/ {
+				startErrorFadeout.call(this, item);
+			}
+		}
+	};
 
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -454,72 +527,6 @@
 		return this._isRenderAsApp() ? VERTICAL : HORIZONTIAL;
 	};
 
-
-	///////////////////////////////////////////////////////
-	const onButtonClickHandler = function (e) {
-		let btn = $(e.currentTarget);
-		if (btn.parent().is(".is-submit")) {
-			this.submit();
-		}
-		let btnName = btn.attr("name");
-		if (btnName) {
-			this.trigger("btn_" + btnName);
-			this.trigger("btnclick", btnName, btn);
-		}
-	};
-
-	const onNativeInputKeyHandler = function (e) {
-		let input = $(e.currentTarget);
-		if (!input.is("input, textarea"))
-			return ;
-		// console.log("onNativeInputKeyHandler");
-		let item = Utils.parentUntil(input, ".form-item");
-		hideErrorMsg.call(this, item);
-	};
-
-	const onNativeInputFocusHandler = function (e) {
-		let input = $(e.currentTarget);
-		if (!input.is("input, textarea"))
-			return ;
-		// console.log("onNativeInputFocusHandler");
-		let item = Utils.parentUntil(input, ".form-item");
-		validateInput.call(this, item, input);
-	};
-
-	const onTextViewKeyHandler = function (e) {
-		let item = Utils.parentUntil(e.currentTarget, ".form-item");
-		item.removeClass("is-error");
-	};
-
-	const onTextViewFocusHandler = function (e) {
-		let input = $(e.currentTarget);
-		let item = Utils.parentUntil(input, ".form-item");
-		let textView = VRender.Component.get(input.parent().parent());
-		validateTextView.call(this, item, textView);
-	};
-
-	const onValueChangeHandler = function (e) {
-		let target = $(e.currentTarget);
-		if (target.is("input, textarea, .ui-textview"))
-			return ;
-		// console.log("onValueChangeHandler");
-		let item = Utils.parentUntil(target, ".form-item");
-		validateItem.call(this, item);
-	};
-
-	const onItemMouseHandler = function (e) {
-		let item = Utils.parentUntil(e.currentTarget, ".form-item");
-		if (item.is(".is-error")) {
-			stopErrorFadeout.call(this, item);
-			if (e.type == "mouseenter") {
-				item.children(".errmsg").removeClass("animate-out");
-			}
-			else /*if (e.type == "mouseleave")*/ {
-				startErrorFadeout.call(this, item);
-			}
-		}
-	};
-	
 	// ====================================================
 	const renderView = function ($, target) {
 		renderItems.call(this, $, target, this.options.data);
@@ -607,8 +614,8 @@
 			})
 		}
 	};
-
-	// ====================================================
+	
+	///////////////////////////////////////////////////////
 	const validateItem = function (item, contentView, callback) {
 		// console.log("validateItem")
 		if (item.attr("opt-hide") == 1)

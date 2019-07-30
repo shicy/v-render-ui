@@ -598,6 +598,62 @@
 		let selectedIndex = this.getSelectedIndex(true);
 		return Fn.equalIndex(state.selectedIndex, selectedIndex);
 	};
+
+	// ====================================================
+	const onNodeClickHandler = function (e) {
+		let node = $(e.currentTarget);
+		if (!node.is(".active")) {
+			this.$el.find(".tree-node.active").removeClass("active");
+			node.addClass("active");
+			this.trigger("itemclick", this._getItemData(node.parent()));
+		}
+		if (this._isRenderAsApp()) {
+			let item = node.parent();
+			if (item.is(".open")) {
+				doClose.call(this, item);
+			}
+			else {
+				doOpen.call(this, item);
+			}
+		}
+	};
+
+	const onExpandClickHandler = function (e) {
+		let item = $(e.currentTarget).parent().parent();
+		if (item.is(".open")) {
+			doClose.call(this, item);
+		}
+		else {
+			doOpen.call(this, item);
+		}
+		return false;
+	};
+
+	const onChkboxClickHandler = function (e) {
+		let snapshoot = this._snapshoot();
+		let item = $(e.currentTarget).parent().parent();
+		setItemSelectedOrNot.call(this, item, !item.is(".selected"));
+		snapshoot.done();
+		return false;
+	};
+
+	const onMoreBtnClickHandler = function (e) {
+		let btn = $(e.currentTarget).parent();
+		let params = {p_no: (parseInt(btn.attr("page-no")) + 1)};
+		let parentItem = btn.parent();
+		if (parentItem.is(".root")) {
+			params.pid = null;
+		}
+		else {
+			parentItem = parentItem.parent();
+			params.pid = getItemId.call(this, parentItem);
+		}
+		params = Utils.extend(this.lastLoadParams, params);
+		let parentItemData = this._getItemData(parentItem);
+		doLoad.call(this, parentItem, this.lastLoadApi, params, (err, datas) => {
+			this.trigger("loaded", err, datas, parentItemData);
+		});
+	};
 	
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
@@ -690,62 +746,6 @@
 		ids = (ids && ids.length > 0) ? ids : null;
 
 		return {indexs: indexs, ids: ids};
-	};
-	
-	///////////////////////////////////////////////////////
-	const onNodeClickHandler = function (e) {
-		let node = $(e.currentTarget);
-		if (!node.is(".active")) {
-			this.$el.find(".tree-node.active").removeClass("active");
-			node.addClass("active");
-			this.trigger("itemclick", this._getItemData(node.parent()));
-		}
-		if (this._isRenderAsApp()) {
-			let item = node.parent();
-			if (item.is(".open")) {
-				doClose.call(this, item);
-			}
-			else {
-				doOpen.call(this, item);
-			}
-		}
-	};
-
-	const onExpandClickHandler = function (e) {
-		let item = $(e.currentTarget).parent().parent();
-		if (item.is(".open")) {
-			doClose.call(this, item);
-		}
-		else {
-			doOpen.call(this, item);
-		}
-		return false;
-	};
-
-	const onChkboxClickHandler = function (e) {
-		let snapshoot = this._snapshoot();
-		let item = $(e.currentTarget).parent().parent();
-		setItemSelectedOrNot.call(this, item, !item.is(".selected"));
-		snapshoot.done();
-		return false;
-	};
-
-	const onMoreBtnClickHandler = function (e) {
-		let btn = $(e.currentTarget).parent();
-		let params = {p_no: (parseInt(btn.attr("page-no")) + 1)};
-		let parentItem = btn.parent();
-		if (parentItem.is(".root")) {
-			params.pid = null;
-		}
-		else {
-			parentItem = parentItem.parent();
-			params.pid = getItemId.call(this, parentItem);
-		}
-		params = Utils.extend(this.lastLoadParams, params);
-		let parentItemData = this._getItemData(parentItem);
-		doLoad.call(this, parentItem, this.lastLoadApi, params, (err, datas) => {
-			this.trigger("loaded", err, datas, parentItemData);
-		});
 	};
 	
 	// ====================================================
@@ -884,7 +884,7 @@
 		}
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const doInit = function () {
 		if (!this.options.hasOwnProperty("icon")) {
 			let icon = this.$el.attr("opt-icon");
@@ -1514,7 +1514,6 @@
 		}
 		return null;
 	};
-
 	
 	///////////////////////////////////////////////////////
 	if (frontend) {

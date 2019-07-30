@@ -166,59 +166,8 @@
 				renderPicker.call(this, this.picker.empty());
 		});
 	};
-	
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-timeipt");
-
-		let options = this.options || {};
-
-		// 容器，用于下拉列表定位
-		target.attr("opt-box", options.container);
-
-		if (this.isSecondVisible())
-			target.attr("opt-sec", "1");
-
-		if (this.isUse12Hour())
-			target.attr("opt-h12", "1");
-
-		if (Utils.isTrue(options.readonly)) {
-			target.attr("opt-readonly", "1");
-		}
-
-		target.attr("opt-min", getTime(options.min, true) || null);
-		target.attr("opt-max", getTime(options.max, true) || null);
-
-		if (Utils.isArray(options.hours))
-			target.attr("opt-hours", options.hours.join(",") || null);
-		if (Utils.isArray(options.minutes))
-			target.attr("opt-minutes", options.minutes.join(",") || null);
-		if (Utils.isArray(options.seconds))
-			target.attr("opt-seconds", options.seconds.join(",") || null);
-
-		renderTimeInput.call(this, $, target, options.time);
-
-		return this;
-	};
 
 	// ====================================================
-	_Renderer.isSecondVisible = function () {
-		return Utils.isTrue(this.options.showSecond);
-	};
-
-	_Renderer.isUse12Hour = function () {
-		return Utils.isTrue(this.options.use12Hour);
-	};
-
-
-	///////////////////////////////////////////////////////
 	const iptClickHandler = function (e) {
 		if (!this.isReadonly())
 			showTimePicker.call(this);
@@ -306,6 +255,55 @@
 		return false;
 	};
 
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-timeipt");
+
+		let options = this.options || {};
+
+		// 容器，用于下拉列表定位
+		target.attr("opt-box", options.container);
+
+		if (this.isSecondVisible())
+			target.attr("opt-sec", "1");
+
+		if (this.isUse12Hour())
+			target.attr("opt-h12", "1");
+
+		if (Utils.isTrue(options.readonly)) {
+			target.attr("opt-readonly", "1");
+		}
+
+		target.attr("opt-min", getTime(options.min, true) || null);
+		target.attr("opt-max", getTime(options.max, true) || null);
+
+		if (Utils.isArray(options.hours))
+			target.attr("opt-hours", options.hours.join(",") || null);
+		if (Utils.isArray(options.minutes))
+			target.attr("opt-minutes", options.minutes.join(",") || null);
+		if (Utils.isArray(options.seconds))
+			target.attr("opt-seconds", options.seconds.join(",") || null);
+
+		renderTimeInput.call(this, $, target, options.time);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.isSecondVisible = function () {
+		return Utils.isTrue(this.options.showSecond);
+	};
+
+	_Renderer.isUse12Hour = function () {
+		return Utils.isTrue(this.options.use12Hour);
+	};
+
 	// ====================================================
 	const renderTimeInput = function ($, target, time) {
 		let iptTarget = $("<div class='ipt'></div>").appendTo(target);
@@ -360,7 +358,7 @@
 		}
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const setTimeInner = function (time) {
 		let snapshoot = this._snapshoot();
 		this.$el.attr("data-t", time || "");
@@ -630,7 +628,6 @@
 			return "下午";
 		return "晚上";
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

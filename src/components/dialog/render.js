@@ -250,61 +250,7 @@
 		return this.options.touchCloseEnabled !== false;
 	};
 
-
-	///////////////////////////////////////////////////////
-	const Renderer = function (context, options) {
-		UI._baseRender.call(this, context, options);
-	};
-	const _Renderer = Renderer.prototype = new UI._baseRender(false);
-
-	_Renderer.render = function ($, target) {
-		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-dialog").css("display", "none");
-		target.attr("opt-trans", "translate");
-
-		let options = this.options || {};
-
-		if (/^small|big|auto$/.test(options.size))
-			target.attr("opt-size", options.size);
-
-		if (Utils.isTrue(options.fill))
-			target.attr("opt-fill", "1");
-
-		target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
-
-		let container = $("<div class='dialog-container'></div>").appendTo(target);
-		let dialogView = $("<div class='dialog-view'></div>").appendTo(container);
-
-		renderDialogHeader.call(this, $, target, dialogView);
-		renderDialogContent.call(this, $, target, dialogView);
-		renderDialogFooter.call(this, $, target, dialogView);
-
-		return this;
-	};
-
 	// ====================================================
-	_Renderer.getTitle = function () {
-		let title = this.options.title;
-		if (Utils.isNull(title))
-			return "标题";
-		if (Utils.isBlank(title))
-			return "&nbsp;";
-		return title;
-	};
-
-	_Renderer.getActiveButton = function () {
-		let button = this.options.openbtn;
-		if (!frontend && button) {
-			if (typeof button == "string")
-				return button;
-			if (Utils.isFunction(button.getViewId))
-				return "[vid='" + button.getViewId() + "']";
-		}
-		return null;
-	};
-	
-
-	///////////////////////////////////////////////////////
 	const closeBtnHandler = function (e) {
 		this.close();
 	};
@@ -373,9 +319,60 @@
 			if (this._isTouchCloseable())
 				this.close();
 		}
-	}
-	
+	};
 
+	///////////////////////////////////////////////////////
+	const Renderer = function (context, options) {
+		UI._baseRender.call(this, context, options);
+	};
+	const _Renderer = Renderer.prototype = new UI._baseRender(false);
+
+	_Renderer.render = function ($, target) {
+		UI._baseRender.render.call(this, $, target);
+		target.addClass("ui-dialog").css("display", "none");
+		target.attr("opt-trans", "translate");
+
+		let options = this.options || {};
+
+		if (/^small|big|auto$/.test(options.size))
+			target.attr("opt-size", options.size);
+
+		if (Utils.isTrue(options.fill))
+			target.attr("opt-fill", "1");
+
+		target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
+
+		let container = $("<div class='dialog-container'></div>").appendTo(target);
+		let dialogView = $("<div class='dialog-view'></div>").appendTo(container);
+
+		renderDialogHeader.call(this, $, target, dialogView);
+		renderDialogContent.call(this, $, target, dialogView);
+		renderDialogFooter.call(this, $, target, dialogView);
+
+		return this;
+	};
+
+	// ====================================================
+	_Renderer.getTitle = function () {
+		let title = this.options.title;
+		if (Utils.isNull(title))
+			return "标题";
+		if (Utils.isBlank(title))
+			return "&nbsp;";
+		return title;
+	};
+
+	_Renderer.getActiveButton = function () {
+		let button = this.options.openbtn;
+		if (!frontend && button) {
+			if (typeof button == "string")
+				return button;
+			if (Utils.isFunction(button.getViewId))
+				return "[vid='" + button.getViewId() + "']";
+		}
+		return null;
+	};
+	
 	// ====================================================
 	const renderDialogHeader = function ($, target, dialogView) {
 		let dialogHeader = $("<header></header>").appendTo(dialogView);
@@ -445,7 +442,7 @@
 		}
 	};
 
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const initContentEvents = function () {
 		let contentView = this._getContentView();
 		if (contentView && contentView.length > 0) {
@@ -511,7 +508,6 @@
 			}
 		}
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

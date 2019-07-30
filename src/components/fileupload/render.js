@@ -150,7 +150,7 @@
 		this.$el.attr("opt-filter", Utils.trimToEmpty(value));
 
 		let input = this.$el.children("input");
-		let accept = FileUploadRender.getAccept.call(this);
+		let accept = getAccept.call(this);
 		if (accept)
 			input.attr("accept", accept);
 		else
@@ -197,8 +197,90 @@
 		else
 			this.$el.removeAttr("opt-mixed");
 	};
-	
 
+	// ====================================================
+	const onBrowserClickHandler = function () {
+		if (this.isUploading) {
+			showError("正在上传，请稍候..");
+		}
+		else {
+			this.browser();
+		}
+	};
+
+	const onFileChangeHandler = function (e) {
+		let input = $(e.currentTarget);
+		
+		let files = validateFiles.call(this, input[0].files);
+		if (!files || files.length == 0)
+			return ;
+		
+		let fileLocalId = Date.now();
+		let multiple = input.attr("multiple") == "multiple";
+		if (multiple) {
+			this.files = Utils.toArray(this.files);
+			for (let i = 0; i < files.length; i++) {
+				files[i].localId = fileLocalId++;
+				this.files.push(files[i]);
+			}
+		}
+		else {
+			files[0].localId = fileLocalId++;
+			this.files = [files[0]];
+		}
+
+		input.remove();
+		let newInput = $("<input type='file'/>").appendTo(this.$el);
+		if (multiple)
+			newInput.attr("multiple", "multiple");
+		newInput.attr("accept", input.attr("accept"));
+
+		this.trigger("change", this.files);
+
+		if (this.isAutoUpload()) {
+			if (Utils.isNotBlank(this.getAction()))
+				this.upload();
+		}
+	};
+
+	const uploadSuccessHandler = function (e, file, callback) {
+		file[0].uploader = null;
+		callback(file.errorMsg, file.resultMsg);
+	};
+
+	// 好像不会进这里来
+	const uploadErrorHandler = function (e, file, callback) {
+		file[0].uploader = null;
+		callback(e);
+	};
+
+	const uploadStateHandler = function (e, file) {
+		let xhr = file[0].uploader;
+		if (xhr.readyState == 4) {
+			let data = xhr.responseText;
+			if (data) {
+				try {
+					data = JSON.parse(data);
+				}
+				catch (e) {}
+			}
+			if (xhr.status == 200) {
+				file.resultMsg = data || xhr.responseText;
+			}
+			else { // 出错了，出错会进入 onload
+				console.error(xhr.responseText);
+				file.errorMsg = data || xhr.responseText || "文件上传失败！";
+			}
+		}
+	};
+
+	const uploadProgressHandler = function (e, file) {
+		this.totalSend += e.loaded;
+		if (this.totalSend > this.totalSize)
+			this.totalSend = this.totalSize;
+		this.trigger("progress", file, this.totalSend, this.totalSize);
+	};
+	
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
 		UI._baseRender.call(this, context, options);
@@ -267,52 +349,6 @@
 		return Utils.isTrue(this.options.mixed);
 	};
 
-
-	///////////////////////////////////////////////////////
-	const onBrowserClickHandler = function () {
-		if (this.isUploading) {
-			showError("正在上传，请稍候..");
-		}
-		else {
-			this.browser();
-		}
-	};
-
-	const onFileChangeHandler = function (e) {
-		let input = $(e.currentTarget);
-		
-		let files = validateFiles.call(this, input[0].files);
-		if (!files || files.length == 0)
-			return ;
-		
-		let fileLocalId = Date.now();
-		let multiple = input.attr("multiple") == "multiple";
-		if (multiple) {
-			this.files = Utils.toArray(this.files);
-			for (let i = 0; i < files.length; i++) {
-				files[i].localId = fileLocalId++;
-				this.files.push(files[i]);
-			}
-		}
-		else {
-			files[0].localId = fileLocalId++;
-			this.files = [files[0]];
-		}
-
-		input.remove();
-		let newInput = $("<input type='file'/>").appendTo(this.$el);
-		if (multiple)
-			newInput.attr("multiple", "multiple");
-		newInput.attr("accept", input.attr("accept"));
-
-		this.trigger("change", this.files);
-
-		if (this.isAutoUpload()) {
-			if (Utils.isNotBlank(this.getAction()))
-				this.upload();
-		}
-	};
-
 	// ====================================================
 	const renderInputView = function ($, target) {
 		let input = $("<input type='file'/>").appendTo(target);
@@ -323,46 +359,7 @@
 		input.attr("accept", Utils.trimToNull(getAccept.call(this)));
 	};
 
-	const uploadSuccessHandler = function (e, file, callback) {
-		file[0].uploader = null;
-		callback(file.errorMsg, file.resultMsg);
-	};
-
-	// 好像不会进这里来
-	const uploadErrorHandler = function (e, file, callback) {
-		console.log(e);
-		file[0].uploader = null;
-		callback(e);
-	};
-
-	const uploadStateHandler = function (e, file) {
-		let xhr = file[0].uploader;
-		if (xhr.readyState == 4) {
-			let data = xhr.responseText;
-			if (data) {
-				try {
-					data = JSON.parse(data);
-				}
-				catch (e) {}
-			}
-			if (xhr.status == 200) {
-				file.resultMsg = data || xhr.responseText;
-			}
-			else { // 出错了，出错会进入 onload
-				console.error(xhr.responseText);
-				file.errorMsg = data || xhr.responseText || "文件上传失败！";
-			}
-		}
-	};
-
-	const uploadProgressHandler = function (e, file) {
-		this.totalSend += e.loaded;
-		if (this.totalSend > this.totalSize)
-			this.totalSend = this.totalSize;
-		this.trigger("progress", file, this.totalSend, this.totalSize);
-	};
-
-	// ====================================================
+	///////////////////////////////////////////////////////
 	const validateFiles = function (files) {
 		let filter = Utils.trimToNull(this.getFilter());
 		if (filter) {
@@ -590,7 +587,6 @@
 	const showError = function (message, duration) {
 		UI.tooltip.create({type: "danger", content: message, duration: duration});
 	};
-	
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
