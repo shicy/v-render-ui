@@ -14,9 +14,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UITextView = UIBase.extend(module, {
+const UIInput = UIBase.extend(module, {
 	renderView: function () {
-		UITextView.super(this);
+		UIInput.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

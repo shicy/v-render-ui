@@ -7,7 +7,7 @@ const BaseModule = require("../BaseModule");
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
 const UIButton = VRender.UIButton;
-const UITextView = VRender.UITextView;
+const UIInput = VRender.UIInput;
 const UIDialog = VRender.UIDialog;
 
 const ModuleView = BaseModule.extend(module, {
@@ -169,7 +169,7 @@ const ModuleView = BaseModule.extend(module, {
 
 		var contentView = new UIGroup(this, { gap: 10 });
 		contentView.append("<div>添加一个组件作为对话框内容</div>");
-		contentView.add(new UIGroup(this)).append(new UITextView(this, { prompt: "输入框" }));
+		contentView.add(new UIGroup(this)).append(new UIInput(this, { prompt: "输入框" }));
 		contentView.add(new UIGroup(this)).append(new UIButton(this, { label: "按钮" }));
 		demo.append(new UIDialog(this, { content: contentView, openbtn: "[name=dialog_btn5]" }));
 
@@ -179,7 +179,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("var contentView = new UIGroup([context]);");
 		source.push("contentView.append('<div>添加一个组件作为对话框内容</div>')");
 		source.push("contentView.add(new UIGroup([context]))");
-		source.push("  .append(new UITextView([context], { prompt: '输入框' }));");
+		source.push("  .append(new UIInput([context], { prompt: '输入框' }));");
 		source.push("contentView.add(new UIGroup([context]))");
 		source.push("  .append(new UIButton([context], { label: '按钮' }));");
 		source.push("new UIDialog([context], {");

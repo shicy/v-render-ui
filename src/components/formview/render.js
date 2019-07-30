@@ -27,8 +27,8 @@
 		this.$el.on("focusout", ".form-item > .content > dd > div > *", onNativeInputFocusHandler.bind(this));
 		this.$el.on("change", ".form-item > .content > dd > div > *", onValueChangeHandler.bind(this));
 
-		this.$el.on("keydown", ".ui-textview > .ipt > *", onTextViewKeyHandler.bind(this));
-		this.$el.on("focusout", ".ui-textview > .ipt > *", onTextViewFocusHandler.bind(this));
+		this.$el.on("keydown", ".ui-input > .ipt > *", onTextViewKeyHandler.bind(this));
+		this.$el.on("focusout", ".ui-input > .ipt > *", onTextViewFocusHandler.bind(this));
 
 		if (!this._isRenderAsApp()) {
 			this.$el.on("mouseenter", ".form-item > .content > dd > div > *", onItemMouseHandler.bind(this));
@@ -374,7 +374,7 @@
 
 	const onValueChangeHandler = function (e) {
 		let target = $(e.currentTarget);
-		if (target.is("input, textarea, .ui-textview"))
+		if (target.is("input, textarea, .ui-input"))
 			return ;
 		// console.log("onValueChangeHandler");
 		let item = Utils.parentUntil(target, ".form-item");
@@ -619,7 +619,7 @@
 		}
 		else {
 			contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
-			if (contentView instanceof UI.textview) {
+			if (contentView instanceof UI.input) {
 				validateTextView.call(this, item, contentView, callback);
 			}
 			else if (contentView instanceof UI.dateinput) {

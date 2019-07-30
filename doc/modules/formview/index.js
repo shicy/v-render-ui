@@ -6,7 +6,7 @@ const BaseModule = require("../BaseModule");
 
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
-const UITextView = VRender.UITextView;
+const UIInput = VRender.UIInput;
 const UISelect = VRender.UISelect;
 const UIDateInput = VRender.UIDateInput;
 const UIDateRange = VRender.UIDateRange;
@@ -40,7 +40,7 @@ const ModuleView = BaseModule.extend(module, {
 			params: { id: 1, state: 1 },
 			data: [
 				{ name: "a", label: "文本", content: "文本内容" },
-				{ name: "b", label: "输入框", content: new UITextView(this) },
+				{ name: "b", label: "输入框", content: new UIInput(this) },
 				{ name: "c", label: "下拉选择框", content: new UISelect(this, { data: ["选项1", "选项2", "选项3"] }) },
 				{ name: "d", label: "日期", content: new UIDateInput(this) },
 				{ name: "e", label: "日期范围", content: new UIDateRange(this) },
@@ -48,7 +48,7 @@ const ModuleView = BaseModule.extend(module, {
 				{ name: "g", label: "多选", content: new UICheckbox(this, { label: "多选", value: "chkbox" }) },
 				{ name: "h", label: "单选组", content: new UIRadioGroup(this, { data: ["A", "B", "C", "D"] }) },
 				{ name: "i", label: "多选组", content: new UICheckGroup(this, { data: ["A", "B", "C", "D"] }) },
-				{ name: "j", label: "多行文本", content: new UITextView(this, { multi: true }) }
+				{ name: "j", label: "多行文本", content: new UIInput(this, { multi: true }) }
 			],
 			buttons: [
 				{ label: "确定", type: "submit" },
@@ -70,7 +70,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  }, {");
 		source.push("    name: 'b',");
 		source.push("    label: '输入框',");
-		source.push("    content: new UITextView([context])");
+		source.push("    content: new UIInput([context])");
 		source.push("  }, {");
 		source.push("    name: 'c',");
 		source.push("    label: '下拉选择框',");
@@ -112,7 +112,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  }, {");
 		source.push("    name: 'j',");
 		source.push("    label: '多行文本',");
-		source.push("    content: new UITextView([context], {");
+		source.push("    content: new UIInput([context], {");
 		source.push("      multi: true");
 		source.push("    })");
 		source.push("  }],");
@@ -139,11 +139,11 @@ const ModuleView = BaseModule.extend(module, {
 		demo.add(new UIFormView(this, {
 			columns: 2,
 			data: [
-				{ name: "a", label: "输入框1", content: new UITextView(this) },
-				{ name: "b", label: "输入框2", content: new UITextView(this) },
+				{ name: "a", label: "输入框1", content: new UIInput(this) },
+				{ name: "b", label: "输入框2", content: new UIInput(this) },
 				{ name: "c", label: "单选", colspan: 2, 
 					content: new UIRadioGroup(this, { data: "ABCDEFGHIJKLMNOPQRST".split("") }) },
-				{ name: "d", label: "多行文本", colspan: 2, content: new UITextView(this, { multi: true, width: 600 }) }
+				{ name: "d", label: "多行文本", colspan: 2, content: new UIInput(this, { multi: true, width: 600 }) }
 			],
 			buttons: [
 				{ label: "确认并保存", type: "submit" }
@@ -156,11 +156,11 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  data: [{");
 		source.push("    name: 'a',");
 		source.push("    label: '输入框1',");
-		source.push("    content: new UITextView(context)");
+		source.push("    content: new UIInput(context)");
 		source.push("  }, {");
 		source.push("    name: 'b',");
 		source.push("    label: '输入框2',");
-		source.push("    content: new UITextView(context)");
+		source.push("    content: new UIInput(context)");
 		source.push("  }, {");
 		source.push("    name: 'c',");
 		source.push("    label: '单选',");
@@ -171,7 +171,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  }, {");
 		source.push("    name: 'd',");
 		source.push("    label: '多行文本',");
-		source.push("    content: new UITextView(context, {");
+		source.push("    content: new UIInput(context, {");
 		source.push("      multi: true,");
 		source.push("      width: 600");
 		source.push("    })");
@@ -192,8 +192,8 @@ const ModuleView = BaseModule.extend(module, {
 		let demo = new UIGroup(this);
 		demo.add(new UIFormView(this, {
 			data: [
-				{ name: "a", label: "电子邮箱", content: new UITextView(this, { type: "email" }) },
-				{ name: "b", label: "手机号码", content: new UITextView(this, { type: "int" }),
+				{ name: "a", label: "电子邮箱", content: new UIInput(this, { type: "email" }) },
+				{ name: "b", label: "手机号码", content: new UIInput(this, { type: "int" }),
 					validate: function (value, callback) {
 						callback(/^1\d{10}$/.test(value) ? false : "手机号必须是1开始的11位数字");
 					}},
@@ -212,13 +212,13 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  data: [{");
 		source.push("    name: 'a',");
 		source.push("    label: '电子邮箱',");
-		source.push("    content: new UITextView([context], {");
+		source.push("    content: new UIInput([context], {");
 		source.push("      type: 'email'");
 		source.push("    })");
 		source.push("  }, {");
 		source.push("    name: 'b',");
 		source.push("    label: '手机号码',");
-		source.push("    content: new UITextView([context]),");
+		source.push("    content: new UIInput([context]),");
 		source.push("    validate: function (value, callback) {");
 		source.push("      callback(/^1\\d{10}$/.test(value) ? false : '手机号必须是1开始的11位数字');");
 		source.push("    }");
@@ -273,8 +273,8 @@ const ModuleView = BaseModule.extend(module, {
 		let demo = new UIGroup(this);
 		var form = demo.add(new UIFormView(this));
 		form.add("a", "文本").content("文本内容");
-		form.add("b", "输入框").content(new UITextView(this)).required();
-		form.add("c", "手机号码").content(new UITextView(this))
+		form.add("b", "输入框").content(new UIInput(this)).required();
+		form.add("c", "手机号码").content(new UIInput(this))
 			.validate(function (value, callback) {
 				callback(/^1\d{10}$/.test(value) ? false : "手机号必须是1开始的11位数字");
 			});
@@ -286,10 +286,10 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("form.add('a', '文本')");
 		source.push("  .content('文本内容');");
 		source.push("form.add('b', '输入框')");
-		source.push("  .content(new UITextView([context]))");
+		source.push("  .content(new UIInput([context]))");
 		source.push("  .required();");
 		source.push("form.add('c', '手机号码')");
-		source.push("  .content(new UITextView([context]))");
+		source.push("  .content(new UIInput([context]))");
 		source.push("  .validate(function (value, callback) {");
 		source.push("    callback(/^1\\d{10}$/.test(value) ? false : '手机号必须是1开始的11位数字');");
 		source.push("  });");
@@ -318,7 +318,7 @@ const ModuleView = BaseModule.extend(module, {
 			labelAlign: "right",
 			orientation: this.isApp ? UIFormView.HORIZONTIAL : null,
 			data: [
-				{name: "a", label: "输入框", content: new UITextView(this), required: true},
+				{name: "a", label: "输入框", content: new UIInput(this), required: true},
 				{name: "b", label: "下拉选择框", content: new UISelect(this, {data: ["选项1", "选项2"]})}
 			],
 			buttons: [{label: "确定", type: "submit"}]
@@ -331,7 +331,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  data: [{");
 		source.push("    name: 'a',");
 		source.push("    label: '输入框',");
-		source.push("    content: new UITextView(context),");
+		source.push("    content: new UIInput(context),");
 		source.push("    required: true");
 		source.push("  }, {");
 		source.push("    name: 'b',");

@@ -145,7 +145,7 @@
 	padding-right: 0px;
 }
 
-.ui-formview.horizontial > .items > .form-item > .content > dd > div > .ui-textview {
+.ui-formview.horizontial > .items > .form-item > .content > dd > div > .ui-input {
 	margin-top: -0.11rem;
 }
 
@@ -181,12 +181,12 @@
 	padding-left: 0px;
 }
 
-.ui-formview.horizontial > .items > .form-item > .content > dd > div > .ui-textview > .ipt > textarea {
+.ui-formview.horizontial > .items > .form-item > .content > dd > div > .ui-input > .ipt > textarea {
 	padding-left: 0px;
 	padding-right: 0px;
 }
 
-.ui-formview.horizontial > .items > .form-item > .content > dd > div > .ui-textview > .errmsg {
+.ui-formview.horizontial > .items > .form-item > .content > dd > div > .ui-input > .errmsg {
 	transform: translate(-1rem, 0px);
 }
 

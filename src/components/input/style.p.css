@@ -1,15 +1,15 @@
 
-.ui-textview {
+.ui-input {
     display: inline-block;
     text-align: left;
 }
 
-.ui-textview > .ipt {
+.ui-input > .ipt {
     display: inline-block;
     width: 200px;
 }
 
-.ui-textview > .ipt > input {
+.ui-input > .ipt > input {
     width: 100%;
     color: #383838;
     padding: 0px 3px 0px 10px;
@@ -24,23 +24,23 @@
     outline: none;
 }
 
-.ui-textview > .ipt > input::-webkit-outer-spin-button,
-.ui-textview > .ipt > input::-webkit-inner-spin-button {
+.ui-input > .ipt > input::-webkit-outer-spin-button,
+.ui-input > .ipt > input::-webkit-inner-spin-button {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
 }
 
 /* FireFox */
-.ui-textview > .ipt > input[type="number"] {
+.ui-input > .ipt > input[type="number"] {
     -moz-appearance: textfield;
 }
 
-.ui-textview > .ipt > input:focus {
+.ui-input > .ipt > input:focus {
     border-color: #66afe9;
 }
 
-.ui-textview > .ipt > textarea {
+.ui-input > .ipt > textarea {
     width: 100%;
     min-height: 65px;
     color: #383838;
@@ -57,11 +57,11 @@
     line-height: 20px;
 }
 
-.ui-textview > .ipt > textarea:focus {
+.ui-input > .ipt > textarea:focus {
     border-color: #66afe9;
 }
 
-.ui-textview > .ipt > .prompt {
+.ui-input > .ipt > .prompt {
     position: absolute;
     left: 10px;
     right: 3px;
@@ -76,7 +76,7 @@
     white-space: nowrap;
 }
 
-.ui-textview > .ipt > .clear {
+.ui-input > .ipt > .clear {
     display: none;
     position: absolute;
     width: 30px;
@@ -94,17 +94,17 @@
     z-index: 1;
 }
 
-.ui-textview > .ipt > .clear:hover {
+.ui-input > .ipt > .clear:hover {
     opacity: .6;
     background-color: #eee;
 }
 
-.ui-textview > .ipt > .clear:active {
+.ui-input > .ipt > .clear:active {
     opacity: .8;
     background-color: #ddd;
 }
 
-.ui-textview > .ipt > .size {
+.ui-input > .ipt > .size {
     position: absolute;
     right: 0px;
     bottom: 0px;
@@ -116,7 +116,7 @@
     display: none;
 }
 
-.ui-textview > .ipt > .tips {
+.ui-input > .ipt > .tips {
     position: absolute;
     white-space: nowrap;
     top: 0px;
@@ -127,7 +127,7 @@
     color: #383838;
 }
 
-.ui-textview > .ipt > .preview {
+.ui-input > .ipt > .preview {
     position: absolute;
     left: 0px;
     right: 0px;
@@ -137,7 +137,7 @@
     pointer-events: none;
 }
 
-.ui-textview > .ipt > .preview > pre {
+.ui-input > .ipt > .preview > pre {
     padding: 4px 3px 3px 10px;
     margin: 0px;
     font-size: inherit;
@@ -147,11 +147,11 @@
     white-space: pre-wrap;
 }
 
-.ui-textview > .ipt:hover > input {
+.ui-input > .ipt:hover > input {
     padding-right: 30px;
 }
 
-.ui-textview > .errmsg {
+.ui-input > .errmsg {
     display: none;
     position: absolute;
     top: 40px;
@@ -169,7 +169,7 @@
     transition: opacity 0.5s;
 }
 
-.ui-textview > .errmsg:before {
+.ui-input > .errmsg:before {
     content: "";
     position: absolute;
     left: 10px;
@@ -179,7 +179,7 @@
     border-bottom-color: #ff7878;
 }
 
-.ui-textview > .errmsg:after {
+.ui-input > .errmsg:after {
     content: "";
     position: absolute;
     left: 10px;
@@ -189,86 +189,86 @@
     border-bottom-color: #fff1f0;
 }
 
-.ui-textview > .desc {
+.ui-input > .desc {
     font-size: 14px;
     color: #787878;
     line-height: 20px;
 }
 
-.ui-textview.multi > .ipt {
+.ui-input.multi > .ipt {
     min-width: 400px;
 }
 
-.ui-textview.multi > .ipt > .prompt {
+.ui-input.multi > .ipt > .prompt {
     top: 0px;
     margin-top: 0px;
 }
 
-.ui-textview.has-val > .ipt > .prompt {
+.ui-input.has-val > .ipt > .prompt {
     display: none;
 }
 
-.ui-textview.has-val > .ipt:hover > .clear {
+.ui-input.has-val > .ipt:hover > .clear {
     display: block;
 }
 
-.ui-textview.show-size > .ipt > input {
+.ui-input.show-size > .ipt > input {
     padding-right: 30px;
 }
 
-.ui-textview.show-size > .ipt > .size {
+.ui-input.show-size > .ipt > .size {
     display: block;
 }
 
-.ui-textview.show-size > .ipt:hover > .size {
+.ui-input.show-size > .ipt:hover > .size {
     display: none;
 }
 
-.ui-textview.is-error > .ipt > input,
-.ui-textview.is-error > .ipt > textarea {
+.ui-input.is-error > .ipt > input,
+.ui-input.is-error > .ipt > textarea {
     border-color: #fb4040;
 }
 
-.ui-textview.is-error > .errmsg {
+.ui-input.is-error > .errmsg {
     display: block;
 }
 
-.ui-textview.is-error > .errmsg.animate-in {
+.ui-input.is-error > .errmsg.animate-in {
     opacity: 1;
 }
 
-.ui-textview.is-error > .errmsg.animate-out {
+.ui-input.is-error > .errmsg.animate-out {
     opacity: 0;
 }
 
-.ui-textview[opt-readonly] > .ipt > input,
-.ui-textview[opt-readonly] > .ipt > textarea {
+.ui-input[opt-readonly] > .ipt > input,
+.ui-input[opt-readonly] > .ipt > textarea {
     background-color: #fffcf4;
     padding-right: 3px;
 }
 
-.ui-textview[opt-readonly] > .ipt:hover > .clear {
+.ui-input[opt-readonly] > .ipt:hover > .clear {
     display: none;
 }
 
-.ui-textview[opt-fixed] > .ipt {
+.ui-input[opt-fixed] > .ipt {
     width: 100%;
 }
 
-.ui-textview[opt-pwd] > .ipt > input {
+.ui-input[opt-pwd] > .ipt > input {
     -webkit-text-security: disc;
     -moz-text-security: disc;
     text-security: disc;
 }
 
-.ui-textview[disabled] > .ipt > input,
-.ui-textview[disabled] > .ipt > textarea {
+.ui-input[disabled] > .ipt > input,
+.ui-input[disabled] > .ipt > textarea {
     color: #ccc;
     background-color: #f9f9f9;
     padding-right: 3px;
     pointer-events: none;
 }
 
-.ui-textview[disabled] > .ipt > .clear {
+.ui-input[disabled] > .ipt > .clear {
     display: none;
 }

@@ -48,7 +48,7 @@ const menus = [{
 		{name: "formview", title: "FormView", subTitle: "表单视图"},
 		{name: "radiobox", title: "Radiobox", subTitle: "单选框"},
 		{name: "select", title: "Select", subTitle: "下拉选择框"},
-		{name: "textview", title: "TextView", subTitle: "文本输入框"},
+		{name: "input", title: "Input", subTitle: "文本输入框"},
 		{name: "timeinput", title: "TimeInput", subTitle: "时间输入框"}
 	]
 }, {

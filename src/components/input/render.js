@@ -1,20 +1,20 @@
 // 2019-06-06
-// textview
+// input(原textview)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.textview)
+	if (frontend && VRender.Component.ui.input)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UITextView = UI.textview = function (view, options) {
+	const UIInput = UI.input = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UITextView = UITextView.prototype = new UI._base(false);
+	const _UIInput = UIInput.prototype = new UI._base(false);
 
-	_UITextView.init = function (target, options) {
+	_UIInput.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
 		this.inputTag = this.$el.children(".ipt");
@@ -40,7 +40,7 @@
 	};
 
 	// ====================================================
-	_UITextView.val = function (value) {
+	_UIInput.val = function (value) {
 		if (Utils.isNull(value)) {
 			return this.getValue();
 		}
@@ -48,17 +48,17 @@
 		return this;
 	};
 
-	_UITextView.focus = function () {
+	_UIInput.focus = function () {
 		this.input.focus();
 		return this;
 	};
 
-	_UITextView.select = function () {
+	_UIInput.select = function () {
 		this.input.select();
 		return this;
 	};
 
-	_UITextView.validate = function (callback) {
+	_UIInput.validate = function (callback) {
 		let value = this.getValue();
 		if (value.length == 0) {
 			if (this.isRequired())
@@ -79,50 +79,50 @@
 	};
 
 	// ====================================================
-	_UITextView.getValue = function () {
+	_UIInput.getValue = function () {
 		return this.input.val() || "";
 	};
-	_UITextView.setValue = function (value) {
+	_UIInput.setValue = function (value) {
 		value = Utils.trimToEmpty(value);
 		this.input.val(value);
 		clearErrorMsg.call(this);
 		valueChanged.call(this, value);
 	};
 
-	_UITextView.getPrompt = function () {
+	_UIInput.getPrompt = function () {
 		return this.inputTag.find(".prompt").text();
 	};
-	_UITextView.setPrompt = function (value) {
+	_UIInput.setPrompt = function (value) {
 		this.inputTag.find(".prompt").remove();
 		if (Utils.isNotBlank(value)) {
 			$("<span class='prompt'></span>").appendTo(this.inputTag).text(value);
 		}
 	};
 
-	_UITextView.getTips = function () {
+	_UIInput.getTips = function () {
 		return this.inputTag.find(".tips").text();
 	};
-	_UITextView.setTips = function (value) {
+	_UIInput.setTips = function (value) {
 		this.inputTag.find(".tips").remove();
 		if (Utils.isNotBlank(value)) {
 			$("<span class='tips'></span>").appendTo(this.inputTag).html(value);
 		}
 	};
 
-	_UITextView.getDescription = function () {
+	_UIInput.getDescription = function () {
 		return this.$el.children(".desc").text();
 	};
-	_UITextView.setDescription = function (value) {
+	_UIInput.setDescription = function (value) {
 		this.$el.children(".desc").remove();
 		if (Utils.isNotBlank(value)) {
 			$("<div class='desc'></div>").appendTo(this.$el).html(value);
 		}
 	};
 
-	_UITextView.getDataType = function () {
+	_UIInput.getDataType = function () {
 		return this.$el.attr("opt-type") || "text";
 	};
-	_UITextView.setDataType = function (value) {
+	_UIInput.setDataType = function (value) {
 		if (/^(number|num|int)$/.test(value))
 			value = "_number";
 		this.$el.attr("opt-type", value);
@@ -132,10 +132,10 @@
 			this.input.removeAttr("type");
 	};
 
-	_UITextView.isReadonly = function () {
+	_UIInput.isReadonly = function () {
 		return this.$el.attr("opt-readonly") == 1;
 	};
-	_UITextView.setReadonly = function (value) {
+	_UIInput.setReadonly = function (value) {
 		if (Utils.isNull(value) || Utils.isTrue(value)) {
 			this.$el.attr("opt-readonly", "1");
 			this.input.attr("readonly", "readonly");
@@ -146,10 +146,10 @@
 		}
 	};
 
-	_UITextView.isRequired = function () {
+	_UIInput.isRequired = function () {
 		return this.$el.attr("opt-required") == 1;
 	};
-	_UITextView.setRequired = function (value) {
+	_UIInput.setRequired = function (value) {
 		if (Utils.isNull(value) || Utils.isTrue(value)) {
 			this.$el.attr("opt-required", "1");
 		}
@@ -158,33 +158,33 @@
 		}
 	};
 
-	_UITextView.getEmptyMsg = function () {
+	_UIInput.getEmptyMsg = function () {
 		return this.$el.attr("opt-empty");
 	};
-	_UITextView.setEmptyMsg = function (value) {
+	_UIInput.setEmptyMsg = function (value) {
 		if (Utils.isBlank(value))
 			this.$el.removeAttr("opt-empty");
 		else
 			this.$el.attr("opt-empty", value);
 	};
 
-	_UITextView.getErrorMsg = function () {
+	_UIInput.getErrorMsg = function () {
 		return this.$el.attr("opt-errmsg");
 	};
-	_UITextView.setErrorMsg = function (value) {
+	_UIInput.setErrorMsg = function (value) {
 		if (Utils.isBlank(value))
 			this.$el.removeAttr("opt-errmsg");
 		else
 			this.$el.attr("opt-errmsg", value);
 	};
 
-	_UITextView.getMaxSize = function () {
+	_UIInput.getMaxSize = function () {
 		if (this.hasOwnProperty("maxSize"))
 			return this.maxSize;
 		this.maxSize = parseInt(this.$el.attr("opt-size")) || 0;
 		return this.maxSize;
 	};
-	_UITextView.setMaxSize = function (value) {
+	_UIInput.setMaxSize = function (value) {
 		this.maxSize = parseInt(value) || 0;
 		this.$el.attr("opt-size", this.maxSize);
 		if (this.maxSize > 0) {
@@ -199,19 +199,19 @@
 		}
 	};
 
-	_UITextView.getValidate = function () {
+	_UIInput.getValidate = function () {
 		return Fn.getFunction.call(this, "_validate", "validate");
 	};
-	_UITextView.setValidate = function (value) {
+	_UIInput.setValidate = function (value) {
 		this.options._validate = value;
 		this.$el.children(".ui-fn[name='validate']").remove();
 	};
 
-	_UITextView.hasError = function () {
+	_UIInput.hasError = function () {
 		return this.$el.is(".is-error");
 	};
 
-	_UITextView.showError = function (errmsg) {
+	_UIInput.showError = function (errmsg) {
 		if (errmsg === true) {
 			errmsg = this.lastErrorMsg || this.$el.attr("opt-errmsg") || "内容不正确！";
 		}
@@ -221,11 +221,11 @@
 			clearErrorMsg.call(this);
 	};
 
-	_UITextView.getDecimals = function () {
+	_UIInput.getDecimals = function () {
 		let decimals = parseFloat(this.$el.attr("opt-decimal"));
 		return (isNaN(decimals) || decimals < 0) ? -1 : decimals;
 	};
-	_UITextView.setDecimals = function (value) {
+	_UIInput.setDecimals = function (value) {
 		if (isNaN(value))
 			value = 2;
 		else
@@ -233,18 +233,18 @@
 		this.$el.attr("opt-decimal", value);
 	};
 
-	_UITextView.isMultiline = function () {
+	_UIInput.isMultiline = function () {
 		return this.$el.is(".multi");
 	};
 
-	_UITextView.isAutoHeight = function () {
+	_UIInput.isAutoHeight = function () {
 		return this.$el.attr("opt-autoheight") == 1;
 	};
 
-	_UITextView.isDisplayAsPassword = function () {
+	_UIInput.isDisplayAsPassword = function () {
 		return this.$el.attr("opt-pwd") == 1;
 	};
-	_UITextView.setDisplayAsPassword = function (value) {
+	_UIInput.setDisplayAsPassword = function (value) {
 		let style = window.getComputedStyle(this.input[0]);
 		if (Utils.isNull(value) || Utils.isTrue(value)) {
 			this.$el.attr("opt-pwd", "1");
@@ -383,7 +383,7 @@
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-textview");
+		target.addClass("ui-input");
 
 		let options = this.options || {};
 
@@ -697,8 +697,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UITextView = UITextView;
-		UI.init(".ui-textview", UITextView, Renderer);
+		window.UIInput = UIInput;
+		UI.init(".ui-input", UIInput, Renderer);
 	}
 	else {
 		module.exports = Renderer;
