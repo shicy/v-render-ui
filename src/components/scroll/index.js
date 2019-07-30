@@ -9,9 +9,9 @@ const UIBase = require("../../common/UIBase");
 const Renderer = require("./render");
 
 
-const UIPaginator = UIBase.extend(module, {
+const UIScroll = UIBase.extend(module, {
 	renderView: function () {
-		UIPaginator.super(this);
+		UIScroll.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

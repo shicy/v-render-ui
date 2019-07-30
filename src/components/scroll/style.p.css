@@ -1,43 +1,43 @@
 
-.ui-scrollbox {
+.ui-scroll {
 	width: 100%;
 	height: 100%;
 	border: 1px solid #eee;
 	overflow: auto;
 }
 
-.ui-scrollbox > .container > .ui-list {
+.ui-scroll > .container > .ui-list {
 	min-height: 0px;
 	border: 0px;
 }
 
-.ui-scrollbox > .container > .ui-list > ul {
+.ui-scroll > .container > .ui-list > ul {
 	opacity: 1;
 	pointer-events: inherit;
 }
 
-.ui-scrollbox > .container > .ui-list > .ui-load {
+.ui-scroll > .container > .ui-list > .ui-load {
 	display: none;
 }
 
-.ui-scrollbox > .container > .ui-list > .ui-empty {
+.ui-scroll > .container > .ui-list > .ui-empty {
 	display: none;
 }
 
-.ui-scrollbox > .top {
+.ui-scroll > .top {
 	height: 0px;
 	overflow: hidden;
 	background-color: #fafafa;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef {
+.ui-scroll > .top > .scroll-refreshdef {
 	height: 100%;
 	color: #999;
 	overflow: hidden;
 	font-size: 14px;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef > * {
+.ui-scroll > .top > .scroll-refreshdef > * {
 	display: none;
 	position: absolute;
 	left: 50%;
@@ -46,7 +46,7 @@
 	padding-left: 20px;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef > *:before {
+.ui-scroll > .top > .scroll-refreshdef > *:before {
 	content: "";
 	position: absolute;
 	width: 16px;
@@ -59,64 +59,64 @@
 	background-position: center;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef[state='pull'] > .pull {
+.ui-scroll > .top > .scroll-refreshdef[state='pull'] > .pull {
 	display: block;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef[state='pull'] > .pull:before {
+.ui-scroll > .top > .scroll-refreshdef[state='pull'] > .pull:before {
 	background-image: url(/VRender/icons/029a.png);
 	opacity: 0.35;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef[state='drop'] > .drop {
+.ui-scroll > .top > .scroll-refreshdef[state='drop'] > .drop {
 	display: block;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef[state='drop'] > .drop:before {
+.ui-scroll > .top > .scroll-refreshdef[state='drop'] > .drop:before {
 	background-image: url(/VRender/icons/029a.png);
 	transform: rotate(180deg);
 	opacity: 0.5;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef[state='load'] > .load {
+.ui-scroll > .top > .scroll-refreshdef[state='load'] > .load {
 	display: block;
 }
 
-.ui-scrollbox > .top > .scrollbox-refreshdef[state='load'] > .load:before {
+.ui-scroll > .top > .scroll-refreshdef[state='load'] > .load:before {
 	background-image: url(/VRender/icons/017a.png);
 	animation: ui-loading-animate 1s steps(8, end) infinite;
     -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
 }
 
-.ui-scrollbox > .top.animate {
+.ui-scroll > .top.animate {
 	transition: height 0.2s;
 }
 
-.ui-scrollbox > .bottom {
+.ui-scroll > .bottom {
 	font-size: 14px;
 }
 
-.ui-scrollbox > .bottom > * {
+.ui-scroll > .bottom > * {
 	display: none;
 }
 
-.ui-scrollbox > .bottom > .scrollbox-load {
+.ui-scroll > .bottom > .scroll-load {
 	border-top: 1px solid #eee;
 }
 
-.ui-scrollbox > .bottom > .scrollbox-load > .scrollbox-loaddef {
+.ui-scroll > .bottom > .scroll-load > .scroll-loaddef {
 	padding: 20px 0px;
 	color: #999;
 	text-align: center;
 }
 
-.ui-scrollbox > .bottom > .scrollbox-load > .scrollbox-loaddef > p {
+.ui-scroll > .bottom > .scroll-load > .scroll-loaddef > p {
 	display: inline-block;
     position: relative;
     padding-left: 25px;
 }
 
-.ui-scrollbox > .bottom > .scrollbox-load > .scrollbox-loaddef > p:before {
+.ui-scroll > .bottom > .scroll-load > .scroll-loaddef > p:before {
 	content: "";
     position: absolute;
     width: 16px;
@@ -130,17 +130,17 @@
     background-position: center;
 }
 
-.ui-scrollbox > .bottom > .scrollbox-bottom {
+.ui-scroll > .bottom > .scroll-bottom {
 	border-top: 1px solid #eee;
 }
 
-.ui-scrollbox > .bottom > .scrollbox-bottom > .scrollbox-bottomdef {
+.ui-scroll > .bottom > .scroll-bottom > .scroll-bottomdef {
 	padding: 20px 0px;
 	color: #999;
 	text-align: center;
 }
 
-.ui-scrollbox > .ui-empty {
+.ui-scroll > .ui-empty {
     position: absolute;
     height: auto;
     left: 0px;
@@ -149,31 +149,31 @@
     bottom: 0px;
 }
 
-.ui-scrollbox.is-loading > .bottom > .scrollbox-load {
+.ui-scroll.is-loading > .bottom > .scroll-load {
 	display: block;
 }
 
-.ui-scrollbox.is-loading > .bottom > .scrollbox-load > .scrollbox-loaddef > p:before {
+.ui-scroll.is-loading > .bottom > .scroll-load > .scroll-loaddef > p:before {
 	animation: ui-loading-animate 1s steps(8, end) infinite;
     -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
 }
 
-.ui-scrollbox.is-empty {
+.ui-scroll.is-empty {
 	min-height: 120px;
 }
 
-.ui-scrollbox.is-empty > .ui-empty {
+.ui-scroll.is-empty > .ui-empty {
 	/*display: block;*/
 }
 
-.ui-scrollbox.no-more > .bottom > .scrollbox-bottom {
+.ui-scroll.no-more > .bottom > .scroll-bottom {
 	display: block;
 }
 
-.ui-scrollbox.is-loading > .ui-empty {
+.ui-scroll.is-loading > .ui-empty {
 	display: none;
 }
 
-.ui-scrollbox.is-refresh > .ui-empty {
+.ui-scroll.is-refresh > .ui-empty {
 	display: none;
 }

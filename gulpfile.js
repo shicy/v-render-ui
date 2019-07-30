@@ -68,7 +68,7 @@ function buildJs() {
 	jsFiles.push("src/components/panel/render.js");
 	jsFiles.push("src/components/list/render.js");
 	jsFiles.push("src/components/datagrid/render.js");
-	jsFiles.push("src/components/scrollbox/render.js");
+	jsFiles.push("src/components/scroll/render.js");
 	jsFiles.push("src/components/tree/render.js");
 	jsFiles.push("src/components/treeselect/render.js");
 

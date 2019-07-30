@@ -1,29 +1,29 @@
 // 2019-07-25
-// scrollbox
+// scroll(原scrollbox)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.scrollbox)
+	if (frontend && VRender.Component.ui.scroll)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UIScrollBox = UI.scrollbox = function (view, options) {
+	const UIScroll = UI.scroll = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UIScrollBox = UIScrollBox.prototype = new UI._base(false);
+	const _UIScroll = UIScroll.prototype = new UI._base(false);
 
-	_UIScrollBox.init = function (target, options) {
+	_UIScroll.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 		doInit.call(this);
 	};
 
-	_UIScrollBox.reset = function () {
+	_UIScroll.reset = function () {
 	};
 
 	// ====================================================
-	_UIScrollBox.getContentView = function () {
+	_UIScroll.getContentView = function () {
 		if (!this.contentView) {
 			let content = this.$el.children(".container").children();
 			if (content && content.length > 0) {
@@ -35,7 +35,7 @@
 		}
 		return this.contentView;
 	};
-	_UIScrollBox.setContentView = function (value) {
+	_UIScroll.setContentView = function (value) {
 		clearContentEvents.call(this);
 		let content = this.options.content = value;
 		delete this.options.view;
@@ -47,7 +47,7 @@
 		initContentEvents.call(this);
 	};
 
-	_UIScrollBox.getScrollContainer = function () {
+	_UIScroll.getScrollContainer = function () {
 		if (!this.scroller) {
 			if (this.options.hasOwnProperty("scroller"))
 				this.scroller = this.options.scroller;
@@ -58,28 +58,28 @@
 		}
 		return this.scroller;
 	};
-	_UIScrollBox.setScrollContainer = function (value) {
+	_UIScroll.setScrollContainer = function (value) {
 		clearEvents.call(this);
 		this.options.scroller = value;
 		this.scroller = null;
 		initEvents.call(this);
 	};
 
-	_UIScrollBox.getRefreshFunction = function () {
+	_UIScroll.getRefreshFunction = function () {
 		return Fn.getFunction.call(this, "refreshFunction", "refresh");
 	};
-	_UIScrollBox.setRefreshFunction = function (value) {
+	_UIScroll.setRefreshFunction = function (value) {
 		this.options.refreshFunction = value;
 	};
 
-	_UIScrollBox.getMoreFunction = function () {
+	_UIScroll.getMoreFunction = function () {
 		return Fn.getFunction.call(this, "moreFunction", "more");
 	};
-	_UIScrollBox.setMoreFunction = function (value) {
+	_UIScroll.setMoreFunction = function (value) {
 		this.options.moreFunction = value;
 	};
 
-	_UIScrollBox.getTopDistance = function () {
+	_UIScroll.getTopDistance = function () {
 		if (Utils.isNull(this.topDistance)) {
 			if (this.options.hasOwnProperty("topDistance")) {
 				this.topDistance = this.options.topDistance;
@@ -94,13 +94,13 @@
 		}
 		return this.topDistance;
 	};
-	_UIScrollBox.setTopDistance = function (value) {
+	_UIScroll.setTopDistance = function (value) {
 		this.options.topDistance = value;
 		this.$el.removeAttr("opt-top");
 		this.topDistance = null;
 	};
 
-	_UIScrollBox.getBottomDistance = function () {
+	_UIScroll.getBottomDistance = function () {
 		if (Utils.isNull(this.bottomDistance)) {
 			if (this.options.hasOwnProperty("bottomDistance")) {
 				this.bottomDistance = this.options.bottomDistance;
@@ -115,7 +115,7 @@
 		}
 		return this.bottomDistance;
 	};
-	_UIScrollBox.setBottomDistance = function (value) {
+	_UIScroll.setBottomDistance = function (value) {
 		this.options.bottomDistance = value;
 		this.$el.removeAttr("opt-bottom");
 		this.bottomDistance = null;
@@ -181,7 +181,7 @@
 	const _Renderer = Renderer.prototype = new UI._baseRender(false);
 
 	_Renderer.render = function ($, target) {
-		target.addClass("ui-scrollbox");
+		target.addClass("ui-scroll");
 
 		target.append("<div class='top'></div>");
 		target.append("<div class='container'></div>");
@@ -228,7 +228,7 @@
 			renderView(target, this.options.refreshView);
 		}
 		else {
-			let refreshView = $("<div class='scrollbox-refreshdef'></div>").appendTo(target);
+			let refreshView = $("<div class='scroll-refreshdef'></div>").appendTo(target);
 
 			let pullText = Utils.isNull(options.refreshPullText) ? "下拉刷新" : Utils.trimToEmpty(options.refreshPullText);
 			if (pullText) {
@@ -250,12 +250,12 @@
 	const renderBottomView = function ($, target) {
 		target = target.children(".bottom").empty();
 
-		let container = $("<div class='scrollbox-load'></div>").appendTo(target);
+		let container = $("<div class='scroll-load'></div>").appendTo(target);
 		if (this.options.loadingView) {
 			renderView(container, this.options.loadingView);
 		}
 		else {
-			let loadView = $("<div class='scrollbox-loaddef'></div>").appendTo(container);
+			let loadView = $("<div class='scroll-loaddef'></div>").appendTo(container);
 			let loadText = this.options.loadingText;
 			loadText = Utils.isNull(loadText) ? "正在加载.." : Utils.trimToEmpty(loadText);
 			if (loadText) {
@@ -263,12 +263,12 @@
 			}
 		}
 
-		container = $("<div class='scrollbox-bottom'></div>").appendTo(target);
+		container = $("<div class='scroll-bottom'></div>").appendTo(target);
 		if (this.options.bottomView) {
 			renderView(container, this.options.bottomView);
 		}
 		else {
-			let bottomView = $("<div class='scrollbox-bottomdef'></div>").appendTo(container);
+			let bottomView = $("<div class='scroll-bottomdef'></div>").appendTo(container);
 			let bottomText = this.options.bottomText;
 			bottomText = Utils.isNull(bottomText) ? "没有更多了" : Utils.trimToEmpty(bottomText);
 			if (bottomText) {
@@ -302,38 +302,38 @@
 	const initEvents = function () {
 		let scroller = this.getScrollContainer();
 
-		scroller.on("scroll.scrollbox", onScrollHandler.bind(this));
+		scroller.on("scroll.scroll", onScrollHandler.bind(this));
 
 		if (this._isRenderAsApp()) {
-			scroller.on("touchstart.scrollbox", onTouchHandler.bind(this));
-			scroller.on("touchend.scrollbox", onTouchHandler.bind(this));
-			scroller.on("touchmove.scrollbox", onTouchHandler.bind(this));
-			scroller.on("touchcancel.scrollbox", onTouchHandler.bind(this));
+			scroller.on("touchstart.scroll", onTouchHandler.bind(this));
+			scroller.on("touchend.scroll", onTouchHandler.bind(this));
+			scroller.on("touchmove.scroll", onTouchHandler.bind(this));
+			scroller.on("touchcancel.scroll", onTouchHandler.bind(this));
 		}
 		else {
-			scroller.on("mousedown.scrollbox", onMouseHandler.bind(this));
-			scroller.on("mouseup.scrollbox", onMouseHandler.bind(this));
-			scroller.on("mousemove.scrollbox", onMouseHandler.bind(this));
-			scroller.on("mouseleave.scrollbox", onMouseHandler.bind(this));
+			scroller.on("mousedown.scroll", onMouseHandler.bind(this));
+			scroller.on("mouseup.scroll", onMouseHandler.bind(this));
+			scroller.on("mousemove.scroll", onMouseHandler.bind(this));
+			scroller.on("mouseleave.scroll", onMouseHandler.bind(this));
 		}
 	};
 
 	const clearEvents = function () {
 		let scroller = this.getScrollContainer();
 
-		scroller.off("scroll.scrollbox");
+		scroller.off("scroll.scroll");
 
 		if (this._isRenderAsApp()) {
-			scroller.off("touchstart.scrollbox");
-			scroller.off("touchend.scrollbox");
-			scroller.off("touchmove.scrollbox");
-			scroller.off("touchcancel.scrollbox");
+			scroller.off("touchstart.scroll");
+			scroller.off("touchend.scroll");
+			scroller.off("touchmove.scroll");
+			scroller.off("touchcancel.scroll");
 		}
 		else {
-			scroller.off("mousedown.scrollbox");
-			scroller.off("mouseup.scrollbox");
-			scroller.off("mousemove.scrollbox");
-			scroller.off("mouseleave.scrollbox");
+			scroller.off("mousedown.scroll");
+			scroller.off("mouseup.scroll");
+			scroller.off("mousemove.scroll");
+			scroller.off("mouseleave.scroll");
 		}
 	};
 
@@ -343,16 +343,16 @@
 			let loadedHandler = function () {
 				onContentLoadHandler.call(this);
 			};
-			contentView.scrollbox_loaded = loadedHandler.bind(this);
-			contentView.on("loaded", contentView.scrollbox_loaded);
+			contentView.scroll_loaded = loadedHandler.bind(this);
+			contentView.on("loaded", contentView.scroll_loaded);
 		}
 	};
 
 	const clearContentEvents = function () {
 		let contentView = this.getContentView();
 		if (contentView && Utils.isFunction(contentView.off)) {
-			if (contentView.scrollbox_loaded)
-				contentView.off("loaded", contentView.scrollbox_loaded);
+			if (contentView.scroll_loaded)
+				contentView.off("loaded", contentView.scroll_loaded);
 		}
 	};
 	
@@ -650,8 +650,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UIScrollBox = UIScrollBox;
-		UI.init(".ui-scrollbox", UIScrollBox, Renderer);
+		window.UIScroll = UIScroll;
+		UI.init(".ui-scroll", UIScroll, Renderer);
 	}
 	else {
 		module.exports = Renderer;

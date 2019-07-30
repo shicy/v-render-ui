@@ -67,7 +67,7 @@ const menus = [{
 		{name: "group", title: "Group", subTitle: "组视图"},
 		{name: "panel", title: "Panel", subTitle: "面板"},
 		{name: "radgrp", title: "RadioGroup", subTitle: "单选组"},
-		{name: "scrollbox", title: "ScrollBox", subTitle: "滚动加载"}
+		{name: "scroll", title: "Scroll", subTitle: "滚动加载"}
 	]
 }, {
 	name: "导航",

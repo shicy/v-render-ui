@@ -7,11 +7,11 @@ const BaseModule = require("../BaseModule");
 const $ = VRender.$;
 const UIGroup = VRender.UIGroup;
 const UIList = VRender.UIList;
-const UIScrollBox = VRender.UIScrollBox;
+const UIScroll = VRender.UIScroll;
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UIScrollBox 滚动加载";
+		return "UIScroll 滚动加载";
 	},
 
 	renderDemos: function (target, render) {
@@ -33,11 +33,11 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: "data.component.items" });
-		demo.append(new UIScrollBox(this, { height: 400, content: listView }));
+		demo.append(new UIScroll(this, { height: 400, content: listView }));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {\n  apiName: 'data.component.items'\n});");
-		source.push("new UIScrollBox([context], {\n  height: 400,\n  content: listView\n});");
+		source.push("new UIScroll([context], {\n  height: 400,\n  content: listView\n});");
 
 		render(demo, source, description);
 	},
@@ -48,7 +48,7 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: "data.component.items", apiParams: { p_size: 5 } });
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, loadingText: "正在努力加载中，请稍候.."} ));
+		demo.append(new UIScroll(this, { height: 320, content: listView, loadingText: "正在努力加载中，请稍候.."} ));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
@@ -57,7 +57,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("    p_size: 5");
 		source.push("  }");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: listView,");
 		source.push("  loadingText: '正在努力加载中，请稍候..'");
@@ -73,14 +73,14 @@ const ModuleView = BaseModule.extend(module, {
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: "data.component.items" });
 		let loadingView = "<div style='height:60px;background-image:url(/loading2.gif);background-size:100% 100%;'></div>";
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, loadingView: loadingView }));
+		demo.append(new UIScroll(this, { height: 320, content: listView, loadingView: loadingView }));
 
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
 		source.push("  apiName: 'data.component.items'");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: '<div style=\"height:60px;background-image:url(/loading2.gif);" +
 			"background-size:100% 100%;\"></div>',");
@@ -96,13 +96,13 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: 'data.component.items' });
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, bottomDistance: 0 }));
+		demo.append(new UIScroll(this, { height: 320, content: listView, bottomDistance: 0 }));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
 		source.push("  apiName: 'data.component.items'");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: listView,");
 		source.push("  bottomDistance: 0");
@@ -117,14 +117,14 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: 'data.component.items' });
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, 
+		demo.append(new UIScroll(this, { height: 320, content: listView, 
 			refreshPullText: "下拉刷新列表", refreshDropText: "松开即可刷新列表", refreshLoadText: "刷新中，请稍候.." }));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
 		source.push("  apiName: 'data.component.items'");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: listView,");
 		source.push("  refreshPullText: '下拉刷新列表',");
@@ -142,13 +142,13 @@ const ModuleView = BaseModule.extend(module, {
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: 'data.component.items' });
 		let refreshView = "<div style='height:100%;background-image:url(/loading3.gif);background-position:center;'></div>";
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, refreshView: refreshView }));
+		demo.append(new UIScroll(this, { height: 320, content: listView, refreshView: refreshView }));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
 		source.push("  apiName: 'data.component.items'");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: listView,");
 		source.push("  refreshView: '<div style=\"height:100%;background-image:url(/loading3.gif);background-position:center;\"></div>'");
@@ -163,13 +163,13 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: "data.component.items" });
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, topDistance: 100 }));
+		demo.append(new UIScroll(this, { height: 320, content: listView, topDistance: 100 }));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
 		source.push("  apiName: 'data.component.items'");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: listView,");
 		source.push("  topDistance: 100");
@@ -184,13 +184,13 @@ const ModuleView = BaseModule.extend(module, {
 
 		let demo = new UIGroup(this, { gap: 10 });
 		let listView = new UIList(this, { apiName: "data.component.items" });
-		demo.append(new UIScrollBox(this, { height: 320, content: listView, bottomText: "-- 已经探索到底了！！ --" }));
+		demo.append(new UIScroll(this, { height: 320, content: listView, bottomText: "-- 已经探索到底了！！ --" }));
 
 		let source = [];
 		source.push("var listView = new UIList([context], {");
 		source.push("  apiName: 'data.component.items'");
 		source.push("});");
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: listView,");
 		source.push("  bottomText: '-- 已经探索到底了！！ --'");
@@ -204,10 +204,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("空视图");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIScrollBox(this, { height: 320, content: new UIList(this) }));
+		demo.append(new UIScroll(this, { height: 320, content: new UIList(this) }));
 
 		let source = [];
-		source.push("new UIScrollBox([context], {");
+		source.push("new UIScroll([context], {");
 		source.push("  height: 320,");
 		source.push("  content: new UIList(context)");
 		source.push("});");

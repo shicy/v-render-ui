@@ -30,7 +30,7 @@ const UITabbar = require("./src/components/tabbar");
 const UIPanel = require("./src/components/panel");
 const UIList = require("./src/components/list");
 const UIDatagrid = require("./src/components/datagrid");
-const UIScrollBox = require("./src/components/scrollbox");
+const UIScroll = require("./src/components/scroll");
 const UITree = require("./src/components/tree");
 const UITreeSelect = require("./src/components/treeselect");
 
@@ -63,7 +63,7 @@ module.exports = {
 		VRender.UIPopupMenu = UIPopupMenu;
 		VRender.UIRadiobox = UIRadiobox;
 		VRender.UIRadioGroup = UIRadioGroup;
-		VRender.UIScrollBox = UIScrollBox;
+		VRender.UIScroll = UIScroll;
 		VRender.UISelect = UISelect;
 		VRender.UITabbar = UITabbar;
 		VRender.UITextView = UITextView;
