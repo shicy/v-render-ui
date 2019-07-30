@@ -455,7 +455,7 @@
 
     doInit.call(this, target, options);
     setTimeout(function () {
-      tryAutoLoad.call(_this);
+      _this.tryAutoLoad();
     });
   };
 
@@ -481,6 +481,56 @@
 
     this.$el.removeAttr("api-autoload");
     return Utils.isTrue(this.options.autoLoad);
+  }; // 组件初始化时，视图自动加载异步数据
+
+
+  UIBase.tryAutoLoad = function () {
+    var _this2 = this;
+
+    if (UIBase.isAutoLoad.call(this) && Utils.isFunction(this.load)) {
+      var apiName = this.options.api || this.$el.attr("api-name");
+      var params = $.extend({}, this.getInitParams());
+      var pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
+
+      if (pager) {
+        if (!params.p_no && Utils.isFunction(pager.getPage)) params.p_no = pager.getPage();
+        if (!params.p_size && Utils.isFunction(pager.getSize)) params.p_size = pager.getSize();
+      } // let searcher = Utils.isFunction(this.getSearcher) && this.getSearcher();
+      // if (searcher && Utils.isFunction(searcher.getParams)) {
+      // 	params = $.extend(params, searcher.getParams());
+      // }
+
+
+      this.load(apiName, params, function () {
+        setTimeout(function () {
+          UIBase.tryAutoSelect.call(_this2);
+        });
+      });
+    }
+  }; // 组件初始化时，异步加载完成后，自动选择列表项
+
+
+  UIBase.tryAutoSelect = function () {
+    var _this3 = this;
+
+    var setByIndex = function setByIndex(value) {
+      if (Utils.isFunction(_this3.setSelectedIndex)) {
+        _this3.setSelectedIndex(value);
+      }
+    };
+
+    var setById = function setById(value) {
+      if (Utils.isFunction(_this3.setSelectedKey)) {
+        _this3.setSelectedKey(value);
+      }
+    };
+
+    var options = this.options || {};
+    if (options.hasOwnProperty("selectedIndex")) setByIndex(options.selectedIndex);else if (Utils.isNotBlank(this.$el.attr("data-tryindex"))) setByIndex(this.$el.attr("data-tryindex"));else if (options.hasOwnProperty("selectedId")) setById(options.selectedId);else if (Utils.isNotBlank(this.$el.attr("data-tryid"))) setById(this.$el.attr("data-tryid"));
+    delete options.selectedIndex;
+    delete options.selectedId;
+    this.$el.removeAttr("data-tryindex");
+    this.$el.removeAttr("data-tryid");
   }; // ====================================================
 
 
@@ -568,19 +618,19 @@
 
 
   _UIBase.load = function (api, params, callback) {
-    var _this2 = this;
+    var _this4 = this;
 
     if (Utils.isFunction(this._loadBefore)) this._loadBefore(api, params);
     return Fn.load.call(this, api, params, function (err, data) {
       if (!err) {
-        if (Utils.isFunction(_this2.setData)) _this2.setData(data);else _this2.options.data = data;
+        if (Utils.isFunction(_this4.setData)) _this4.setData(data);else _this4.options.data = data;
       }
 
       setTimeout(function () {
-        if (Utils.isFunction(_this2._loadAfter)) _this2._loadAfter(err, data);
+        if (Utils.isFunction(_this4._loadAfter)) _this4._loadAfter(err, data);
         if (Utils.isFunction(callback)) callback(err, data);
 
-        _this2.trigger("loaded", err, data);
+        _this4.trigger("loaded", err, data);
       });
     });
   }; // 重新加载异步数据
@@ -604,6 +654,10 @@
 
   _UIBase.isLoading = function () {
     return this.$el.is(".is-loading");
+  };
+
+  _UIBase.tryAutoLoad = function () {
+    UIBase.tryAutoLoad.call(this);
   }; ///////////////////////////////////////////////////////
 
 
@@ -676,56 +730,6 @@
     }
 
     this.$el.removeAttr("data-items");
-  }; // 组件初始化时，视图自动加载异步数据
-
-
-  var tryAutoLoad = function tryAutoLoad() {
-    var _this3 = this;
-
-    if (UIBase.isAutoLoad.call(this) && Utils.isFunction(this.load)) {
-      var apiName = this.options.api || this.$el.attr("api-name");
-      var params = $.extend({}, this.getInitParams());
-      var pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
-
-      if (pager) {
-        if (!params.p_no && Utils.isFunction(pager.getPage)) params.p_no = pager.getPage();
-        if (!params.p_size && Utils.isFunction(pager.getSize)) params.p_size = pager.getSize();
-      } // let searcher = Utils.isFunction(this.getSearcher) && this.getSearcher();
-      // if (searcher && Utils.isFunction(searcher.getParams)) {
-      // 	params = $.extend(params, searcher.getParams());
-      // }
-
-
-      this.load(apiName, params, function () {
-        setTimeout(function () {
-          tryAutoSelect.call(_this3);
-        });
-      });
-    }
-  }; // 组件初始化时，异步加载完成后，自动选择列表项
-
-
-  var tryAutoSelect = function tryAutoSelect() {
-    var _this4 = this;
-
-    var setByIndex = function setByIndex(value) {
-      if (Utils.isFunction(_this4.setSelectedIndex)) {
-        _this4.setSelectedIndex(value);
-      }
-    };
-
-    var setById = function setById(value) {
-      if (Utils.isFunction(_this4.setSelectedKey)) {
-        _this4.setSelectedKey(value);
-      }
-    };
-
-    var options = this.options || {};
-    if (options.hasOwnProperty("selectedIndex")) setByIndex(options.selectedIndex);else if (Utils.isNotBlank(this.$el.attr("data-tryindex"))) setByIndex(this.$el.attr("data-tryindex"));else if (options.hasOwnProperty("selectedId")) setById(options.selectedId);else if (Utils.isNotBlank(this.$el.attr("data-tryid"))) setById(this.$el.attr("data-tryid"));
-    delete options.selectedIndex;
-    delete options.selectedId;
-    this.$el.removeAttr("data-tryindex");
-    this.$el.removeAttr("data-tryid");
   };
 })(typeof window !== "undefined");
 "use strict";
@@ -2007,7 +2011,7 @@
     var selectedKey = this.options.selectedKey;
 
     if (Utils.isBlank(selectedKey)) {
-      return needArray || this.isMultiple() ? [] : null;
+      return null;
     }
 
     if (!Utils.isArray(selectedKey)) selectedKey = ("" + selectedKey).split(",");
@@ -3345,20 +3349,20 @@
 "use strict";
 
 // 2019-06-06
-// textview
+// input(原textview)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.textview) return;
+  if (frontend && VRender.Component.ui.input) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UITextView = UI.textview = function (view, options) {
+  var UIInput = UI.input = function (view, options) {
     return UI._base.call(this, view, options);
   };
 
-  var _UITextView = UITextView.prototype = new UI._base(false);
+  var _UIInput = UIInput.prototype = new UI._base(false);
 
-  _UITextView.init = function (target, options) {
+  _UIInput.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
     this.inputTag = this.$el.children(".ipt");
@@ -3385,7 +3389,7 @@
   }; // ====================================================
 
 
-  _UITextView.val = function (value) {
+  _UIInput.val = function (value) {
     if (Utils.isNull(value)) {
       return this.getValue();
     }
@@ -3394,17 +3398,17 @@
     return this;
   };
 
-  _UITextView.focus = function () {
+  _UIInput.focus = function () {
     this.input.focus();
     return this;
   };
 
-  _UITextView.select = function () {
+  _UIInput.select = function () {
     this.input.select();
     return this;
   };
 
-  _UITextView.validate = function (callback) {
+  _UIInput.validate = function (callback) {
     var _this = this;
 
     var value = this.getValue();
@@ -3425,22 +3429,22 @@
   }; // ====================================================
 
 
-  _UITextView.getValue = function () {
+  _UIInput.getValue = function () {
     return this.input.val() || "";
   };
 
-  _UITextView.setValue = function (value) {
+  _UIInput.setValue = function (value) {
     value = Utils.trimToEmpty(value);
     this.input.val(value);
     clearErrorMsg.call(this);
     valueChanged.call(this, value);
   };
 
-  _UITextView.getPrompt = function () {
+  _UIInput.getPrompt = function () {
     return this.inputTag.find(".prompt").text();
   };
 
-  _UITextView.setPrompt = function (value) {
+  _UIInput.setPrompt = function (value) {
     this.inputTag.find(".prompt").remove();
 
     if (Utils.isNotBlank(value)) {
@@ -3448,11 +3452,11 @@
     }
   };
 
-  _UITextView.getTips = function () {
+  _UIInput.getTips = function () {
     return this.inputTag.find(".tips").text();
   };
 
-  _UITextView.setTips = function (value) {
+  _UIInput.setTips = function (value) {
     this.inputTag.find(".tips").remove();
 
     if (Utils.isNotBlank(value)) {
@@ -3460,11 +3464,11 @@
     }
   };
 
-  _UITextView.getDescription = function () {
+  _UIInput.getDescription = function () {
     return this.$el.children(".desc").text();
   };
 
-  _UITextView.setDescription = function (value) {
+  _UIInput.setDescription = function (value) {
     this.$el.children(".desc").remove();
 
     if (Utils.isNotBlank(value)) {
@@ -3472,21 +3476,21 @@
     }
   };
 
-  _UITextView.getDataType = function () {
+  _UIInput.getDataType = function () {
     return this.$el.attr("opt-type") || "text";
   };
 
-  _UITextView.setDataType = function (value) {
+  _UIInput.setDataType = function (value) {
     if (/^(number|num|int)$/.test(value)) value = "_number";
     this.$el.attr("opt-type", value);
     if (/^(email|password|tel|url|number)$/.test(value)) this.input.attr("type", value);else this.input.removeAttr("type");
   };
 
-  _UITextView.isReadonly = function () {
+  _UIInput.isReadonly = function () {
     return this.$el.attr("opt-readonly") == 1;
   };
 
-  _UITextView.setReadonly = function (value) {
+  _UIInput.setReadonly = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) {
       this.$el.attr("opt-readonly", "1");
       this.input.attr("readonly", "readonly");
@@ -3496,11 +3500,11 @@
     }
   };
 
-  _UITextView.isRequired = function () {
+  _UIInput.isRequired = function () {
     return this.$el.attr("opt-required") == 1;
   };
 
-  _UITextView.setRequired = function (value) {
+  _UIInput.setRequired = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) {
       this.$el.attr("opt-required", "1");
     } else {
@@ -3508,29 +3512,29 @@
     }
   };
 
-  _UITextView.getEmptyMsg = function () {
+  _UIInput.getEmptyMsg = function () {
     return this.$el.attr("opt-empty");
   };
 
-  _UITextView.setEmptyMsg = function (value) {
+  _UIInput.setEmptyMsg = function (value) {
     if (Utils.isBlank(value)) this.$el.removeAttr("opt-empty");else this.$el.attr("opt-empty", value);
   };
 
-  _UITextView.getErrorMsg = function () {
+  _UIInput.getErrorMsg = function () {
     return this.$el.attr("opt-errmsg");
   };
 
-  _UITextView.setErrorMsg = function (value) {
+  _UIInput.setErrorMsg = function (value) {
     if (Utils.isBlank(value)) this.$el.removeAttr("opt-errmsg");else this.$el.attr("opt-errmsg", value);
   };
 
-  _UITextView.getMaxSize = function () {
+  _UIInput.getMaxSize = function () {
     if (this.hasOwnProperty("maxSize")) return this.maxSize;
     this.maxSize = parseInt(this.$el.attr("opt-size")) || 0;
     return this.maxSize;
   };
 
-  _UITextView.setMaxSize = function (value) {
+  _UIInput.setMaxSize = function (value) {
     this.maxSize = parseInt(value) || 0;
     this.$el.attr("opt-size", this.maxSize);
 
@@ -3545,20 +3549,20 @@
     }
   };
 
-  _UITextView.getValidate = function () {
+  _UIInput.getValidate = function () {
     return Fn.getFunction.call(this, "_validate", "validate");
   };
 
-  _UITextView.setValidate = function (value) {
+  _UIInput.setValidate = function (value) {
     this.options._validate = value;
     this.$el.children(".ui-fn[name='validate']").remove();
   };
 
-  _UITextView.hasError = function () {
+  _UIInput.hasError = function () {
     return this.$el.is(".is-error");
   };
 
-  _UITextView.showError = function (errmsg) {
+  _UIInput.showError = function (errmsg) {
     if (errmsg === true) {
       errmsg = this.lastErrorMsg || this.$el.attr("opt-errmsg") || "内容不正确！";
     }
@@ -3566,29 +3570,29 @@
     if (errmsg) setErrorMsg.call(this, errmsg);else clearErrorMsg.call(this);
   };
 
-  _UITextView.getDecimals = function () {
+  _UIInput.getDecimals = function () {
     var decimals = parseFloat(this.$el.attr("opt-decimal"));
     return isNaN(decimals) || decimals < 0 ? -1 : decimals;
   };
 
-  _UITextView.setDecimals = function (value) {
+  _UIInput.setDecimals = function (value) {
     if (isNaN(value)) value = 2;else value = parseInt(value) || 0;
     this.$el.attr("opt-decimal", value);
   };
 
-  _UITextView.isMultiline = function () {
+  _UIInput.isMultiline = function () {
     return this.$el.is(".multi");
   };
 
-  _UITextView.isAutoHeight = function () {
+  _UIInput.isAutoHeight = function () {
     return this.$el.attr("opt-autoheight") == 1;
   };
 
-  _UITextView.isDisplayAsPassword = function () {
+  _UIInput.isDisplayAsPassword = function () {
     return this.$el.attr("opt-pwd") == 1;
   };
 
-  _UITextView.setDisplayAsPassword = function (value) {
+  _UIInput.setDisplayAsPassword = function (value) {
     var style = window.getComputedStyle(this.input[0]);
 
     if (Utils.isNull(value) || Utils.isTrue(value)) {
@@ -3728,7 +3732,7 @@
   _Renderer.render = function ($, target) {
     UI._baseRender.render.call(this, $, target);
 
-    target.addClass("ui-textview");
+    target.addClass("ui-input");
     var options = this.options || {};
     var ipt = $("<div class='ipt'></div>").appendTo(target);
     var input = renderInput.call(this, $, target, ipt);
@@ -3999,8 +4003,8 @@
 
 
   if (frontend) {
-    window.UITextView = UITextView;
-    UI.init(".ui-textview", UITextView, Renderer);
+    window.UIInput = UIInput;
+    UI.init(".ui-input", UIInput, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -8439,7 +8443,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var showError = function showError(message, duration) {
-    UI.tooltip.create({
+    UI.message.create({
       type: "danger",
       content: message,
       duration: duration
@@ -8457,22 +8461,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-06-10
-// formview
+// form(原formview)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.formview) return;
+  if (frontend && VRender.Component.ui.form) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util;
   var VERTICAL = "vertical";
   var HORIZONTIAL = "horizontial"; ///////////////////////////////////////////////////////
 
-  var UIFormView = UI.formview = function (view, options) {
+  var UIForm = UI.form = function (view, options) {
     return UI._base.call(this, view, options);
   };
 
-  var _UIFormView = UIFormView.prototype = new UI._base(false);
+  var _UIForm = UIForm.prototype = new UI._base(false);
 
-  _UIFormView.init = function (target, options) {
+  _UIForm.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
     var btnbar = this.$el.children(".btnbar");
@@ -8480,8 +8484,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     this.$el.on("keydown", ".form-item > .content > dd > div > *", onNativeInputKeyHandler.bind(this));
     this.$el.on("focusout", ".form-item > .content > dd > div > *", onNativeInputFocusHandler.bind(this));
     this.$el.on("change", ".form-item > .content > dd > div > *", onValueChangeHandler.bind(this));
-    this.$el.on("keydown", ".ui-textview > .ipt > *", onTextViewKeyHandler.bind(this));
-    this.$el.on("focusout", ".ui-textview > .ipt > *", onTextViewFocusHandler.bind(this));
+    this.$el.on("keydown", ".ui-input > .ipt > *", onTextViewKeyHandler.bind(this));
+    this.$el.on("focusout", ".ui-input > .ipt > *", onTextViewFocusHandler.bind(this));
 
     if (!this._isRenderAsApp()) {
       this.$el.on("mouseenter", ".form-item > .content > dd > div > *", onItemMouseHandler.bind(this));
@@ -8490,7 +8494,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIFormView.validate = function (callback) {
+  _UIForm.validate = function (callback) {
     var _this = this;
 
     var errors = [];
@@ -8519,7 +8523,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  _UIFormView.submit = function (action, callback) {
+  _UIForm.submit = function (action, callback) {
     var _this2 = this;
 
     if (this.$el.is(".is-loading")) return false;
@@ -8562,7 +8566,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIFormView.add = function (name, label, index) {
+  _UIForm.add = function (name, label, index) {
     var container = this.$el.children(".items");
     var item = $("<div class='form-item'></div>").appendTo(container);
     item.attr("name", Utils.trimToNull(name));
@@ -8581,7 +8585,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return new FormItem(this, item);
   };
 
-  _UIFormView.get = function (name) {
+  _UIForm.get = function (name) {
     if (Utils.isBlank(name)) return null;
     var item = Utils.find(this._getItems(), function (item) {
       return item.attr("name") == name;
@@ -8589,7 +8593,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return !item ? null : new FormItem(this, item);
   };
 
-  _UIFormView.getAt = function (index) {
+  _UIForm.getAt = function (index) {
     index = Utils.getIndexValue(index);
 
     if (index >= 0) {
@@ -8601,7 +8605,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return null;
   };
 
-  _UIFormView["delete"] = function (name) {
+  _UIForm["delete"] = function (name) {
     if (Utils.isBlank(name)) return null;
     var item = Utils.find(this._getItems(), function (item) {
       return item.attr("name") == name;
@@ -8610,7 +8614,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return item;
   };
 
-  _UIFormView.deleteAt = function (index) {
+  _UIForm.deleteAt = function (index) {
     index = Utils.getIndexValue(index);
 
     if (index >= 0) {
@@ -8624,7 +8628,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIFormView.getFormData = function () {
+  _UIForm.getFormData = function () {
     var params = {};
     params = Utils.extend(params, this.getParams());
     Utils.each(this._getItems(), function (item) {
@@ -8657,7 +8661,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return params;
   };
 
-  _UIFormView.setFormData = function (data) {
+  _UIForm.setFormData = function (data) {
     var _this3 = this;
 
     data = data || {};
@@ -8687,7 +8691,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  _UIFormView.getColumns = function () {
+  _UIForm.getColumns = function () {
     if (this._isRenderAsApp()) return 1;
     if (this.options.hasOwnProperty("columns")) return parseInt(this.options.columns) || 1;
     this.options.columns = parseInt(this.$el.attr("opt-cols")) || 1;
@@ -8695,7 +8699,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.options.columns;
   };
 
-  _UIFormView.setColumns = function (value) {
+  _UIForm.setColumns = function (value) {
     if (this._isRenderAsApp()) return;
     var columns = parseInt(value) || 1;
     if (columns < 1) columns = 1;
@@ -8707,15 +8711,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  _UIFormView.getAction = function () {
+  _UIForm.getAction = function () {
     return this.$el.attr("opt-action");
   };
 
-  _UIFormView.setAction = function (value) {
+  _UIForm.setAction = function (value) {
     this.$el.attr("opt-action", Utils.trimToEmpty(value));
   };
 
-  _UIFormView.getParams = function () {
+  _UIForm.getParams = function () {
     if (this.options.hasOwnProperty("params")) return this.options.params;
     var params = null;
 
@@ -8728,20 +8732,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.options.params;
   };
 
-  _UIFormView.setParams = function (value) {
+  _UIForm.setParams = function (value) {
     this.options.params = value;
     this.$el.removeAttr("opt-params");
   };
 
-  _UIFormView.getMethod = function () {
+  _UIForm.getMethod = function () {
     return this.$el.attr("opt-method");
   };
 
-  _UIFormView.setMethod = function (value) {
+  _UIForm.setMethod = function (value) {
     this.$el.attr("opt-method", Utils.trimToEmpty(value));
   };
 
-  _UIFormView.getLabelWidth = function () {
+  _UIForm.getLabelWidth = function () {
     if (this.options.hasOwnProperty("labelWidth")) return this.options.labelWidth;
     var width = this.$el.attr("opt-lw");
     this.options.width = Utils.getFormatSize(width, this.isRenderAsRem());
@@ -8749,27 +8753,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.options.labelWidth;
   };
 
-  _UIFormView.setLabelWidth = function (value) {
+  _UIForm.setLabelWidth = function (value) {
     this.options.labelWidth = value;
     this.$el.removeAttr("opt-lw");
   };
 
-  _UIFormView.getLabelAlign = function () {
+  _UIForm.getLabelAlign = function () {
     var align = this.$el.attr("opt-la");
     return /^(center|right)$/.test(align) ? align : "left";
   };
 
-  _UIFormView.setLabelAlign = function (value) {
+  _UIForm.setLabelAlign = function (value) {
     var align = /^(center|right)$/.test(value) ? align : "left";
     this.options.labelAlign = align;
     this.$el.attr("opt-la", align);
   };
 
-  _UIFormView.getOrientation = function () {
+  _UIForm.getOrientation = function () {
     return this.$el.attr("opt-orientate");
   };
 
-  _UIFormView.setOrientation = function (value) {
+  _UIForm.setOrientation = function (value) {
     if (VERTICAL != value && HORIZONTIAL != value) {
       value = this._isRenderAsApp() ? VERTICAL : HORIZONTIAL;
     }
@@ -8779,12 +8783,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     this.$el.addClass(value).attr("opt-orientate", value);
   };
 
-  _UIFormView.setButtons = function (value) {
+  _UIForm.setButtons = function (value) {
     renderButtons.call(this, $, this.$el, Utils.toArray(value));
   }; // ====================================================
 
 
-  _UIFormView._getItems = function () {
+  _UIForm._getItems = function () {
     return this.$el.children(".items").children();
   }; // ====================================================
 
@@ -8834,7 +8838,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var onValueChangeHandler = function onValueChangeHandler(e) {
     var target = $(e.currentTarget);
-    if (target.is("input, textarea, .ui-textview")) return; // console.log("onValueChangeHandler");
+    if (target.is("input, textarea, .ui-input")) return; // console.log("onValueChangeHandler");
 
     var item = Utils.parentUntil(target, ".form-item");
     validateItem.call(this, item);
@@ -8866,7 +8870,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer.render = function ($, target) {
     UI._baseRender.render.call(this, $, target);
 
-    target.addClass("ui-formview");
+    target.addClass("ui-form");
     var options = this.options || {};
     renderView.call(this, $, target);
     var labelAlign = this.getLabelAlign();
@@ -9051,7 +9055,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     } else {
       contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
 
-      if (contentView instanceof UI.textview) {
+      if (contentView instanceof UI.input) {
         validateTextView.call(this, item, contentView, callback);
       } else if (contentView instanceof UI.dateinput) {
         validateDateInputView.call(this, item, contentView, callback);
@@ -9331,8 +9335,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UIFormView = UIFormView;
-    UI.init(".ui-formview", UIFormView, Renderer);
+    window.UIForm = UIForm;
+    UI.init(".ui-form", UIForm, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -9340,27 +9344,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-06-10
-// tooltip
+// message(原tooltip)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.tooltip) return;
+  if (frontend && VRender.Component.ui.message) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UITooltip = UI.tooltip = function (view, options) {
+  var UIMessage = UI.message = function (view, options) {
     return UI._base.call(this, view, options);
   };
 
-  var _UITooltip = UITooltip.prototype = new UI._base(false);
+  var _UIMessage = UIMessage.prototype = new UI._base(false);
 
-  _UITooltip.init = function (target, options) {
+  _UIMessage.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
     this.open();
   }; // ====================================================
 
 
-  _UITooltip.open = function () {
+  _UIMessage.open = function () {
     doOpen.call(this);
 
     if (this._isRenderAsApp()) {
@@ -9373,7 +9377,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITooltip.close = function () {
+  _UIMessage.close = function () {
     doClose.call(this);
   }; // ====================================================
 
@@ -9414,7 +9418,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer.render = function ($, target) {
     UI._baseRender.render.call(this, $, target);
 
-    target.addClass("ui-tooltip");
+    target.addClass("ui-message");
     var type = this.getType();
     if (type) target.addClass("show-icon").attr("opt-type", type);
     target.attr("opt-duration", this.getDuration());
@@ -9462,8 +9466,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   var doOpen = function doOpen() {
-    var wrapper = $("body").children(".ui-tooltip-wrap");
-    if (!wrapper || wrapper.length == 0) wrapper = $("<div class='ui-tooltip-wrap'></div>").appendTo("body");
+    var wrapper = $("body").children(".ui-message-wrap");
+    if (!wrapper || wrapper.length == 0) wrapper = $("<div class='ui-message-wrap'></div>").appendTo("body");
     var target = this.$el.appendTo(wrapper);
     setTimeout(function () {
       target.addClass("animate-in");
@@ -9476,7 +9480,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     setTimeout(function () {
       target.removeClass("animate-in").removeClass("animate-out");
       target.remove();
-      var wrapper = $("body").children(".ui-tooltip-wrap");
+      var wrapper = $("body").children(".ui-message-wrap");
       if (wrapper.children().length == 0) wrapper.remove();
     }, 500);
     this.trigger("close");
@@ -9503,8 +9507,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UITooltip = UITooltip;
-    UI.init(".ui-tooltip", UITooltip, Renderer);
+    window.UIMessage = UIMessage;
+    UI.init(".ui-message", UIMessage, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -12746,43 +12750,43 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-07-23
-// listview
+// list(原listview)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.listview) return;
+  if (frontend && VRender.Component.ui.list) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UIListView = UI.listview = function (view, options) {
+  var UIList = UI.list = function (view, options) {
     return UI._select.call(this, view, options);
   };
 
-  var _UIListView = UIListView.prototype = new UI._select(false);
+  var _UIList = UIList.prototype = new UI._select(false);
 
-  _UIListView.init = function (target, options) {
+  _UIList.init = function (target, options) {
     UI._select.init.call(this, target, options);
 
     var list = this.list = this.$el.children("ul");
     list.on("tap", "li", itemClickHandler.bind(this));
-    list.on("tap", ".ui-listview-item3 .btnbar", function () {
+    list.on("tap", ".ui-list-item3 .btnbar", function () {
       return false;
     });
-    list.on("tap", ".ui-listview-item4 .btnbar", function () {
+    list.on("tap", ".ui-list-item4 .btnbar", function () {
       return false;
     });
   }; // ====================================================
 
 
-  _UIListView.isChkboxVisible = function () {
+  _UIList.isChkboxVisible = function () {
     return this.$el.is(".show-chkbox");
   }; // ====================================================
 
 
-  _UIListView._getItemContainer = function () {
+  _UIList._getItemContainer = function () {
     return this.$el.children("ul");
   };
 
-  _UIListView._renderOneItem = function ($, item, data, index, bSelected) {
+  _UIList._renderOneItem = function ($, item, data, index, bSelected) {
     renderOneItem.call(this, $, item, data, index, bSelected);
   }; // ====================================================
 
@@ -12822,7 +12826,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Renderer.itemRenderer_simple = function (options) {
     var _options = {
-      style: "ui-listview-item1",
+      style: "ui-list-item1",
       title: null,
       desc: null
     };
@@ -12841,7 +12845,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Renderer.itemRenderer_icon = function (options) {
     var _options = {
-      style: "ui-listview-item2",
+      style: "ui-list-item2",
       icon: null,
       title: null,
       desc: null
@@ -12864,7 +12868,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Renderer.itemRenderer_button = function (options) {
     var _options = {
-      style: "ui-listview-item3",
+      style: "ui-list-item3",
       buttons: null,
       title: null,
       desc: null
@@ -12889,7 +12893,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Renderer.itemRenderer_icon_button = function (options) {
     var _options = {
-      style: "ui-listview-item4",
+      style: "ui-list-item4",
       buttons: null,
       icon: null,
       title: null,
@@ -12977,7 +12981,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   _Renderer.render = function ($, target) {
-    target.addClass("ui-listview");
+    target.addClass("ui-list");
     if (this.isChkboxVisible()) target.addClass("show-chkbox");
     target.append("<ul></ul>");
 
@@ -13020,8 +13024,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UIListView = UIListView;
-    UI.init(".ui-listview", UIListView, Renderer);
+    window.UIList = UIList;
+    UI.init(".ui-list", UIList, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -14907,29 +14911,29 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-07-25
-// scrollbox
+// scroll(原scrollbox)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.scrollbox) return;
+  if (frontend && VRender.Component.ui.scroll) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UIScrollBox = UI.scrollbox = function (view, options) {
+  var UIScroll = UI.scroll = function (view, options) {
     return UI._base.call(this, view, options);
   };
 
-  var _UIScrollBox = UIScrollBox.prototype = new UI._base(false);
+  var _UIScroll = UIScroll.prototype = new UI._base(false);
 
-  _UIScrollBox.init = function (target, options) {
+  _UIScroll.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
     doInit.call(this);
   };
 
-  _UIScrollBox.reset = function () {}; // ====================================================
+  _UIScroll.reset = function () {}; // ====================================================
 
 
-  _UIScrollBox.getContentView = function () {
+  _UIScroll.getContentView = function () {
     if (!this.contentView) {
       var content = this.$el.children(".container").children();
 
@@ -14942,7 +14946,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.contentView;
   };
 
-  _UIScrollBox.setContentView = function (value) {
+  _UIScroll.setContentView = function (value) {
     clearContentEvents.call(this);
     var content = this.options.content = value;
     delete this.options.view;
@@ -14956,7 +14960,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     initContentEvents.call(this);
   };
 
-  _UIScrollBox.getScrollContainer = function () {
+  _UIScroll.getScrollContainer = function () {
     if (!this.scroller) {
       if (this.options.hasOwnProperty("scroller")) this.scroller = this.options.scroller;else this.scroller = this.$el.attr("opt-scroll");
       this.$el.removeAttr("opt-scroll");
@@ -14966,30 +14970,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.scroller;
   };
 
-  _UIScrollBox.setScrollContainer = function (value) {
+  _UIScroll.setScrollContainer = function (value) {
     clearEvents.call(this);
     this.options.scroller = value;
     this.scroller = null;
     initEvents.call(this);
   };
 
-  _UIScrollBox.getRefreshFunction = function () {
+  _UIScroll.getRefreshFunction = function () {
     return Fn.getFunction.call(this, "refreshFunction", "refresh");
   };
 
-  _UIScrollBox.setRefreshFunction = function (value) {
+  _UIScroll.setRefreshFunction = function (value) {
     this.options.refreshFunction = value;
   };
 
-  _UIScrollBox.getMoreFunction = function () {
+  _UIScroll.getMoreFunction = function () {
     return Fn.getFunction.call(this, "moreFunction", "more");
   };
 
-  _UIScrollBox.setMoreFunction = function (value) {
+  _UIScroll.setMoreFunction = function (value) {
     this.options.moreFunction = value;
   };
 
-  _UIScrollBox.getTopDistance = function () {
+  _UIScroll.getTopDistance = function () {
     if (Utils.isNull(this.topDistance)) {
       if (this.options.hasOwnProperty("topDistance")) {
         this.topDistance = this.options.topDistance;
@@ -15007,13 +15011,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.topDistance;
   };
 
-  _UIScrollBox.setTopDistance = function (value) {
+  _UIScroll.setTopDistance = function (value) {
     this.options.topDistance = value;
     this.$el.removeAttr("opt-top");
     this.topDistance = null;
   };
 
-  _UIScrollBox.getBottomDistance = function () {
+  _UIScroll.getBottomDistance = function () {
     if (Utils.isNull(this.bottomDistance)) {
       if (this.options.hasOwnProperty("bottomDistance")) {
         this.bottomDistance = this.options.bottomDistance;
@@ -15029,7 +15033,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.bottomDistance;
   };
 
-  _UIScrollBox.setBottomDistance = function (value) {
+  _UIScroll.setBottomDistance = function (value) {
     this.options.bottomDistance = value;
     this.$el.removeAttr("opt-bottom");
     this.bottomDistance = null;
@@ -15094,7 +15098,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var _Renderer = Renderer.prototype = new UI._baseRender(false);
 
   _Renderer.render = function ($, target) {
-    target.addClass("ui-scrollbox");
+    target.addClass("ui-scroll");
     target.append("<div class='top'></div>");
     target.append("<div class='container'></div>");
     target.append("<div class='bottom'></div>");
@@ -15136,7 +15140,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (options.refreshView) {
       renderView(target, this.options.refreshView);
     } else {
-      var refreshView = $("<div class='scrollbox-refreshdef'></div>").appendTo(target);
+      var refreshView = $("<div class='scroll-refreshdef'></div>").appendTo(target);
       var pullText = Utils.isNull(options.refreshPullText) ? "下拉刷新" : Utils.trimToEmpty(options.refreshPullText);
 
       if (pullText) {
@@ -15159,12 +15163,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var renderBottomView = function renderBottomView($, target) {
     target = target.children(".bottom").empty();
-    var container = $("<div class='scrollbox-load'></div>").appendTo(target);
+    var container = $("<div class='scroll-load'></div>").appendTo(target);
 
     if (this.options.loadingView) {
       renderView(container, this.options.loadingView);
     } else {
-      var loadView = $("<div class='scrollbox-loaddef'></div>").appendTo(container);
+      var loadView = $("<div class='scroll-loaddef'></div>").appendTo(container);
       var loadText = this.options.loadingText;
       loadText = Utils.isNull(loadText) ? "正在加载.." : Utils.trimToEmpty(loadText);
 
@@ -15173,12 +15177,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
     }
 
-    container = $("<div class='scrollbox-bottom'></div>").appendTo(target);
+    container = $("<div class='scroll-bottom'></div>").appendTo(target);
 
     if (this.options.bottomView) {
       renderView(container, this.options.bottomView);
     } else {
-      var bottomView = $("<div class='scrollbox-bottomdef'></div>").appendTo(container);
+      var bottomView = $("<div class='scroll-bottomdef'></div>").appendTo(container);
       var bottomText = this.options.bottomText;
       bottomText = Utils.isNull(bottomText) ? "没有更多了" : Utils.trimToEmpty(bottomText);
 
@@ -15210,35 +15214,35 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var initEvents = function initEvents() {
     var scroller = this.getScrollContainer();
-    scroller.on("scroll.scrollbox", onScrollHandler.bind(this));
+    scroller.on("scroll.scroll", onScrollHandler.bind(this));
 
     if (this._isRenderAsApp()) {
-      scroller.on("touchstart.scrollbox", onTouchHandler.bind(this));
-      scroller.on("touchend.scrollbox", onTouchHandler.bind(this));
-      scroller.on("touchmove.scrollbox", onTouchHandler.bind(this));
-      scroller.on("touchcancel.scrollbox", onTouchHandler.bind(this));
+      scroller.on("touchstart.scroll", onTouchHandler.bind(this));
+      scroller.on("touchend.scroll", onTouchHandler.bind(this));
+      scroller.on("touchmove.scroll", onTouchHandler.bind(this));
+      scroller.on("touchcancel.scroll", onTouchHandler.bind(this));
     } else {
-      scroller.on("mousedown.scrollbox", onMouseHandler.bind(this));
-      scroller.on("mouseup.scrollbox", onMouseHandler.bind(this));
-      scroller.on("mousemove.scrollbox", onMouseHandler.bind(this));
-      scroller.on("mouseleave.scrollbox", onMouseHandler.bind(this));
+      scroller.on("mousedown.scroll", onMouseHandler.bind(this));
+      scroller.on("mouseup.scroll", onMouseHandler.bind(this));
+      scroller.on("mousemove.scroll", onMouseHandler.bind(this));
+      scroller.on("mouseleave.scroll", onMouseHandler.bind(this));
     }
   };
 
   var clearEvents = function clearEvents() {
     var scroller = this.getScrollContainer();
-    scroller.off("scroll.scrollbox");
+    scroller.off("scroll.scroll");
 
     if (this._isRenderAsApp()) {
-      scroller.off("touchstart.scrollbox");
-      scroller.off("touchend.scrollbox");
-      scroller.off("touchmove.scrollbox");
-      scroller.off("touchcancel.scrollbox");
+      scroller.off("touchstart.scroll");
+      scroller.off("touchend.scroll");
+      scroller.off("touchmove.scroll");
+      scroller.off("touchcancel.scroll");
     } else {
-      scroller.off("mousedown.scrollbox");
-      scroller.off("mouseup.scrollbox");
-      scroller.off("mousemove.scrollbox");
-      scroller.off("mouseleave.scrollbox");
+      scroller.off("mousedown.scroll");
+      scroller.off("mouseup.scroll");
+      scroller.off("mousemove.scroll");
+      scroller.off("mouseleave.scroll");
     }
   };
 
@@ -15250,8 +15254,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         onContentLoadHandler.call(this);
       };
 
-      contentView.scrollbox_loaded = loadedHandler.bind(this);
-      contentView.on("loaded", contentView.scrollbox_loaded);
+      contentView.scroll_loaded = loadedHandler.bind(this);
+      contentView.on("loaded", contentView.scroll_loaded);
     }
   };
 
@@ -15259,7 +15263,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var contentView = this.getContentView();
 
     if (contentView && Utils.isFunction(contentView.off)) {
-      if (contentView.scrollbox_loaded) contentView.off("loaded", contentView.scrollbox_loaded);
+      if (contentView.scroll_loaded) contentView.off("loaded", contentView.scroll_loaded);
     }
   }; // ====================================================
 
@@ -15550,8 +15554,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UIScrollBox = UIScrollBox;
-    UI.init(".ui-scrollbox", UIScrollBox, Renderer);
+    window.UIScroll = UIScroll;
+    UI.init(".ui-scroll", UIScroll, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -15559,20 +15563,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-07-25
-// treeview
+// tree(原treeview)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.treeview) return;
+  if (frontend && VRender.Component.ui.tree) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UITreeView = UI.treeview = function (view, options) {
+  var UITree = UI.tree = function (view, options) {
     return UI._select.call(this, view, options);
   };
 
-  var _UITreeView = UITreeView.prototype = new UI._select(false);
+  var _UITree = UITree.prototype = new UI._select(false);
 
-  _UITreeView.init = function (target, options) {
+  _UITree.init = function (target, options) {
     UI._select.init.call(this, target, options);
 
     this.$el.on("tap", ".tree-node", onNodeClickHandler.bind(this));
@@ -15587,27 +15591,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UITreeView.getDataAt = function (index, deep) {
+  _UITree.getDataAt = function (index, deep) {
     var item = getItemByIndex.call(this, index, deep);
     return !!item ? this._getItemData(item) : null;
   };
 
-  _UITreeView.getDataIndex = function (data, deep) {
+  _UITree.getDataIndex = function (data, deep) {
     var item = getItemByData.call(this, data, deep);
     return !!item ? getItemIndex.call(this, item, deep) : -1;
   };
 
-  _UITreeView.getDataById = function (value, deep) {
+  _UITree.getDataById = function (value, deep) {
     var item = getItemById.call(this, value, deep);
     return !!item ? this._getItemData(item) : null;
   };
 
-  _UITreeView.getIndexById = function (value, deep) {
+  _UITree.getIndexById = function (value, deep) {
     var item = getItemById.call(this, value, deep);
     return !!item ? getItemIndex.call(this, item, deep) : -1;
   };
 
-  _UITreeView.getDataByName = function (value, deep) {
+  _UITree.getDataByName = function (value, deep) {
     var _this = this;
 
     if (Utils.isBlank(value)) return null;
@@ -15625,7 +15629,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return findData;
   };
 
-  _UITreeView.getIndexByName = function (value, deep) {
+  _UITree.getIndexByName = function (value, deep) {
     var _this2 = this;
 
     if (Utils.isBlank(value)) return -1;
@@ -15643,11 +15647,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return findIndex;
   };
 
-  _UITreeView.isChkboxVisible = function () {
+  _UITree.isChkboxVisible = function () {
     return this.$el.attr("opt-chk") == "1";
   };
 
-  _UITreeView.setChkboxVisible = function (value) {
+  _UITree.setChkboxVisible = function (value) {
     value = Utils.isNull(value) ? true : Utils.isTrue(value);
 
     if (this.isChkboxVisible() != value) {
@@ -15668,15 +15672,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeView.getChildrenField = function () {
+  _UITree.getChildrenField = function () {
     return this.$el.attr("opt-child") || null;
   };
 
-  _UITreeView.getLeafField = function () {
+  _UITree.getLeafField = function () {
     return this.options.leafField;
   };
 
-  _UITreeView.getSelectedIndex = function (needArray, deep) {
+  _UITree.getSelectedIndex = function (needArray, deep) {
     var indexs = [];
 
     var _hasChkbox = this.isChkboxVisible();
@@ -15705,7 +15709,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return indexs.length > 0 ? indexs[0] : -1;
   };
 
-  _UITreeView.setSelectedIndex = function (value, deep) {
+  _UITree.setSelectedIndex = function (value, deep) {
     var _hasChkbox = this.isChkboxVisible();
 
     var _isMultiple = this.isMultiple();
@@ -15745,7 +15749,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     snapshoot.done();
   };
 
-  _UITreeView.getSelectedKey = function (needArray, deep) {
+  _UITree.getSelectedKey = function (needArray, deep) {
     var _this3 = this;
 
     var ids = [];
@@ -15776,7 +15780,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return ids.length > 0 ? ids[0] : null;
   };
 
-  _UITreeView.setSelectedKey = function (value, deep) {
+  _UITree.setSelectedKey = function (value, deep) {
     var _this4 = this;
 
     var _hasChkbox = this.isChkboxVisible();
@@ -15824,7 +15828,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     snapshoot.done();
   };
 
-  _UITreeView.getSelectedData = function (needArray, deep) {
+  _UITree.getSelectedData = function (needArray, deep) {
     var _this5 = this;
 
     var datas = [];
@@ -15855,7 +15859,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return datas.length > 0 ? datas[0] : null;
   };
 
-  _UITreeView.isAllSelected = function () {
+  _UITree.isAllSelected = function () {
     var _allSelected = true;
     doLoop.call(this, function (item) {
       if (!item.is(".selected")) {
@@ -15869,7 +15873,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UITreeView.open = function (data) {
+  _UITree.open = function (data) {
     var item = getItemByData.call(this, data, true);
 
     if (item) {
@@ -15877,7 +15881,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeView.openAt = function (index, deep) {
+  _UITree.openAt = function (index, deep) {
     var item = getItemByIndex.call(this, index, deep);
 
     if (item) {
@@ -15885,7 +15889,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeView.openById = function (value) {
+  _UITree.openById = function (value) {
     var item = getItemById.call(this, value, true);
 
     if (item) {
@@ -15893,7 +15897,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeView.close = function (data) {
+  _UITree.close = function (data) {
     var item = getItemByData.call(this, data, true);
 
     if (item) {
@@ -15901,7 +15905,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeView.closeAt = function (index, deep) {
+  _UITree.closeAt = function (index, deep) {
     var item = getItemByIndex.call(this, index, deep);
 
     if (item) {
@@ -15909,7 +15913,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeView.closeById = function (value) {
+  _UITree.closeById = function (value) {
     var item = getItemById.call(this, value, true);
 
     if (item) {
@@ -15918,7 +15922,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UITreeView.addItem = function (data, pdata, index) {
+  _UITree.addItem = function (data, pdata, index) {
     if (Utils.isBlank(data)) return false;
 
     var container = this._getItemContainer();
@@ -15948,7 +15952,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return true;
   };
 
-  _UITreeView.updateItem = function (data, pdata, index) {
+  _UITree.updateItem = function (data, pdata, index) {
     var _this6 = this;
 
     if (Utils.isBlank(data)) return false;
@@ -16001,7 +16005,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return true;
   };
 
-  _UITreeView.removeItem = function (data, pdata) {
+  _UITree.removeItem = function (data, pdata) {
     var _this7 = this;
 
     if (Utils.isBlank(data)) return false;
@@ -16035,7 +16039,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return true;
   };
 
-  _UITreeView.removeItemAt = function (index, pdata) {
+  _UITree.removeItemAt = function (index, pdata) {
     index = Utils.getIndexValue(index);
     if (index < 0) return false;
 
@@ -16060,12 +16064,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return true;
   };
 
-  _UITreeView.addOrUpdateItem = function (data, pdata) {
+  _UITree.addOrUpdateItem = function (data, pdata) {
     if (Utils.isBlank(data)) return;
     if (!this.updateItem(data, pdata)) this.addItem(data, pdata);
   };
 
-  _UITreeView.setItems = function (datas, pdata) {
+  _UITree.setItems = function (datas, pdata) {
     datas = Utils.toArray(datas);
 
     if (pdata) {
@@ -16103,7 +16107,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UITreeView.load = function (api, params, callback) {
+  _UITree.load = function (api, params, callback) {
     var _this8 = this;
 
     api = api || this.lastLoadApi || this.$el.attr("api-name");
@@ -16120,34 +16124,37 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       _this8.trigger("loaded", err, datas);
     });
-  };
+  }; // _UITree.tryAutoLoad = function () {
+  // 	UI._base.tryAutoLoad.call(this);
+  // };
 
-  _UITreeView.length = function () {
+
+  _UITree.length = function () {
     return Number.POSITIVE_INFINITY;
   }; // ====================================================
 
 
-  _UITreeView._renderItems = function ($, itemContainer, datas) {
+  _UITree._renderItems = function ($, itemContainer, datas) {
     renderItems.call(this, $, this.$el, itemContainer, datas);
   };
 
-  _UITreeView._getItemContainer = function () {
+  _UITree._getItemContainer = function () {
     return this.$el.children("ul");
   };
 
-  _UITreeView._getNewItem = function ($, itemContainer, data, index) {
+  _UITree._getNewItem = function ($, itemContainer, data, index) {
     return getNewItem.call(this, $, itemContainer, data, index);
   };
 
-  _UITreeView._isIconVisible = function () {
+  _UITree._isIconVisible = function () {
     if (Utils.isTrue(this.options.icon)) return true;
   };
 
-  _UITreeView._getIcon = function (data, index, level) {
+  _UITree._getIcon = function (data, index, level) {
     return getIcon.call(this, this.options.icon, data, index);
   };
 
-  _UITreeView._getOpenProps = function () {
+  _UITree._getOpenProps = function () {
     var params = {};
     var indexs = this.$el.attr("opt-openinds");
 
@@ -16169,11 +16176,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return params;
   };
 
-  _UITreeView._getItemData = function (item) {
+  _UITree._getItemData = function (item) {
     return getItemData.call(this, item);
   };
 
-  _UITreeView._doAdapter = function (data) {
+  _UITree._doAdapter = function (data) {
     var _this9 = this;
 
     var datas = Utils.toArray(data);
@@ -16194,11 +16201,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return datas;
   };
 
-  _UITreeView._snapshoot_shoot = function (state) {
+  _UITree._snapshoot_shoot = function (state) {
     state.selectedIndex = this.getSelectedIndex(true);
   };
 
-  _UITreeView._snapshoot_compare = function (state) {
+  _UITree._snapshoot_compare = function (state) {
     var selectedIndex = this.getSelectedIndex(true);
     return Fn.equalIndex(state.selectedIndex, selectedIndex);
   }; // ====================================================
@@ -16279,7 +16286,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   _Renderer.render = function ($, target) {
-    target.addClass("ui-treeview");
+    target.addClass("ui-tree");
     target.append("<ul class='root' level='0'></ul>");
 
     UI._selectRender.render.call(this, $, target);
@@ -16370,9 +16377,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   var renderItems = function renderItems($, target, itemContainer, datas) {
-    renderTreeNodes.call(this, $, itemContainer, datas, 0, 1); // renderNodeOpend.call(this, $, itemContainer);
-
-    renderNodeSelected.call(this, $, itemContainer);
+    renderTreeNodes.call(this, $, itemContainer, datas, 0, 1);
+    renderNodeSelected.call(this, $, target, itemContainer);
 
     if (!frontend) {
       itemContainer.find("li").removeData("_node_data");
@@ -16421,50 +16427,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var container = node.children(".lbl"); // 不做选取设置，树选择比较复杂，需要统一处理
 
     UI._itemsRender.renderOneItem.call(this, $, node, container, data, index);
-  }; // const renderNodeOpend = function ($, itemContainer) {
-  // 	let openProps = this._getOpenProps() || {};
-  // 	let openIndexs = openProps.indexs;
-  // 	if (openIndexs && openIndexs.length > 0) { // 0,1,2,3 将逐层展开第一个节点（而非展开第一层的相应节点）
-  // 		for (let i = 0, l = openIndexs.length; i < l; i++) {
-  // 			let item = findItemByIndex.call(this, itemContainer, openIndexs[i], true);
-  // 			if (item) {
-  // 				item.addClass("open");
-  // 			}
-  // 		}
-  // 	}
-  // 	else {
-  // 		let openIds = openProps.ids;
-  // 		if (openIds && openIds.length > 0) {
-  // 			for (let i = 0, l = openIds.length; i < l; i++) {
-  // 				let item = findItemById.call(this, itemContainer, openIds[i]);
-  // 				if (item) {
-  // 					item.addClass("open");
-  // 					while (true) {
-  // 						let container = item.parent();
-  // 						if (container.is(".root"))
-  // 							break;
-  // 						item = container.parent();
-  // 						item.addClass("open");
-  // 					}
-  // 				}
-  // 			}
-  // 		}
-  // 	}
-  // };
+  };
 
+  var renderNodeSelected = function renderNodeSelected($, target, itemContainer) {
+    var _hasChkbox = this.isChkboxVisible();
 
-  var renderNodeSelected = function renderNodeSelected($, itemContainer) {
+    var _isMultiple = this.isMultiple();
+
     var selectedIndexs = this.getSelectedIndex(true);
+
+    var setItemSelected = function setItemSelected(item) {
+      if (_hasChkbox) item.addClass("selected");else item.children(".tree-node").addClass("active");
+    };
 
     if (selectedIndexs) {
       for (var i = 0, l = selectedIndexs.length; i < l; i++) {
         var item = findItemByIndex.call(this, itemContainer, selectedIndexs[i], true);
 
         if (item) {
-          item.addClass("selected");
-          if (!this.isMultiple()) break;
+          setItemSelected(item);
+          if (!_isMultiple) break;
         }
       }
+
+      target.attr("opt-loadinds", selectedIndexs.join(","));
     } else {
       var selectedIds = this.getSelectedKey(true);
 
@@ -16473,11 +16459,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var _item5 = findItemById.call(this, itemContainer, selectedIds[_i2]);
 
           if (_item5) {
-            _item5.addClass("selected");
-
-            if (!this.isMultiple()) break;
+            setItemSelected(_item5);
+            if (!_isMultiple) break;
           }
         }
+
+        target.attr("opt-loadids", selectedIds.join(","));
       }
     }
 
@@ -16535,14 +16522,31 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var loadingItem = $("<li class='loading'></li>").appendTo(container);
     loadingItem.append("<div>" + (this.loadingText || "正在加载...") + "</div>");
     container.children(".more").remove();
-    var nodeIndex = getItemIndex.call(this, item.is("li") ? item : item.children().last);
+    var loadSelectedIds = this.$el.attr("opt-loadids") || "";
+    loadSelectedIds = loadSelectedIds ? loadSelectedIds.split(",") : [];
+    var loadSelectedIndexs = this.$el.attr("opt-loadinds") || "";
+    loadSelectedIndexs = loadSelectedIndexs ? loadSelectedIndexs.split(",") : null;
+    var nodeIndex = getItemIndex.call(this, item.is("li") ? item : item.children().last());
     VRender.Component.load.call(this, api, params, function (err, data) {
       loadingItem.remove();
       var datas = !err ? Utils.toArray(data) : null;
 
       if (datas && datas.length > 0) {
+        var snapshoot = _this13._snapshoot();
+
         Utils.each(datas, function (data) {
-          addItem.call(_this13, container, data, -1, nodeIndex);
+          var _item = addItem.call(_this13, container, data, -1, nodeIndex);
+
+          if (!_item.is(".selected")) {
+            var index = !loadSelectedIndexs ? -1 : getItemIndex.call(_this13, _item);
+
+            var selected = _this13._isSelected(data, index, loadSelectedIndexs, loadSelectedIds);
+
+            if (selected) {
+              setItemSelectedOrNot.call(_this13, _item, true);
+            }
+          }
+
           nodeIndex += 1;
         });
 
@@ -16553,6 +16557,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         } else {
           item.addClass("is-loaded");
         }
+
+        snapshoot.done();
       } else {
         item.addClass("is-loaded");
         if (container.children().length == 0) item.addClass("is-leaf").removeClass("open");
@@ -16619,31 +16625,40 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   var setItemSelectedOrNot = function setItemSelectedOrNot(item, beSelected) {
+    var _hasChkbox = this.isChkboxVisible();
+
     var _isMultiple = this.isMultiple();
 
+    var node = item.children(".tree-node");
+
     if (beSelected) {
-      if (item.is(".selected")) return;
+      if (item.is(".selected") || node.is(".active")) return;
 
-      if (!_isMultiple) {
-        this.$el.find("li.selected").removeClass("selected");
-        this.$el.find("li.selected_").removeClass("selected_");
-      }
-
-      item.addClass("selected").removeClass("selected_");
-
-      if (_isMultiple) {
-        setChildrenSelected(item, true);
-        setParentSelected(item);
-      } else {
-        // 单选状态，设置父节点为半选
-        while (true) {
-          var container = item.parent();
-          if (container.is(".root")) break;
-          item = container.parent();
-          item.addClass("selected_");
+      if (_hasChkbox) {
+        if (!_isMultiple) {
+          this.$el.find("li.selected").removeClass("selected");
+          this.$el.find("li.selected_").removeClass("selected_");
         }
+
+        item.addClass("selected").removeClass("selected_");
+
+        if (_isMultiple) {
+          setChildrenSelected(item, true);
+          setParentSelected(item);
+        } else {
+          // 单选状态，设置父节点为半选
+          while (true) {
+            var container = item.parent();
+            if (container.is(".root")) break;
+            item = container.parent();
+            item.addClass("selected_");
+          }
+        }
+      } else {
+        this.$el.find(".active").removeClass("active");
+        node.addClass("active");
       }
-    } else {
+    } else if (_hasChkbox) {
       if (item.is(".selected")) item.removeClass("selected");else if (item.is(".selected_")) item.removeClass(".selected_");else return;
 
       if (_isMultiple) {
@@ -16651,6 +16666,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       setParentSelected(item);
+    } else {
+      node.removeClass("active");
     }
   };
 
@@ -16717,6 +16734,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (Utils.isArray(datas)) {
       if (index >= 0 && index < datas.length) datas.splice(index, 0, data);else datas.push(data);
     }
+
+    return item;
   };
 
   var updateItem = function updateItem(item, data) {
@@ -16737,8 +16756,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var removeItem = function removeItem(item) {
-    var _this15 = this;
-
     doNodeHideAnimate.call(this, item);
     var container = item.parent();
     var index = item.index();
@@ -16761,13 +16778,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var children = container.children();
 
         if (children.length > 0) {
-          setParentSelected.call(_this15, children.eq(0));
+          setParentSelected(children.eq(0));
         } else {
           container.remove();
 
           if (item.is(".selected_")) {
             item.removeClass("selected_");
-            setParentSelected.call(_this15, item);
+            setParentSelected(item);
           }
         }
       }
@@ -16790,12 +16807,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var getItemById = function getItemById(id, deep) {
-    var _this16 = this;
+    var _this15 = this;
 
     if (Utils.isBlank(id)) return null;
     var findItem = null;
     doLoop.call(this, function (item) {
-      var _id = getItemId.call(_this16, item);
+      var _id = getItemId.call(_this15, item);
 
       if (id == _id) {
         findItem = item;
@@ -16808,19 +16825,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var getItemByData = function getItemByData(data, deep) {
-    var _this17 = this;
+    var _this16 = this;
 
     var findItem = null;
 
     var dataId = this._getDataKey(data);
 
     doLoop.call(this, function (item) {
-      var _data = _this17._getItemData(item);
+      var _data = _this16._getItemData(item);
 
       var isMatch = data == _data;
 
       if (!isMatch) {
-        var _id = _this17._getDataKey(_data);
+        var _id = _this16._getDataKey(_data);
 
         isMatch = _id == dataId;
       }
@@ -16934,7 +16951,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var findItemById = function findItemById(itemContainer, id, beOpen) {
-    var _this18 = this;
+    var _this17 = this;
 
     var _find = function _find(container) {
       var items = container.children();
@@ -16943,7 +16960,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var item = items.eq(i);
         var data = item.data(frontend ? "itemData" : "_node_data");
 
-        var _id = _this18._getDataKey(data);
+        var _id = _this17._getDataKey(data);
 
         if (_id == id) return item;
 
@@ -16970,14 +16987,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var loadInner = function loadInner(container, api, params, callback) {
-    var _this19 = this;
+    var _this18 = this;
 
     doLoad.call(this, container, api, params, function (err, datas) {
       if (Utils.isFunction(callback)) {
         callback(err, datas);
       }
 
-      tryAutoOpen.call(_this19);
+      tryAutoOpen.call(_this18);
     });
   };
 
@@ -17151,8 +17168,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UITreeView = UITreeView;
-    UI.init(".ui-treeview", UITreeView, Renderer);
+    window.UITree = UITree;
+    UI.init(".ui-tree", UITree, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -17160,23 +17177,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-07-29
-// treecombobox
+// treeselect(原treecombobox)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.treecombobox) return;
+  if (frontend && VRender.Component.ui.treeselect) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UITreeCombobox = UI.treecombobox = function (view, options) {
+  var UITreeSelect = UI.treeselect = function (view, options) {
     return UI._base.call(this, view, options);
   };
 
-  var _UITreeCombobox = UITreeCombobox.prototype = new UI._base(false);
+  var _UITreeSelect = UITreeSelect.prototype = new UI._base(false);
 
-  _UITreeCombobox.init = function (target, options) {
+  _UITreeSelect.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
-    this.tree = UI.treeview.find(this.$el)[0];
+    this.tree = UI.tree.find(this.$el)[0];
     this.$el.on("tap", ".ipt", iptClickHandler.bind(this));
     this.$el.on("change", ".dropdown", function () {
       return false;
@@ -17187,22 +17204,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (this._isRenderAsApp()) {
       this.$el.on("tap", ".dropdown", dropdownTouchHandler.bind(this));
     }
+
+    var selectedIndex = this.getSelectedIndex();
+    if (selectedIndex && selectedIndex.length > 0) itemChanged.call(this);
   }; // ====================================================
 
 
-  _UITreeCombobox.getData = function () {
+  _UITreeSelect.getData = function () {
     return this.tree.getData();
   };
 
-  _UITreeCombobox.setData = function (value) {
+  _UITreeSelect.setData = function (value) {
     this.tree.setData(value);
   };
 
-  _UITreeCombobox.getPrompt = function () {
+  _UITreeSelect.getPrompt = function () {
     return this.$el.children(".ipt").find(".prompt").text();
   };
 
-  _UITreeCombobox.setPrompt = function (value) {
+  _UITreeSelect.setPrompt = function (value) {
     var target = this.$el.children(".ipt");
     target.find(".prompt").remove();
 
@@ -17211,133 +17231,133 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeCombobox.getDataAdapter = function () {
+  _UITreeSelect.getDataAdapter = function () {
     return this.tree.getDataAdapter();
   };
 
-  _UITreeCombobox.setDataAdapter = function (value) {
+  _UITreeSelect.setDataAdapter = function (value) {
     this.tree.setDataAdapter(value);
   };
 
-  _UITreeCombobox.getDataMapper = function () {
+  _UITreeSelect.getDataMapper = function () {
     return this.tree.getDataMapper();
   };
 
-  _UITreeCombobox.setDataMapper = function (value) {
+  _UITreeSelect.setDataMapper = function (value) {
     this.tree.setDataMapper(value);
   }; // ====================================================
 
 
-  _UITreeCombobox.load = function (api, params, callback) {
+  _UITreeSelect.load = function (api, params, callback) {
     this.tree.load(api, params, callback);
   };
 
-  _UITreeCombobox.reload = function (page, callback) {
+  _UITreeSelect.reload = function (page, callback) {
     this.tree.reload(page, callback);
   };
 
-  _UITreeCombobox.isLoading = function () {
+  _UITreeSelect.isLoading = function () {
     return this.tree.isLoading();
   };
 
-  _UITreeCombobox.getDataAt = function (index) {
+  _UITreeSelect.getDataAt = function (index) {
     return this.tree.getDataAt(index);
   };
 
-  _UITreeCombobox.getDataIndex = function (data) {
+  _UITreeSelect.getDataIndex = function (data) {
     return this.tree.getDataIndex(data);
   };
 
-  _UITreeCombobox.getDataByKey = function (key) {
+  _UITreeSelect.getDataByKey = function (key) {
     return this.tree.getDataByKey(key);
   };
 
-  _UITreeCombobox.getIndexByKey = function (key) {
+  _UITreeSelect.getIndexByKey = function (key) {
     return this.tree.getIndexByKey(key);
   };
 
-  _UITreeCombobox.getDataByName = function (name) {
+  _UITreeSelect.getDataByName = function (name) {
     return this.tree.getDataByName(name);
   };
 
-  _UITreeCombobox.getIndexByName = function (name) {
+  _UITreeSelect.getIndexByName = function (name) {
     return this.tree.getIndexByName(name);
   };
 
-  _UITreeCombobox.getKeyField = function () {
+  _UITreeSelect.getKeyField = function () {
     return this.tree.getKeyField();
   };
 
-  _UITreeCombobox.setKeyField = function (value) {
+  _UITreeSelect.setKeyField = function (value) {
     this.tree.setKeyField(value);
   };
 
-  _UITreeCombobox.getLabelField = function () {
+  _UITreeSelect.getLabelField = function () {
     return this.tree.getLabelField;
   };
 
-  _UITreeCombobox.setLabelField = function (value) {
+  _UITreeSelect.setLabelField = function (value) {
     this.tree.setLabelField(value);
   };
 
-  _UITreeCombobox.getLabelFunction = function () {
+  _UITreeSelect.getLabelFunction = function () {
     return this.tree.getLabelFunction();
   };
 
-  _UITreeCombobox.setLabelFunction = function (value) {
+  _UITreeSelect.setLabelFunction = function (value) {
     this.tree.setLabelFunction(value);
   };
 
-  _UITreeCombobox.getItemRenderer = function () {
+  _UITreeSelect.getItemRenderer = function () {
     return this.tree.getItemRenderer();
   };
 
-  _UITreeCombobox.setItemRenderer = function (value) {
+  _UITreeSelect.setItemRenderer = function (value) {
     this.tree.setItemRenderer(value);
   };
 
-  _UITreeCombobox.isDisabled = function (index) {
+  _UITreeSelect.isDisabled = function (index) {
     return this.tree.isDisabled(index);
   };
 
-  _UITreeCombobox.setDisabled = function (disabled, index) {
+  _UITreeSelect.setDisabled = function (disabled, index) {
     this.tree.setDisabled(disabled, index);
   };
 
-  _UITreeCombobox.addItem = function (data, index) {
+  _UITreeSelect.addItem = function (data, index) {
     return this.tree.addItem(data, index);
   };
 
-  _UITreeCombobox.updateItem = function (data, index) {
+  _UITreeSelect.updateItem = function (data, index) {
     return this.tree.updateItem(data, index);
   };
 
-  _UITreeCombobox.removeItem = function (data) {
+  _UITreeSelect.removeItem = function (data) {
     return this.tree.removeItem(data);
   };
 
-  _UITreeCombobox.removeItemAt = function (index) {
+  _UITreeSelect.removeItemAt = function (index) {
     return this.tree.removeItemAt(index);
   };
 
-  _UITreeCombobox.addOrUpdateItem = function (data) {
+  _UITreeSelect.addOrUpdateItem = function (data) {
     this.tree.addOrUpdateItem(data);
   };
 
-  _UITreeCombobox.getItemData = function (target) {
+  _UITreeSelect.getItemData = function (target) {
     return this.tree.getItemData(target);
   };
 
-  _UITreeCombobox.isEmpty = function () {
+  _UITreeSelect.isEmpty = function () {
     return this.tree.isEmpty();
   }; // ====================================================
 
 
-  _UITreeCombobox.isMultiple = function () {
+  _UITreeSelect.isMultiple = function () {
     return this.$el.attr("multiple") == "multiple";
   };
 
-  _UITreeCombobox.setMultiple = function (value) {
+  _UITreeSelect.setMultiple = function (value) {
     value = Utils.isNull(value) || Utils.isTrue(value) ? true : false;
 
     if (this.isMultiple() != value) {
@@ -17346,39 +17366,39 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITreeCombobox.getSelectedIndex = function (needArray) {
+  _UITreeSelect.getSelectedIndex = function (needArray) {
     return this.tree.getSelectedIndex(needArray, true);
   };
 
-  _UITreeCombobox.setSelectedIndex = function (value) {
+  _UITreeSelect.setSelectedIndex = function (value) {
     this.tree.setSelectedIndex(value, true);
   };
 
-  _UITreeCombobox.getSelectedKey = function (needArray) {
+  _UITreeSelect.getSelectedKey = function (needArray) {
     return this.tree.getSelectedKey(needArray, true);
   };
 
-  _UITreeCombobox.setSelectedKey = function (value) {
+  _UITreeSelect.setSelectedKey = function (value) {
     this.tree.setSelectedKey(value, true);
   };
 
-  _UITreeCombobox.getSelectedData = function (needArray) {
+  _UITreeSelect.getSelectedData = function (needArray) {
     return this.tree.getSelectedData(needArray, true);
   };
 
-  _UITreeCombobox.isSelectedIndex = function (index) {
+  _UITreeSelect.isSelectedIndex = function (index) {
     return this.tree.isSelectedIndex(index);
   };
 
-  _UITreeCombobox.isSelectedKey = function (value) {
+  _UITreeSelect.isSelectedKey = function (value) {
     return this.tree.isSelectedKey(value);
   };
 
-  _UITreeCombobox.isAllSelected = function () {
+  _UITreeSelect.isAllSelected = function () {
     return this.tree.isAllSelected();
   };
 
-  _UITreeCombobox.length = function () {
+  _UITreeSelect.length = function () {
     return this.tree.length();
   }; // ====================================================
 
@@ -17416,7 +17436,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer.render = function ($, target) {
     UI._baseRender.render.call(this, $, target);
 
-    target.addClass("ui-treecombobox"); // 容器，用于下拉列表定位
+    target.addClass("ui-treeselect"); // 容器，用于下拉列表定位
 
     target.attr("opt-box", this.options.container);
     if (this.isMultiple()) target.attr("multiple", "multiple");
@@ -17455,12 +17475,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var treeOptions = getTreeOptions.call(this, this.options);
 
     if (!frontend) {
-      var UITreeView = require("../treeview/index");
+      var UITree = require("../tree/index");
 
-      new UITreeView(this, treeOptions).render(target);
+      new UITree(this, treeOptions).render(target);
     } else {
       treeOptions.target = target;
-      UI.treeview.create(treeOptions);
+      UI.tree.create(treeOptions);
     }
   }; ///////////////////////////////////////////////////////
 
@@ -17503,6 +17523,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var itemChanged = function itemChanged() {
     var _this = this;
 
+    // 树型的 index 比较复杂，这里不用 snapshoot 了
     // let snapshoot = this._snapshoot();
     // let indexs = this.getSelectedIndex(true);
     // Component.select.setSelectedIndex.call(this, indexs);
@@ -17555,8 +17576,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UITreeCombobox = UITreeCombobox;
-    UI.init(".ui-treecombobox", UITreeCombobox, Renderer);
+    window.UITreeSelect = UITreeSelect;
+    UI.init(".ui-treeselect", UITreeSelect, Renderer);
   } else {
     module.exports = Renderer;
   }
