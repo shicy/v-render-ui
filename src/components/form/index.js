@@ -11,9 +11,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UIFormView = UIBase.extend(module, {
+const UIForm = UIBase.extend(module, {
 	doInit: function (done) {
-		UIFormView.super(this, () => {
+		UIForm.super(this, () => {
 			this.renderer = new Renderer(this, this.options);
 			if (Utils.isFunction(done))
 				done();
@@ -21,7 +21,7 @@ const UIFormView = UIBase.extend(module, {
 	},
 
 	renderView: function () {
-		UIFormView.super(this);
+		UIForm.super(this);
 		this.renderer.render(VRender.$, this.$el);
 	},
 
@@ -106,5 +106,5 @@ const UIFormView = UIBase.extend(module, {
 	}
 });
 
-UIFormView.VERTICAL = "vertical";
-UIFormView.HORIZONTIAL = "horizontial";
+UIForm.VERTICAL = "vertical";
+UIForm.HORIZONTIAL = "horizontial";

@@ -14,11 +14,11 @@ const UICheckbox = VRender.UICheckbox;
 const UIRadiobox = VRender.UIRadiobox;
 const UICheckGroup = VRender.UICheckGroup;
 const UIRadioGroup = VRender.UIRadioGroup;
-const UIFormView = VRender.UIFormView;
+const UIForm = VRender.UIForm;
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UIFormView 表单";
+		return "UIForm 表单";
 	},
 
 	renderDemos: function (target, render) {
@@ -35,7 +35,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("基本使用");
 
 		let demo = new UIGroup(this);
-		demo.add(new UIFormView(this, {
+		demo.add(new UIForm(this, {
 			action: "data.component.save",
 			params: { id: 1, state: 1 },
 			data: [
@@ -57,7 +57,7 @@ const ModuleView = BaseModule.extend(module, {
 		}));
 
 		let source = [];
-		source.push("new UIFormView([context], {");
+		source.push("new UIForm([context], {");
 		source.push("  action: 'data.component.save',");
 		source.push("  params: {");
 		source.push("    id: 1,");
@@ -136,7 +136,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("多列显示");
 
 		let demo = new UIGroup(this);
-		demo.add(new UIFormView(this, {
+		demo.add(new UIForm(this, {
 			columns: 2,
 			data: [
 				{ name: "a", label: "输入框1", content: new UIInput(this) },
@@ -151,7 +151,7 @@ const ModuleView = BaseModule.extend(module, {
 		}));
 
 		let source = [];
-		source.push("new UIFormView(context, {");
+		source.push("new UIForm(context, {");
 		source.push("  columns: 2,");
 		source.push("  data: [{");
 		source.push("    name: 'a',");
@@ -190,7 +190,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("表单验证");
 
 		let demo = new UIGroup(this);
-		demo.add(new UIFormView(this, {
+		demo.add(new UIForm(this, {
 			data: [
 				{ name: "a", label: "电子邮箱", content: new UIInput(this, { type: "email" }) },
 				{ name: "b", label: "手机号码", content: new UIInput(this, { type: "int" }),
@@ -208,7 +208,7 @@ const ModuleView = BaseModule.extend(module, {
 		}));
 
 		let source = [];
-		source.push("new UIFormView([context], {");
+		source.push("new UIForm([context], {");
 		source.push("  data: [{");
 		source.push("    name: 'a',");
 		source.push("    label: '电子邮箱',");
@@ -271,7 +271,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("动态添加");
 
 		let demo = new UIGroup(this);
-		var form = demo.add(new UIFormView(this));
+		var form = demo.add(new UIForm(this));
 		form.add("a", "文本").content("文本内容");
 		form.add("b", "输入框").content(new UIInput(this)).required();
 		form.add("c", "手机号码").content(new UIInput(this))
@@ -282,7 +282,7 @@ const ModuleView = BaseModule.extend(module, {
 		form.setButtons([{label: "确定", type: "submit"}, {label: "取消", type: "cancel"}]);
 
 		let source = [];
-		source.push("var form = new UIFormView([context]);");
+		source.push("var form = new UIForm([context]);");
 		source.push("form.add('a', '文本')");
 		source.push("  .content('文本内容');");
 		source.push("form.add('b', '输入框')");
@@ -313,10 +313,10 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>labelAlign</> 设置标签文本的对齐方式，可选值：<>left</>、<>center</>、<>right</>。");
 
 		let demo = new UIGroup(this);
-		demo.add(new UIFormView(this, {
+		demo.add(new UIForm(this, {
 			labelWidth: 150,
 			labelAlign: "right",
-			orientation: this.isApp ? UIFormView.HORIZONTIAL : null,
+			orientation: this.isApp ? UIForm.HORIZONTIAL : null,
 			data: [
 				{name: "a", label: "输入框", content: new UIInput(this), required: true},
 				{name: "b", label: "下拉选择框", content: new UISelect(this, {data: ["选项1", "选项2"]})}
@@ -325,7 +325,7 @@ const ModuleView = BaseModule.extend(module, {
 		}));
 
 		let source = [];
-		source.push("new UIFormView(context, {");
+		source.push("new UIForm(context, {");
 		source.push("  labelWidth: 150,");
 		source.push("  labelAlign: 'right',");
 		source.push("  data: [{");

@@ -1,8 +1,8 @@
 // 2019-06-10
-// formview
+// form(原formview)
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.formview)
+	if (frontend && VRender.Component.ui.form)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
@@ -12,12 +12,12 @@
 	const HORIZONTIAL = "horizontial";
 
 	///////////////////////////////////////////////////////
-	const UIFormView = UI.formview = function (view, options) {
+	const UIForm = UI.form = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UIFormView = UIFormView.prototype = new UI._base(false);
+	const _UIForm = UIForm.prototype = new UI._base(false);
 
-	_UIFormView.init = function (target, options) {
+	_UIForm.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
 		let btnbar = this.$el.children(".btnbar");
@@ -37,7 +37,7 @@
 	};
 
 	// ====================================================
-	_UIFormView.validate = function (callback) {
+	_UIForm.validate = function (callback) {
 		let errors = [];
 		let formItems = this._getItems();
 		let count = formItems.length;
@@ -56,7 +56,7 @@
 		});
 	};
 
-	_UIFormView.submit = function (action, callback) {
+	_UIForm.submit = function (action, callback) {
 		if (this.$el.is(".is-loading"))
 			return false;
 
@@ -97,7 +97,7 @@
 	};
 
 	// ====================================================
-	_UIFormView.add = function (name, label, index) {
+	_UIForm.add = function (name, label, index) {
 		let container = this.$el.children(".items");
 
 		let item = $("<div class='form-item'></div>").appendTo(container);
@@ -120,7 +120,7 @@
 		return new FormItem(this, item);
 	};
 
-	_UIFormView.get = function (name) {
+	_UIForm.get = function (name) {
 		if (Utils.isBlank(name))
 			return null;
 		let item = Utils.find(this._getItems(), (item) => {
@@ -129,7 +129,7 @@
 		return !item ? null : (new FormItem(this, item));
 	};
 
-	_UIFormView.getAt = function (index) {
+	_UIForm.getAt = function (index) {
 		index = Utils.getIndexValue(index);
 		if (index >= 0) {
 			let item = this._getItems().eq(index);
@@ -138,7 +138,7 @@
 		return null;
 	};
 
-	_UIFormView.delete = function (name) {
+	_UIForm.delete = function (name) {
 		if (Utils.isBlank(name))
 			return null;
 		let item = Utils.find(this._getItems(), (item) => {
@@ -149,7 +149,7 @@
 		return item;
 	};
 
-	_UIFormView.deleteAt = function (index) {
+	_UIForm.deleteAt = function (index) {
 		index = Utils.getIndexValue(index);
 		if (index >= 0) {
 			let item = this._getItems().eq(index);
@@ -161,7 +161,7 @@
 	};
 
 	// ====================================================
-	_UIFormView.getFormData = function () {
+	_UIForm.getFormData = function () {
 		let params = {};
 		params = Utils.extend(params, this.getParams());
 		Utils.each(this._getItems(), (item) => {
@@ -199,7 +199,7 @@
 		});
 		return params;
 	};
-	_UIFormView.setFormData = function (data) {
+	_UIForm.setFormData = function (data) {
 		data = data || {};
 		Utils.each(this._getItems(), (item) => {
 			let name = item.attr("name");
@@ -229,7 +229,7 @@
 		});
 	};
 
-	_UIFormView.getColumns = function () {
+	_UIForm.getColumns = function () {
 		if (this._isRenderAsApp())
 			return 1;
 		if (this.options.hasOwnProperty("columns"))
@@ -238,7 +238,7 @@
 		this.$el.removeAttr("opt-cols");
 		return this.options.columns;
 	};
-	_UIFormView.setColumns = function (value) {
+	_UIForm.setColumns = function (value) {
 		if (this._isRenderAsApp())
 			return ;
 		let columns = parseInt(value) || 1;
@@ -255,14 +255,14 @@
 		});
 	};
 
-	_UIFormView.getAction = function () {
+	_UIForm.getAction = function () {
 		return this.$el.attr("opt-action");
 	};
-	_UIFormView.setAction = function (value) {
+	_UIForm.setAction = function (value) {
 		this.$el.attr("opt-action", Utils.trimToEmpty(value));
 	};
 
-	_UIFormView.getParams = function () {
+	_UIForm.getParams = function () {
 		if (this.options.hasOwnProperty("params"))
 			return this.options.params;
 		let params = null;
@@ -273,19 +273,19 @@
 		this.options.params = params;
 		return this.options.params;
 	};
-	_UIFormView.setParams = function (value) {
+	_UIForm.setParams = function (value) {
 		this.options.params = value;
 		this.$el.removeAttr("opt-params");
 	};
 
-	_UIFormView.getMethod = function () {
+	_UIForm.getMethod = function () {
 		return this.$el.attr("opt-method");
 	};
-	_UIFormView.setMethod = function (value) {
+	_UIForm.setMethod = function (value) {
 		this.$el.attr("opt-method", Utils.trimToEmpty(value));
 	};
 
-	_UIFormView.getLabelWidth = function () {
+	_UIForm.getLabelWidth = function () {
 		if (this.options.hasOwnProperty("labelWidth"))
 			return this.options.labelWidth;
 		let width = this.$el.attr("opt-lw");
@@ -293,25 +293,25 @@
 		this.$el.removeAttr("opt-lw");
 		return this.options.labelWidth;
 	};
-	_UIFormView.setLabelWidth = function (value) {
+	_UIForm.setLabelWidth = function (value) {
 		this.options.labelWidth = value;
 		this.$el.removeAttr("opt-lw");
 	};
 
-	_UIFormView.getLabelAlign = function () {
+	_UIForm.getLabelAlign = function () {
 		let align = this.$el.attr("opt-la");
 		return /^(center|right)$/.test(align) ? align : "left";
 	};
-	_UIFormView.setLabelAlign = function (value) {
+	_UIForm.setLabelAlign = function (value) {
 		let align = /^(center|right)$/.test(value) ? align : "left";
 		this.options.labelAlign = align;
 		this.$el.attr("opt-la", align);
 	};
 
-	_UIFormView.getOrientation = function () {
+	_UIForm.getOrientation = function () {
 		return this.$el.attr("opt-orientate");
 	};
-	_UIFormView.setOrientation = function (value) {
+	_UIForm.setOrientation = function (value) {
 		if (VERTICAL != value && HORIZONTIAL != value) {
 			value = this._isRenderAsApp() ? VERTICAL : HORIZONTIAL;
 		}
@@ -320,12 +320,12 @@
 		this.$el.addClass(value).attr("opt-orientate", value);
 	};
 
-	_UIFormView.setButtons = function (value) {
+	_UIForm.setButtons = function (value) {
 		renderButtons.call(this, $, this.$el, Utils.toArray(value));
 	};
 
 	// ====================================================
-	_UIFormView._getItems = function () {
+	_UIForm._getItems = function () {
 		return this.$el.children(".items").children();
 	};
 
@@ -402,7 +402,7 @@
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-formview");
+		target.addClass("ui-form");
 
 		let options = this.options || {};
 
@@ -897,8 +897,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UIFormView = UIFormView;
-		UI.init(".ui-formview", UIFormView, Renderer);
+		window.UIForm = UIForm;
+		UI.init(".ui-form", UIForm, Renderer);
 	}
 	else {
 		module.exports = Renderer;

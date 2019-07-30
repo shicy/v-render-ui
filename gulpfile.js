@@ -57,7 +57,7 @@ function buildJs() {
 	jsFiles.push("src/components/datetime/render.js");
 	jsFiles.push("src/components/timeinput/render.js");
 	jsFiles.push("src/components/fileupload/render.js");
-	jsFiles.push("src/components/formview/render.js");
+	jsFiles.push("src/components/form/render.js");
 	jsFiles.push("src/components/message/render.js");
 	jsFiles.push("src/components/notice/render.js");
 	jsFiles.push("src/components/dialog/render.js");
