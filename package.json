@@ -1,13 +1,17 @@
 {
   "name": "v-render-ui",
   "version": "1.0.0",
-  "description": "A Vrender Component Library",
+  "description": "a vrender component library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "make test git repository: https://github.com/shicy/v-render-ui.git",
     "start": "node-dev ./doc",
     "build": "NODE_ENV=production gulp",
     "build-dev": "NODE_ENV=development gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shicy/v-render-ui.git"
   },
   "keywords": [
     "vrender",
@@ -15,6 +19,10 @@
   ],
   "author": "shicy85@163.com",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shicy/v-render-ui/issues"
+  },
+  "homepage": "https://github.com/shicy/v-render-ui#readme",
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
