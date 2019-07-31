@@ -16,7 +16,7 @@ VRender.use(require("v-render-ui"));
 // 配置路由信息...
 
 new VRender({
-	cwd: Path.resolve(__dirname, "./")
+    cwd: Path.resolve(__dirname, "./")
 });
 ```
 ##### 使用（如：index页面【Index.js】）
@@ -24,19 +24,19 @@ new VRender({
 const VRender = require("v-render");
 const UIInput = VRender.UIInput;
 const Index = VRender.PageView.extend(module, {
-	renderBody: function (body) {
-		Index.super(this, body);
-		new UIInput(this, {
-			prompt: "请输入"
-		}).render(body);
-	}
+    renderBody: function (body) {
+        Index.super(this, body);
+        new UIInput(this, {
+            prompt: "请输入"
+        }).render(body);
+    }
 });
 ```
 
 ## 组件列表
 | 名称 | 描述 |
 | --- | --- |
-| UIButton | 按钮 |
+| [UIButton](https://github.com/shicy/v-render-ui/tree/master/doc/modules/button) | 按钮 |
 | UICheckbox | 多选框 |
 | UICheckGroup | 多选组 |
 | UIConfirm | 确认对话框 |
