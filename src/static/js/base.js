@@ -102,7 +102,7 @@
 		doInit.call(this, target, options);
 
 		setTimeout(() => {
-			this.tryAutoLoad();
+			this._tryAutoLoad();
 		});
 	};
 
@@ -314,7 +314,7 @@
 		return this.$el.is(".is-loading");
 	};
 
-	_UIBase.tryAutoLoad = function () {
+	_UIBase._tryAutoLoad = function () {
 		UIBase.tryAutoLoad.call(this);
 	};
 
