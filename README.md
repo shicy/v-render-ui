@@ -22,11 +22,11 @@ new VRender({
 ##### 使用（如：index页面【Index.js】）
 ```javascript
 const VRender = require("v-render");
-const UIInput = VRender.UIInput;
+
 const Index = VRender.PageView.extend(module, {
     renderBody: function (body) {
         Index.super(this, body);
-        new UIInput(this, {
+        new VRender.UIInput(this, {
             prompt: "请输入"
         }).render(body);
     }
