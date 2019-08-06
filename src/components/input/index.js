@@ -34,6 +34,13 @@ const UIInput = UIBase.extend(module, {
 		this.options.prompt = value;
 	},
 
+	getPlaceholder: function () {
+		return this.options.placeholder;
+	},
+	setPlaceholder: function (value) {
+		this.options.placeholder = value;
+	},
+
 	getDataType: function () {
 		return this.options.dataType || this.options.type;
 	},

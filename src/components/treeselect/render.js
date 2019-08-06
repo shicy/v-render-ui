@@ -411,7 +411,7 @@
 		_options.autoLoad = options.autoLoad;
 		_options.icon = options.icon;
 		_options.openIndex = options.openIndex;
-		_options.openId = options.openId;
+		_options.openKey = options.openKey;
 		return _options;
 	};
 

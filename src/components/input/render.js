@@ -99,6 +99,13 @@
 		}
 	};
 
+	_UIInput.getPlaceholder = function () {
+		return this.getPrompt();
+	};
+	_UIInput.setPlaceholder = function (value) {
+		this.setPrompt(value);
+	};
+
 	_UIInput.getTips = function () {
 		return this.inputTag.find(".tips").text();
 	};
@@ -414,6 +421,8 @@
 
 		if (Utils.isNotBlank(options.prompt))
 			$("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);
+		else if (Utils.isNotBlank(options.placeholder))
+			$("<span class='prompt'></span>").appendTo(ipt).text(options.placeholder);
 
 		if (Utils.isNotBlank(options.tips))
 			$("<span class='tips'></span>").appendTo(ipt).html(options.tips);

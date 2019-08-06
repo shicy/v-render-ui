@@ -81,7 +81,7 @@
 		}
 		return false;
 	};
-	_UITabbar.setColsable = function (closable, value) {
+	_UITabbar.setColsable = function (value, closable) {
 		if (typeof value == "string") {
 			return this.setColsable(closable, this.getIndexByName(value));
 		}

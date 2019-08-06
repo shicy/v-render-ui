@@ -36,14 +36,14 @@ const UITreeSelect = UIBase.extend(module, {
 	},
 	setOpenIndex: function (value) {
 		this.options.openIndex = value;
-		delete this.options.openId;
+		delete this.options.openKey;
 	},
 
-	getOpenId: function () {
-		return this.options.openId;
+	getOpenKey: function () {
+		return this.options.openKey;
 	},
-	setOpenId: function (value) {
-		this.options.openId = value;
+	setOpenKey: function (value) {
+		this.options.openKey = value;
 		delete this.options.openIndex;
 	},
 

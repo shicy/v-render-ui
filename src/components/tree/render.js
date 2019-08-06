@@ -39,12 +39,12 @@
 		return !!item ? getItemIndex.call(this, item, deep) : -1;
 	};
 
-	_UITree.getDataById = function (value, deep) {
+	_UITree.getDataByKey = function (value, deep) {
 		let item = getItemById.call(this, value, deep);
 		return !!item ? this._getItemData(item) : null;
 	};
 
-	_UITree.getIndexById = function (value, deep) {
+	_UITree.getIndexByKey = function (value, deep) {
 		let item = getItemById.call(this, value, deep);
 		return !!item ? getItemIndex.call(this, item, deep) : -1;
 	};
@@ -314,7 +314,7 @@
 		}
 	};
 
-	_UITree.openById = function (value) {
+	_UITree.openByKey = function (value) {
 		let item = getItemById.call(this, value, true);
 		if (item) {
 			doOpen.call(this, item);
@@ -335,7 +335,7 @@
 		}
 	};
 
-	_UITree.closeById = function (value) {
+	_UITree.closeByKey = function (value) {
 		let item = getItemById.call(this, value, true);
 		if (item) {
 			doClose.call(this, item);
@@ -561,7 +561,7 @@
 		if (!params.indexs) {
 			let ids = this.$el.attr("opt-openids");
 			if (Utils.isNotBlank(ids)) {
-				ids = getOpenId.call(this, ids);
+				ids = getOpenKey.call(this, ids);
 				params.ids = (ids && ids.length > 0) ? ids : null;
 			}
 		}
@@ -746,7 +746,7 @@
 		let indexs = getOpenIndex.call(this, this.options.openIndex);
 		indexs = (indexs && indexs.length > 0) ? indexs : null;
 
-		let ids = getOpenId.call(this, this.options.openId);
+		let ids = getOpenKey.call(this, this.options.openKey);
 		ids = (ids && ids.length > 0) ? ids : null;
 
 		return {indexs: indexs, ids: ids};
@@ -994,9 +994,9 @@
 		let _isMultiple = this.isMultiple();
 		let node = item.children(".tree-node");
 		if (beSelected) {
-			if (item.is(".selected") || node.is(".active"))
-				return ;
 			if (_hasChkbox) {
+				if (item.is(".selected"))
+					return ;
 				if (!_isMultiple) {
 					this.$el.find("li.selected").removeClass("selected");
 					this.$el.find("li.selected_").removeClass("selected_");
@@ -1017,6 +1017,8 @@
 				}
 			}
 			else {
+				if (node.is(".active"))
+					return ;
 				this.$el.find(".active").removeClass("active");
 				node.addClass("active");
 			}
@@ -1496,7 +1498,7 @@
 		return indexs;
 	};
 
-	const getOpenId = function (value) {
+	const getOpenKey = function (value) {
 		if (Utils.isBlank(value))
 			return [];
 		if (!Utils.isArray(value))

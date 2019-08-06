@@ -87,10 +87,7 @@
 	};
 
 	_UIPanel.isViewActive = function (name) {
-		let item = Utils.find(this.header.find(".tabbar .tab"), (tab) => {
-			return tab.attr("name") == name;
-		});
-		return item && item.is(".selected");
+		return this.getViewActive() == name;
 	};
 
 	_UIPanel.getViewActive = function () {

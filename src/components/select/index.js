@@ -24,6 +24,13 @@ const UISelect = UISelectable.extend(module, {
 		this.options.prompt = value;
 	},
 
+	getPlaceholder: function () {
+		return this.options.placeholder;
+	},
+	setPlaceholder: function (value) {
+		this.options.placeholder = value;
+	},
+
 	isEditable: function () {
 		return Utils.isTrue(this.options.editable);
 	},

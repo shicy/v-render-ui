@@ -86,6 +86,13 @@ const UIScroll = UIBase.extend(module, {
 		this.options.bottomDistance = value;
 	},
 
+	getBottomText: function () {
+		return this.options.bottomText;
+	},
+	setBottomText: function (value) {
+		this.options.bottomText = value;
+	},
+
 	getBottomView: function () {
 		return this.options.bottomView;
 	},
@@ -93,12 +100,12 @@ const UIScroll = UIBase.extend(module, {
 		this.options.bottomView = value;
 	},
 
-	getEmptyView: function () {
-		return this.options.emptyView;
-	},
-	setEmptyView: function (value) {
-		this.options.emptyView = value;
-	},
+	// getEmptyView: function () {
+	// 	return this.options.emptyView;
+	// },
+	// setEmptyView: function (value) {
+	// 	this.options.emptyView = value;
+	// },
 
 	getRefreshFunction: function () {
 		return this.options.refreshFunction;

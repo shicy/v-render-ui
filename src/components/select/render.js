@@ -102,6 +102,13 @@
 		}
 	};
 
+	_UISelect.getPlaceholder = function () {
+		return this.getPrompt();
+	};
+	_UISelect.setPlaceholder = function (value) {
+		this.setPrompt(value);
+	};
+
 	// ====================================================
 	_UISelect.addItem = function (data, index) {
 		index = Utils.getIndexValue(index);
@@ -572,13 +579,17 @@
 			input.val(labels.join(",") || "");
 		}
 
-		if (Utils.isTrue(this.options.editable))
+		let options = this.options || {};
+		if (Utils.isTrue(options.editable))
 			target.addClass("editable");
 		else
 			input.attr("readonly", "readonly");
 
 		ipttag.append("<button class='dropdownbtn'></button>");
-		ipttag.append("<span class='prompt'>" + Utils.trimToEmpty(this.options.prompt) + "</span>");
+		if (Utils.isNotBlank(options.prompt))
+			$("<span class='prompt'></span>").appendTo(ipttag).text(options.prompt);
+		else if (Utils.isNotBlank(options.placeholder))
+			$("<span class='prompt'></span>").appendTo(ipttag).text(options.placeholder);
 	};
 
 	const renderItems = function ($, target, itemContainer, datas) {

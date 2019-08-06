@@ -90,7 +90,7 @@
 		if (this.actionTarget == value)
 			return ;
 
-		let actionType = Utils.trimToNull(this.getActionType()) || "click";
+		let actionType = Utils.trimToNull(this.getActionType()) || "tap";
 		let eventType = actionType + "._" + this.getViewId();
 
 		if (this.actionTarget) {

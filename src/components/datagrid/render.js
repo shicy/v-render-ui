@@ -448,16 +448,21 @@
 			if (item.is(".disabled"))
 				return ;
 
-			if (item.is(".selected")) {
-				item.removeClass("selected");
-			}
-			else {
-				item.addClass("selected");
-				if (!this.isMultiple())
-					item.siblings().removeClass("selected");
-			}
+			let event = {type: "itemclick", detail: this._getItemData(item), target: e.target};
+			this.trigger(event);
 
-			selectedChanged.call(this);
+			if (!event.isPreventDefault) {
+				if (item.is(".selected")) {
+					item.removeClass("selected");
+				}
+				else {
+					item.addClass("selected");
+					if (!this.isMultiple())
+						item.siblings().removeClass("selected");
+				}
+
+				selectedChanged.call(this);
+			}
 		}
 	};
 
