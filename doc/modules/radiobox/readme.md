@@ -1,16 +1,11 @@
-## UIDateInput
+## UIRadiobox
 
 ### Options
 | name | description | default value |
 | :--- | :--- | :--- |
-| container | 滚动容器内，用于优化下拉框显示位置 |
-| date | 默认选中日期 |
-| dateFormat | 日期格式化 | yyyy-MM-dd |
-| format | 同`dateFormat` |
-| max | 可选的最后日期 |
-| min | 可选的最前日期 |
-| native | 是否使用原生控件渲染 | false |
-| prompt | 输入框提示信息 |
+| checked | 是否默认选中 | false |
+| label | 文本 |
+| value | 值 |
 
 ### Extend Options
 | name | description | default value |
@@ -30,18 +25,11 @@
 ### Methods
 | method | description |
 | :--- | :--- |
-| getDate(format) | 获取当前选中的日期 |
-| getDateFormat() | 获取日期格式化表达式（或方法） |
-| getMaxDate() | 获取可选的最后日期 |
-| getMinDate() | 获取可选的最前日期 |
-| getPrompt() | 获取输入框提示信息 |
-| isNative() | 是否原生控件显示 |
-| setDate(value) | 设置组件当前选中的日期 |
-| setDateFormat(value) | 设置日期格式化表达式（或方法） |
-| setMaxDate(value) | 设置可选的最后日期 |
-| setMinDate(value) | 设置可选的最前日期 |
-| setPrompt(value) | 设置输入框提示信息 |
-| val([value, options]) | 设置或获取当前选中的日期<br>当参数`value`为`null`或`undefined`时，返回当前选中的日期，此时参数`options`可以指定返回的日期格式，如：`{format:'yyyy.MM.dd'}`<br>当参数`value`为日期时设置组件选中的日期 |
+| getLabel() | 获取文本信息 |
+| isChecked() | 判断当前是否是选中状态 |
+| setChecked([bool]) | 设置选中或不选中 |
+| setLabel(value) | 设置文本信息 |
+| val([value]) | 设置（或获取）值，当参数`value`不为`null`或`undefined`时修改单选框值 |
 
 ### Extend Methods
 | method | description |
@@ -67,5 +55,4 @@
 ### Events
 | name | description | params |
 | :--- | :--- | :--- |
-| change | 日期变更时 |
-| clear | 清除日期，即未选择日期 |
+| change | 选中状态变更时 |

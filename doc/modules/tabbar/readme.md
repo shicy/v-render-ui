@@ -1,18 +1,9 @@
-## UIPopupMenu
+## UITabbar
 
 ### Options
 | name | description | default value |
 | :--- | :--- | :--- |
-| backText | 移动端，返回上一级节点的按钮名称 | 返回 |
-| actionTarget | 绑定一个按钮，点击打开菜单 |
-| actionType | 绑定按钮触发的事件名称 | click |
-| childrenField | 数据中对应子菜单的属性名称 |
-| iconField | 数据集中图标对应的属性名称 |
-| iconFunction | 显示图标对应的方法 |
-| loadingText | 动态加载时显示的文本信息 | 正在加载.. |
-| moreText | 加载更多按钮显示的文本信息 | 加载更多 |
-| offsetLeft | 相对于`actionTarget`向左偏移量 |
-| offsetTop | 相对于`actionTarget`向下偏移量 |
+| thumbWidth | 滑块宽度，可以是百分比或方法 |
 
 ### Extend Options
 | name | description | default value |
@@ -43,26 +34,24 @@
 | name | 组件名称 |
 | pager | 分页组件 |
 | paginator | 同`pager` |
+| selectedIndex | 默认选中的索引号（集），优先于`selectedKey`，多个值用逗号分隔 |
+| selectedKey | 默认选中的编号（集），`selectedIndex`优先，多个值用逗号分隔 |
 | style | 组件分格，类似与属性`cls`，但应更具有内在意义 |
 | renderer | 同`itemRenderer` |
+
+### Data Options
+| name | description | default value |
+| :--- | :--- | :--- |
+| closable | 是否可关闭 | false |
+| label | 标题 |
+| name | 标签名称 |
 
 ### Methods
 | method | description |
 | :--- | :--- |
-| close() | 关闭菜单 |
-| getActionTarget() | 获取被绑定的按钮 |
-| getActionType() | 获取按钮事件类型 |
-| getIconField() | 获取图标对应的属性名称 |
-| getIconFunction() | 获取图标对应的方法 |
-| getOffsetLeft() | 获取向左偏移量 |
-| getOffsetTop() | 获取向下偏移量 |
-| open() | 打开菜单 |
-| setActionTarget(value) | 设置绑定按钮 |
-| setActionType(value) | 设置按钮事件类型 |
-| setIconField(value) | 设置图标对应的属性名称 |
-| setIconFunction(value) | 设置图标对应的属性方法 |
-| setOffsetLeft(value) | 设置向左偏移量 |
-| setOffsetTop(value) | 设置向下偏移量 |
+| close(value) | 关闭（即删除）某个标签，参数`value`可以是索引号，或者标签名称 |
+| isClosable(value) | 判断某个标签是否可关闭 |
+| setColsable(value, closable) | 设置某个标签是否可关闭 |
 
 ### Extend Methods
 | method | description |
@@ -86,13 +75,19 @@
 | getLabelField() | 获取文本对应都属性名称 |
 | getLabelFunction() | 获取文本自定义方法 |
 | getPaginator() | 获取分页组件 |
+| getSelectedData([needArray]) | 获取选中的数据（集） |
+| getSelectedIndex([needArray]) | 获取选中项的索引号（集） |
+| getSelectedKey([needArray]) | 获取选中项的编号（集） |
 | getViewId() | 获取组件唯一编号 |
 | hasMore() | 判断是否还有数据未加载 |
+| isAllSelected() | 判断是否选中了所有项 |
 | isDisabled(index) | 判断组件是否被禁用 |
 | isEmpty() | 判断是否是空数据（集） |
 | isLoading() | 当前组件是否正在加载远程数据（集） |
 | isMounted() | 判断组件是否已添加到页面 |
 | isMultiple() | 判断是否允许多选 |
+| isSelectedIndex(index) | 判断某个索引号对应的项是否选中 |
+| isSelectedKey(key) | 判断某个编号对应的项是否选中 |
 | length() | 获取数据（集）长度 |
 | load(api, params, callback) | 加载远程数据（集） |
 | loadPage(page, callback) | 加载某一页数据（集） |
@@ -111,6 +106,8 @@
 | setLabelFunction(value) | 设置文本自定义方法 |
 | setMultiple(value) | 设置是否允许多选 |
 | setPaginator(value) | 设置分页组件 |
+| setSelectedIndex(value) | 按索引号（集）设置选中项，多个值用逗号分隔 |
+| setSelectedKey(value) | 按编号（集）设置选中项，多个值用逗号分隔 |
 | setVisible(visible) | 显示或隐藏组件 |
 | updateItem(data, index) | 更新项 |
 
@@ -118,3 +115,7 @@
 | name | description | params |
 | :--- | :--- | :--- |
 | change | 选中状态变更时 |
+| close | 关闭（即删除）标签时 |
+| hide | 标签取消选中之前 |
+| itemclick | 点击标签时 |
+| show | 选中标签时 |

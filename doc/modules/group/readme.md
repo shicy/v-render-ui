@@ -1,16 +1,14 @@
-## UIDateInput
+## UIGroup
 
 ### Options
 | name | description | default value |
 | :--- | :--- | :--- |
-| container | 滚动容器内，用于优化下拉框显示位置 |
-| date | 默认选中日期 |
-| dateFormat | 日期格式化 | yyyy-MM-dd |
-| format | 同`dateFormat` |
-| max | 可选的最后日期 |
-| min | 可选的最前日期 |
-| native | 是否使用原生控件渲染 | false |
-| prompt | 输入框提示信息 |
+| align | 子视图对齐方式，可选：`left`、`center`、`right`、`top`、`middle`、`bottom` |
+| children | 同`subViews` |
+| gap | 子视图之间的空隙 |
+| orientation | 布局方向，可选：`vertical`、`horizontial` |
+| subViews | 子视图 |
+| views | 同`children` |
 
 ### Extend Options
 | name | description | default value |
@@ -30,18 +28,15 @@
 ### Methods
 | method | description |
 | :--- | :--- |
-| getDate(format) | 获取当前选中的日期 |
-| getDateFormat() | 获取日期格式化表达式（或方法） |
-| getMaxDate() | 获取可选的最后日期 |
-| getMinDate() | 获取可选的最前日期 |
-| getPrompt() | 获取输入框提示信息 |
-| isNative() | 是否原生控件显示 |
-| setDate(value) | 设置组件当前选中的日期 |
-| setDateFormat(value) | 设置日期格式化表达式（或方法） |
-| setMaxDate(value) | 设置可选的最后日期 |
-| setMinDate(value) | 设置可选的最前日期 |
-| setPrompt(value) | 设置输入框提示信息 |
-| val([value, options]) | 设置或获取当前选中的日期<br>当参数`value`为`null`或`undefined`时，返回当前选中的日期，此时参数`options`可以指定返回的日期格式，如：`{format:'yyyy.MM.dd'}`<br>当参数`value`为日期时设置组件选中的日期 |
+| add(child, index) | 添加子视图并返回该子视图 |
+| append(values) | 添加子视图（支持多参数） |
+| getAlign() | 获取对齐方式 |
+| getGap() | 获取子视图间隙 |
+| getOrientation() | 获取布局方向 |
+| removeAt(index) | 根据索引删除某个子视图 |
+| setAlign(value) | 设置对齐方式 |
+| setGap(value) | 设置子视图间隙 |
+| setOrientation(value) | 设置布局方向 |
 
 ### Extend Methods
 | method | description |
@@ -67,5 +62,3 @@
 ### Events
 | name | description | params |
 | :--- | :--- | :--- |
-| change | 日期变更时 |
-| clear | 清除日期，即未选择日期 |

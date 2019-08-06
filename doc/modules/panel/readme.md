@@ -1,16 +1,16 @@
-## UIDateInput
+## UIPanel
 
 ### Options
 | name | description | default value |
 | :--- | :--- | :--- |
-| container | 滚动容器内，用于优化下拉框显示位置 |
-| date | 默认选中日期 |
-| dateFormat | 日期格式化 | yyyy-MM-dd |
-| format | 同`dateFormat` |
-| max | 可选的最后日期 |
-| min | 可选的最前日期 |
-| native | 是否使用原生控件渲染 | false |
-| prompt | 输入框提示信息 |
+| buttons | 面板上自定义按钮 |
+| content | 面板包含的视图，如果是多视图面板也作为默认视图 |
+| focusHtmlTitle | 富文本标题 |
+| title | 标题 |
+| thumbWidth | 滑块宽度 |
+| view | 同`content` |
+| viewIndex | 多视图模式下的默认选中视图索引号 |
+| viewports | 多视图定义，格式：`[{name, content}]` |
 
 ### Extend Options
 | name | description | default value |
@@ -30,18 +30,14 @@
 ### Methods
 | method | description |
 | :--- | :--- |
-| getDate(format) | 获取当前选中的日期 |
-| getDateFormat() | 获取日期格式化表达式（或方法） |
-| getMaxDate() | 获取可选的最后日期 |
-| getMinDate() | 获取可选的最前日期 |
-| getPrompt() | 获取输入框提示信息 |
-| isNative() | 是否原生控件显示 |
-| setDate(value) | 设置组件当前选中的日期 |
-| setDateFormat(value) | 设置日期格式化表达式（或方法） |
-| setMaxDate(value) | 设置可选的最后日期 |
-| setMinDate(value) | 设置可选的最前日期 |
-| setPrompt(value) | 设置输入框提示信息 |
-| val([value, options]) | 设置或获取当前选中的日期<br>当参数`value`为`null`或`undefined`时，返回当前选中的日期，此时参数`options`可以指定返回的日期格式，如：`{format:'yyyy.MM.dd'}`<br>当参数`value`为日期时设置组件选中的日期 |
+| getButtons() | 获取自定义按钮配置信息 |
+| getTitle() | 获取标题 |
+| getViewActive() | 获取当前视图的名称 |
+| isViewActive(name) | 判断当前是否是指定视图 |
+| setButtons(value) | 设置面板自定义按钮 |
+| setTitle(value) | 设置标题 |
+| setViewActive(name) | 按名称设置当前选中视图 |
+| setViewports(value, activeName) | 设置面板多视图 |
 
 ### Extend Methods
 | method | description |
@@ -67,5 +63,5 @@
 ### Events
 | name | description | params |
 | :--- | :--- | :--- |
-| change | 日期变更时 |
-| clear | 清除日期，即未选择日期 |
+| btnclick | 面板上自定义按钮点击时 | name:按钮名称，active:是否选中状态 |
+| change | 面板视图变更时 | name:视图名称，lastName:变更前的视图名称 |

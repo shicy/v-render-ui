@@ -7,22 +7,36 @@
 ### Extend Options
 | name | description | default value |
 | :--- | :--- | :--- |
+| apiName | 接口名称 |
+| apiParams | 接口默认参数 |
+| cls | 组件样式 |
 | data | 数据（集） |
+| dataAdapter | 数据转换适配器 |
+| dataMapper | 数据绑定映射器 |
 | disabled | 禁用 |
+| disableField | 项禁用属性名称 |
+| empty | 同`emptyText` |
 | emptyText | 数据（集）为空时，组件显示都文本内容 | 没有数据 |
 | emptyView | 数据（集）为空时，组件显示的视图 | 没有数据 |
 | id | 组件编号 |
 | itemRenderer | 自定义项渲染器 |
+| keyField | 数据（集）中编号对应的属性名称 | id > code > value |
 | labelField | 数据（集）中文本对应都属性名称 | label > name > value |
 | labelFunction | 自定义获取数据（集）对应文本的方法 |
 | loadingText | 加载数据（集）时，组件显示的文本内容 | 正在加载.. |
 | loadingView | 加载数据（集）时，组件显示的视图 | 正在加载.. |
-| multiple | 是否允许多选 | false |
+| mapper | 同`dataMapper` |
+| moreText | 加载更多时的提示信息 | 加载更多.. |
+| moreView | 加载更多时的提示视图 |
+| multi | 同`multiple` |
+| multiple | 是否允许多选 |
 | name | 组件名称 |
-| keyField | 数据（集）中编号对应的属性名称 | id > code > value |
+| pager | 分页组件 |
+| paginator | 同`pager` |
 | selectedIndex | 默认选中的索引号（集），优先于`selectedKey`，多个值用逗号分隔 |
 | selectedKey | 默认选中的编号（集），`selectedIndex`优先，多个值用逗号分隔 |
-
+| style | 组件分格，类似与属性`cls`，但应更具有内在意义 |
+| renderer | 同`itemRenderer` |
 
 ### Methods
 | method | description |
@@ -37,12 +51,12 @@
 | getData() | 获取组件数据（集） |
 | getDataAdapter() | 获取数据（集）适配器 |
 | getDataAt(index) | 按索引号获取数据对象 |
-| getDataByName(name) | 根据名称获取数据对象 |
 | getDataByKey(key) | 根据编号获取数据对象 |
+| getDataByName(name) | 根据名称获取数据对象 |
 | getDataIndex(data) | 获取某个数据的索引号 |
 | getDataMapper() | 获取数据（集）映射方法 |
-| getIndexByName(name) | 根据名称获取数据索引号 |
 | getIndexByKey(key) | 根据编号获取数据的索引号 |
+| getIndexByName(name) | 根据名称获取数据索引号 |
 | getInitParams() | 获取初始化参数 |
 | getItemData(elem) | 获取某个元素所在项的数据对象 |
 | getItemRenderer() | 获取项渲染器 |
@@ -59,8 +73,8 @@
 | isDisabled(index) | 判断组件是否被禁用 |
 | isEmpty() | 判断是否是空数据（集） |
 | isLoading() | 当前组件是否正在加载远程数据（集） |
-| isMultiple() | 判断是否允许多选 |
 | isMounted() | 判断组件是否已添加到页面 |
+| isMultiple() | 判断是否允许多选 |
 | isSelectedIndex(index) | 判断某个索引号对应的项是否选中 |
 | isSelectedKey(key) | 判断某个编号对应的项是否选中 |
 | length() | 获取数据（集）长度 |
@@ -71,6 +85,7 @@
 | removeItem(data) | 删除项 |
 | removeItemAt(index) | 根据索引号删除项 |
 | rerender() | 重新渲染组件 |
+| setData(value) | 设置组件数据（集） |
 | setDisabled(disabled, index) | 禁用或启用组件 |
 | setDataAdapter(value) | 设置数据（集）适配器 |
 | setDataMapper(value) | 设置数据（集）映射方法 |

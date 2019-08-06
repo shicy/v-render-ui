@@ -10,15 +10,24 @@
 | size | 大小，可选：`tiny`、 `small`、 `normal`、 `big`、 `bigger` | normal |
 | toggle | 当`toggle`为`true`时，按钮可切换选中和未选中状态 | false |
 | type | 类型，和样式相关，可选：`primary`、 `error`、 `success`、 `warn`、 `info`、 `text`、 `link`等 |
+| wait | 同`waitTime` |
 | waiting | 按钮是否为等待状态 | false |
 | waitTime | 按钮默认等待时间，单位毫秒。为`true`或`<0`时无限等待（需要手动取消） |
 
 ### Extend Options
 | name | description | default value |
 | :--- | :--- | :--- |
+| apiName | 接口名称 |
+| apiParams | 接口默认参数 |
+| cls | 组件样式 |
+| data | 数据（集） |
+| dataAdapter | 数据转换适配器 |
+| dataMapper | 数据绑定映射器 |
 | disabled | 禁用 |
 | id | 组件编号 |
+| mapper | 同`dataMapper` |
 | name | 组件名称 |
+| style | 组件分格，类似与属性`cls`，但应更具有内在意义 |
 
 ### Methods
 | method | description |
@@ -44,6 +53,7 @@
 | load(api, params, callback) | 加载远程数据（集） |
 | reload() | 重新加载数据（集） |
 | rerender() | 重新渲染组件 |
+| setData(value) | 设置组件数据（集） |
 | setDisabled(disabled) | 禁用或启用组件 |
 | setDataAdapter(value) | 设置数据（集）适配器 |
 | setDataMapper(value) | 设置数据（集）映射方法 |
