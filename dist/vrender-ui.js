@@ -455,7 +455,7 @@
 
     doInit.call(this, target, options);
     setTimeout(function () {
-      _this.tryAutoLoad();
+      _this._tryAutoLoad();
     });
   };
 
@@ -656,7 +656,7 @@
     return this.$el.is(".is-loading");
   };
 
-  _UIBase.tryAutoLoad = function () {
+  _UIBase._tryAutoLoad = function () {
     UIBase.tryAutoLoad.call(this);
   }; ///////////////////////////////////////////////////////
 
@@ -3452,6 +3452,14 @@
     }
   };
 
+  _UIInput.getPlaceholder = function () {
+    return this.getPrompt();
+  };
+
+  _UIInput.setPlaceholder = function (value) {
+    this.setPrompt(value);
+  };
+
   _UIInput.getTips = function () {
     return this.inputTag.find(".tips").text();
   };
@@ -3754,7 +3762,7 @@
       $("<span class='size'></span>").appendTo(ipt).text(len + "/" + maxSize);
     }
 
-    if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);
+    if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipt).text(options.prompt);else if (Utils.isNotBlank(options.placeholder)) $("<span class='prompt'></span>").appendTo(ipt).text(options.placeholder);
     if (Utils.isNotBlank(options.tips)) $("<span class='tips'></span>").appendTo(ipt).html(options.tips);
     var description = options.description || options.desc;
     if (Utils.isNotBlank(description)) $("<div class='desc'></div>").appendTo(target).html(description);
@@ -4121,6 +4129,14 @@
     if (Utils.isNotBlank(value)) {
       $("<span class='prompt'></span>").appendTo(target).text(value);
     }
+  };
+
+  _UISelect.getPlaceholder = function () {
+    return this.getPrompt();
+  };
+
+  _UISelect.setPlaceholder = function (value) {
+    this.setPrompt(value);
   }; // ====================================================
 
 
@@ -4599,9 +4615,10 @@
       input.val(labels.join(",") || "");
     }
 
-    if (Utils.isTrue(this.options.editable)) target.addClass("editable");else input.attr("readonly", "readonly");
+    var options = this.options || {};
+    if (Utils.isTrue(options.editable)) target.addClass("editable");else input.attr("readonly", "readonly");
     ipttag.append("<button class='dropdownbtn'></button>");
-    ipttag.append("<span class='prompt'>" + Utils.trimToEmpty(this.options.prompt) + "</span>");
+    if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipttag).text(options.prompt);else if (Utils.isNotBlank(options.placeholder)) $("<span class='prompt'></span>").appendTo(ipttag).text(options.placeholder);
   };
 
   var renderItems = function renderItems($, target, itemContainer, datas) {
@@ -8748,7 +8765,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIForm.getLabelWidth = function () {
     if (this.options.hasOwnProperty("labelWidth")) return this.options.labelWidth;
     var width = this.$el.attr("opt-lw");
-    this.options.width = Utils.getFormatSize(width, this.isRenderAsRem());
+    this.options.labelWidth = Utils.getFormatSize(width, this.isRenderAsRem());
     this.$el.removeAttr("opt-lw");
     return this.options.labelWidth;
   };
@@ -10469,7 +10486,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIPopupMenu.setActionTarget = function (value) {
     if (this.actionTarget == value) return;
-    var actionType = Utils.trimToNull(this.getActionType()) || "click";
+    var actionType = Utils.trimToNull(this.getActionType()) || "tap";
     var eventType = actionType + "._" + this.getViewId();
 
     if (this.actionTarget) {
@@ -11919,7 +11936,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return false;
   };
 
-  _UITabbar.setColsable = function (closable, value) {
+  _UITabbar.setColsable = function (value, closable) {
     if (typeof value == "string") {
       return this.setColsable(closable, this.getIndexByName(value));
     }
@@ -12359,10 +12376,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   _UIPanel.isViewActive = function (name) {
-    var item = Utils.find(this.header.find(".tabbar .tab"), function (tab) {
-      return tab.attr("name") == name;
-    });
-    return item && item.is(".selected");
+    return this.getViewActive() == name;
   };
 
   _UIPanel.getViewActive = function () {
@@ -13491,15 +13505,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     if (item.parent().is(this._getItemContainer())) {
       if (item.is(".disabled")) return;
+      var event = {
+        type: "itemclick",
+        detail: this._getItemData(item),
+        target: e.target
+      };
+      this.trigger(event);
 
-      if (item.is(".selected")) {
-        item.removeClass("selected");
-      } else {
-        item.addClass("selected");
-        if (!this.isMultiple()) item.siblings().removeClass("selected");
+      if (!event.isPreventDefault) {
+        if (item.is(".selected")) {
+          item.removeClass("selected");
+        } else {
+          item.addClass("selected");
+          if (!this.isMultiple()) item.siblings().removeClass("selected");
+        }
+
+        selectedChanged.call(this);
       }
-
-      selectedChanged.call(this);
     }
   };
 
@@ -15601,12 +15623,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return !!item ? getItemIndex.call(this, item, deep) : -1;
   };
 
-  _UITree.getDataById = function (value, deep) {
+  _UITree.getDataByKey = function (value, deep) {
     var item = getItemById.call(this, value, deep);
     return !!item ? this._getItemData(item) : null;
   };
 
-  _UITree.getIndexById = function (value, deep) {
+  _UITree.getIndexByKey = function (value, deep) {
     var item = getItemById.call(this, value, deep);
     return !!item ? getItemIndex.call(this, item, deep) : -1;
   };
@@ -15889,7 +15911,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITree.openById = function (value) {
+  _UITree.openByKey = function (value) {
     var item = getItemById.call(this, value, true);
 
     if (item) {
@@ -15913,7 +15935,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UITree.closeById = function (value) {
+  _UITree.closeByKey = function (value) {
     var item = getItemById.call(this, value, true);
 
     if (item) {
@@ -16167,7 +16189,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var ids = this.$el.attr("opt-openids");
 
       if (Utils.isNotBlank(ids)) {
-        ids = getOpenId.call(this, ids);
+        ids = getOpenKey.call(this, ids);
         params.ids = ids && ids.length > 0 ? ids : null;
       }
     } // this.$el.removeAttr("opt-openinds").removeAttr("opt-openids");
@@ -16367,7 +16389,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer._getOpenProps = function () {
     var indexs = getOpenIndex.call(this, this.options.openIndex);
     indexs = indexs && indexs.length > 0 ? indexs : null;
-    var ids = getOpenId.call(this, this.options.openId);
+    var ids = getOpenKey.call(this, this.options.openKey);
     ids = ids && ids.length > 0 ? ids : null;
     return {
       indexs: indexs,
@@ -16632,9 +16654,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var node = item.children(".tree-node");
 
     if (beSelected) {
-      if (item.is(".selected") || node.is(".active")) return;
-
       if (_hasChkbox) {
+        if (item.is(".selected")) return;
+
         if (!_isMultiple) {
           this.$el.find("li.selected").removeClass("selected");
           this.$el.find("li.selected_").removeClass("selected_");
@@ -16655,6 +16677,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
         }
       } else {
+        if (node.is(".active")) return;
         this.$el.find(".active").removeClass("active");
         node.addClass("active");
       }
@@ -17141,7 +17164,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return indexs;
   };
 
-  var getOpenId = function getOpenId(value) {
+  var getOpenKey = function getOpenKey(value) {
     if (Utils.isBlank(value)) return [];
     if (!Utils.isArray(value)) value = ("" + value).split(",");
     var ids = [];
@@ -17570,7 +17593,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     _options.autoLoad = options.autoLoad;
     _options.icon = options.icon;
     _options.openIndex = options.openIndex;
-    _options.openId = options.openId;
+    _options.openKey = options.openKey;
     return _options;
   }; ///////////////////////////////////////////////////////
 
