@@ -23,7 +23,7 @@
     height: 0.16rem;
     top: 0.02rem;
     left: 0.02rem;
-    background-image: url(/VRender/icons/025a.png);
+    background-image: url(/vrender-ui/icons/025a.png);
     background-size: 0.08rem;
     background-repeat: no-repeat;
     background-position: center;
@@ -69,7 +69,7 @@
     height: 0.16rem;
     left: 0.02rem;
     top: 0.02rem;
-    background-image: url(/VRender/icons/0000.png);
+    background-image: url(/vrender-ui/icons/0000.png);
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -85,7 +85,7 @@
 }
 
 .ui-tree .tree-node.active > .ep:before {
-	background-image: url(/VRender/icons/025b.png);
+	background-image: url(/vrender-ui/icons/025b.png);
     opacity: 0.75;
 }
 
@@ -114,26 +114,26 @@
 }
 
 .ui-tree li.is-leaf > .tree-node > .ep:before {
-	background-image: url(/VRender/icons/027a.png);
+	background-image: url(/vrender-ui/icons/027a.png);
     background-size: 0.06rem;
     opacity: 0.25;
 }
 
 .ui-tree li.is-leaf > .tree-node.active > .ep:before {
-	background-image: url(/VRender/icons/027b.png);
+	background-image: url(/vrender-ui/icons/027b.png);
     opacity: 0.75;
 }
 
 .ui-tree li.selected_ > .tree-node > .chkbox > i {
 	background-color: #333444;
-    background-image: url(/VRender/icons/027b.png);
+    background-image: url(/vrender-ui/icons/027b.png);
     background-size: 0.1rem;
     box-shadow: 0px 0px 0.03rem 0px #222;
 }
 
 .ui-tree li.selected > .tree-node > .chkbox > i {
 	background-color: #333444;
-    background-image: url(/VRender/icons/003b.png);
+    background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.1rem;
     box-shadow: 0px 0px 0.03rem 0px #222;
 }
@@ -160,7 +160,7 @@
     left: 0.03rem;
     top: 50%;
     margin-top: -0.08rem;
-    background-image: url(/VRender/icons/017a.png);
+    background-image: url(/vrender-ui/icons/017a.png);
     background-size: 0.14rem;
     background-repeat: no-repeat;
     background-position: center;

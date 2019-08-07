@@ -36,7 +36,7 @@
 .ui-list > ul > li.selected > .chkbox {
     border-color: #333;
     background-color: #333444 !important;
-    background-image: url(/VRender/icons/003b.png);
+    background-image: url(/vrender-ui/icons/003b.png);
     background-size: 10px;
     background-repeat: no-repeat;
     background-position: center;

@@ -64,7 +64,7 @@
 }
 
 .ui-scroll > .top > .scroll-refreshdef[state='pull'] > .pull:before {
-	background-image: url(/VRender/icons/029a.png);
+	background-image: url(/vrender-ui/icons/029a.png);
 	opacity: 0.35;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .ui-scroll > .top > .scroll-refreshdef[state='drop'] > .drop:before {
-	background-image: url(/VRender/icons/029a.png);
+	background-image: url(/vrender-ui/icons/029a.png);
 	transform: rotate(180deg);
 	opacity: 0.5;
 }
@@ -83,7 +83,7 @@
 }
 
 .ui-scroll > .top > .scroll-refreshdef[state='load'] > .load:before {
-	background-image: url(/VRender/icons/017a.png);
+	background-image: url(/vrender-ui/icons/017a.png);
 	animation: ui-loading-animate 1s steps(8, end) infinite;
     -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
 }
@@ -124,7 +124,7 @@
     left: 0px;
     top: 50%;
     margin-top: -8px;
-    background-image: url(/VRender/icons/017a.png);
+    background-image: url(/vrender-ui/icons/017a.png);
     background-size: 14px;
     background-repeat: no-repeat;
     background-position: center;
