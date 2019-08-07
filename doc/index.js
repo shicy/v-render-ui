@@ -14,7 +14,7 @@ require("./router");
 VRender.use(require("../index"));
 
 new VRender({
-	mode: "development",
+	// mode: "development",
 	cwd: Path.resolve(__dirname, "../"),
 	babel: true,
 	server: {

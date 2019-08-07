@@ -13,16 +13,17 @@ const distDir = Path.resolve(__dirname, "./dist");
 
 console.log("build start.. mode=%s", Process.env.NODE_ENV);
 
-const version = (function () {
-	let dt = new Date();
-	let year = dt.getFullYear() - 2000;
-	let month = dt.getMonth() + 1;
-	let date = dt.getDate();
-	year = (year < 10 ? "0" : "") + year;
-	month = (month < 10 ? "0" : "") + month;
-	date = (date < 10 ? "0" : "") + date;
-	return "" + year + month + date;
-})();
+// const version = (function () {
+// 	let dt = new Date();
+// 	let year = dt.getFullYear() - 2000;
+// 	let month = dt.getMonth() + 1;
+// 	let date = dt.getDate();
+// 	year = (year < 10 ? "0" : "") + year;
+// 	month = (month < 10 ? "0" : "") + month;
+// 	date = (date < 10 ? "0" : "") + date;
+// 	return "" + year + month + date;
+// })();
+const version = "1.0.0";
 
 ///////////////////////////////////////////////////////////
 function clean(callback) {
@@ -81,7 +82,7 @@ function buildJs() {
 			compress: {pure_funcs: ["console.log"]},
 			output: { max_line_len: 10240 }
 		}))
-			.pipe(GulpRename({basename: "vrender-ui." + version + ".min"}))
+			.pipe(GulpRename({basename: "vrender-ui_" + version + ".min"}))
 			.pipe(Gulp.dest(distDir));
 	}
 	return result;
@@ -97,7 +98,7 @@ function buildCss_p(callback) {
 		.pipe(Gulp.dest(distDir));
 	if (!isDevelopment) {
 		result = result.pipe(GulpCleanCss({ format: { wrapAt: 10240 } }))
-			.pipe(GulpRename({basename: "vrender-ui." + version + ".min.p"}))
+			.pipe(GulpRename({basename: "vrender-ui_" + version + ".min.p"}))
 			.pipe(Gulp.dest(distDir));
 	}
 	return result;
@@ -113,7 +114,7 @@ function buildCss_m(callback) {
 		.pipe(Gulp.dest(distDir));
 	if (!isDevelopment) {
 		result = result.pipe(GulpCleanCss({ format: { wrapAt: 10240 } }))
-			.pipe(GulpRename({basename: "vrender-ui." + version + ".min.m"}))
+			.pipe(GulpRename({basename: "vrender-ui_" + version + ".min.m"}))
 			.pipe(Gulp.dest(distDir));
 	}
 	return result;
@@ -124,7 +125,7 @@ function final(callback) {
 		let indexFile = Path.resolve(__dirname, "./index.js");
 		let indexFileData = FileSys.readFileSync(indexFile, {encoding: "utf-8"});
 		indexFileData = indexFileData.replace(
-			/const distVersion = "(\d){6}";/,
+			/const distVersion = ".*";/,
 			"const distVersion = \"" + version + "\";");
 		FileSys.writeFileSync(indexFile, indexFileData);
 	}

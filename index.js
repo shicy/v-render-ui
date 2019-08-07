@@ -36,7 +36,7 @@ const UITreeSelect = require("./src/components/treeselect");
 
 
 // 前端构建版本，由 gulp 构建脚本自动更新
-const distVersion = "190806";
+const distVersion = "1.0.0";
 
 module.exports = {
 	install: function () {
@@ -76,7 +76,7 @@ module.exports = {
 	initPageView: function () {
 		let version = "";
 		if (this.getContext().mode != "development") {
-			version = "." + distVersion + ".min";
+			version = "_" + distVersion + ".min";
 		}
 
 		let files = [];
