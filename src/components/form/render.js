@@ -171,6 +171,7 @@
 			let contentView = item.children(".content").children("dd").children().children();
 			if (contentView.is("input, textarea")) {
 				params[name] = contentView.val() || "";
+				params[name] = Utils.trimToEmpty(params[name]);
 			}
 			else {
 				contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView);
