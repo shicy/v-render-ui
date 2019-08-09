@@ -16,7 +16,7 @@ VRender.use(require("v-render-ui"));
 // 配置路由信息...
 
 new VRender({
-    cwd: Path.resolve(__dirname, "./")
+  cwd: Path.resolve(__dirname, "./")
 });
 ```
 ##### 使用（如：index页面【Index.js】）
@@ -24,12 +24,12 @@ new VRender({
 const VRender = require("v-render");
 
 const Index = VRender.PageView.extend(module, {
-    renderBody: function (body) {
-        Index.super(this, body);
-        new VRender.UIInput(this, {
-            prompt: "请输入"
-        }).render(body);
-    }
+  renderBody: function (body) {
+    Index.super(this, body);
+    new VRender.UIInput(this, {
+      prompt: "请输入"
+    }).render(body);
+  }
 });
 ```
 
