@@ -734,12 +734,6 @@
 }
 
 
-.ui-container {
-	border: 1px solid #ddd;
-    background-color: #fff;
-}
-
-
 .ui-confirm-wrap {
 	position: fixed;
     left: 0px;
@@ -845,6 +839,12 @@
 .ui-confirm.animate-out {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0;
+}
+
+
+.ui-container {
+	border: 1px solid #ddd;
+    background-color: #fff;
 }
 
 
