@@ -3,7 +3,6 @@
     display: inline-block;
     vertical-align: middle;
     height: 32px;
-    border: 1px solid #ddd;
     border-radius: 3px;
     background-color: #fff;
 }
@@ -17,12 +16,13 @@
     font-size: 14px;
     text-align: center;
     border: 0px;
-    border-radius: 0px;
+    border-radius: 3px;
     background: none;
     padding: 0px 12px 2px;
     margin: 0px;
     cursor: pointer;
     outline: none;
+    transition: box-shadow 0.2s;
 }
 
 .ui-btn > .btn > .icon {
@@ -85,43 +85,41 @@
     background-color: #eee;
 }
 
-.ui-btn-primary {
-    color: #fff;
-    border-color: #232431;
-    background-color: #333444;
+.ui-btn-default > .btn {
+    border: 1px solid #ddd;
+    background-color: #fff;
 }
 
-.ui-btn-success {
+.ui-btn-primary > .btn {
     color: #fff;
-    border-color: #56a24c;
-    background-color: #67bb5c;
+    background-color: #0072ff;
 }
 
-.ui-btn-danger {
+.ui-btn-success > .btn {
     color: #fff;
-    border-color: #de4b4b;
-    background-color: #f55959;
+    background-color: #19b105;
 }
 
-.ui-btn-warn {
+.ui-btn-danger > .btn {
     color: #fff;
-    border-color: #d4970d;
-    background-color: #eca912;
+    background-color: #fd2121;
 }
 
-.ui-btn-info {
+.ui-btn-warn > .btn {
     color: #fff;
-    border-color: #12bae0;
+    background-color: #e6a718;
+}
+
+.ui-btn-info > .btn {
+    color: #fff;
     background-color: #13c9f3;
 }
 
-.ui-btn-link {
-    color: #0054ff;
-    border: 0px;
+.ui-btn-text > .btn {
 }
 
-.ui-btn-text {
-    border: 0px;
+.ui-btn-link > .btn {
+    color: #0054ff;
 }
 
 .ui-btn.tiny {
@@ -171,7 +169,8 @@
     top: 0px;
     right: 0px;
     bottom: 0px;
-    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
@@ -212,6 +211,13 @@
     height: 20px;
     margin: -10px 0px 0px -10px;
     background-size: 20px;
+}
+
+.ui-btn-default.waiting > .btn:before {
+    left: -1px;
+    right: -1px;
+    top: -1px;
+    bottom: -1px;
 }
 
 .ui-btn.has-items > .btn {
@@ -278,46 +284,74 @@
     opacity: 0.8;
 }
 
-.ui-btn:hover > .btn {
-    background-color: rgba(0, 0, 0, 0.06);
+.ui-btn-default > .btn:hover {
+    background-color: #f3f3f3;
 }
 
-.ui-btn-primary:hover > .btn {
-    background-color: #222;
+.ui-btn-primary > .btn:hover {
+    background-color: #0367e2;
 }
 
-.ui-btn-link:hover > .btn {
+.ui-btn-success > .btn:hover {
+    background-color: #159204;
+}
+
+.ui-btn-danger > .btn:hover {
+    background-color: #e21414;
+}
+
+.ui-btn-warn > .btn:hover {
+    background-color: #ce9411;
+}
+
+.ui-btn-info > .btn:hover {
+    background-color: #0da8cc;
+}
+
+.ui-btn-text > .btn:hover {
+    background-color: #e7e7e7;
+}
+
+.ui-btn-link > .btn:hover span {
     text-decoration: underline;
-    background-color: inherit;
 }
 
-.ui-btn > .btn:active {
-    border-radius: 1px;
-    box-shadow: 0 0 0 4px rgba(238, 238, 238, 0.5);
+.ui-btn-default > .btn:active {
+    background-color: #e7e7e7;
+    box-shadow: 0 0 0 3px rgba(238, 238, 238, 0.5);
 }
 
 .ui-btn-primary > .btn:active {
-    box-shadow: 0px 0px 0px 4px rgba(51, 52, 68, 0.15);
+    background-color: #1e80f9;
+    box-shadow: 0px 0px 0px 3px rgba(3, 103, 226, 0.15);
 }
 
 .ui-btn-success > .btn:active {
-    box-shadow: 0px 0px 0px 4px rgba(101, 187, 92, 0.25);
-}
-
-.ui-btn-warn > .btn:active {
-    box-shadow: 0px 0px 0px 4px rgba(236, 169, 17, 0.25);
+    background-color: #1caf08;
+    box-shadow: 0px 0px 0px 3px rgba(37, 171, 19, 0.2);
 }
 
 .ui-btn-danger > .btn:active {
-    box-shadow: 0px 0px 0px 4px rgba(245, 88, 88, 0.25);
+    background-color: #f14949;
+    box-shadow: 0px 0px 0px 3px rgba(253, 33, 33, 0.2);
+}
+
+.ui-btn-warn > .btn:active {
+    background-color: #efb228;
+    box-shadow: 0px 0px 0px 3px rgba(230, 167, 24, 0.25);
 }
 
 .ui-btn-info > .btn:active {
-    box-shadow: 0px 0px 0px 4px rgba(17, 201, 244, 0.25);
+    background-color: #0eb9e0;
+    box-shadow: 0px 0px 0px 3px rgba(19, 201, 243, 0.25);
 }
 
 .ui-btn-text > .btn:active {
-    border-radius: 0px;
+    background-color: #f0f0f0;
+}
+
+.ui-btn-link > .btn:active {
+    background-color: #f0f0f0;
 }
 
 .ui-btn[opt-toggle] > .dropdownbtn {
@@ -398,72 +432,61 @@
     padding-right: 59px;
 }
 
-.ui-btn[active]:after {
-    content: "";
-    position: absolute;
-    left: -3px;
-    right: -3px;
-    top: -3px;
-    bottom: -3px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    pointer-events: none;
-}
-
 .ui-btn[active] > .btn {
     padding-top: 2px;
+    border-left: 1px solid #383838;
+    border-top: 1px solid #383838;
 }
 
-.ui-btn-primary[active]:after {
-    border-color: #333444;
+.ui-btn-default[active] > .btn {
+    background-color: #eee;
 }
 
-.ui-btn-success[active]:after {
-    border-color: #65bb5c;
+.ui-btn-primary[active] > .btn {
+    background-color: #0a5cc1;
 }
 
-.ui-btn-warn[active]:after {
-    border-color: #eca911;
+.ui-btn-success[active] > .btn {
+    background-color: #249c14;
 }
 
-.ui-btn-danger[active]:after {
-    border-color: #f55858;
+.ui-btn-danger[active] > .btn {
+    background-color: #d00f0f;
 }
 
-.ui-btn-info[active]:after {
-    border-color: #11c9f4;
+.ui-btn-warn[active] > .btn {
+    background-color: #d09716;
 }
 
-.ui-btn-text[active] {
-    background-color: #f0f0f0;
+.ui-btn-info[active] > .btn {
+    background-color: #11aed2;
 }
 
-.ui-btn-link:after {
-    display: none;
+.ui-btn-text[active] > .btn {
+    padding-top: 0px;
+    border: 0px;
+    color: #fff;
+    background-color: #ccc;
 }
 
-.ui-btn-link > .btn:active {
-    background-color: inherit;
-    box-shadow: none;
-    padding-top: inherit;
+.ui-btn-link[active] > .btn {
+    padding-top: 0px;
+    color: #ef2005;
+    border: 0px;
+}
+
+.ui-btn-link[active] > .btn span {
+    text-decoration: underline;
 }
 
 .ui-btn[disabled] {
-    opacity: .35;
     cursor: no-drop;
 }
 
 .ui-btn[disabled] > .btn {
+    opacity: .35;
+    box-shadow: none;
     pointer-events: none;
-    background-color: inherit;
-}
-
-.ui-btn-default[disabled] {
-    background-color: #ddd;
-}
-
-.ui-btn-link[disabled]:hover > .btn {
-    text-decoration: none;
 }
 
 .ui-btn.show-dropdown > .dropdown {

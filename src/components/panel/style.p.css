@@ -47,7 +47,7 @@
 
 .ui-panel > header > .tabbar > .tab.selected {
 	color: #fff;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-panel > header > .tabbar > .thumb {
@@ -57,7 +57,7 @@
     top: 0px;
     bottom: 0px;
     width: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
     transition: all 0.2s;*/
 }
 
@@ -115,7 +115,7 @@
 
 .ui-panel > header > .btnbar > .item > .btn:active {
 	color: #fff;
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-panel > header > .btnbar > .item > .btn:active > i {
@@ -146,7 +146,7 @@
 }
 
 .ui-panel > header > .btnbar > .item.active > .btn:active {
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-panel > header > .btnbar > .item > ul {

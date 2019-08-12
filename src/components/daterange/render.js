@@ -160,6 +160,8 @@
 	};
 
 	const shortcutClickHandler = function (e) {
+		if (this.picker)
+			this.picker.cancel();
 		let item = $(e.currentTarget);
 		item.addClass("selected").siblings().removeClass("selected");
 		item.parent().parent().children(".label").text(item.text());
@@ -168,6 +170,8 @@
 	};
 
 	const shortcutLabelHandler = function (e) {
+		if (this.picker)
+			this.picker.cancel();
 		this.$el.addClass("show-dropdown");
 	};
 
@@ -414,6 +418,12 @@
 		}
 		else {
 			let picker = this.inputTag.children(".picker");
+
+			picker.on("tap", function () { return false; });
+			$("body").on("click." + this.getViewId(), () => {
+				this.picker.cancel();
+			});
+
 			let offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
 			if (offset.isOverflowX)
 				target.addClass("show-right");
@@ -427,6 +437,8 @@
 	};
 
 	const hideDatePicker = function () {
+		$("body").off("click." + this.getViewId());
+		
 		let target = this.$el.addClass("animate-out");
 
 		if (this._isRenderAsApp()) {

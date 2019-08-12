@@ -21,7 +21,7 @@
 
 		let browser = this.getBrowser();
 		if (browser)
-			browser.on("tap.fileupload", onBrowserClickHandler.bind(this));
+			browser.on("click.fileupload", onBrowserClickHandler.bind(this));
 	};
 
 	// ====================================================
@@ -130,7 +130,7 @@
 	_UIFileUpload.setBrowser = function (value) {
 		let browser = this.getBrowser();
 		if (browser) {
-			browser.off("tap.fileupload");
+			browser.off("click.fileupload");
 		}
 
 		this.browserBtn = Utils.isBlank(value) ? null : (value.$el || $(value));
@@ -139,7 +139,7 @@
 
 		initBrowserHandler.call(this, this.browserBtn);
 		if (this.browserBtn) {
-			this.browserBtn.on("tap.fileupload", onBrowserClickHandler.bind(this));
+			this.browserBtn.on("click.fileupload", onBrowserClickHandler.bind(this));
 		}
 	};
 

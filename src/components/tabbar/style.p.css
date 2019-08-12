@@ -56,11 +56,11 @@
 }
 
 .ui-tabbar > .bar > .tabs > .tab:hover {
-	color: #333444;
+	color: #0367e2;
 }
 
 .ui-tabbar > .bar > .tabs > .tab.selected {
-	color: #333444;
+	color: #0367e2;
 }
 
 .ui-tabbar > .bar > .tabs > .tab.disabled {
@@ -88,7 +88,7 @@
     bottom: 0px;
     width: 0px;
     height: 2px;
-    background-color: #333444;
+    background-color: #0367e2;
     transition: all .5s;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .ui-tabbar > .btns > .btn:hover {
-	color: #333444;
+	color: #0367e2;
 }
 
 .ui-tabbar > .btns > .btn.disabled {

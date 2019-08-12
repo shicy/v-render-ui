@@ -91,7 +91,7 @@
 
 .ui-popupmenu > .menu-container > .menus > .grp > .menu.hover {
     color: #fff;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-popupmenu > .menu-container > .menus > .grp > .menu.hover.has-child:after {
@@ -128,7 +128,7 @@
 
 .ui-popupmenu > .menu-container > .menus > .grp > .loading {
     padding: 0px 15px 0px 20px;
-    color: #333444;
+    color: #0367e2;
     font-size: 14px;
 }
 

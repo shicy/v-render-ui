@@ -33,7 +33,7 @@
     margin-top: -4px;
     background-color: #fff;
     border-radius: 100px;
-    transition: background-color 0.5s;
+    transition: background-color 0.2s;
 }
 
 .ui-radbox > input {
@@ -49,8 +49,12 @@
 	background-color: #f6f6f6;
 }
 
+.ui-radbox.checked:before {
+    border-color: #4f9bf9;
+}
+
 .ui-radbox.checked:after {
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-radbox:active:before {

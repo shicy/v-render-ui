@@ -20,7 +20,7 @@
     padding: 10px 22px 10px 10px;
     margin: 5px 0px;
     text-align: left;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 3px;
     background-color: #fff;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
@@ -34,7 +34,7 @@
     height: 20px;
     left: 10px;
     top: 12px;
-    background-size: 100%;
+    background-size: 18px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -87,22 +87,12 @@
     display: block;
 }
 
-.ui-notice[opt-type='success'] > .container {
-    border: 1px solid rgba(87, 173, 76, 0.6);
-    /*background-color: #f3f9f2;*/
-}
-
 .ui-notice[opt-type='success'] > .container > .img {
     background-image: url(/vrender-ui/icons/030c.png);
 }
 
 .ui-notice[opt-type='success'] > .container > .title {
     color: #57ad4c;
-}
-
-.ui-notice[opt-type='error'] > .container {
-    border: 1px solid rgba(249, 14, 13, 0.3);
-    /*background-color: #fbf4f4;*/
 }
 
 .ui-notice[opt-type='error'] > .container > .img {
@@ -113,22 +103,12 @@
     color: #f90e0d;
 }
 
-.ui-notice[opt-type='warn'] > .container {
-    border: 1px solid rgba(250, 162, 2, 0.5);
-    /*background-color: #f9f5ee;*/
-}
-
 .ui-notice[opt-type='warn'] > .container > .img {
     background-image: url(/vrender-ui/icons/032c.png);
 }
 
 .ui-notice[opt-type='warn'] > .container > .title {
     color: #faa202;
-}
-
-.ui-notice[opt-type='info'] > .container {
-    border: 1px solid rgba(4, 175, 248, 0.35);
-    /*background-color: #eef7fb;*/
 }
 
 .ui-notice[opt-type='info'] > .container > .img {

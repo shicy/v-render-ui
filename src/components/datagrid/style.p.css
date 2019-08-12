@@ -316,8 +316,8 @@
 
 .ui-datagrid > .table > header tr.selected th.col-chk .chkbox,
 .ui-datagrid > .table > section .datagrid-row.selected > td.col-chk .chkbox {
-	border-color: #333;
-    background-color: #333444;
+	border-color: #0367e2;
+    background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 10px;
     background-repeat: no-repeat;

@@ -47,7 +47,7 @@
 		}
 		else {
 			setTimeout(() => {
-				$("body").on(("tap._" + this.getViewId()), () => {
+				$("body").on(("click.hide_" + this.getViewId()), () => {
 					this.close();
 					this.trigger("cancel");
 				});
@@ -67,7 +67,7 @@
 		}
 		else {
 			target.empty().hide();
-			$("body").off("tap._" + this.getViewId());
+			$("body").off("click.hide_" + this.getViewId());
 		}
 	};
 

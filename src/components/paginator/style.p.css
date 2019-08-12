@@ -104,7 +104,7 @@
 
 .ui-paginator > .sizebar > .dropdown > ul > li:active {
     color: #fff;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-paginator > .sizebar.show-dropdown > .dropdown {
@@ -281,8 +281,8 @@
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page.selected {
     color: #fff;
     font-size: 16px;
-    border-color: #333444;
-    background-color: #333444;
+    border-color: #0367e2;
+    background-color: #0367e2;
     cursor: default;
 }
 
@@ -338,7 +338,7 @@
 
 .ui-paginator[opt-mode='dropdown'] > .pagebar > .pages > .dropdown > ul > li.selected {
     color: #fff;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-paginator[opt-mode='dropdown'] > .pagebar.show-dropdown > .pages > .dropdown {
@@ -365,7 +365,7 @@
 }
 
 .ui-paginator.link[opt-mode='normal'] > .pagebar > .pages {
-    color: #333444;
+    color: #0367e2;
 }
 
 .ui-paginator.link[opt-mode='spread'] > .pagebar > .pages > .page {
@@ -383,7 +383,7 @@
 }
 
 .ui-paginator.link[opt-mode='spread'] > .pagebar > .pages > .page.selected {
-    color: #333444;
+    color: #0367e2;
     background-color: #f0f0f0;
 }
 
@@ -392,7 +392,7 @@
 }
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages {
-    color: #333444;
+    color: #0367e2;
 }
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages > .lbl {
