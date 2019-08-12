@@ -57,14 +57,14 @@ span {
 #main-sidemenu .menu-grp > .title {
 	padding: 0px 20px;
     color: #999;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 30px;
 }
 
 #main-sidemenu .menu {
 	padding: 0px 20px 0px 40px;
     color: #646d7d;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 36px;
     cursor: pointer;
 }
@@ -80,7 +80,7 @@ span {
 }
 
 #main-sidemenu .menu.active {
-	border-right: 3px solid #333444;
+	border-right: 2px solid #333444;
 	background-color: #eee;
 }
 
