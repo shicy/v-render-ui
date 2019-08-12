@@ -32,5 +32,4 @@ const MainView = VRender.PageView.extend(module, {
 
 MainView.import("file://" + Utils.getModuleFilePath("prismjs/themes/prism.css", __dirname));
 
-// MainView.use(VRender.plugins.SinglePage);
 MainView.use(require(Path.resolve(__basedir, "../v-render-plugin-spa")))

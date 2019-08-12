@@ -81,7 +81,7 @@ module.exports = {
 
 		let files = [];
 		if (this._isRenderAsApp) {
-			files.push("vrender-ui." + version + ".m.css");
+			files.push("vrender-ui" + version + ".m.css");
 		}
 		else {
 			files.push("vrender-ui" + version + ".p.css");

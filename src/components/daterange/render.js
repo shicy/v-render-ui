@@ -419,9 +419,11 @@
 		else {
 			let picker = this.inputTag.children(".picker");
 
-			picker.on("tap", function () { return false; });
-			$("body").on("click." + this.getViewId(), () => {
-				this.picker.cancel();
+			setTimeout(() => {
+				picker.off("click").on("click", function () { return false; });
+				$("body").on("click." + this.getViewId(), () => {
+					this.picker.cancel();
+				});
 			});
 
 			let offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
