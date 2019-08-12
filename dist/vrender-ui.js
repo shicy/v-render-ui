@@ -6198,6 +6198,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var shortcutClickHandler = function shortcutClickHandler(e) {
+    if (this.picker) this.picker.cancel();
     var item = $(e.currentTarget);
     item.addClass("selected").siblings().removeClass("selected");
     item.parent().parent().children(".label").text(item.text());
@@ -6206,6 +6207,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var shortcutLabelHandler = function shortcutLabelHandler(e) {
+    if (this.picker) this.picker.cancel();
     this.$el.addClass("show-dropdown");
   };
 
@@ -6423,6 +6425,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   var showDatePicker = function showDatePicker() {
+    var _this3 = this;
+
     if (!this.picker) {
       var params = {
         range: true
@@ -6445,6 +6449,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.inputTag.children(".picker").on("tap", onPickerHideClickHandler.bind(this));
     } else {
       var picker = this.inputTag.children(".picker");
+      picker.on("tap", function () {
+        return false;
+      });
+      $("body").on("click." + this.getViewId(), function () {
+        _this3.picker.cancel();
+      });
       var offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
       if (offset.isOverflowX) target.addClass("show-right");
       if (offset.isOverflowY) target.addClass("show-before");
@@ -6456,6 +6466,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var hideDatePicker = function hideDatePicker() {
+    $("body").off("click." + this.getViewId());
     var target = this.$el.addClass("animate-out");
 
     if (this._isRenderAsApp()) {
@@ -7893,7 +7904,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     this.$el.on("change", "input", onFileChangeHandler.bind(this));
     var browser = this.getBrowser();
-    if (browser) browser.on("tap.fileupload", onBrowserClickHandler.bind(this));
+    if (browser) browser.on("click.fileupload", onBrowserClickHandler.bind(this));
   }; // ====================================================
 
 
@@ -8003,7 +8014,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var browser = this.getBrowser();
 
     if (browser) {
-      browser.off("tap.fileupload");
+      browser.off("click.fileupload");
     }
 
     this.browserBtn = Utils.isBlank(value) ? null : value.$el || $(value);
@@ -8012,7 +8023,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     initBrowserHandler.call(this, this.browserBtn);
 
     if (this.browserBtn) {
-      this.browserBtn.on("tap.fileupload", onBrowserClickHandler.bind(this));
+      this.browserBtn.on("click.fileupload", onBrowserClickHandler.bind(this));
     }
   };
 
@@ -10443,7 +10454,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       });
     } else {
       setTimeout(function () {
-        $("body").on("tap._" + _this.getViewId(), function () {
+        $("body").on("click.hide_" + _this.getViewId(), function () {
           _this.close();
 
           _this.trigger("cancel");
@@ -10464,7 +10475,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }, 300);
     } else {
       target.empty().hide();
-      $("body").off("tap._" + this.getViewId());
+      $("body").off("click.hide_" + this.getViewId());
     }
   };
 
