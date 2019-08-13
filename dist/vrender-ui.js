@@ -1848,7 +1848,7 @@
 
     var snapshoot = this._snapshoot();
 
-    var indexs = ComponentSelect.setSelectedIndex.call(this, value);
+    var indexs = UISelect.setSelectedIndex.call(this, value);
     Utils.each(this._getItems(), function (item, i) {
       _this6._setItemSelected(item, indexs.indexOf(i) >= 0);
     });
@@ -4498,27 +4498,26 @@
     var input = $(e.currentTarget);
     this.t_focus = setTimeout(function () {
       _this3.t_focus = 0;
+      var text = input.val();
+      var match = matchText.call(_this3, text, false);
+
+      if (match && match[0] >= 0) {
+        _this3.setSelectedIndex(match[0]);
+      } else if (_this3.isMatchRequired()) {
+        match = matchText.call(_this3, text, true);
+
+        _this3.setSelectedIndex(match ? match[0] : -1);
+      } else {
+        var snapshoot = _this3._snapshoot();
+
+        _this3.setSelectedIndex(-1);
+
+        input.val(text);
+        setValueFlag.call(_this3, text && text.length > 0);
+        snapshoot.done();
+      }
 
       if (isDropdownVisible.call(_this3)) {
-        var text = input.val();
-        var match = matchText.call(_this3, text, false);
-
-        if (match && match[0] >= 0) {
-          _this3.setSelectedIndex(match[0]);
-        } else if (_this3.isMatchRequired()) {
-          match = matchText.call(_this3, text, true);
-
-          _this3.setSelectedIndex(match ? match[0] : -1);
-        } else {
-          var snapshoot = _this3._snapshoot();
-
-          _this3.setSelectedIndex(-1);
-
-          input.val(text);
-          setValueFlag.call(_this3, text && text.length > 0);
-          snapshoot.done();
-        }
-
         hideDropdown.call(_this3);
       }
     }, 200);
@@ -6449,11 +6448,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.inputTag.children(".picker").on("tap", onPickerHideClickHandler.bind(this));
     } else {
       var picker = this.inputTag.children(".picker");
-      picker.on("tap", function () {
-        return false;
-      });
-      $("body").on("click." + this.getViewId(), function () {
-        _this3.picker.cancel();
+      setTimeout(function () {
+        picker.off("click").on("click", function () {
+          return false;
+        });
+        $("body").on("click." + _this3.getViewId(), function () {
+          _this3.picker.cancel();
+        });
       });
       var offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
       if (offset.isOverflowX) target.addClass("show-right");
@@ -10283,6 +10284,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIConfirm.onCancel = function (handler) {
     this.cancelHandler = handler;
     return this;
+  };
+
+  _UIConfirm._isTouchCloseable = function () {
+    return this.options.touchCloseEnabled !== false;
   }; // ====================================================
 
 
@@ -10295,6 +10300,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       doSubmit.call(this);
     } else {
       doCancel.call(this);
+    }
+  };
+
+  var onTouchHandler = function onTouchHandler(e) {
+    if ($(e.target).is(this.$el)) {
+      if (this._isTouchCloseable()) this.close();
     }
   }; ///////////////////////////////////////////////////////
 
@@ -10352,7 +10363,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var doOpen = function doOpen() {
     var wrapper = $("body").children(".ui-confirm-wrap");
-    if (!wrapper || wrapper.length == 0) wrapper = $("<div class='ui-confirm-wrap'></div>").appendTo("body");
+
+    if (!wrapper || wrapper.length == 0) {
+      wrapper = $("<div class='ui-confirm-wrap'></div>").appendTo("body");
+
+      if (this._isRenderAsApp()) {
+        wrapper.on("tap", function (e) {
+          if ($(e.target).is(wrapper)) {
+            var confirm = wrapper.children().last();
+            confirm = UIConfirm.instance(confirm);
+            if (confirm._isTouchCloseable()) confirm.close();
+          }
+        });
+      }
+    }
+
     var target = this.$el.appendTo(wrapper);
     setTimeout(function () {
       target.addClass("animate-in");
@@ -10366,7 +10391,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       target.remove();
       var wrapper = $("body").children(".ui-confirm-wrap");
       if (wrapper.children().length == 0) wrapper.remove();
-    }, 500);
+    }, 300);
     this.trigger("close");
   };
 
@@ -12422,7 +12447,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var items = getPopupMenus.call(this, this.getButtons());
 
       if (items && items.length > 0) {
-        this.popupMenu = new UI.popupmenu({
+        this.popupMenu = UI.popupmenu.create({
           target: this.$el,
           data: items
         });
@@ -12794,12 +12819,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var list = this.list = this.$el.children("ul");
     list.on("tap", "li", itemClickHandler.bind(this));
-    list.on("tap", ".ui-list-item3 .btnbar", function () {
-      return false;
-    });
-    list.on("tap", ".ui-list-item4 .btnbar", function () {
-      return false;
-    });
   }; // ====================================================
 
 
@@ -12819,6 +12838,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var itemClickHandler = function itemClickHandler(e) {
     var item = $(e.currentTarget);
+    if (item.find(".btnbar").find(e.target).length > 0) return;
 
     if (item.parent().is(this.list)) {
       if (item.is(".disabled")) return;

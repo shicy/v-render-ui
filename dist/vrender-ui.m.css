@@ -11,6 +11,9 @@ input {
 	font-size: 0.16rem;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+    /* chrome 浏览器 rem 字体大小异常（偶尔出现） */
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
 }
 
 .vrender-ui * {
@@ -22,6 +25,18 @@ input {
 .vrender-ui div,
 .vrender-ui ul {
 	-webkit-overflow-scrolling : touch;
+}
+
+.vrender-ui p,
+.vrender-ui dl,
+.vrender-ui dd {
+    margin: 0px;
+}
+
+.vrender-ui ul {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
 }
 
 .vrender-ui input,
@@ -137,17 +152,17 @@ input {
 
 
 .ui-btn {
+    display: inline-block;
 	width: 100%;
-    border: 1px solid #ddd;
+    height: 0.44rem;
     border-radius: 0.03rem;
 }
 
 .ui-btn > .btn {
 	width: 100%;
-    height: 0.43rem;
+    height: 100%;
     color: inherit;
     font-size: 0.16rem;
-    line-height: 0.43rem;
     text-decoration: none;
     border: 0px;
     border-radius: 0.03rem;
@@ -215,42 +230,73 @@ input {
     border-top: 0px;
 }
 
-.ui-btn-primary {
-    color: #fff;
-    border-color: #000;
-    background-color: #333444;
+.ui-btn-default > .btn {
+    border: 1px solid #ddd;
+    background-color: #fff;
 }
 
-.ui-btn-success {
+.ui-btn-primary > .btn {
     color: #fff;
-    border-color: #56a24c;
-    background-color: #67bb5c;
+    background-color: #0072ff;
 }
 
-.ui-btn-danger {
+.ui-btn-success > .btn {
     color: #fff;
-    border-color: #de4b4b;
-    background-color: #f55959;
+    background-color: #19b105;
 }
 
-.ui-btn-warn {
+.ui-btn-danger > .btn {
     color: #fff;
-    border-color: #d4970d;
-    background-color: #eca912;
+    background-color: #fd2121;
 }
 
-.ui-btn-info {
+.ui-btn-warn > .btn {
     color: #fff;
-    border-color: #12bae0;
+    background-color: #e6a718;
+}
+
+.ui-btn-info > .btn {
+    color: #fff;
     background-color: #13c9f3;
 }
 
-.ui-btn-text, .ui-btn-link {
-    border-color: transparent;
+.ui-btn-link > .btn {
+    color: #0054ff;
 }
 
-.ui-btn-link {
-    color: #0054ff;
+.ui-btn.tiny {
+    width: auto;
+    height: 0.24rem;
+}
+
+.ui-btn.tiny > .btn {
+    font-size: 0.12rem;
+}
+
+.ui-btn.small {
+    width: auto;
+    min-width: 50%;
+    height: 0.32rem;
+}
+
+.ui-btn.small > .btn {
+    font-size: 0.14rem;
+}
+
+.ui-btn.big {
+    height: 0.5rem;
+}
+
+.ui-btn.big > .btn {
+    font-size: 0.2rem;
+}
+
+.ui-btn.bigger {
+    height: 0.6rem;
+}
+
+.ui-btn.bigger > .btn {
+    font-size: 0.22rem;
 }
 
 .ui-btn-primary.has-items > .dropdownbtn {
@@ -311,33 +357,33 @@ input {
 }
 
 .ui-btn-default > .btn:active {
-    background-color: #eee;
-    box-shadow: 0px 0px 0px 0.03rem rgba(221, 221, 221, 0.35);
+    background-color: #e7e7e7;
+    box-shadow: 0px 0px 0px 0.03rem rgba(238, 238, 238, 0.5);
 }
 
 .ui-btn-primary > .btn:active {
-    background-color: #5d5e73;
-    box-shadow: 0px 0px 0px 0.03rem rgba(51, 52, 68, 0.35);
+    background-color: #1e80f9;
+    box-shadow: 0px 0px 0px 0.03rem rgba(3, 103, 226, 0.15);
 }
 
 .ui-btn-success > .btn:active {
-    background-color: #60d654;
-    box-shadow: 0px 0px 0px 0.04rem rgba(101, 187, 92, 0.35);
+    background-color: #1bb906;
+    box-shadow: 0px 0px 0px 0.04rem rgba(37, 171, 19, 0.2);
 }
 
 .ui-btn-warn > .btn:active {
-    background-color: #ffb202;
-    box-shadow: 0px 0px 0px 0.03rem rgba(236, 169, 17, 0.35);
+    background-color: #efb228;
+    box-shadow: 0px 0px 0px 0.03rem rgba(230, 167, 24, 0.25);
 }
 
 .ui-btn-danger > .btn:active {
-    background-color: #fb7b7b;
-    box-shadow: 0px 0px 0px 0.03rem rgba(245, 88, 88, 0.35);
+    background-color: #f14949;
+    box-shadow: 0px 0px 0px 0.03rem rgba(253, 33, 33, 0.2);
 }
 
 .ui-btn-info > .btn:active {
-    background-color: #4edafb;
-    box-shadow: 0px 0px 0px 0.03rem rgba(17, 201, 244, 0.35);
+    background-color: #0eb9e0;
+    box-shadow: 0px 0px 0px 0.03rem rgba(19, 201, 243, 0.25);
 }
 
 .ui-btn-text > .btn:active {
@@ -345,7 +391,7 @@ input {
 }
 
 .ui-btn-link > .btn:active {
-    text-decoration: underline;
+    background-color: #f0f0f0;
 }
 
 .ui-btn.has-items[opt-toggle] > .btn {
@@ -395,14 +441,18 @@ input {
 .ui-btn[active] > .btn {
     /*padding-top: 0.01rem;*/
     text-shadow: 0px 0px 0.1rem #fff;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
 }
 
 .ui-btn-default[active] > .btn {
+    border-top: 1px solid #999;
+    border-left: 1px solid #999;
     background-color: #eee;
 }
 
 .ui-btn-primary[active] > .btn {
-    background-color: #4e4f5f;
+    background-color: #1372e8;
 }
 
 .ui-btn-success[active] > .btn {
@@ -422,8 +472,14 @@ input {
 }
 
 .ui-btn-text[active] > .btn {
-    border: 1px solid #ddd;
-    background-color: #eee;
+    color: #fff;
+    border: 0px;
+    background-color: #ccc;
+}
+
+.ui-btn-link[active] > .btn {
+    color: #ef2005;
+    border: 0px;
 }
 
 .ui-btn[disabled] {
@@ -434,12 +490,12 @@ input {
 .ui-btn.show-dropdown > .dropdown {
     display: block;
     background-color: rgba(0, 0, 0, 0);
-    transition: background-color 0.2s;
+    transition: background-color linear 0.2s;
 }
 
 .ui-btn.show-dropdown > .dropdown > ul {
     max-height: 0px;
-    transition: max-height 0.2s;
+    transition: max-height linear 0.2s;
 }
 
 .ui-btn.animate-in > .dropdown {
@@ -493,8 +549,8 @@ input {
 }
 
 .ui-chkbox.checked:before {
-    border-color: #333;
-	background-color: #333444;
+    border-color: #0367e2;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;
@@ -522,7 +578,7 @@ input {
     top: 0px;
     bottom: 0px;
     z-index: 2100;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.75);
 }
 
 .ui-confirm {
@@ -575,7 +631,7 @@ input {
 	border-left: 0px;
 }
 
-.ui-confirm > .container > .btnbar > div > .ui-btn {
+.ui-confirm > .container > .btnbar > div > .ui-btn > .btn {
 	border: 0px;
 	background-color: #fff;
 }
@@ -585,8 +641,12 @@ input {
 	box-shadow: none;
 }
 
-.ui-confirm > .container > .btnbar > div > .ui-btn[name=ok] {
-	color: #069bea;
+.ui-confirm > .container > .btnbar > div > .ui-btn[name=ok] > .btn {
+	color: #0367e2;
+}
+
+.ui-confirm > .container > .closebtn {
+	display: none;
 }
 
 .ui-confirm.animate-in {
@@ -671,24 +731,24 @@ input {
 }
 
 .ui-datagrid > .table > * > div > table > thead .col-chk .chkbox:active {
-    box-shadow: 0px 0px 0px 0.03rem #ccc;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-datagrid > .table > * > div > table > * > tr.selected > .col-chk .chkbox {
-	background-color: #333444;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.1rem;
     background-repeat: no-repeat;
     background-position: center;
-    box-shadow: 0px 0px 0.03rem 0px #222;
+    box-shadow: 0px 0px 0.03rem 0px #0367e2;
 }
 
 .ui-datagrid > .table > section .datagrid-row:active > .col-chk .chkbox {
-    box-shadow: 0px 0px 0px 0.03rem #ddd;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-datagrid > .table > section .datagrid-row.selected:active > .col-chk .chkbox {
-    box-shadow: 0px 0px 0px 0.03rem #ccc;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 /* toolbar */
@@ -1049,7 +1109,6 @@ input {
     top: 0.07rem;
     right: 0.15rem;
     width: 0.5rem;
-    color: #013dff;
     font-size: 0.14rem;
     text-align: center;
     line-height: 0.31rem;
@@ -1208,13 +1267,13 @@ input {
     font-size: 0.26rem;
     text-align: center;
     border-bottom: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
     padding: 0.6rem 0px 0.2rem;
 }
 
 .ui-dateipt > .picker > .ui-datepicker > header > .title > .item > .val {
     display: block;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.14rem;
     line-height: 0.2rem;
 }
@@ -1230,7 +1289,7 @@ input {
     right: 0.1rem;
     width: 0.4rem;
     height: 0.4rem;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.1rem;
     border: 0px;
     background: none;
@@ -1253,7 +1312,7 @@ input {
 }
 
 .ui-dateipt > .picker > .ui-datepicker > section > .table > table.head {
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-dateipt.show-picker > .picker {
@@ -1376,7 +1435,7 @@ input {
 
 .ui-datepicker > section > .table table.head th {
     height: 0.32rem;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.14rem;
     font-weight: normal;
 }
@@ -1399,7 +1458,7 @@ input {
     transform: translate(-50%, -50%);
     width: 0.28rem;
     height: 0.28rem;
-    border: 1px solid #0030ff;
+    border: 2px solid #0030ff;
     border-radius: 100px;
     z-index: 1;
 }
@@ -1416,7 +1475,7 @@ input {
     color: #fff;
     font-size: 0.14rem;
     border-radius: 100%;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-datepicker > section > .table table.body td.selected.today:before {
@@ -1443,6 +1502,7 @@ input {
 
 .ui-datepicker.is-range > header > .title > .item {
     display: inline-block;
+    position: static;
     vertical-align: top;
 }
 
@@ -1459,6 +1519,10 @@ input {
     color: #999;
     font-size: 0.14rem;
     padding: 0px 0.05rem;
+}
+
+.ui-datepicker.is-range > header > .title > .item.e > button {
+    display: none;
 }
 
 .ui-datepicker.is-range > section > .table table.body thead {
@@ -1606,7 +1670,7 @@ input {
 .ui-daterange > .ipt > .picker > .ui-datepicker > header {
 	color: #fff;
     border-bottom: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > header > .title {
@@ -1624,15 +1688,15 @@ input {
 .ui-daterange > .ipt > .picker > .ui-datepicker > header > .title > .item.e:before {
 	position: absolute;
     left: -0.1rem;
-    bottom: 0.08rem;
-    color: #787878;
+    bottom: 0.06rem;
+    color: rgba(255, 255, 255, 0.45);
     font-size: .25rem;
     padding: 0 .05rem;
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > header > .title > .item > .lbl {
 	display: block;
-	color: #ddd;
+	color: rgba(255, 255, 255, 0.8);
 	font-size: 0.12rem;
     line-height: 0.2rem;
 }
@@ -1657,7 +1721,7 @@ input {
     right: 0.1rem;
     width: 0.4rem;
     height: 0.4rem;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.1rem;
     border: 0px;
     background: none;
@@ -1694,13 +1758,13 @@ input {
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > section > .table > table.head {
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > section > .table > table.body th {
     height: 0.4rem;
-    color: #333444;
-	font-size: 0.16rem;
+    color: rgba(0, 0, 0, 0.3);
+	font-size: 0.14rem;
     padding-top: 0.1rem;
 }
 
@@ -1985,11 +2049,13 @@ input {
 }
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar {
+    display: flex;
+    flex-direction: row;
 	border-top: 1px solid #ddd;
 }
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn {
-	display: inline-block;
+    flex: 1;
     vertical-align: top;
     padding: 0px;
     margin: 0px;
@@ -2001,10 +2067,14 @@ input {
 	border-left: 0px;
 }
 
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn {
-	color: #333444;
+.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn > .btn {
+	color: #333;
 	border: 0px;
 	background-color: #fff;
+}
+
+.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn[name=ok] > .ui-btn > .btn {
+    color: #0367e2;
 }
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn > .btn:active {
@@ -2014,22 +2084,6 @@ input {
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn-primary {
 	color: #069bea;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='2'] > .btn {
-    width: 50%;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='3'] > .btn {
-    width: 33.333333%;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='4'] > .btn {
-    width: 25%;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='5'] > .btn {
-    width: 20%;
 }
 
 .ui-dialog.waiting > .dialog-container:before {
@@ -2602,17 +2656,20 @@ input {
 }
 
 .ui-list > ul > li > .box > .ui-list-item3 > .content > .desc {
-	    color: #999;
+    color: #999;
     font-size: 0.14rem;
     margin-top: 0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item3 > .btnbar {
-	margin-top: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    margin: 0.25rem -0.05rem 0px -0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item3 > .btnbar > * {
-	margin-top: 0.1rem;
+    flex: 1;
+    padding: 0px 0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item4 > .icon {
@@ -2633,11 +2690,14 @@ input {
 }
 
 .ui-list > ul > li > .box > .ui-list-item4 > .btnbar {
-	margin-top: 0.25rem;
+	display: flex;
+    flex-direction: row;
+    margin: 0.25rem -0.05rem 0px -0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item4 > .btnbar > * {
-	margin-top: 0.1rem;
+	flex: 1;
+    padding: 0px 0.05rem;
 }
 
 .ui-list > ul > li > .chkbox {
@@ -2664,12 +2724,12 @@ input {
 }
 
 .ui-list > ul > li:active > .chkbox:before {
-    box-shadow: 0px 0px 0px 0.03rem #ddd;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-list > ul > li.selected > .chkbox:before {
-	border-color: #333444;
-    background-color: #333444;
+	border-color: #0367e2;
+    background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;
@@ -2677,7 +2737,7 @@ input {
 }
 
 .ui-list > ul > li.selected:active > .chkbox:before {
-    box-shadow: 0px 0px 0px 0.03rem #ccc;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-list > ul > li[disabled] {
@@ -3087,8 +3147,8 @@ input {
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page.selected {
 	color: #fff;
 	font-size: 0.16rem;
-	border-color: #333444;
-	background-color: #333444;
+	border-color: #0367e2;
+	background-color: #0367e2;
 }
 
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page:first-child {
@@ -3138,6 +3198,7 @@ input {
     right: 0.12rem;
     bottom: 0.1rem;
     margin-bottom: -0.04rem;
+    color: #333;
     font-size: 0.12rem;
     text-align: left;
 }
@@ -3166,7 +3227,7 @@ input {
 .ui-paginator[opt-mode='dropdown'] > .pagebar > .pages > .dropdown > ul > li.selected > span {
 	color: #fff;
 	font-size: 0.16rem;
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-paginator[opt-mode='dropdown'] > .pagebar > .pages > .dropdown > ul > li.selected > span:before {
@@ -3176,7 +3237,7 @@ input {
     right: 0px;
     top: 0px;
     bottom: 0px;
-    border: 0.01rem solid #ccc;
+    border: 0.01rem solid rgba(255, 255, 255, 0.5);
     border-radius: 0.03rem;
 }
 
@@ -3208,7 +3269,7 @@ input {
 }
 
 .ui-paginator.link[opt-mode='normal'] > .pagebar > .pages {
-    color: #333444;
+    color: #0367e2;
 }
 
 .ui-paginator.link[opt-mode='spread'] > .pagebar > .pages > .page {
@@ -3220,12 +3281,12 @@ input {
 }
 
 .ui-paginator.link[opt-mode='spread'] > .pagebar > .pages > .page.selected {
-    color: #333444;
+    color: #0367e2;
     background-color: #f0f0f0;
 }
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages {
-    color: #333444;
+    color: #0367e2;
 }
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages > .lbl {
@@ -3299,7 +3360,7 @@ input {
 .ui-panel > header > .tabbar > .thumb {
 	position: absolute;
 	bottom: 0px;
-    border-bottom: 2px solid #333444;
+    border-bottom: 2px solid #0367e2;
 }
 
 .ui-panel > header > .btnbar {
@@ -3586,11 +3647,11 @@ input {
 }
 
 .ui-radbox.checked:before {
-	border: 2px solid #333444;
+	border: 2px solid #0367e2;
 }
 
 .ui-radbox.checked:after {
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-radbox:active:before {
@@ -3975,6 +4036,8 @@ input {
 .ui-select[opt-native] > .dropdown {
     display: block;
     position: absolute;
+    z-index: auto;
+    background-color: transparent;
 }
 
 .ui-select[opt-native] > .dropdown > .box {
@@ -4007,12 +4070,12 @@ input {
 .ui-select.show-dropdown > .dropdown {
 	display: block;
     background-color: rgba(0, 0, 0, 0);
-    transition: background-color 0.2s;
+    transition: background-color linear 0.2s;
 }
 
 .ui-select.show-dropdown > .dropdown > .box {
     max-height: 0px;
-    transition: max-height 0.2s;
+    transition: max-height linear 0.2s;
 }
 
 .ui-select.animate-in > .dropdown {
@@ -4074,7 +4137,7 @@ input {
 }
 
 .ui-tabbar > .bar > .tabs > .tab.selected {
-	color: #333444;
+	color: #0367e2;
 }
 
 .ui-tabbar > .bar > .tabs > .tab[disabled] {
@@ -4096,7 +4159,7 @@ input {
     height: 3px;
     left: 0px;
     bottom: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
     transition: all 0.5s;
     z-index: 1;
 }
@@ -4405,7 +4468,7 @@ input {
 
 .ui-tree .tree-node.active {
 	color: #fff;
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-tree .tree-node.active > .ep:before {
@@ -4449,17 +4512,17 @@ input {
 }
 
 .ui-tree li.selected_ > .tree-node > .chkbox > i {
-	background-color: #333444;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/027b.png);
     background-size: 0.1rem;
-    box-shadow: 0px 0px 0.03rem 0px #222;
+    box-shadow: 0px 0px 0.03rem 0px #0367e2;
 }
 
 .ui-tree li.selected > .tree-node > .chkbox > i {
-	background-color: #333444;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.1rem;
-    box-shadow: 0px 0px 0.03rem 0px #222;
+    box-shadow: 0px 0px 0.03rem 0px #0367e2;
 }
 
 .ui-tree li > .tree-node.active > .chkbox > i {
@@ -4472,7 +4535,7 @@ input {
 }
 
 .ui-tree li.loading > div {
-	color: #333444;
+	color: #0367e2;
 	padding-left: 0.25rem;
 }
 
