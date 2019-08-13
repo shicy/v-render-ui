@@ -16,7 +16,6 @@
 
 	_UIConfirm.init = function (target, options) {
 		UI._base.init.call(this, target, options);
-
 		this.open();
 	};
 
@@ -42,6 +41,10 @@
 		return this;
 	};
 
+	_UIConfirm._isTouchCloseable = function () {
+		return this.options.touchCloseEnabled !== false;
+	};
+
 	// ====================================================
 	const onCloseBtnHandler = function (e) {
 		doCancel.call(this);
@@ -53,6 +56,13 @@
 		}
 		else {
 			doCancel.call(this);
+		}
+	};
+
+	const onTouchHandler = function (e) {
+		if ($(e.target).is(this.$el)) {
+			if (this._isTouchCloseable())
+				this.close();
 		}
 	};
 
@@ -108,8 +118,19 @@
 	///////////////////////////////////////////////////////
 	const doOpen = function () {
 		let wrapper = $("body").children(".ui-confirm-wrap");
-		if (!wrapper || wrapper.length == 0)
+		if (!wrapper || wrapper.length == 0) {
 			wrapper = $("<div class='ui-confirm-wrap'></div>").appendTo("body");
+			if (this._isRenderAsApp()) {
+				wrapper.on("tap", function (e) {
+					if ($(e.target).is(wrapper)) {
+						var confirm = wrapper.children().last();
+						confirm = UIConfirm.instance(confirm);
+						if (confirm._isTouchCloseable())
+							confirm.close();
+					}
+				});
+			}
+		}
 
 		let target = this.$el.appendTo(wrapper);
 		
@@ -126,7 +147,7 @@
 			let wrapper = $("body").children(".ui-confirm-wrap");
 			if (wrapper.children().length == 0)
 				wrapper.remove();
-		}, 500);
+		}, 300);
 		this.trigger("close");
 	};
 

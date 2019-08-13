@@ -104,13 +104,13 @@
     font-size: 0.26rem;
     text-align: center;
     border-bottom: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
     padding: 0.6rem 0px 0.2rem;
 }
 
 .ui-dateipt > .picker > .ui-datepicker > header > .title > .item > .val {
     display: block;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.14rem;
     line-height: 0.2rem;
 }
@@ -126,7 +126,7 @@
     right: 0.1rem;
     width: 0.4rem;
     height: 0.4rem;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.1rem;
     border: 0px;
     background: none;
@@ -149,7 +149,7 @@
 }
 
 .ui-dateipt > .picker > .ui-datepicker > section > .table > table.head {
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-dateipt.show-picker > .picker {

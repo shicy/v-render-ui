@@ -73,7 +73,7 @@
 
 .ui-datepicker > section > .table table.head th {
     height: 0.32rem;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.14rem;
     font-weight: normal;
 }
@@ -96,7 +96,7 @@
     transform: translate(-50%, -50%);
     width: 0.28rem;
     height: 0.28rem;
-    border: 1px solid #0030ff;
+    border: 2px solid #0030ff;
     border-radius: 100px;
     z-index: 1;
 }
@@ -113,7 +113,7 @@
     color: #fff;
     font-size: 0.14rem;
     border-radius: 100%;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-datepicker > section > .table table.body td.selected.today:before {
@@ -140,6 +140,7 @@
 
 .ui-datepicker.is-range > header > .title > .item {
     display: inline-block;
+    position: static;
     vertical-align: top;
 }
 
@@ -156,6 +157,10 @@
     color: #999;
     font-size: 0.14rem;
     padding: 0px 0.05rem;
+}
+
+.ui-datepicker.is-range > header > .title > .item.e > button {
+    display: none;
 }
 
 .ui-datepicker.is-range > section > .table table.body thead {

@@ -43,11 +43,11 @@
 }
 
 .ui-radbox.checked:before {
-	border: 2px solid #333444;
+	border: 2px solid #0367e2;
 }
 
 .ui-radbox.checked:after {
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-radbox:active:before {

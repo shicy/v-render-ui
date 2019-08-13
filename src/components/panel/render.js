@@ -122,7 +122,7 @@
 		else {
 			let items = getPopupMenus.call(this, this.getButtons());
 			if (items && items.length > 0) {
-				this.popupMenu = new UI.popupmenu({target: this.$el, data: items});
+				this.popupMenu = UI.popupmenu.create({target: this.$el, data: items});
 				this.popupMenu.on("itemclick", onPopupMenuButtonHandler.bind(this));
 			}
 			if (this.popupMenu) {

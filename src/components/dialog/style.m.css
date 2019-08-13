@@ -42,11 +42,13 @@
 }
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar {
+    display: flex;
+    flex-direction: row;
 	border-top: 1px solid #ddd;
 }
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn {
-	display: inline-block;
+    flex: 1;
     vertical-align: top;
     padding: 0px;
     margin: 0px;
@@ -58,10 +60,14 @@
 	border-left: 0px;
 }
 
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn {
-	color: #333444;
+.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn > .btn {
+	color: #333;
 	border: 0px;
 	background-color: #fff;
+}
+
+.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn[name=ok] > .ui-btn > .btn {
+    color: #0367e2;
 }
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn > .btn:active {
@@ -71,22 +77,6 @@
 
 .ui-dialog > .dialog-container > .dialog-view > footer > .btnbar > .btn > .ui-btn-primary {
 	color: #069bea;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='2'] > .btn {
-    width: 50%;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='3'] > .btn {
-    width: 33.333333%;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='4'] > .btn {
-    width: 25%;
-}
-
-.ui-dialog > .dialog-container > .dialog-view > footer > .btnbar[opt-len='5'] > .btn {
-    width: 20%;
 }
 
 .ui-dialog.waiting > .dialog-container:before {

@@ -173,6 +173,8 @@
 .ui-select[opt-native] > .dropdown {
     display: block;
     position: absolute;
+    z-index: auto;
+    background-color: transparent;
 }
 
 .ui-select[opt-native] > .dropdown > .box {
@@ -205,12 +207,12 @@
 .ui-select.show-dropdown > .dropdown {
 	display: block;
     background-color: rgba(0, 0, 0, 0);
-    transition: background-color 0.2s;
+    transition: background-color linear 0.2s;
 }
 
 .ui-select.show-dropdown > .dropdown > .box {
     max-height: 0px;
-    transition: max-height 0.2s;
+    transition: max-height linear 0.2s;
 }
 
 .ui-select.animate-in > .dropdown {

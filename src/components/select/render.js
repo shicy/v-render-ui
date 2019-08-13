@@ -459,23 +459,23 @@
 		let input = $(e.currentTarget);
 		this.t_focus = setTimeout(() => {
 			this.t_focus = 0;
+			let text = input.val();
+			let match = matchText.call(this, text, false);
+			if (match && match[0] >= 0) {
+				this.setSelectedIndex(match[0]);
+			}
+			else if (this.isMatchRequired()) {
+				match = matchText.call(this, text, true);
+				this.setSelectedIndex(match ? match[0] : -1);
+			}
+			else {
+				let snapshoot = this._snapshoot();
+				this.setSelectedIndex(-1);
+				input.val(text);
+				setValueFlag.call(this, (text && text.length > 0));
+				snapshoot.done();
+			}
 			if (isDropdownVisible.call(this)) {
-				let text = input.val();
-				let match = matchText.call(this, text, false);
-				if (match && match[0] >= 0) {
-					this.setSelectedIndex(match[0]);
-				}
-				else if (this.isMatchRequired()) {
-					match = matchText.call(this, text, true);
-					this.setSelectedIndex(match ? match[0] : -1);
-				}
-				else {
-					let snapshoot = this._snapshoot();
-					this.setSelectedIndex(-1);
-					input.val(text);
-					setValueFlag.call(this, (text && text.length > 0));
-					snapshoot.done();
-				}
 				hideDropdown.call(this);
 			}
 		}, 200);

@@ -70,24 +70,24 @@
 }
 
 .ui-datagrid > .table > * > div > table > thead .col-chk .chkbox:active {
-    box-shadow: 0px 0px 0px 0.03rem #ccc;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-datagrid > .table > * > div > table > * > tr.selected > .col-chk .chkbox {
-	background-color: #333444;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.1rem;
     background-repeat: no-repeat;
     background-position: center;
-    box-shadow: 0px 0px 0.03rem 0px #222;
+    box-shadow: 0px 0px 0.03rem 0px #0367e2;
 }
 
 .ui-datagrid > .table > section .datagrid-row:active > .col-chk .chkbox {
-    box-shadow: 0px 0px 0px 0.03rem #ddd;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-datagrid > .table > section .datagrid-row.selected:active > .col-chk .chkbox {
-    box-shadow: 0px 0px 0px 0.03rem #ccc;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 /* toolbar */
@@ -448,7 +448,6 @@
     top: 0.07rem;
     right: 0.15rem;
     width: 0.5rem;
-    color: #013dff;
     font-size: 0.14rem;
     text-align: center;
     line-height: 0.31rem;

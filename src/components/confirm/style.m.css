@@ -6,7 +6,7 @@
     top: 0px;
     bottom: 0px;
     z-index: 2100;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.75);
 }
 
 .ui-confirm {
@@ -59,7 +59,7 @@
 	border-left: 0px;
 }
 
-.ui-confirm > .container > .btnbar > div > .ui-btn {
+.ui-confirm > .container > .btnbar > div > .ui-btn > .btn {
 	border: 0px;
 	background-color: #fff;
 }
@@ -69,8 +69,12 @@
 	box-shadow: none;
 }
 
-.ui-confirm > .container > .btnbar > div > .ui-btn[name=ok] {
-	color: #069bea;
+.ui-confirm > .container > .btnbar > div > .ui-btn[name=ok] > .btn {
+	color: #0367e2;
+}
+
+.ui-confirm > .container > .closebtn {
+	display: none;
 }
 
 .ui-confirm.animate-in {

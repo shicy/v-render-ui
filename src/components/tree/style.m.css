@@ -81,7 +81,7 @@
 
 .ui-tree .tree-node.active {
 	color: #fff;
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-tree .tree-node.active > .ep:before {
@@ -125,17 +125,17 @@
 }
 
 .ui-tree li.selected_ > .tree-node > .chkbox > i {
-	background-color: #333444;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/027b.png);
     background-size: 0.1rem;
-    box-shadow: 0px 0px 0.03rem 0px #222;
+    box-shadow: 0px 0px 0.03rem 0px #0367e2;
 }
 
 .ui-tree li.selected > .tree-node > .chkbox > i {
-	background-color: #333444;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.1rem;
-    box-shadow: 0px 0px 0.03rem 0px #222;
+    box-shadow: 0px 0px 0.03rem 0px #0367e2;
 }
 
 .ui-tree li > .tree-node.active > .chkbox > i {
@@ -148,7 +148,7 @@
 }
 
 .ui-tree li.loading > div {
-	color: #333444;
+	color: #0367e2;
 	padding-left: 0.25rem;
 }
 

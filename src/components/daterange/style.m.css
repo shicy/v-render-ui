@@ -110,7 +110,7 @@
 .ui-daterange > .ipt > .picker > .ui-datepicker > header {
 	color: #fff;
     border-bottom: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > header > .title {
@@ -128,15 +128,15 @@
 .ui-daterange > .ipt > .picker > .ui-datepicker > header > .title > .item.e:before {
 	position: absolute;
     left: -0.1rem;
-    bottom: 0.08rem;
-    color: #787878;
+    bottom: 0.06rem;
+    color: rgba(255, 255, 255, 0.45);
     font-size: .25rem;
     padding: 0 .05rem;
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > header > .title > .item > .lbl {
 	display: block;
-	color: #ddd;
+	color: rgba(255, 255, 255, 0.8);
 	font-size: 0.12rem;
     line-height: 0.2rem;
 }
@@ -161,7 +161,7 @@
     right: 0.1rem;
     width: 0.4rem;
     height: 0.4rem;
-    color: #999;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.1rem;
     border: 0px;
     background: none;
@@ -198,13 +198,13 @@
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > section > .table > table.head {
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-daterange > .ipt > .picker > .ui-datepicker > section > .table > table.body th {
     height: 0.4rem;
-    color: #333444;
-	font-size: 0.16rem;
+    color: rgba(0, 0, 0, 0.3);
+	font-size: 0.14rem;
     padding-top: 0.1rem;
 }
 

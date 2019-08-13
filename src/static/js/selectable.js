@@ -192,7 +192,7 @@
 	// 设置列表选中项的索引（只更新索引，不修改视图）
 	_UISelect.setSelectedIndex = function (value) {
 		let snapshoot = this._snapshoot();
-		let indexs = ComponentSelect.setSelectedIndex.call(this, value);
+		let indexs = UISelect.setSelectedIndex.call(this, value);
 		Utils.each(this._getItems(), (item, i) => {
 			this._setItemSelected(item, (indexs.indexOf(i) >= 0));
 		});

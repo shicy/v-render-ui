@@ -20,8 +20,6 @@
 		let list = this.list = this.$el.children("ul");
 
 		list.on("tap", "li", itemClickHandler.bind(this));
-		list.on("tap", ".ui-list-item3 .btnbar", function () { return false; });
-		list.on("tap", ".ui-list-item4 .btnbar", function () { return false; });
 	};
 
 	// ====================================================
@@ -41,6 +39,8 @@
 	// ====================================================
 	const itemClickHandler = function (e) {
 		let item = $(e.currentTarget);
+		if (item.find(".btnbar").find(e.target).length > 0)
+			return ;
 		if (item.parent().is(this.list)) {
 			if (item.is(".disabled"))
 				return ;

@@ -27,7 +27,7 @@
 }
 
 .ui-tabbar > .bar > .tabs > .tab.selected {
-	color: #333444;
+	color: #0367e2;
 }
 
 .ui-tabbar > .bar > .tabs > .tab[disabled] {
@@ -49,7 +49,7 @@
     height: 3px;
     left: 0px;
     bottom: 0px;
-    background-color: #333444;
+    background-color: #0367e2;
     transition: all 0.5s;
     z-index: 1;
 }

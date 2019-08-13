@@ -33,8 +33,8 @@
 }
 
 .ui-chkbox.checked:before {
-    border-color: #333;
-	background-color: #333444;
+    border-color: #0367e2;
+	background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;

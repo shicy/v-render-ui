@@ -94,8 +94,8 @@
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page.selected {
 	color: #fff;
 	font-size: 0.16rem;
-	border-color: #333444;
-	background-color: #333444;
+	border-color: #0367e2;
+	background-color: #0367e2;
 }
 
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page:first-child {
@@ -145,6 +145,7 @@
     right: 0.12rem;
     bottom: 0.1rem;
     margin-bottom: -0.04rem;
+    color: #333;
     font-size: 0.12rem;
     text-align: left;
 }
@@ -173,7 +174,7 @@
 .ui-paginator[opt-mode='dropdown'] > .pagebar > .pages > .dropdown > ul > li.selected > span {
 	color: #fff;
 	font-size: 0.16rem;
-	background-color: #333444;
+	background-color: #0367e2;
 }
 
 .ui-paginator[opt-mode='dropdown'] > .pagebar > .pages > .dropdown > ul > li.selected > span:before {
@@ -183,7 +184,7 @@
     right: 0px;
     top: 0px;
     bottom: 0px;
-    border: 0.01rem solid #ccc;
+    border: 0.01rem solid rgba(255, 255, 255, 0.5);
     border-radius: 0.03rem;
 }
 
@@ -215,7 +216,7 @@
 }
 
 .ui-paginator.link[opt-mode='normal'] > .pagebar > .pages {
-    color: #333444;
+    color: #0367e2;
 }
 
 .ui-paginator.link[opt-mode='spread'] > .pagebar > .pages > .page {
@@ -227,12 +228,12 @@
 }
 
 .ui-paginator.link[opt-mode='spread'] > .pagebar > .pages > .page.selected {
-    color: #333444;
+    color: #0367e2;
     background-color: #f0f0f0;
 }
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages {
-    color: #333444;
+    color: #0367e2;
 }
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages > .lbl {

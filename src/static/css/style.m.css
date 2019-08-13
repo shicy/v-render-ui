@@ -27,6 +27,12 @@ input {
 	-webkit-overflow-scrolling : touch;
 }
 
+.vrender-ui p,
+.vrender-ui dl,
+.vrender-ui dd {
+    margin: 0px;
+}
+
 .vrender-ui ul {
     padding: 0px;
     margin: 0px;

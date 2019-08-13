@@ -55,17 +55,20 @@
 }
 
 .ui-list > ul > li > .box > .ui-list-item3 > .content > .desc {
-	    color: #999;
+    color: #999;
     font-size: 0.14rem;
     margin-top: 0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item3 > .btnbar {
-	margin-top: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    margin: 0.25rem -0.05rem 0px -0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item3 > .btnbar > * {
-	margin-top: 0.1rem;
+    flex: 1;
+    padding: 0px 0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item4 > .icon {
@@ -86,11 +89,14 @@
 }
 
 .ui-list > ul > li > .box > .ui-list-item4 > .btnbar {
-	margin-top: 0.25rem;
+	display: flex;
+    flex-direction: row;
+    margin: 0.25rem -0.05rem 0px -0.05rem;
 }
 
 .ui-list > ul > li > .box > .ui-list-item4 > .btnbar > * {
-	margin-top: 0.1rem;
+	flex: 1;
+    padding: 0px 0.05rem;
 }
 
 .ui-list > ul > li > .chkbox {
@@ -117,12 +123,12 @@
 }
 
 .ui-list > ul > li:active > .chkbox:before {
-    box-shadow: 0px 0px 0px 0.03rem #ddd;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-list > ul > li.selected > .chkbox:before {
-	border-color: #333444;
-    background-color: #333444;
+	border-color: #0367e2;
+    background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;
@@ -130,7 +136,7 @@
 }
 
 .ui-list > ul > li.selected:active > .chkbox:before {
-    box-shadow: 0px 0px 0px 0.03rem #ccc;
+    box-shadow: 0px 0px 0px 0.03rem #eee;
 }
 
 .ui-list > ul > li[disabled] {
