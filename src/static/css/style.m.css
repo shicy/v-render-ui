@@ -11,6 +11,9 @@ input {
 	font-size: 0.16rem;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+    /* chrome 浏览器 rem 字体大小异常（偶尔出现） */
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
 }
 
 .vrender-ui * {
@@ -22,6 +25,12 @@ input {
 .vrender-ui div,
 .vrender-ui ul {
 	-webkit-overflow-scrolling : touch;
+}
+
+.vrender-ui ul {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
 }
 
 .vrender-ui input,
