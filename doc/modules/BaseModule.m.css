@@ -16,6 +16,14 @@ html {
     background-color: #fff;
 }
 
+.module-view > .module-desc {
+    margin: -0.1rem 0px 0.1rem;
+    padding: 0px 0.1rem;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.12rem;
+    text-align: center;
+}
+
 .module-view > .module-group {
 	margin-top: 0px;
 }
@@ -32,6 +40,13 @@ html {
     background-color: #fff;
 }
 
+.module-view > .module-group > .module-demo .demo-lbl {
+    display: block;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.12rem;
+    line-height: 0.32rem;
+}
+
 .module-view > .module-group > .module-demo > .preview {
     padding: 0.1rem;
 }
@@ -39,6 +54,7 @@ html {
 .module-view > .module-group > .module-demo > .description {
 	padding: 0.1rem;
     font-size: 0.14rem;
+    border-top: 1px solid #eee;
     background-color: #fafafa;
 }
 
@@ -61,7 +77,7 @@ html {
 
 .module-view > .module-group > .module-demo > .source > .expand {
 	height: 0.4rem;
-    border-top: 1px dashed #ddd;
+    border-top: 1px dashed #ccc;
     border-bottom: 1px solid #ddd;
     background-color: #f6f6f6;
 }
