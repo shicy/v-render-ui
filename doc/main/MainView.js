@@ -24,6 +24,9 @@ const MainView = VRender.PageView.extend(module, {
 
 		let sidemenu = $(".main-menu").appendTo(mainBody);
 		new SideMenu(this).render(sidemenu);
+		if (this._isRenderAsApp) {
+			$(".main-menubtn").appendTo(sidemenu);
+		}
 
 		let container = $(".main-container").appendTo(mainBody);
 		$("#singlepage-container").appendTo(container);

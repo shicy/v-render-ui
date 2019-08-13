@@ -17,7 +17,7 @@ VR.Component.dataAdapter = function (data) {
 	return data;
 };
 
-SinglePage.setViewHandler((state, callback) => {
+SinglePage.setViewHandler(function (state, callback) {
 	var url = "/component/module/"
 	url += state && state.name || "index";
 	VR.loadModule(url, (err, ret) => {
@@ -29,7 +29,7 @@ SinglePage.setViewHandler((state, callback) => {
 	});
 });
 
-VR.on(VR.event_routerchange, (e, state) => {
+VR.on(VR.event_routerchange, function (e, state) {
 	menus.find(".active").removeClass("active");
 	if (state && state.name) {
 		menus.find(`.menu[name=${state.name}]`).addClass("active");
@@ -37,10 +37,18 @@ VR.on(VR.event_routerchange, (e, state) => {
 });
 
 // ========================================================
-menus.on("tap", ".menu", (e) => {
+body.on("tap", ".main-menubtn", function (e) {
+	$(e.currentTarget).parent().toggleClass("open");
+	return false;
+});
+
+menus.on("tap", ".menu", function (e) {
 	let menu = $(e.currentTarget);
 	var data = {name: menu.attr("name")};
 	VR.navigate("/components/" + data.name, data);
+	if (VR.ENV.isApp) {
+		body.find(".main-menu").removeClass("open");
+	}
 });
 
 // ========================================================

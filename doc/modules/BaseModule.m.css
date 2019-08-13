@@ -1,0 +1,86 @@
+
+html {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
+.module-view > .module-title {
+	position: fixed;
+    z-index: 10;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    padding-left: 0.1rem;
+    line-height: 0.44rem;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.module-view > .module-group {
+	margin-top: 0px;
+}
+
+.module-view > .module-group > .title {
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 0.14rem;
+    text-align: center;
+    line-height: 0.32rem;
+}
+
+.module-view > .module-group > .module-demo {
+    margin-bottom: 0.1rem;
+    background-color: #fff;
+}
+
+.module-view > .module-group > .module-demo > .preview {
+    padding: 0.1rem;
+}
+
+.module-view > .module-group > .module-demo > .description {
+	padding: 0.1rem;
+    font-size: 0.14rem;
+    background-color: #fafafa;
+}
+
+.module-view > .module-group > .module-demo > .description code {
+    padding: .02rem .03rem;
+    color: #f94304;
+    font-size: 0.12rem;
+    border-radius: .03rem;
+    background-color: #f0f0f0;
+}
+
+.module-view > .module-group > .module-demo > .source > pre {
+    display: none;
+    padding: 0.1rem 0.2rem;
+    margin: 0px;
+    font-size: 0.12rem;
+	line-height: 0.2rem;
+    background-color: #fdfcf6;
+}
+
+.module-view > .module-group > .module-demo > .source > .expand {
+	height: 0.4rem;
+    border-top: 1px dashed #ddd;
+    border-bottom: 1px solid #ddd;
+    background-color: #f6f6f6;
+}
+
+.module-view > .module-group > .module-demo > .source > .expand i:before {
+    content: "显示原代码";
+    display: block;
+    color: #aaa;
+    font-size: 0.12rem;
+    font-style: normal;
+    text-align: center;
+    line-height: 0.4rem;
+}
+
+.module-view > .module-group > .module-demo > .source.open > pre {
+    display: block;
+    overflow: auto;
+}
+
+.module-view > .module-group > .module-demo > .source.open > .expand i:before {
+    content: "隐藏原代码";
+}

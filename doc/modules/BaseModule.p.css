@@ -59,11 +59,12 @@
 }
 
 .module-view > .module-group > .module-demo > .description code {
-	display: inline-block;
-    padding: 0px 5px;
+	display: inline;
+	vertical-align: text-bottom;
+    padding: 4px 5px;
     color: #f94304;
     font-size: 12px;
-    line-height: 22px;
+    line-height: 16px;
     border-radius: 3px;
     background-color: #f0f0f0;
 }
@@ -100,7 +101,7 @@
 	top: 50%;
 	margin-top: -5px;
 	margin-left: -5px;
-	background-image: url(/icons/a001.png);
+	background-image: url(/icons/a03.png);
 	background-size: 10px;
 }*/
 
