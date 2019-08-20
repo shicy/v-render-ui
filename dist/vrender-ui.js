@@ -3438,6 +3438,7 @@
     this.input.val(value);
     clearErrorMsg.call(this);
     valueChanged.call(this, value);
+    tryAutoSize.call(this, value);
   };
 
   _UIInput.getPrompt = function () {
@@ -3615,22 +3616,25 @@
 
   var onKeyDownHandler = function onKeyDownHandler(e) {
     clearErrorMsg.call(this);
-    if (Utils.isControlKey(e)) return true;
     var text = this.input.val() || "";
-    var type = this.getDataType();
 
-    if (type == "_number" || type == "number" || type == "num") {
-      if (!isNumberKeyEnable(e, text)) return false;
-      if (e.key == "." && this.getDecimals() == 0) return false;
-    } else if (type == "tel" || type == "mobile" || type == "phone") {
-      if (!/[0-9]|\-/.test(e.key)) return false;
-      if (e.key == "-" && type == "mobile") return false;
-    } else if (type == "text") {
-      var maxSize = this.getMaxSize();
-      if (maxSize > 0 && text.length >= maxSize) return false;
+    if (!Utils.isControlKey(e)) {
+      var type = this.getDataType();
+
+      if (type == "_number" || type == "number" || type == "num") {
+        if (!isNumberKeyEnable(e, text)) return false;
+        if (e.key == "." && this.getDecimals() == 0) return false;
+      } else if (type == "tel" || type == "mobile" || type == "phone") {
+        if (!/[0-9]|\-/.test(e.key)) return false;
+        if (e.key == "-" && type == "mobile") return false;
+      } else if (type == "text") {
+        var maxSize = this.getMaxSize();
+        if (maxSize > 0 && text.length >= maxSize) return false;
+      }
     }
 
-    valueChanged.call(this, text + "."); // 加一个字符，保证隐藏提示信息
+    valueChanged.call(this, text);
+    tryAutoSize.call(this, text + (e.which == 13 ? "\n" : ""));
   };
 
   var onKeyUpHandler = function onKeyUpHandler(e) {
@@ -3652,6 +3656,8 @@
       if (text != value) this.input.val(text);
       valueChanged.call(this, text);
     }
+
+    tryAutoSize.call(this, text);
   };
 
   var onFocusInHandler = function onFocusInHandler(e) {
@@ -3680,6 +3686,18 @@
     if (text.length === 0) {
       if (this.isRequired()) setErrorMsg.call(this, this.getEmptyMsg() || "输入框不能为空");
     } else {
+      var type = this.getDataType();
+
+      if (type == "_number" || type == "number" || type == "num") {
+        var value = parseFloat(text);
+
+        if (!isNaN(value)) {
+          var decimals = this.getDecimals();
+          if (decimals >= 0) this.input.val(value.toFixed(decimals));else this.input.val(value.toFixed(10).replace(/\.?0+$/, ""));
+          text = this.input.val();
+        }
+      }
+
       doValidate.call(this, text);
     }
 
@@ -3824,7 +3842,7 @@
           } else {
             if (!isNaN(minValue) && iptValue < minValue) iptValue = minValue;
             if (!isNaN(maxValue) && iptValue > maxValue) iptValue = maxValue;
-            iptValue = iptValue.toFixed(decimals);
+            if (decimals >= 0) iptValue = iptValue.toFixed(decimals);else iptValue = iptValue.toFixed(10).replace(/\.?0+$/, "");
           }
         }
       }
@@ -3895,8 +3913,6 @@
           if (!isNaN(min) && min > val) setErrorMsg.call(this, defaultErrorMsg || "数据不正确，请输入大于等于" + min + "的值");
           var max = parseFloat(this.$el.attr("opt-max"));
           if (!isNaN(max) && max < val) setErrorMsg.call(this, defaultErrorMsg || "数据不正确，请输入小于等于" + max + "的值");
-          var decimals = this.getDecimals();
-          if (decimals > 0) this.input.val(val.toFixed(decimals));
         }
       } else if (type == "tel") {
         if (!Utils.isMobile(value) || !Utils.isPhone(value)) setErrorMsg.call(this, defaultErrorMsg || "手机或电话号码不正确");
@@ -3926,16 +3942,16 @@
       var maxSize = this.getMaxSize();
       if (maxSize > 0) this.inputTag.find(".size").text(text.length + "/" + maxSize);
     }
-
-    tryAutoSize.call(this, text);
   };
 
   var tryAutoSize = function tryAutoSize(text) {
+    console.log(text);
+
     if (this.isAutoHeight()) {
       var preview = this.inputTag.find(".preview pre");
 
       if (preview && preview.length > 0) {
-        text = (text || "").replace(/\n$/, "\n.");
+        text = text ? text.replace(/\n$/, "\n.") : "";
         preview.text(text);
       }
 
@@ -8629,6 +8645,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var item = this._getItems().eq(index);
 
       return !item ? null : new FormItem(this, item);
+    }
+
+    return null;
+  };
+
+  _UIForm.getView = function (name) {
+    if (Utils.isBlank(name)) return null;
+    var item = Utils.find(this._getItems(), function (item) {
+      return item.attr("name") == name;
+    });
+
+    if (item) {
+      var contentView = item.children(".content").children("dd").children().children();
+      return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
     }
 
     return null;
