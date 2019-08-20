@@ -87,6 +87,7 @@
 		this.input.val(value);
 		clearErrorMsg.call(this);
 		valueChanged.call(this, value);
+		tryAutoSize.call(this, value);
 	};
 
 	_UIInput.getPrompt = function () {
@@ -268,28 +269,29 @@
 	// ====================================================
 	const onKeyDownHandler = function (e) {
 		clearErrorMsg.call(this);
-		if (Utils.isControlKey(e))
-			return true;
 		let text = this.input.val() || "";
-		let type = this.getDataType();
-		if (type == "_number" || type == "number" || type == "num") {
-			if (!isNumberKeyEnable(e, text))
-				return false;
-			if (e.key == "." && this.getDecimals() == 0)
-				return false;
+		if (!Utils.isControlKey(e)) {
+			let type = this.getDataType();
+			if (type == "_number" || type == "number" || type == "num") {
+				if (!isNumberKeyEnable(e, text))
+					return false;
+				if (e.key == "." && this.getDecimals() == 0)
+					return false;
+			}
+			else if (type == "tel" || type == "mobile" || type == "phone") {
+				if (!/[0-9]|\-/.test(e.key))
+					return false;
+				if (e.key == "-" && type == "mobile")
+					return false;
+			}
+			else if (type == "text") {
+				let maxSize = this.getMaxSize();
+				if (maxSize > 0 && text.length >= maxSize)
+					return false;
+			}
 		}
-		else if (type == "tel" || type == "mobile" || type == "phone") {
-			if (!/[0-9]|\-/.test(e.key))
-				return false;
-			if (e.key == "-" && type == "mobile")
-				return false;
-		}
-		else if (type == "text") {
-			let maxSize = this.getMaxSize();
-			if (maxSize > 0 && text.length >= maxSize)
-				return false;
-		}
-		valueChanged.call(this, text + "."); // 加一个字符，保证隐藏提示信息
+		valueChanged.call(this, text);
+		tryAutoSize.call(this, text + (e.which == 13 ? "\n" : ""));
 	};
 
 	const onKeyUpHandler = function (e) {
@@ -315,6 +317,7 @@
 				this.input.val(text);
 			valueChanged.call(this, text);
 		}
+		tryAutoSize.call(this, text);
 	};
 
 	const onFocusInHandler = function (e) {
@@ -339,6 +342,18 @@
 				setErrorMsg.call(this, (this.getEmptyMsg() || "输入框不能为空"));
 		}
 		else {
+			let type = this.getDataType();
+			if (type == "_number" || type == "number" || type == "num") {
+				let value = parseFloat(text);
+				if (!isNaN(value)) {
+					let decimals = this.getDecimals();
+					if (decimals >= 0)
+						this.input.val(value.toFixed(decimals));
+					else
+						this.input.val(value.toFixed(10).replace(/\.?0+$/, ""));
+					text = this.input.val();
+				}
+			}
 			doValidate.call(this, text);
 		}
 		if (this.t_focus) {
@@ -502,7 +517,10 @@
 							iptValue = minValue;
 						if (!isNaN(maxValue) && iptValue > maxValue)
 							iptValue = maxValue;
-						iptValue = iptValue.toFixed(decimals);
+						if (decimals >= 0)
+							iptValue = iptValue.toFixed(decimals);
+						else
+							iptValue = iptValue.toFixed(10).replace(/\.?0+$/, "");
 					}
 				}
 			}
@@ -581,9 +599,6 @@
 					let max = parseFloat(this.$el.attr("opt-max"));
 					if (!isNaN(max) && max < val)
 						setErrorMsg.call(this, (defaultErrorMsg || ("数据不正确，请输入小于等于" + max + "的值")));
-					let decimals = this.getDecimals();
-					if (decimals > 0)
-						this.input.val(val.toFixed(decimals));
 				}
 			}
 			else if (type == "tel") {
@@ -627,14 +642,13 @@
 			if (maxSize > 0)
 				this.inputTag.find(".size").text(text.length + "/" + maxSize);
 		}
-		tryAutoSize.call(this, text);
 	};
 
-	const tryAutoSize = function (text) {
+	const tryAutoSize = function (text) { console.log(text);
 		if (this.isAutoHeight()) {
 			let preview = this.inputTag.find(".preview pre");
 			if (preview && preview.length > 0) {
-				text = (text || "").replace(/\n$/, "\n.");
+				text = text ? text.replace(/\n$/, "\n.") : "";
 				preview.text(text);
 			}
 			let input = this.input.get(0);
