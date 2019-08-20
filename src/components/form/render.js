@@ -138,6 +138,19 @@
 		return null;
 	};
 
+	_UIForm.getView = function (name) {
+		if (Utils.isBlank(name))
+			return null;
+		let item = Utils.find(this._getItems(), (item) => {
+			return item.attr("name") == name;
+		});
+		if (item) {
+			let contentView = item.children(".content").children("dd").children().children();
+			return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
+		}
+		return null;
+	};
+
 	_UIForm.delete = function (name) {
 		if (Utils.isBlank(name))
 			return null;
