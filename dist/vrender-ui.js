@@ -13109,9 +13109,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 "use strict";
 
 // 2019-07-24
-// datagrid
+// table(原datagrid)
 (function (frontend) {
-  if (frontend && VRender.Component.ui.datagrid) return;
+  if (frontend && VRender.Component.ui.table) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util;
@@ -13125,13 +13125,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     desc: "/vrender-ui/icons/021c.png"
   }; ///////////////////////////////////////////////////////
 
-  var UIDatagrid = UI.datagrid = function (view, options) {
+  var UITable = UI.table = function (view, options) {
     return UI._select.call(this, view, options);
   };
 
-  var _UIDatagrid = UIDatagrid.prototype = new UI._select(false);
+  var _UITable = UITable.prototype = new UI._select(false);
 
-  _UIDatagrid.init = function (target, options) {
+  _UITable.init = function (target, options) {
     UI._select.init.call(this, target, options);
 
     this.__columns = this.getColumns(); // 解析一次
@@ -13164,7 +13164,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIDatagrid.getData = function (isOriginal) {
+  _UITable.getData = function (isOriginal) {
     if (isOriginal) {
       // 这是没有排序、筛选过的数据集
       this.options.data = this._doAdapter(this.options.data);
@@ -13184,7 +13184,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  _UIDatagrid.setData = function (value) {
+  _UITable.setData = function (value) {
     var snapshoot = this._snapshoot();
 
     this.options.data = this._doAdapter(value);
@@ -13197,7 +13197,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     snapshoot.done([], []);
   };
 
-  _UIDatagrid.getColumns = function () {
+  _UITable.getColumns = function () {
     if (this.options.hasOwnProperty("columns")) return this.options.columns;
 
     var getFunc = function getFunc(value) {
@@ -13241,7 +13241,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.options.columns;
   };
 
-  _UIDatagrid.setColumns = function (value) {
+  _UITable.setColumns = function (value) {
     this.options.columns = getFormatColumns(value);
     var columns = this.__columns = this.options.columns;
 
@@ -13266,11 +13266,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     rerender.call(this);
   };
 
-  _UIDatagrid.isHeaderVisible = function () {
+  _UITable.isHeaderVisible = function () {
     return !this.$el.is(".no-head");
   };
 
-  _UIDatagrid.setHeaderVisible = function (value) {
+  _UITable.setHeaderVisible = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) {
       if (!this.isHeaderVisible()) {
         this.$el.removeClass("no-head");
@@ -13282,11 +13282,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UIDatagrid.isChkboxVisible = function () {
+  _UITable.isChkboxVisible = function () {
     return this.$el.attr("opt-chk") == "1";
   };
 
-  _UIDatagrid.setChkboxVisible = function (value) {
+  _UITable.setChkboxVisible = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) {
       if (!this.isChkboxVisible()) {
         this.$el.attr("opt-chk", "1");
@@ -13299,30 +13299,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // itemRenderer 即行渲染，也即tr，不能修改，设置无效
 
 
-  _UIDatagrid.getItemRenderer = function () {
+  _UITable.getItemRenderer = function () {
     return Renderer.rowRenderer;
   };
 
-  _UIDatagrid.setItemRenderer = function (value) {// 设置无效，默认是 Renderer.rowRenderer;
+  _UITable.setItemRenderer = function (value) {// 设置无效，默认是 Renderer.rowRenderer;
   };
 
-  _UIDatagrid.getHeadRenderer = function () {
+  _UITable.getHeadRenderer = function () {
     return Fn.getFunction.call(this, "headRenderer", "hrender");
   };
 
-  _UIDatagrid.setHeadRenderer = function (value) {
+  _UITable.setHeadRenderer = function (value) {
     var _changed = this.getHeadRenderer() != value;
 
     this.options.headRenderer = value;
     if (_changed) rerenderHeader.call(this);
   };
 
-  _UIDatagrid.getColumnRenderer = function () {
+  _UITable.getColumnRenderer = function () {
     if (this.options.hasOwnProperty("renderer")) return this.options.renderer;
     return Fn.getFunction.call(this, "columnRenderer", "crender");
   };
 
-  _UIDatagrid.setColumnRenderer = function (value) {
+  _UITable.setColumnRenderer = function (value) {
     var _changed = this.getColumnRenderer() != value;
 
     this.options.columnRenderer = value;
@@ -13330,11 +13330,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (_changed) rerenderItems.call(this);
   };
 
-  _UIDatagrid.getExpandRenderer = function () {
+  _UITable.getExpandRenderer = function () {
     return Fn.getFunction.call(this, "expandRenderer", "erender");
   };
 
-  _UIDatagrid.setExpandRenderer = function (value) {
+  _UITable.setExpandRenderer = function (value) {
     var _changed = this.getExpandRenderer() != value;
 
     this.options.expandRenderer = value;
@@ -13348,11 +13348,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UIDatagrid.getExpandColspan = function () {
+  _UITable.getExpandColspan = function () {
     return parseInt(this.$el.attr("opt-expcols")) || 0;
   };
 
-  _UIDatagrid.setExpandColsapn = function (value) {
+  _UITable.setExpandColsapn = function (value) {
     if (!isNaN(value) && (value || value === 0)) {
       value = parseInt(value);
 
@@ -13368,35 +13368,35 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UIDatagrid.getRowStyleFunction = function () {
+  _UITable.getRowStyleFunction = function () {
     return Fn.getFunction.call(this, "rowStyleFunction", "rstyle");
   };
 
-  _UIDatagrid.setRowStyleFunction = function (value) {
+  _UITable.setRowStyleFunction = function (value) {
     var _changed = this.getRowStyleFunction() != value;
 
     this.options.rowStyleFunction = value;
     if (_changed) rerenderItems.call(this);
   };
 
-  _UIDatagrid.getCellStyleFunction = function () {
+  _UITable.getCellStyleFunction = function () {
     return Fn.getFunction.call(this, "cellStyleFunction", "cstyle");
   };
 
-  _UIDatagrid.setCellStyleFunction = function () {
+  _UITable.setCellStyleFunction = function () {
     var _changed = this.getCellStyleFunction() != value;
 
     this.options.cellStyleFunction = value;
     if (_changed) rerenderItems.call(this);
   };
 
-  delete _UIDatagrid.getLabelField;
-  delete _UIDatagrid.setLabelField;
-  delete _UIDatagrid.getLabelFunction;
-  delete _UIDatagrid.setLabelFunction;
-  delete _UIDatagrid.setItemRenderer; // ====================================================
+  delete _UITable.getLabelField;
+  delete _UITable.setLabelField;
+  delete _UITable.getLabelFunction;
+  delete _UITable.setLabelFunction;
+  delete _UITable.setItemRenderer; // ====================================================
 
-  _UIDatagrid.sort = function (column, type, sortFunction) {
+  _UITable.sort = function (column, type, sortFunction) {
     if (Utils.isFunction(column)) {
       sortFunction = column;
       column = type = null;
@@ -13411,7 +13411,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     doSort.call(this, column, type, sortFunction);
   };
 
-  _UIDatagrid.filter = function (column, value, filterFunction) {
+  _UITable.filter = function (column, value, filterFunction) {
     if (Utils.isFunction(column)) {
       filterFunction = column;
       column = value = null;
@@ -13427,7 +13427,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIDatagrid.addItem = function (data, index) {
+  _UITable.addItem = function (data, index) {
     if (Utils.isNull(data)) return;
     index = Utils.getIndexValue(index);
     var datas = this.getData(true);
@@ -13445,7 +13445,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     snapshoot.done();
   };
 
-  _UIDatagrid.updateItem = function (data, index) {
+  _UITable.updateItem = function (data, index) {
     if (Utils.isNull(data)) return;
     var datas = this.getData(true);
 
@@ -13468,11 +13468,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UIDatagrid.removeItem = function (data) {
+  _UITable.removeItem = function (data) {
     if (Utils.isNotNull(data)) this.removeItemAt(this.getDataRealIndex(data));
   };
 
-  _UIDatagrid.removeItemAt = function (index) {
+  _UITable.removeItemAt = function (index) {
     index = Utils.getIndexValue(index);
 
     if (index >= 0) {
@@ -13489,12 +13489,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UIDatagrid.addOrUpdateItem = function (data) {
+  _UITable.addOrUpdateItem = function (data) {
     var index = this.getDataRealIndex(data);
     if (index >= 0) this.updateItem(data, index);else this.addItem(data, index);
   };
 
-  _UIDatagrid.getDataRealIndex = function (data, datas) {
+  _UITable.getDataRealIndex = function (data, datas) {
     var _this = this;
 
     datas = datas || this.getData(true);
@@ -13510,12 +13510,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return -1;
   };
 
-  _UIDatagrid.rerender = function () {
+  _UITable.rerender = function () {
     rerender.call(this);
   }; // ====================================================
 
 
-  _UIDatagrid._getItemContainer = function () {
+  _UITable._getItemContainer = function () {
     if (!this.itemContainer) {
       var target = this.$el.children(".table").children("section").children();
       this.itemContainer = target.children("table").children("tbody");
@@ -13524,11 +13524,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.itemContainer;
   };
 
-  _UIDatagrid._getNewItem = function ($, itemContainer, data, index) {
-    return $("<tr class='datagrid-row'></tr>").appendTo(itemContainer);
+  _UITable._getNewItem = function ($, itemContainer, data, index) {
+    return $("<tr class='table-row'></tr>").appendTo(itemContainer);
   };
 
-  _UIDatagrid._getItemData = function (item) {
+  _UITable._getItemData = function (item) {
     var data = item.data("itemData");
 
     if (!data) {
@@ -13543,21 +13543,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return data;
   };
 
-  _UIDatagrid._getSortFunction = function (column, type) {
+  _UITable._getSortFunction = function (column, type) {
     return getSortFunction.call(this, column, type);
   };
 
-  _UIDatagrid._getFilterFunction = function (column, value) {
+  _UITable._getFilterFunction = function (column, value) {
     return getFilterFunction.call(this, column, value);
   };
 
-  _UIDatagrid._hasExpand = function () {
+  _UITable._hasExpand = function () {
     return Utils.index(this.__columns, function (column) {
       return !!column.expand;
     }) >= 0;
   };
 
-  _UIDatagrid._snapshoot_change = function () {
+  _UITable._snapshoot_change = function () {
     selectedChanged.call(this);
   }; // ====================================================
 
@@ -13781,7 +13781,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   // ====================================================
 
   _Renderer.render = function ($, target) {
-    target.addClass("ui-datagrid");
+    target.addClass("ui-table");
     var height = Utils.getFormatSize(this.options.height, this._isRenderAsRem());
 
     if (height) {
@@ -13850,7 +13850,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   _Renderer._getNewItem = function ($, itemContainer, data, index) {
-    return $("<tr class='datagrid-row'></tr>").appendTo(itemContainer);
+    return $("<tr class='table-row'></tr>").appendTo(itemContainer);
   };
 
   _Renderer._renderItems = function ($, target) {
@@ -14195,7 +14195,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         container.append(expandView.$el || expandView);
       }
     } else {
-      var _expandView = $("<div class='datagrid-expand'></div>").appendTo(container);
+      var _expandView = $("<div class='table-expand'></div>").appendTo(container);
 
       _expandView.attr("cols", this.getExpandColspan());
 
@@ -14986,8 +14986,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UIDatagrid = UIDatagrid;
-    UI.init(".ui-datagrid", UIDatagrid, Renderer);
+    window.UITable = UITable;
+    UI.init(".ui-table", UITable, Renderer);
   } else {
     module.exports = Renderer;
   }
