@@ -15,9 +15,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UITabbar = UISelectable.extend(module, {
+const UITable = UISelectable.extend(module, {
 	renderView: function () {
-		UITabbar.super(this);
+		UITable.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

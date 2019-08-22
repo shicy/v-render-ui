@@ -1,4 +1,4 @@
-## UICheckGroup
+## UITable
 
 ### Options
 | name | description | default value |

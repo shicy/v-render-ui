@@ -7,7 +7,7 @@ const BaseModule = require("../BaseModule");
 const $ = VRender.$;
 const Utils = VRender.Utils;
 const UIGroup = VRender.UIGroup;
-const UIDatagrid = VRender.UIDatagrid;
+const UITable = VRender.UITable;
 const UIPaginator = VRender.UIPaginator;
 
 let exampleData = [];
@@ -46,7 +46,7 @@ exampleData.push({id: 6, name: "饿了么", title: "饿了么", type: "生活",
 
 const ModuleView = BaseModule.extend(module, {
 	getTitle: function () {
-		return "UIDatagrid 数据网格";
+		return "UITable 数据网格";
 	},
 
 	getDescription: function () {
@@ -87,10 +87,10 @@ const ModuleView = BaseModule.extend(module, {
 		columns.push({ name: "score", title: "评分" });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [");
 		source.push("    { name: 'name', title: '名称' },");
@@ -116,10 +116,10 @@ const ModuleView = BaseModule.extend(module, {
 			columns.push({ name: "desc", title: "应用信息" });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, chkbox: true, selectedIndex: 2 }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, chkbox: true, selectedIndex: 2 }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  selectedIndex: 2,");
@@ -148,11 +148,11 @@ const ModuleView = BaseModule.extend(module, {
 			columns.push({ name: "desc", title: "应用信息" });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, 
+		demo.append(new UITable(this, { columns: columns, data: exampleData, 
 			chkbox: true, multi: true, selectedIndex: [2, 3] }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  multi: true,");
@@ -211,10 +211,10 @@ const ModuleView = BaseModule.extend(module, {
 		}
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, chkbox: true, selectedIndex: 0 }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, chkbox: true, selectedIndex: 0 }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  ref: 'datagrid4',");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
@@ -296,10 +296,10 @@ const ModuleView = BaseModule.extend(module, {
 			columns.push({ name: "date", title: "发布日期" });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, chkbox: true }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, chkbox: true }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  ref: 'datagrid5',");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
@@ -356,10 +356,10 @@ const ModuleView = BaseModule.extend(module, {
 		}
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [{");
 		source.push("    name: 'name',");
@@ -390,10 +390,10 @@ const ModuleView = BaseModule.extend(module, {
 		}
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [{");
 		source.push("    name: 'name',");
@@ -436,10 +436,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, headRenderer: myHeadRenderer }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, headRenderer: myHeadRenderer }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [{");
 		source.push("    name: 'name',");
@@ -482,10 +482,10 @@ const ModuleView = BaseModule.extend(module, {
 		columns.push({ name: "score", title: "评分" });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, showHeader: false }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, showHeader: false }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  showHeader: false,");
 		source.push("  columns: [");
@@ -537,10 +537,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, columnRenderer: myColumnRenderer }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, columnRenderer: myColumnRenderer }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [{");
 		source.push("    name: 'name',");
@@ -599,10 +599,10 @@ const ModuleView = BaseModule.extend(module, {
 		columns.push({ name: "date", title: "发布日期", expand: true });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, chkbox: true, expandcols: 1 }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, chkbox: true, expandcols: 1 }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  chkbox: true,");
 		source.push("  expandcols: 1,");
@@ -670,10 +670,10 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, expandRenderer: myExpandRenderer }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, expandRenderer: myExpandRenderer }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [{");
 		source.push("    name: 'name',");
@@ -748,11 +748,11 @@ const ModuleView = BaseModule.extend(module, {
 		};
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, 
+		demo.append(new UITable(this, { columns: columns, data: exampleData, 
 			rowStyleFunction: myRowStyleFunction, cellStyleFunction: myCellStyleFunction }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  columns: [{");
 		source.push("    name: 'name',");
@@ -795,10 +795,10 @@ const ModuleView = BaseModule.extend(module, {
 		columns.push({ name: 'date', title: '发布日期', width: 100 });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns, data: exampleData, height: 200 }));
+		demo.append(new UITable(this, { columns: columns, data: exampleData, height: 200 }));
 
 		let source = [];
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  height: 200,");
 		source.push("  columns: [{");
@@ -827,13 +827,13 @@ const ModuleView = BaseModule.extend(module, {
 			columns.push({ name: 'c5', title: 'Column 5' });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		var grid = demo.add(new UIDatagrid(this, { columns: columns, apiName: "data.component.items2" }));
+		var grid = demo.add(new UITable(this, { columns: columns, apiName: "data.component.items2" }));
 		var pager = demo.add(new UIPaginator(this, { size: 10 }));
 		grid.setPaginator(pager);
 
 		let source = [];
 		source.push("var pager = new UIPaginator([context], { size: 10 });");
-		source.push("new UIDatagrid([context], {");
+		source.push("new UITable([context], {");
 		source.push("  data: dataSource,");
 		source.push("  paginator: pager,");
 		source.push("  columns: [{");
@@ -872,9 +872,9 @@ const ModuleView = BaseModule.extend(module, {
 		columns.push({ name: "date", title: "发布日期" });
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UIDatagrid(this, { columns: columns }));
-		demo.append(new UIDatagrid(this, { columns: columns, showHeader: false }));
-		demo.append(new UIDatagrid(this, { columns: columns, emptyText: "你还没有相关信息" }));
+		demo.append(new UITable(this, { columns: columns }));
+		demo.append(new UITable(this, { columns: columns, showHeader: false }));
+		demo.append(new UITable(this, { columns: columns, emptyText: "你还没有相关信息" }));
 
 		let source = [];
 		source.push("var columns = [{");
@@ -894,9 +894,9 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("    title: '发布日期'");
 		source.push("}];");
 		source.push("");
-		source.push("new UIDatagrid([context], {\n  columns: columns\n});");
-		source.push("new UIDatagrid([context], {\n  columns: columns,\n  showHeader: false\n});");
-		source.push("new UIDatagrid([context], {\n  columns: columns,\n  emptyText: '你还没有相关信息'\n});");
+		source.push("new UITable([context], {\n  columns: columns\n});");
+		source.push("new UITable([context], {\n  columns: columns,\n  showHeader: false\n});");
+		source.push("new UITable([context], {\n  columns: columns,\n  emptyText: '你还没有相关信息'\n});");
 
 		render(demo, source, description);
 	},
