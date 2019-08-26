@@ -1,43 +1,43 @@
 // 2019-06-10
-// fileupload
+// upload（原fileupload）
 
 (function (frontend) {
-	if (frontend && VRender.Component.ui.fileupload)
+	if (frontend && VRender.Component.ui.upload)
 		return ;
 
 	const UI = frontend ? VRender.Component.ui : require("../../static/js/init");
 	const Fn = UI.fn, Utils = UI.util;
 
 	///////////////////////////////////////////////////////
-	const UIFileUpload = UI.fileupload = function (view, options) {
+	const UIUpload = UI.upload = function (view, options) {
 		return UI._base.call(this, view, options);
 	};
-	const _UIFileUpload = UIFileUpload.prototype = new UI._base(false);
+	const _UIUpload = UIUpload.prototype = new UI._base(false);
 
-	_UIFileUpload.init = function (target, options) {
+	_UIUpload.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
 		this.$el.on("change", "input", onFileChangeHandler.bind(this));
 
 		let browser = this.getBrowser();
 		if (browser)
-			browser.on("click.fileupload", onBrowserClickHandler.bind(this));
+			browser.on("click.upload", onBrowserClickHandler.bind(this));
 	};
 
 	// ====================================================
-	_UIFileUpload.browser = function () {
+	_UIUpload.browser = function () {
 		this.$el.children("input").click();
 	};
 
-	_UIFileUpload.remove = function (localId) {
+	_UIUpload.remove = function (localId) {
 		Utils.removeBy(this.files, "localId", localId);
 	};
 
-	_UIFileUpload.clear = function () {
+	_UIUpload.clear = function () {
 		this.files = [];
 	};
 
-	_UIFileUpload.upload = function (action, params, callback) {
+	_UIUpload.upload = function (action, params, callback) {
 		if (this.isUploading)
 			return false;
 
@@ -72,7 +72,7 @@
 		}
 	};
 
-	_UIFileUpload.cancel = function () {
+	_UIUpload.cancel = function () {
 		this.isUploading = false;
 		Utils.each(this.files, (file) => {
 			if (file.uploader) {
@@ -82,19 +82,19 @@
 		});
 	};
 
-	_UIFileUpload.isEmpty = function () {
+	_UIUpload.isEmpty = function () {
 		return !this.files || this.files.length == 0;
 	};
 
 	// ====================================================
-	_UIFileUpload.getAction = function () {
+	_UIUpload.getAction = function () {
 		return this.$el.attr("opt-action");
 	};
-	_UIFileUpload.setAction = function (value) {
+	_UIUpload.setAction = function (value) {
 		this.$el.attr("opt-action", Utils.trimToEmpty(value));
 	};
 
-	_UIFileUpload.getParams = function () {
+	_UIUpload.getParams = function () {
 		if (this.options.hasOwnProperty("params"))
 			return this.options.params;
 		let params = null;
@@ -105,19 +105,19 @@
 		this.options.params = params;
 		return this.options.params;
 	};
-	_UIFileUpload.setParams = function (value) {
+	_UIUpload.setParams = function (value) {
 		this.options.params = value;
 		this.$el.removeAttr("opt-params");
 	};
 
-	_UIFileUpload.getUploadName = function () {
+	_UIUpload.getUploadName = function () {
 		return Utils.trimToNull(this.$el.attr("opt-upload")) || "file";
 	};
-	_UIFileUpload.setUploadName = function (value) {
+	_UIUpload.setUploadName = function (value) {
 		this.$el.attr("opt-upload", Utils.trimToEmpty(value));
 	};
 
-	_UIFileUpload.getBrowser = function () {
+	_UIUpload.getBrowser = function () {
 		if (this.hasOwnProperty("browserBtn"))
 			return this.browserBtn;
 		if (this.options.hasOwnProperty("browser"))
@@ -127,10 +127,10 @@
 		this.browserBtn = Utils.isBlank(browser) ? null : $(browser);
 		return this.browserBtn;
 	};
-	_UIFileUpload.setBrowser = function (value) {
+	_UIUpload.setBrowser = function (value) {
 		let browser = this.getBrowser();
 		if (browser) {
-			browser.off("click.fileupload");
+			browser.off("click.upload");
 		}
 
 		this.browserBtn = Utils.isBlank(value) ? null : (value.$el || $(value));
@@ -139,14 +139,14 @@
 
 		initBrowserHandler.call(this, this.browserBtn);
 		if (this.browserBtn) {
-			this.browserBtn.on("click.fileupload", onBrowserClickHandler.bind(this));
+			this.browserBtn.on("click.upload", onBrowserClickHandler.bind(this));
 		}
 	};
 
-	_UIFileUpload.getFilter = function () {
+	_UIUpload.getFilter = function () {
 		return this.$el.attr("opt-filter");
 	};
-	_UIFileUpload.setFilter = function (value) {
+	_UIUpload.setFilter = function (value) {
 		this.$el.attr("opt-filter", Utils.trimToEmpty(value));
 
 		let input = this.$el.children("input");
@@ -157,20 +157,20 @@
 			input.removeAttr("accept");
 	};
 
-	_UIFileUpload.getLimit = function () {
+	_UIUpload.getLimit = function () {
 		return parseInt(this.$el.attr("opt-limit")) || 0;
 	};
-	_UIFileUpload.setLimit = function (value) {
+	_UIUpload.setLimit = function (value) {
 		if (value && !isNaN(value))
 			this.$el.attr("opt-limit", value);
 		else
 			this.$el.removeAttr("opt-limit");
 	};
 
-	_UIFileUpload.isMultiple = function () {
+	_UIUpload.isMultiple = function () {
 		return this.$el.children("input").attr("multiple") == "multiple";
 	};
-	_UIFileUpload.setMultiple = function (value) {
+	_UIUpload.setMultiple = function (value) {
 		let input = this.$el.children("input");
 		if (Utils.isNull(value) || Utils.isTrue(value))
 			input.attr("multiple", "multiple");
@@ -178,20 +178,20 @@
 			input.removeAttr("multiple");
 	};
 
-	_UIFileUpload.isAutoUpload = function () {
+	_UIUpload.isAutoUpload = function () {
 		return this.$el.attr("opt-auto") == 1;
 	};
-	_UIFileUpload.setAutoUpload = function (value) {
+	_UIUpload.setAutoUpload = function (value) {
 		if (Utils.isNull(value) || Utils.isTrue(value))
 			this.$el.attr("opt-auto", "1");
 		else
 			this.$el.removeAttr("opt-auto");
 	};
 
-	_UIFileUpload.isMixed = function () {
+	_UIUpload.isMixed = function () {
 		return this.$el.attr("opt-mixed") == 1;
 	};
-	_UIFileUpload.setMixed = function (value) {
+	_UIUpload.setMixed = function (value) {
 		if (Utils.isNull(value) || Utils.isTrue(value))
 			this.$el.attr("opt-mixed", "1");
 		else
@@ -289,7 +289,7 @@
 
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
-		target.addClass("ui-fileupload").css("display", "none");
+		target.addClass("ui-upload").css("display", "none");
 
 		let options = this.options || {};
 
@@ -590,8 +590,8 @@
 
 	///////////////////////////////////////////////////////
 	if (frontend) {
-		window.UIFileUpload = UIFileUpload;
-		UI.init(".ui-fileupload", UIFileUpload, Renderer);
+		window.UIUpload = UIUpload;
+		UI.init(".ui-upload", UIUpload, Renderer);
 	}
 	else {
 		module.exports = Renderer;

@@ -18,7 +18,7 @@ const UIDateInput = require("./src/components/dateinput");
 const UIDateRange = require("./src/components/daterange");
 const UIDateTime = require("./src/components/datetime");
 const UITimeInput = require("./src/components/timeinput");
-const UIFileUpload = require("./src/components/fileupload");
+const UIUpload = require("./src/components/upload");
 const UIForm = require("./src/components/form");
 const UIMessage = require("./src/components/message");
 const UINotice = require("./src/components/notice");
@@ -50,7 +50,6 @@ module.exports = {
 		VRender.UIDateRange = UIDateRange;
 		VRender.UIDateTime = UIDateTime;
 		VRender.UIDialog = UIDialog;
-		VRender.UIFileUpload = UIFileUpload;
 		VRender.UIForm = UIForm;
 		VRender.UIGroup = UIGroup;
 		VRender.UIHGroup = UIGroup.HGroup;
@@ -70,6 +69,7 @@ module.exports = {
 		VRender.UITimeInput = UITimeInput;
 		VRender.UITree = UITree;
 		VRender.UITreeSelect = UITreeSelect;
+		VRender.UIUpload = UIUpload;
 		VRender.UIVGroup = UIGroup.VGroup;
 	},
 

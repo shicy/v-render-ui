@@ -11,9 +11,9 @@ const Renderer = require("./render");
 
 const Utils = VRender.Utils;
 
-const UIFileUpload = UIBase.extend(module, {
+const UIUpload = UIBase.extend(module, {
 	renderView: function () {
-		UIFileUpload.super(this);
+		UIUpload.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
 	},
 

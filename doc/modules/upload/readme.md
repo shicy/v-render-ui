@@ -1,4 +1,4 @@
-## UIFileUpload
+## UIUpload
 
 ### Options
 | name | description | default value |

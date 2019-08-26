@@ -44,12 +44,12 @@ const menus = [{
 		{name: "datepicker", title: "DatePicker", subTitle: "日期选择器"},
 		{name: "daterange", title: "DateRange", subTitle: "起止日期输入框"},
 		{name: "datetime", title: "DateTime", subTitle: "日期时间输入框"},
-		{name: "fileupload", title: "FileUpload", subTitle: "文件上传"},
 		{name: "form", title: "Form", subTitle: "表单视图"},
 		{name: "input", title: "Input", subTitle: "文本输入框"},
 		{name: "radiobox", title: "Radiobox", subTitle: "单选框"},
 		{name: "select", title: "Select", subTitle: "下拉选择框"},
-		{name: "timeinput", title: "TimeInput", subTitle: "时间输入框"}
+		{name: "timeinput", title: "TimeInput", subTitle: "时间输入框"},
+		{name: "upload", title: "Upload", subTitle: "文件上传"}
 	]
 }, {
 	name: "数据集",
