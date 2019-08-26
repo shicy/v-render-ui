@@ -5724,7 +5724,7 @@
 
   _UIDateInput.val = function (value, options) {
     if (Utils.isNull(value)) {
-      return this.getDate(options && options.format);
+      return this.getDate(options && options.format || "yyyy-MM-dd");
     }
 
     this.setDate(value);
@@ -6078,7 +6078,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIDateRange.val = function (value, options) {
     if (Utils.isNull(value)) {
-      return this.getDateRange(options && options.format);
+      return this.getDateRange(options && options.format || "yyyy-MM-dd");
     }
 
     value = Utils.toArray(value);
@@ -6606,7 +6606,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIDateTime.val = function (value, options) {
     if (Utils.isNull(value)) {
-      return this.getDate(options && options.format);
+      return this.getDate(options && options.format || "yyyy-MM-dd HH:mm:ss");
     }
 
     this.setDate(value);
@@ -7294,6 +7294,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
+  _UITimeInput.val = function (value) {
+    if (Utils.isNull(value)) {
+      return this.getTime();
+    }
+
+    this.setTime(value);
+    return this;
+  };
+
   _UITimeInput.getTime = function () {
     return this.$el.attr("data-t") || "";
   };
@@ -7903,41 +7912,41 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-10
-// fileupload
+// upload（原fileupload）
 (function (frontend) {
-  if (frontend && VRender.Component.ui.fileupload) return;
+  if (frontend && VRender.Component.ui.upload) return;
   var UI = frontend ? VRender.Component.ui : require("../../static/js/init");
   var Fn = UI.fn,
       Utils = UI.util; ///////////////////////////////////////////////////////
 
-  var UIFileUpload = UI.fileupload = function (view, options) {
+  var UIUpload = UI.upload = function (view, options) {
     return UI._base.call(this, view, options);
   };
 
-  var _UIFileUpload = UIFileUpload.prototype = new UI._base(false);
+  var _UIUpload = UIUpload.prototype = new UI._base(false);
 
-  _UIFileUpload.init = function (target, options) {
+  _UIUpload.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
     this.$el.on("change", "input", onFileChangeHandler.bind(this));
     var browser = this.getBrowser();
-    if (browser) browser.on("click.fileupload", onBrowserClickHandler.bind(this));
+    if (browser) browser.on("click.upload", onBrowserClickHandler.bind(this));
   }; // ====================================================
 
 
-  _UIFileUpload.browser = function () {
+  _UIUpload.browser = function () {
     this.$el.children("input").click();
   };
 
-  _UIFileUpload.remove = function (localId) {
+  _UIUpload.remove = function (localId) {
     Utils.removeBy(this.files, "localId", localId);
   };
 
-  _UIFileUpload.clear = function () {
+  _UIUpload.clear = function () {
     this.files = [];
   };
 
-  _UIFileUpload.upload = function (action, params, callback) {
+  _UIUpload.upload = function (action, params, callback) {
     var _this = this;
 
     if (this.isUploading) return false;
@@ -7969,7 +7978,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  _UIFileUpload.cancel = function () {
+  _UIUpload.cancel = function () {
     this.isUploading = false;
     Utils.each(this.files, function (file) {
       if (file.uploader) {
@@ -7979,20 +7988,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  _UIFileUpload.isEmpty = function () {
+  _UIUpload.isEmpty = function () {
     return !this.files || this.files.length == 0;
   }; // ====================================================
 
 
-  _UIFileUpload.getAction = function () {
+  _UIUpload.getAction = function () {
     return this.$el.attr("opt-action");
   };
 
-  _UIFileUpload.setAction = function (value) {
+  _UIUpload.setAction = function (value) {
     this.$el.attr("opt-action", Utils.trimToEmpty(value));
   };
 
-  _UIFileUpload.getParams = function () {
+  _UIUpload.getParams = function () {
     if (this.options.hasOwnProperty("params")) return this.options.params;
     var params = null;
 
@@ -8005,20 +8014,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.options.params;
   };
 
-  _UIFileUpload.setParams = function (value) {
+  _UIUpload.setParams = function (value) {
     this.options.params = value;
     this.$el.removeAttr("opt-params");
   };
 
-  _UIFileUpload.getUploadName = function () {
+  _UIUpload.getUploadName = function () {
     return Utils.trimToNull(this.$el.attr("opt-upload")) || "file";
   };
 
-  _UIFileUpload.setUploadName = function (value) {
+  _UIUpload.setUploadName = function (value) {
     this.$el.attr("opt-upload", Utils.trimToEmpty(value));
   };
 
-  _UIFileUpload.getBrowser = function () {
+  _UIUpload.getBrowser = function () {
     if (this.hasOwnProperty("browserBtn")) return this.browserBtn;
     if (this.options.hasOwnProperty("browser")) return this.options.browser;
     var browser = this.$el.attr("opt-browser");
@@ -8027,11 +8036,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return this.browserBtn;
   };
 
-  _UIFileUpload.setBrowser = function (value) {
+  _UIUpload.setBrowser = function (value) {
     var browser = this.getBrowser();
 
     if (browser) {
-      browser.off("click.fileupload");
+      browser.off("click.upload");
     }
 
     this.browserBtn = Utils.isBlank(value) ? null : value.$el || $(value);
@@ -8040,51 +8049,51 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     initBrowserHandler.call(this, this.browserBtn);
 
     if (this.browserBtn) {
-      this.browserBtn.on("click.fileupload", onBrowserClickHandler.bind(this));
+      this.browserBtn.on("click.upload", onBrowserClickHandler.bind(this));
     }
   };
 
-  _UIFileUpload.getFilter = function () {
+  _UIUpload.getFilter = function () {
     return this.$el.attr("opt-filter");
   };
 
-  _UIFileUpload.setFilter = function (value) {
+  _UIUpload.setFilter = function (value) {
     this.$el.attr("opt-filter", Utils.trimToEmpty(value));
     var input = this.$el.children("input");
     var accept = getAccept.call(this);
     if (accept) input.attr("accept", accept);else input.removeAttr("accept");
   };
 
-  _UIFileUpload.getLimit = function () {
+  _UIUpload.getLimit = function () {
     return parseInt(this.$el.attr("opt-limit")) || 0;
   };
 
-  _UIFileUpload.setLimit = function (value) {
+  _UIUpload.setLimit = function (value) {
     if (value && !isNaN(value)) this.$el.attr("opt-limit", value);else this.$el.removeAttr("opt-limit");
   };
 
-  _UIFileUpload.isMultiple = function () {
+  _UIUpload.isMultiple = function () {
     return this.$el.children("input").attr("multiple") == "multiple";
   };
 
-  _UIFileUpload.setMultiple = function (value) {
+  _UIUpload.setMultiple = function (value) {
     var input = this.$el.children("input");
     if (Utils.isNull(value) || Utils.isTrue(value)) input.attr("multiple", "multiple");else input.removeAttr("multiple");
   };
 
-  _UIFileUpload.isAutoUpload = function () {
+  _UIUpload.isAutoUpload = function () {
     return this.$el.attr("opt-auto") == 1;
   };
 
-  _UIFileUpload.setAutoUpload = function (value) {
+  _UIUpload.setAutoUpload = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-auto", "1");else this.$el.removeAttr("opt-auto");
   };
 
-  _UIFileUpload.isMixed = function () {
+  _UIUpload.isMixed = function () {
     return this.$el.attr("opt-mixed") == 1;
   };
 
-  _UIFileUpload.setMixed = function (value) {
+  _UIUpload.setMixed = function (value) {
     if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-mixed", "1");else this.$el.removeAttr("opt-mixed");
   }; // ====================================================
 
@@ -8176,7 +8185,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _Renderer.render = function ($, target) {
     UI._baseRender.render.call(this, $, target);
 
-    target.addClass("ui-fileupload").css("display", "none");
+    target.addClass("ui-upload").css("display", "none");
     var options = this.options || {};
     target.attr("opt-action", Utils.trimToNull(options.action));
     target.attr("opt-upload", Utils.trimToNull(options.uploadName));
@@ -8497,8 +8506,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   if (frontend) {
-    window.UIFileUpload = UIFileUpload;
-    UI.init(".ui-fileupload", UIFileUpload, Renderer);
+    window.UIUpload = UIUpload;
+    UI.init(".ui-upload", UIUpload, Renderer);
   } else {
     module.exports = Renderer;
   }
@@ -8693,20 +8702,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Utils.each(this._getItems(), function (item) {
       var name = item.attr("name");
       if (Utils.isBlank(name)) return;
-      var contentView = item.children(".content").children("dd").children().children();
+      var content = item.children(".content").children("dd").children().children();
 
-      if (contentView.is("input, textarea")) {
-        params[name] = contentView.val() || "";
+      if (content.is("input, textarea")) {
+        params[name] = content.val() || "";
         params[name] = Utils.trimToEmpty(params[name]);
       } else {
-        contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView);
+        var contentView = VRender.Component.get(content) || VRender.FrontComponent.get(content);
 
         if (contentView) {
-          if (contentView instanceof UI.dateinput) {
-            params[name] = contentView.getDate("yyyy-MM-dd");
-          } else if (contentView instanceof UI.daterange) {
-            params[name] = contentView.getDateRange("yyyy-MM-dd");
-          } else if (contentView instanceof UI.select) {
+          if (contentView instanceof UI.select) {
             params[name] = contentView.val();
           } else if (contentView instanceof UI._select) {
             params[name] = contentView.getSelectedKey();
@@ -8715,6 +8720,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           } else if (Utils.isFunction(contentView.val)) {
             if (!Utils.isFunction(contentView.isChecked) || contentView.isChecked()) params[name] = contentView.val();
           }
+        } else {
+          params[name] = content.attr("data-val");
         }
       }
     });
@@ -8733,7 +8740,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var content = item.children(".content").children("dd").children().children();
 
       if (content.is("input, textarea")) {
-        content.val(value || "");
+        content.val(Utils.trimToEmpty(value));
         validateInput.call(_this3, item, content);
       } else {
         var contentView = VRender.Component.get(content);
@@ -8743,9 +8750,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             contentView.setSelectedKey(value);
             validateSelectionView.call(_this3, item, contentView);
           } else if (Utils.isFunction(contentView.val)) {
-            contentView.val(value || "");
+            contentView.val(Utils.trimToEmpty(value));
             validateItem.call(_this3, item, content);
           }
+        } else {
+          content.attr("data-val", Utils.trimToEmpty(value));
         }
       }
     });
