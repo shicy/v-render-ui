@@ -32,7 +32,7 @@
 	// ====================================================
 	_UIDateInput.val = function (value, options) {
 		if (Utils.isNull(value)) {
-			return this.getDate(options && options.format);
+			return this.getDate(options && options.format || "yyyy-MM-dd");
 		}
 		this.setDate(value);
 		return this;

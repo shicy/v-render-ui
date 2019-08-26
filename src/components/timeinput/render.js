@@ -27,6 +27,14 @@
 	};
 
 	// ====================================================
+	_UITimeInput.val = function (value) {
+		if (Utils.isNull(value)) {
+			return this.getTime();
+		}
+		this.setTime(value);
+		return this;
+	};
+
 	_UITimeInput.getTime = function () {
 		return this.$el.attr("data-t") || "";
 	};

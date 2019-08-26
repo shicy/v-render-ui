@@ -42,7 +42,7 @@
 	// ====================================================
 	_UIDateRange.val = function (value, options) {
 		if (Utils.isNull(value)) {
-			return this.getDateRange(options && options.format);
+			return this.getDateRange(options && options.format || "yyyy-MM-dd");
 		}
 		value = Utils.toArray(value);
 		this.setDateRange(value[0], value[1]);

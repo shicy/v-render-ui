@@ -27,7 +27,7 @@
 	// ====================================================
 	_UIDateTime.val = function (value, options) {
 		if (Utils.isNull(value)) {
-			return this.getDate(options && options.format);
+			return this.getDate(options && options.format || "yyyy-MM-dd HH:mm:ss");
 		}
 		this.setDate(value);
 		return this;

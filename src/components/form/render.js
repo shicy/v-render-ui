@@ -181,21 +181,15 @@
 			let name = item.attr("name");
 			if (Utils.isBlank(name))
 				return ;
-			let contentView = item.children(".content").children("dd").children().children();
-			if (contentView.is("input, textarea")) {
-				params[name] = contentView.val() || "";
+			let content = item.children(".content").children("dd").children().children();
+			if (content.is("input, textarea")) {
+				params[name] = content.val() || "";
 				params[name] = Utils.trimToEmpty(params[name]);
 			}
 			else {
-				contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView);
+				let contentView = VRender.Component.get(content) || VRender.FrontComponent.get(content);
 				if (contentView) {
-					if (contentView instanceof UI.dateinput) {
-						params[name] = contentView.getDate("yyyy-MM-dd");
-					}
-					else if (contentView instanceof UI.daterange) {
-						params[name] = contentView.getDateRange("yyyy-MM-dd");
-					}
-					else if (contentView instanceof UI.select) {
+					if (contentView instanceof UI.select) {
 						params[name] = contentView.val();
 					}
 					else if (contentView instanceof UI._select) {
@@ -208,6 +202,9 @@
 						if (!Utils.isFunction(contentView.isChecked) || contentView.isChecked())
 							params[name] = contentView.val();
 					}
+				}
+				else {
+					params[name] = content.attr("data-val");
 				}
 			}
 		});
@@ -224,7 +221,7 @@
 			let value = data[name];
 			let content = item.children(".content").children("dd").children().children();
 			if (content.is("input, textarea")) {
-				content.val(value || "");
+				content.val(Utils.trimToEmpty(value));
 				validateInput.call(this, item, content);
 			}
 			else {
@@ -235,9 +232,12 @@
 						validateSelectionView.call(this, item, contentView);
 					}
 					else if (Utils.isFunction(contentView.val)) {
-						contentView.val(value || "");
+						contentView.val(Utils.trimToEmpty(value));
 						validateItem.call(this, item, content);
 					}
+				}
+				else {
+					content.attr("data-val", Utils.trimToEmpty(value));
 				}
 			}
 		});
