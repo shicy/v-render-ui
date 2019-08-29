@@ -10,6 +10,8 @@ const UIInput = VRender.UIInput;
 const UISelect = VRender.UISelect;
 const UIDateInput = VRender.UIDateInput;
 const UIDateRange = VRender.UIDateRange;
+const UIDateTime = VRender.UIDateTime;
+const UITimeInput = VRender.UITimeInput;
 const UICheckbox = VRender.UICheckbox;
 const UIRadiobox = VRender.UIRadiobox;
 const UICheckGroup = VRender.UICheckGroup;
@@ -43,12 +45,14 @@ const ModuleView = BaseModule.extend(module, {
 				{ name: "b", label: "输入框", content: new UIInput(this) },
 				{ name: "c", label: "下拉选择框", content: new UISelect(this, { data: ["选项1", "选项2", "选项3"] }) },
 				{ name: "d", label: "日期", content: new UIDateInput(this) },
-				{ name: "e", label: "日期范围", content: new UIDateRange(this) },
-				{ name: "f", label: "单选", content: new UIRadiobox(this, { label: "单选", value: "radbox" }) },
-				{ name: "g", label: "多选", content: new UICheckbox(this, { label: "多选", value: "chkbox" }) },
-				{ name: "h", label: "单选组", content: new UIRadioGroup(this, { data: ["A", "B", "C", "D"] }) },
-				{ name: "i", label: "多选组", content: new UICheckGroup(this, { data: ["A", "B", "C", "D"] }) },
-				{ name: "j", label: "多行文本", content: new UIInput(this, { multi: true }) }
+				{ name: "e", label: "时间", content: new UITimeInput(this) },
+				{ name: "f", label: "日期时间", content: new UIDateTime(this) },
+				{ name: "g", label: "日期范围", content: new UIDateRange(this) },
+				{ name: "h", label: "单选", content: new UIRadiobox(this, { label: "单选", value: "radbox" }) },
+				{ name: "i", label: "多选", content: new UICheckbox(this, { label: "多选", value: "chkbox" }) },
+				{ name: "j", label: "单选组", content: new UIRadioGroup(this, { data: ["A", "B", "C", "D"] }) },
+				{ name: "k", label: "多选组", content: new UICheckGroup(this, { data: ["A", "B", "C", "D"] }) },
+				{ name: "l", label: "多行文本", content: new UIInput(this, { multi: true }) }
 			],
 			buttons: [
 				{ label: "确定", type: "submit" },
@@ -83,34 +87,42 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("    content: new UIDateInput([context])");
 		source.push("  }, {");
 		source.push("    name: 'e',");
+		source.push("    label: '时间',");
+		source.push("    content: new UITimeInput([context])");
+		source.push("  }, {");
+		source.push("    name: 'f',");
+		source.push("    label: '日期时间',");
+		source.push("    content: new UIDateTime([context])");
+		source.push("  }, {");
+		source.push("    name: 'g',");
 		source.push("    label: '日期范围',");
 		source.push("    content: new UIDateRange([context])");
 		source.push("  }, {");
-		source.push("    name: 'f',");
+		source.push("    name: 'h',");
 		source.push("    label: '单选',");
 		source.push("    content: new UIRadiobox([context], {");
 		source.push("      label: '单选'");
 		source.push("    })");
 		source.push("  }, {");
-		source.push("    name: 'g',");
+		source.push("    name: 'i',");
 		source.push("    label: '多选',");
 		source.push("    content: new UICheckbox([context], {");
 		source.push("      label: '多选'");
 		source.push("    })");
 		source.push("  }, {");
-		source.push("    name: 'h',");
+		source.push("    name: 'j',");
 		source.push("    label: '单选组',");
 		source.push("    content: new UIRadioGroup([context], {");
 		source.push("      data: 'ABCD'.split('')");
 		source.push("    })");
 		source.push("  }, {");
-		source.push("    name: 'i',");
+		source.push("    name: 'k',");
 		source.push("    label: '多选组',");
 		source.push("    content: new UICheckGroup([context], {");
 		source.push("      data: 'ABCD'.split('')");
 		source.push("    })");
 		source.push("  }, {");
-		source.push("    name: 'j',");
+		source.push("    name: 'l',");
 		source.push("    label: '多行文本',");
 		source.push("    content: new UIInput([context], {");
 		source.push("      multi: true");

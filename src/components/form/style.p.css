@@ -170,6 +170,7 @@
 
 .ui-form.horizontial > .items > .form-item > .content > dd > div {
     padding: 5px 0px 0px 0px;
+    line-height: 22px;
 }
 
 .ui-form.horizontial > .items > .form-item > .content > dd > div > input {
@@ -189,6 +190,14 @@
 }
 
 .ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-dateipt {
+    margin-top: -5px;
+}
+
+.ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-timeipt {
+    margin-top: -5px;
+}
+
+.ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-datetime {
     margin-top: -5px;
 }
 

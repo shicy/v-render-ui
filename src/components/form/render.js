@@ -579,6 +579,8 @@
 
 		let container = $("<dd></dd>").appendTo(itemContent);
 		container = $("<div></div>").appendTo(container);
+		if (data.padding === 0)
+			container.css("paddingTop", "0px");
 
 		let contentView = data.content;
 		if (contentView) {
@@ -904,7 +906,12 @@
 	};
 
 	_FormItem.colspan = function (value) {
-		this.datas.colspan = value;
+		this.data.colspan = value;
+		return this;
+	};
+
+	_FormItem.noPadding = function () {
+		this.data.padding = 0;
 		return this;
 	};
 	

@@ -157,6 +157,14 @@
 	margin-top: -0.11rem;
 }
 
+.ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-timeipt {
+	margin-top: -0.11rem;
+}
+
+.ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-datetime {
+	margin-top: -0.11rem;
+}
+
 .ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-daterange {
 	margin-top: -0.11rem;
 }
