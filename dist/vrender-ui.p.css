@@ -178,7 +178,7 @@
     border: 0px;
     border-radius: 3px;
     background: none;
-    padding: 0px 12px 2px;
+    padding: 0px 12px;
     margin: 0px;
     cursor: pointer;
     outline: none;
@@ -709,6 +709,7 @@
 
 .ui-chkbox > span {
     padding-left: 3px;
+    line-height: 22px;
 }
 
 .ui-chkbox.checked:before {
@@ -792,7 +793,6 @@
 
 .ui-confirm > .container > .content {
     padding: 40px 30px 20px 80px;
-    font-size: 14px;
 }
 
 .ui-confirm > .container > .content:before {
@@ -895,7 +895,7 @@
 .ui-dateipt > .ipt > input {
 	width: 100%;
     height: 32px;
-    font-size: 16px;
+    font-size: inherit;
     border: 1px solid #ddd;
     border-radius: 3px;
     border-top-color: #999;
@@ -1281,7 +1281,7 @@
 .ui-daterange > .ipt > input {
 	width: 100%;
     height: 32px;
-    font-size: 16px;
+    font-size: inherit;
     border: 1px solid #ddd;
     border-radius: 3px;
     border-left-color: #999;
@@ -1354,7 +1354,6 @@
 
 .ui-daterange > .tools {
 	display: inline-block;
-    font-size: 14px;
     border-left: 1px solid #999;
     border-top: 1px solid #999;
     border-bottom: 1px solid #ddd;
@@ -1527,7 +1526,7 @@
 .ui-datetime > .ipt > input {
 	width: 100%;
     height: 32px;
-    font-size: 16px;
+    font-size: inherit;
     border: 1px solid #ddd;
     border-radius: 3px;
     border-top-color: #999;
@@ -1617,7 +1616,6 @@
 .ui-datetime > .picker > .timebar > .ui-select > .ipt > input {
     height: 28px;
     padding-left: 6px;
-    font-size: 14px;
     border-color: #eee;
 }
 
@@ -1630,7 +1628,6 @@
 .ui-datetime > .picker > .timebar > .tip {
     margin: 0px 3px 0px 1px;
     color: #787878;
-    font-size: 14px;
 }
 
 .ui-datetime.show-picker > .picker {
@@ -2059,6 +2056,7 @@
 
 .ui-form.horizontial > .items > .form-item > .content > dd > div {
     padding: 5px 0px 0px 0px;
+    line-height: 22px;
 }
 
 .ui-form.horizontial > .items > .form-item > .content > dd > div > input {
@@ -2078,6 +2076,14 @@
 }
 
 .ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-dateipt {
+    margin-top: -5px;
+}
+
+.ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-timeipt {
+    margin-top: -5px;
+}
+
+.ui-form.horizontial > .items > .form-item > .content > dd > div > .ui-datetime {
     margin-top: -5px;
 }
 
@@ -2123,7 +2129,6 @@
 .ui-input > .ipt {
     display: inline-block;
     width: 200px;
-    font-size: 16px;
 }
 
 .ui-input > .ipt > input {
@@ -2186,7 +2191,6 @@
     padding-top: 1px;
     margin-top: -15px;
     line-height: 30px;
-    font-size: inherit;
     color: #999;
     overflow: hidden;
     pointer-events: none;
@@ -2240,7 +2244,6 @@
     left: 100%;
     line-height: 32px;
     padding-left: 10px;
-    font-size: 14px;
     color: #383838;
 }
 
@@ -2307,7 +2310,6 @@
 }
 
 .ui-input > .desc {
-    font-size: 14px;
     color: #787878;
     line-height: 20px;
 }
@@ -2388,6 +2390,147 @@
 
 .ui-input[disabled] > .ipt > .clear {
     display: none;
+}
+
+
+.ui-notice-wrap {
+	position: fixed;
+    z-index: 2100;
+    top: 50px;
+    right: 0px;
+}
+
+.ui-notice {
+    max-height: 0px;
+    overflow: hidden;
+    padding: 0px 10px;
+    text-align: right;
+}
+
+.ui-notice > .container {
+    display: inline-block;
+    min-width: 200px;
+    max-width: 340px;
+    padding: 10px 22px 10px 10px;
+    margin: 5px 0px;
+    text-align: left;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+    transform: translate(110%, 0px);
+}
+
+.ui-notice > .container > .img {
+    display: none;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 10px;
+    top: 12px;
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ui-notice > .container > .title {
+    padding-right: 30px;
+    vertical-align: top;
+    margin-bottom: 3px;
+    color: #000;
+    font-size: 16px;
+    line-height: 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ui-notice > .container > .content {
+    overflow: auto;
+    max-height: 120px;
+    padding: 2px 0px;
+    color: #505050;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+
+.ui-notice > .container > .closebtn {
+	position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 14px;
+    right: 5px;
+    background-image: url(/vrender-ui/icons/001a.png);
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.ui-notice > .container > .closebtn:hover {
+	opacity: 1;
+}
+
+.ui-notice.show-icon > .container {
+    padding-left: 40px;
+}
+
+.ui-notice.show-icon > .container > .img {
+    display: block;
+}
+
+.ui-notice[opt-type='success'] > .container > .img {
+    background-image: url(/vrender-ui/icons/030c.png);
+}
+
+.ui-notice[opt-type='success'] > .container > .title {
+    color: #57ad4c;
+}
+
+.ui-notice[opt-type='error'] > .container > .img {
+    background-image: url(/vrender-ui/icons/031c.png);
+}
+
+.ui-notice[opt-type='error'] > .container > .title {
+    color: #f90e0d;
+}
+
+.ui-notice[opt-type='warn'] > .container > .img {
+    background-image: url(/vrender-ui/icons/032c.png);
+}
+
+.ui-notice[opt-type='warn'] > .container > .title {
+    color: #faa202;
+}
+
+.ui-notice[opt-type='info'] > .container > .img {
+    background-image: url(/vrender-ui/icons/033c.png);
+}
+
+.ui-notice[opt-type='info'] > .container > .title {
+    color: #04aff8;
+}
+
+.ui-notice.animate-in {
+    max-height: 180px;
+    transition: max-height 0.25s;
+}
+
+.ui-notice.animate-in > .container {
+    transform: translate(0px, 0px);
+    transition: transform 0.25s 0.1s;
+}
+
+.ui-notice.animate-out {
+    max-height: 0px;
+    transition: max-height 0.25s 0.25s;
+}
+
+.ui-notice.animate-out > .container {
+    transform: translate(110%, 0px);
+    transition: transform 0.25s;
 }
 
 
@@ -2565,281 +2708,8 @@
 }
 
 
-.ui-message-wrap {
-	position: fixed;
-    z-index: 2100;
-    height: 0px;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    text-align: center;
-}
-
-.ui-message {
-	position: absolute;
-    left: 50%;
-    top: -100px;
-    transform: translate(-50%, 0px);
-    transition: top 0.5s;
-}
-
-.ui-message > .container {
-	padding: 10px 30px 10px 20px;
-    text-align: left;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
-}
-
-.ui-message > .container > .img {
-	display: none;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left: 10px;
-    top: 10px;
-    background-size: 16px;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.ui-message > .container > .content {
-	vertical-align: top;
-	min-width: 150px;
-	max-width: 400px;
-	max-height: 20px;
-	line-height: 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: max-width 0.25s, max-height 0.25s;
-}
-
-.ui-message > .container > .content:hover {
-	text-decoration: underline;
-	cursor: default;
-}
-
-.ui-message > .container > .closebtn {
-	position: absolute;
-    width: 20px;
-    height: 20px;
-    top: 10px;
-    right: 5px;
-    background-image: url(/vrender-ui/icons/001a.png);
-    background-size: 10px;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    opacity: 0.5;
-}
-
-.ui-message > .container > .closebtn:hover {
-	opacity: 1;
-}
-
-.ui-message.show-icon > .container {
-	padding-left: 35px;
-}
-
-.ui-message.show-icon > .container > .img {
-	display: block;
-}
-
-.ui-message.active > .container > .content {
-	overflow: auto;
-	max-width: 800px;
-	max-height: 400px;
-	text-decoration: none;
-	white-space: normal;
-}
-
-.ui-message[opt-type='success'] > .container {
-    border: 1px solid rgba(87, 173, 76, 0.2);
-}
-
-.ui-message[opt-type='success'] > .container > .img {
-	background-image: url(/vrender-ui/icons/030c.png);
-}
-
-.ui-message[opt-type='error'] > .container {
-    border: 1px solid rgba(249, 14, 13, 0.1);
-}
-
-.ui-message[opt-type='error'] > .container > .img {
-	background-image: url(/vrender-ui/icons/031c.png);
-}
-
-.ui-message[opt-type='warn'] > .container {
-    border: 1px solid rgba(250, 162, 2, 0.2);
-}
-
-.ui-message[opt-type='warn'] > .container > .img {
-	background-image: url(/vrender-ui/icons/032c.png);
-}
-
-.ui-message[opt-type='info'] > .container {
-    border: 1px solid rgba(4, 175, 248, 0.2);
-}
-
-.ui-message[opt-type='info'] > .container > .img {
-	background-image: url(/vrender-ui/icons/033c.png);
-}
-
-.ui-message.animate-in {
-	top: 20px;
-}
-
-.ui-message.animate-out {
-	top: -100px;
-}
-
-
-.ui-notice-wrap {
-	position: fixed;
-    z-index: 2100;
-    top: 50px;
-    right: 0px;
-}
-
-.ui-notice {
-    max-height: 0px;
-    overflow: hidden;
-    padding: 0px 10px;
-    text-align: right;
-}
-
-.ui-notice > .container {
-    display: inline-block;
-    min-width: 200px;
-    max-width: 340px;
-    padding: 10px 22px 10px 10px;
-    margin: 5px 0px;
-    text-align: left;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-    transform: translate(110%, 0px);
-}
-
-.ui-notice > .container > .img {
-    display: none;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left: 10px;
-    top: 12px;
-    background-size: 18px;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.ui-notice > .container > .title {
-    padding-right: 30px;
-    vertical-align: top;
-    margin-bottom: 3px;
-    color: #000;
-    font-size: 16px;
-    line-height: 24px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.ui-notice > .container > .content {
-    overflow: auto;
-    max-height: 120px;
-    padding: 2px 0px;
-    color: #505050;
-    font-size: 14px;
-    line-height: 20px;
-}
-
-
-.ui-notice > .container > .closebtn {
-	position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 14px;
-    right: 5px;
-    background-image: url(/vrender-ui/icons/001a.png);
-    background-size: 10px;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.5;
-    cursor: pointer;
-}
-
-.ui-notice > .container > .closebtn:hover {
-	opacity: 1;
-}
-
-.ui-notice.show-icon > .container {
-    padding-left: 40px;
-}
-
-.ui-notice.show-icon > .container > .img {
-    display: block;
-}
-
-.ui-notice[opt-type='success'] > .container > .img {
-    background-image: url(/vrender-ui/icons/030c.png);
-}
-
-.ui-notice[opt-type='success'] > .container > .title {
-    color: #57ad4c;
-}
-
-.ui-notice[opt-type='error'] > .container > .img {
-    background-image: url(/vrender-ui/icons/031c.png);
-}
-
-.ui-notice[opt-type='error'] > .container > .title {
-    color: #f90e0d;
-}
-
-.ui-notice[opt-type='warn'] > .container > .img {
-    background-image: url(/vrender-ui/icons/032c.png);
-}
-
-.ui-notice[opt-type='warn'] > .container > .title {
-    color: #faa202;
-}
-
-.ui-notice[opt-type='info'] > .container > .img {
-    background-image: url(/vrender-ui/icons/033c.png);
-}
-
-.ui-notice[opt-type='info'] > .container > .title {
-    color: #04aff8;
-}
-
-.ui-notice.animate-in {
-    max-height: 180px;
-    transition: max-height 0.25s;
-}
-
-.ui-notice.animate-in > .container {
-    transform: translate(0px, 0px);
-    transition: transform 0.25s 0.1s;
-}
-
-.ui-notice.animate-out {
-    max-height: 0px;
-    transition: max-height 0.25s 0.25s;
-}
-
-.ui-notice.animate-out > .container {
-    transform: translate(110%, 0px);
-    transition: transform 0.25s;
-}
-
-
 .ui-paginator {
     height: 32px;
-    font-size: 14px;
 }
 .ui-paginator > * {
     display: inline-block;
@@ -2993,7 +2863,7 @@
     width: 65px;
     height: 32px;
     vertical-align: middle;
-    font-size: 16px;
+    font-size: inherit;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 3px;
@@ -3032,13 +2902,11 @@
 
 .ui-paginator.link {
     color: #003cff;
-    font-size: 16px;
 }
 
 .ui-paginator.link > .pagebar > .btn {
     border: 0px;
     color: #003cff;
-    font-size: 14px;
 }
 
 .ui-paginator.link > .pagebar > .btn:hover {
@@ -3073,7 +2941,6 @@
 
 .ui-paginator[opt-mode='normal'] > .pagebar > .pages {
     padding: 0px 10px;
-    font-size: 16px;
     text-align: center;
     line-height: 32px;
 }
@@ -3118,7 +2985,6 @@
 
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page.selected {
     color: #fff;
-    font-size: 16px;
     border-color: #0367e2;
     background-color: #0367e2;
     cursor: default;
@@ -3159,6 +3025,7 @@
     top: 100%;
     left: 0px;
     margin-top: 3px;
+    color: #333;
     text-align: center;
     border-radius: 2px;
     background-color: #fff;
@@ -3235,7 +3102,6 @@
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages > .lbl {
     border: 0px;
-    font-size: 16px;
 }
 
 .ui-paginator[disabled] {
@@ -3278,6 +3144,137 @@
 
 .ui-paginator.link[disabled][opt-mode='dropdown'] > .pagebar > .pages > .lbl {
     background-color: inherit;
+}
+
+
+.ui-message-wrap {
+	position: fixed;
+    z-index: 2100;
+    height: 0px;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+}
+
+.ui-message {
+	position: absolute;
+    left: 50%;
+    top: -100px;
+    transform: translate(-50%, 0px);
+    transition: top 0.5s;
+}
+
+.ui-message > .container {
+	padding: 10px 30px 10px 20px;
+    text-align: left;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+}
+
+.ui-message > .container > .img {
+	display: none;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 10px;
+    top: 10px;
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ui-message > .container > .content {
+	vertical-align: top;
+	min-width: 150px;
+	max-width: 400px;
+	max-height: 20px;
+	line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: max-width 0.25s, max-height 0.25s;
+}
+
+.ui-message > .container > .content:hover {
+	text-decoration: underline;
+	cursor: default;
+}
+
+.ui-message > .container > .closebtn {
+	position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 10px;
+    right: 5px;
+    background-image: url(/vrender-ui/icons/001a.png);
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.ui-message > .container > .closebtn:hover {
+	opacity: 1;
+}
+
+.ui-message.show-icon > .container {
+	padding-left: 35px;
+}
+
+.ui-message.show-icon > .container > .img {
+	display: block;
+}
+
+.ui-message.active > .container > .content {
+	overflow: auto;
+	max-width: 800px;
+	max-height: 400px;
+	text-decoration: none;
+	white-space: normal;
+}
+
+.ui-message[opt-type='success'] > .container {
+    border: 1px solid rgba(87, 173, 76, 0.2);
+}
+
+.ui-message[opt-type='success'] > .container > .img {
+	background-image: url(/vrender-ui/icons/030c.png);
+}
+
+.ui-message[opt-type='error'] > .container {
+    border: 1px solid rgba(249, 14, 13, 0.1);
+}
+
+.ui-message[opt-type='error'] > .container > .img {
+	background-image: url(/vrender-ui/icons/031c.png);
+}
+
+.ui-message[opt-type='warn'] > .container {
+    border: 1px solid rgba(250, 162, 2, 0.2);
+}
+
+.ui-message[opt-type='warn'] > .container > .img {
+	background-image: url(/vrender-ui/icons/032c.png);
+}
+
+.ui-message[opt-type='info'] > .container {
+    border: 1px solid rgba(4, 175, 248, 0.2);
+}
+
+.ui-message[opt-type='info'] > .container > .img {
+	background-image: url(/vrender-ui/icons/033c.png);
+}
+
+.ui-message.animate-in {
+	top: 20px;
+}
+
+.ui-message.animate-out {
+	top: -100px;
 }
 
 
@@ -3583,7 +3580,6 @@
     left: 0px;
     top: 0px;
     color: #333;
-    font-size: 14px;
     z-index: 100;
 }
 
@@ -3707,7 +3703,6 @@
 .ui-popupmenu > .menu-container > .menus > .grp > .loading {
     padding: 0px 15px 0px 20px;
     color: #0367e2;
-    font-size: 14px;
 }
 
 .ui-popupmenu > .menu-container > .menus > .grp > .loading:before {
@@ -3825,6 +3820,7 @@
 .ui-radbox > span {
     display: inline-block;
     padding-left: 3px;
+    line-height: 22px;
 }
 
 .ui-radbox:hover:before {
@@ -4073,7 +4069,7 @@
     border-top-color: #999;
     border-left-color: #999;
     background-color: #fff;
-    font-size: 16px;
+    font-size: inherit;
     padding: 0px 25px 0px 10px;
     margin: 0px;
     outline: none;
@@ -4113,7 +4109,6 @@
     top: 1px;
     right: 25px;
     line-height: 30px;
-    font-size: 14px;
     color: #999;
     overflow: hidden;
     white-space: nowrap;
@@ -4130,7 +4125,6 @@
     left: 0px;
     top: 100%;
     margin-top: 3px;
-    font-size: 14px;
     border-radius: 3px;
     box-shadow: 0px 0px 10px 0px #ddd;
 }
@@ -4322,7 +4316,6 @@
 	vertical-align: top;
 	min-width: 80px;
 	color: #999;
-    font-size: 14px;
     text-align: center;
     line-height: 30px;
     border: 1px solid transparent;
@@ -4403,6 +4396,7 @@
     text-align: center;
     cursor: pointer;
     vertical-align: middle;
+    user-select: none;
 }
 
 .ui-tabbar > .btns > .btn:hover {
@@ -4972,7 +4966,7 @@
 	width: 100%;
     height: 32px;
     padding: 0px 3px 0px 30px;
-    font-size: 16px;
+    font-size: inherit;
     border: 1px solid #ddd;
     border-radius: 3px;
     border-top-color: #999;
@@ -5031,7 +5025,6 @@
     margin-top: 2px;
     overflow: hidden;
     color: #505050;
-    font-size: 14px;
     line-height: 22px;
     border-radius: 3px;
     background-color: #fff;
@@ -5423,7 +5416,7 @@
     border-left-color: #999;
     background-color: #fff;
     color: #383838;
-    font-size: 16px;
+    font-size: inherit;
     padding: 0px 25px 0px 10px;
     margin: 0px;
     outline: none;
@@ -5461,7 +5454,6 @@
     top: 1px;
     right: 25px;
     line-height: 30px;
-    font-size: 14px;
     color: #999;
     overflow: hidden;
     white-space: nowrap;
@@ -5478,7 +5470,6 @@
     left: 0px;
     top: 100%;
     margin-top: 3px;
-    font-size: 14px;
     border-radius: 3px;
     background-color: #fff;
     box-shadow: 0px 0px 10px 0px #ddd;
