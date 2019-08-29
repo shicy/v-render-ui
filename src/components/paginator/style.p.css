@@ -1,7 +1,6 @@
 
 .ui-paginator {
     height: 32px;
-    font-size: 14px;
 }
 .ui-paginator > * {
     display: inline-block;
@@ -155,7 +154,7 @@
     width: 65px;
     height: 32px;
     vertical-align: middle;
-    font-size: 16px;
+    font-size: inherit;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 3px;
@@ -194,13 +193,11 @@
 
 .ui-paginator.link {
     color: #003cff;
-    font-size: 16px;
 }
 
 .ui-paginator.link > .pagebar > .btn {
     border: 0px;
     color: #003cff;
-    font-size: 14px;
 }
 
 .ui-paginator.link > .pagebar > .btn:hover {
@@ -235,7 +232,6 @@
 
 .ui-paginator[opt-mode='normal'] > .pagebar > .pages {
     padding: 0px 10px;
-    font-size: 16px;
     text-align: center;
     line-height: 32px;
 }
@@ -280,7 +276,6 @@
 
 .ui-paginator[opt-mode='spread'] > .pagebar > .pages > .page.selected {
     color: #fff;
-    font-size: 16px;
     border-color: #0367e2;
     background-color: #0367e2;
     cursor: default;
@@ -321,6 +316,7 @@
     top: 100%;
     left: 0px;
     margin-top: 3px;
+    color: #333;
     text-align: center;
     border-radius: 2px;
     background-color: #fff;
@@ -397,7 +393,6 @@
 
 .ui-paginator.link[opt-mode='dropdown'] > .pagebar > .pages > .lbl {
     border: 0px;
-    font-size: 16px;
 }
 
 .ui-paginator[disabled] {

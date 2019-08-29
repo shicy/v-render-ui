@@ -7,7 +7,6 @@
 .ui-input > .ipt {
     display: inline-block;
     width: 200px;
-    font-size: 16px;
 }
 
 .ui-input > .ipt > input {
@@ -70,7 +69,6 @@
     padding-top: 1px;
     margin-top: -15px;
     line-height: 30px;
-    font-size: inherit;
     color: #999;
     overflow: hidden;
     pointer-events: none;
@@ -124,7 +122,6 @@
     left: 100%;
     line-height: 32px;
     padding-left: 10px;
-    font-size: 14px;
     color: #383838;
 }
 
@@ -191,7 +188,6 @@
 }
 
 .ui-input > .desc {
-    font-size: 14px;
     color: #787878;
     line-height: 20px;
 }

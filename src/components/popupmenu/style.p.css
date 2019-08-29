@@ -5,7 +5,6 @@
     left: 0px;
     top: 0px;
     color: #333;
-    font-size: 14px;
     z-index: 100;
 }
 
@@ -129,7 +128,6 @@
 .ui-popupmenu > .menu-container > .menus > .grp > .loading {
     padding: 0px 15px 0px 20px;
     color: #0367e2;
-    font-size: 14px;
 }
 
 .ui-popupmenu > .menu-container > .menus > .grp > .loading:before {
