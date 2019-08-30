@@ -1616,6 +1616,7 @@
 			_column.name = Utils.trimToEmpty(column.name);
 			_column.title = Utils.trimToNull(column.title);
 			_column.html = Utils.trimToNull(column.focusHtmlTitle);
+			_column.dataType = Utils.trimToNull(column.dataType || column.type);
 			_column.icon = Utils.trimToNull(column.icon);
 			_column.width = Utils.trimToNull(column.width);
 			_column.expand = Utils.isTrue(column.expand);
