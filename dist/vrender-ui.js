@@ -8548,13 +8548,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIForm.validate = function (callback) {
+  _UIForm.validate = function (name, callback) {
     var _this = this;
 
-    var errors = [];
+    if (Utils.isFunction(name)) {
+      callback = name;
+      name = null;
+    }
 
     var formItems = this._getItems();
 
+    if (name) formItems = Utils.filter(formItems, function (item) {
+      return item.attr("name") == name;
+    });
+    var errors = [];
     var count = formItems.length;
     Utils.each(formItems, function (item, index) {
       validateItem.call(_this, item, null, function (result) {
@@ -8636,7 +8643,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       if (index < items.length - 1) items.eq(index).before(item);
     }
 
-    return new FormItem(this, item);
+    return new FormItem_frontend(this, item);
   };
 
   _UIForm.get = function (name) {
@@ -8644,7 +8651,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var item = Utils.find(this._getItems(), function (item) {
       return item.attr("name") == name;
     });
-    return !item ? null : new FormItem(this, item);
+    return !item ? null : new FormItem_frontend(this, item);
   };
 
   _UIForm.getAt = function (index) {
@@ -8653,24 +8660,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (index >= 0) {
       var item = this._getItems().eq(index);
 
-      return !item ? null : new FormItem(this, item);
+      return !item ? null : new FormItem_frontend(this, item);
     }
 
     return null;
   };
 
   _UIForm.getView = function (name) {
-    if (Utils.isBlank(name)) return null;
-    var item = Utils.find(this._getItems(), function (item) {
-      return item.attr("name") == name;
-    });
-
-    if (item) {
-      var contentView = item.children(".content").children("dd").children().children();
-      return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
-    }
-
-    return null;
+    var item = this.get(name);
+    return item && item.getContentView() || null; // if (Utils.isBlank(name))
+    // 	return null;
+    // let item = Utils.find(this._getItems(), (item) => {
+    // 	return item.attr("name") == name;
+    // });
+    // if (item) {
+    // 	let contentView = item.children(".content").children("dd").children().children();
+    // 	return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
+    // }
+    // return null;
   };
 
   _UIForm["delete"] = function (name) {
@@ -8976,21 +8983,26 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     index = Utils.getIndexValue(index);
     if (index >= 0 && index < datas.length) datas.splice(index, 0, newData);else datas.push(newData);
     this.options.data = datas;
-    return new FormItem(newData);
+    return new FormItem_bankend(newData);
   };
 
   _Renderer.get = function (name) {
     if (Utils.isBlank(name)) return null;
     var datas = Utils.toArray(this.options.data);
     var data = Utils.findBy(datas, "name", name);
-    if (data) return new FormItem(data);
+    if (data) return new FormItem_bankend(data);
     return null;
   };
 
   _Renderer.getAt = function (index) {
     index = Utils.getIndexValue(index);
     var datas = Utils.toArray(this.options.data);
-    if (index >= 0 && index < datas.length) return new FormItem(datas[index]);
+
+    if (index >= 0 && index < datas.length) {
+      if (!datas[index]) datas[index] = {};
+      return new FormItem_bankend(datas[index]);
+    }
+
     return null;
   };
 
@@ -9062,7 +9074,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var renderOneItem = function renderOneItem($, target, item, data) {
     if (Utils.isNotBlank(data.name)) item.attr("name", data.name);
     if (Utils.isTrue(data.required)) item.attr("opt-required", "1");
-    var empty = Utils.trimToNull(data.empty);
+    var empty = Utils.trimToNull(data.emptyMsg || data.empty);
     if (empty) item.attr("opt-empty", empty);
     if (Utils.isNotNull(data.visible) && !Utils.isTrue(data.visible)) item.attr("opt-hide", "1");
     var itemContent = $("<dl class='content'></dl>").appendTo(item);
@@ -9072,7 +9084,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (labelWidth) label.css("width", labelWidth);
     var container = $("<dd></dd>").appendTo(itemContent);
     container = $("<div></div>").appendTo(container);
-    if (data.padding === 0) container.css("paddingTop", "0px");
+    if (data.top === 0) container.css("paddingTop", "0px");
     var contentView = data.content;
 
     if (contentView) {
@@ -9085,7 +9097,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
     }
 
-    Fn.renderFunction.call(this, item, "validate", data.validate);
+    Fn.renderFunction.call(this, item, "validator", data.validator);
   };
 
   var renderButtons = function renderButtons($, target, datas) {
@@ -9129,6 +9141,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         validateTextView.call(this, item, contentView, callback);
       } else if (contentView instanceof UI.dateinput) {
         validateDateInputView.call(this, item, contentView, callback);
+      } else if (contentView instanceof UI.datetime) {
+        validateDateTimeView.call(this, item, contentView, callback);
       } else if (contentView instanceof UI.daterange) {
         validateDateRangeView.call(this, item, contentView, callback);
       } else if (contentView instanceof UI.select) {
@@ -9189,6 +9203,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     doItemValidate.call(this, item, view.getDate(), callback);
   };
 
+  var validateDateTimeView = function validateDateTimeView(item, view, callback) {
+    // console.log("validateDateTimeView");
+    doItemValidate.call(this, item, view.getDate(), callback);
+  };
+
   var validateDateRangeView = function validateDateRangeView(item, view, callback) {
     // console.log("validateDateRangeView");
     doItemValidate.call(this, item, view.getDateRange(), callback);
@@ -9216,10 +9235,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var getItemValidate = function getItemValidate(item) {
-    var validateFunction = item.data("validate");
+    var validateFunction = item.data("validator");
 
     if (!validateFunction) {
-      var target = item.children(".ui-fn[name='validate']");
+      var target = item.children(".ui-fn[name='validator']");
 
       if (target && target.length > 0) {
         var func = target.text();
@@ -9233,7 +9252,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (!validateFunction) validateFunction = "1"; // 无效的方法
 
-      item.data("validate", validateFunction);
+      item.data("validator", validateFunction);
     }
 
     return validateFunction;
@@ -9338,73 +9357,183 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; ///////////////////////////////////////////////////////
 
 
-  var FormItem = function FormItem(data) {
+  var FormItem_bankend = function FormItem_bankend(data) {
     this.data = data;
-    this.data.visible = true;
   };
 
-  var _FormItem = FormItem.prototype = new Object();
+  var _FormItem_bankend = FormItem_bankend.prototype = new Object();
 
-  _FormItem.getName = function () {
-    return this.data.name;
-  };
-
-  _FormItem.setName = function (value) {
+  _FormItem_bankend.name = function (value) {
+    if (Utils.isNull(value)) return this.data.name;
     this.data.name = value;
     return this;
   };
 
-  _FormItem.getLabel = function () {
-    return this.data.label;
-  };
-
-  _FormItem.setLabel = function (value) {
+  _FormItem_bankend.label = function (value) {
+    if (Utils.isNull(value)) return this.data.label;
     this.data.label = value;
     return this;
   };
 
-  _FormItem.content = function (value) {
+  _FormItem_bankend.content = function (value) {
+    if (typeof value == "undefined") return this.data.content;
     this.data.content = value;
     return this;
   };
 
-  _FormItem.required = function (value) {
+  _FormItem_bankend.required = function (value) {
     this.data.required = Utils.isNull(value) ? true : Utils.isTrue(value);
     return this;
   };
 
-  _FormItem.visible = function (value) {
+  _FormItem_bankend.isRequired = function () {
+    return Utils.isTrue(this.data.required);
+  };
+
+  _FormItem_bankend.visible = function (value) {
     this.data.visible = Utils.isNull(value) ? true : Utils.isTrue(value);
     return this;
   };
 
-  _FormItem.show = function () {
+  _FormItem_bankend.isVisible = function () {
+    return Utils.isTrue(this.data.visible);
+  };
+
+  _FormItem_bankend.show = function () {
     this.data.visible = true;
     return this;
   };
 
-  _FormItem.hide = function () {
+  _FormItem_bankend.hide = function () {
     this.data.visible = false;
     return this;
   };
 
-  _FormItem.emptyMsg = function (value) {
-    this.data.empty = value;
+  _FormItem_bankend.emptyMsg = function (value) {
+    if (Utils.isNull(value)) return this.data.emptyMsg;
+    this.data.emptyMsg = value;
     return this;
   };
 
-  _FormItem.validate = function (value) {
-    this.data.validate = value;
+  _FormItem_bankend.validator = function (value) {
+    if (typeof value == "undefined") return this.data.validator;
+    this.data.validator = value;
     return this;
   };
 
-  _FormItem.colspan = function (value) {
+  _FormItem_bankend.colspan = function (value) {
+    if (Utils.isNull(value)) return this.data.colspan;
     this.data.colspan = value;
     return this;
   };
 
-  _FormItem.noPadding = function () {
-    this.data.padding = 0;
+  _FormItem_bankend.top = function (value) {
+    this.data.top = Utils.isNull(value) ? true : Utils.isTrue(value);
+    return this;
+  }; // ====================================================
+
+
+  var FormItem_frontend = function FormItem_frontend(form, item) {
+    this.form = form;
+    this.item = item;
+  };
+
+  var _FormItem_frontend = FormItem_frontend.prototype = new Object();
+
+  _FormItem_frontend.name = function (value) {
+    if (Utils.isNull(value)) return this.item.attr("name");
+    this.item.attr("name", Utils.trimToEmpty(value));
+    return this;
+  };
+
+  _FormItem_frontend.label = function (value) {
+    var target = this.item.children(".content").children("dt");
+    if (Utils.isNull(value)) return target.text() || "";
+    target.text(Utils.trimToEmpty(value));
+    return this;
+  };
+
+  _FormItem_frontend.container = function () {
+    return this.item.children(".content").children("dd").children("div");
+  };
+
+  _FormItem_frontend.content = function (value) {
+    var container = this.container();
+
+    if (typeof value == "undefined") {
+      var content = container.children();
+      return content && content.length > 0 ? content : null;
+    }
+
+    container.empty();
+
+    if (value) {
+      if (Utils.isFunction(value.render)) value.render(container);else container.append(value.$el || value);
+    }
+
+    return this;
+  };
+
+  _FormItem_frontend.getContentView = function () {
+    return this.content();
+  };
+
+  _FormItem_frontend.required = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) this.item.attr("opt-required", "1");else this.item.removeAttr("opt-required");
+    return this;
+  };
+
+  _FormItem_frontend.isRequired = function () {
+    return this.item.attr("opt-required") == 1;
+  };
+
+  _FormItem_frontend.visible = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) this.item.removeAttr("opt-hide");else this.item.attr("opt-hide", "1");
+    return this;
+  };
+
+  _FormItem_frontend.isVisible = function () {
+    return this.item.attr("opt-hide") == 1;
+  };
+
+  _FormItem_frontend.show = function () {
+    return this.visible(true);
+  };
+
+  _FormItem_frontend.hide = function () {
+    return this.visible(false);
+  };
+
+  _FormItem_frontend.emptyMsg = function (value) {
+    if (Utils.isNull(value)) return this.item.attr("opt-empty");
+    this.item.attr("opt-empty", Utils.trimToEmpty(value));
+    return this;
+  };
+
+  _FormItem_frontend.validator = function (value) {
+    if (typeof value == "undefined") {
+      var validator = getItemValidate.call(this.form, this.item);
+      return Utils.isFunction(validator) ? validator : null;
+    }
+
+    this.item.data("validator", Utils.isFunction(value) ? value : "1");
+    this.item.children(".ui-fn[name=validator]").remove();
+    return this;
+  };
+
+  _FormItem_frontend.colspan = function (value) {
+    if (Utils.isNull(value)) return Math.max(parseInt(this.item.attr("opt-col")) || 0, 1);
+    var colspan = Math.max(parseInt(value) || 0, 1);
+    this.item.attr("opt-col", colspan);
+    var columns = this.form.getColumns();
+    if (columns > 1 && columns > colspan) this.item.css("width", (colspan * 100 / columns).toFixed(6) + "%");else this.item.css("width", "");
+    return this;
+  };
+
+  _FormItem_frontend.top = function (value) {
+    var container = this.container();
+    if (Utils.isNull(value) || Utils.isTrue(value)) container.css("paddingTop", "0px");else container.css("paddingTop", ""); // 使用默认样式
+
     return this;
   }; ///////////////////////////////////////////////////////
 
@@ -14787,6 +14916,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       _column.name = Utils.trimToEmpty(column.name);
       _column.title = Utils.trimToNull(column.title);
       _column.html = Utils.trimToNull(column.focusHtmlTitle);
+      _column.dataType = Utils.trimToNull(column.dataType || column.type);
       _column.icon = Utils.trimToNull(column.icon);
       _column.width = Utils.trimToNull(column.width);
       _column.expand = Utils.isTrue(column.expand);
