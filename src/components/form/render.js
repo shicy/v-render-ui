@@ -37,9 +37,17 @@
 	};
 
 	// ====================================================
-	_UIForm.validate = function (callback) {
-		let errors = [];
+	_UIForm.validate = function (name, callback) {
+		if (Utils.isFunction(name)) {
+			callback = name;
+			name = null;
+		}
+
 		let formItems = this._getItems();
+		if (name)
+			formItems = Utils.filter(formItems, (item) => (item.attr("name") == name));
+
+		let errors = [];
 		let count = formItems.length;
 		Utils.each(formItems, (item, index) => {
 			validateItem.call(this, item, null, (result) => {
@@ -117,7 +125,7 @@
 				items.eq(index).before(item);
 		}
 
-		return new FormItem(this, item);
+		return new FormItem_frontend(this, item);
 	};
 
 	_UIForm.get = function (name) {
@@ -126,29 +134,31 @@
 		let item = Utils.find(this._getItems(), (item) => {
 			return item.attr("name") == name;
 		});
-		return !item ? null : (new FormItem(this, item));
+		return !item ? null : (new FormItem_frontend(this, item));
 	};
 
 	_UIForm.getAt = function (index) {
 		index = Utils.getIndexValue(index);
 		if (index >= 0) {
 			let item = this._getItems().eq(index);
-			return !item ? null : (new FormItem(this, item));
+			return !item ? null : (new FormItem_frontend(this, item));
 		}
 		return null;
 	};
 
 	_UIForm.getView = function (name) {
-		if (Utils.isBlank(name))
-			return null;
-		let item = Utils.find(this._getItems(), (item) => {
-			return item.attr("name") == name;
-		});
-		if (item) {
-			let contentView = item.children(".content").children("dd").children().children();
-			return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
-		}
-		return null;
+		let item = this.get(name);
+		return item && item.getContentView() || null;
+		// if (Utils.isBlank(name))
+		// 	return null;
+		// let item = Utils.find(this._getItems(), (item) => {
+		// 	return item.attr("name") == name;
+		// });
+		// if (item) {
+		// 	let contentView = item.children(".content").children("dd").children().children();
+		// 	return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
+		// }
+		// return null;
 	};
 
 	_UIForm.delete = function (name) {
@@ -463,7 +473,7 @@
 		else
 			datas.push(newData);
 		this.options.data = datas;
-		return new FormItem(newData);
+		return new FormItem_bankend(newData);
 	};
 
 	_Renderer.get = function (name) {
@@ -473,7 +483,7 @@
 		let datas = Utils.toArray(this.options.data);
 		let data = Utils.findBy(datas, "name", name);
 		if (data)
-			return new FormItem(data);
+			return new FormItem_bankend(data);
 
 		return null;
 	};
@@ -481,8 +491,11 @@
 	_Renderer.getAt = function (index) {
 		index = Utils.getIndexValue(index);
 		let datas = Utils.toArray(this.options.data);
-		if (index >= 0 && index < datas.length)
-			return new FormItem(datas[index]);
+		if (index >= 0 && index < datas.length) {
+			if (!datas[index])
+				datas[index] = {};
+			return new FormItem_bankend(datas[index]);
+		}
 		return null;
 	};
 
@@ -562,7 +575,7 @@
 		if (Utils.isTrue(data.required))
 			item.attr("opt-required", "1");
 
-		let empty = Utils.trimToNull(data.empty);
+		let empty = Utils.trimToNull(data.emptyMsg || data.empty);
 		if (empty)
 			item.attr("opt-empty", empty);
 
@@ -579,7 +592,7 @@
 
 		let container = $("<dd></dd>").appendTo(itemContent);
 		container = $("<div></div>").appendTo(container);
-		if (data.padding === 0)
+		if (data.top === 0)
 			container.css("paddingTop", "0px");
 
 		let contentView = data.content;
@@ -595,7 +608,7 @@
 			}
 		}
 
-		Fn.renderFunction.call(this, item, "validate", data.validate);
+		Fn.renderFunction.call(this, item, "validator", data.validator);
 	};
 
 	const renderButtons = function ($, target, datas) {
@@ -640,6 +653,9 @@
 			}
 			else if (contentView instanceof UI.dateinput) {
 				validateDateInputView.call(this, item, contentView, callback);
+			}
+			else if (contentView instanceof UI.datetime) {
+				validateDateTimeView.call(this, item, contentView, callback);
 			}
 			else if (contentView instanceof UI.daterange) {
 				validateDateRangeView.call(this, item, contentView, callback);
@@ -706,6 +722,11 @@
 		doItemValidate.call(this, item, view.getDate(), callback);
 	};
 
+	const validateDateTimeView = function (item, view, callback) {
+		// console.log("validateDateTimeView");
+		doItemValidate.call(this, item, view.getDate(), callback);
+	};
+
 	const validateDateRangeView = function (item, view, callback) {
 		// console.log("validateDateRangeView");
 		doItemValidate.call(this, item, view.getDateRange(), callback);
@@ -732,9 +753,9 @@
 	};
 
 	const getItemValidate = function (item) {
-		let validateFunction = item.data("validate");
+		let validateFunction = item.data("validator");
 		if (!validateFunction) {
-			let target = item.children(".ui-fn[name='validate']");
+			let target = item.children(".ui-fn[name='validator']");
 			if (target && target.length > 0) {
 				let func = target.text();
 				if (Utils.isNotBlank(func)) {
@@ -744,7 +765,7 @@
 			}
 			if (!validateFunction)
 				validateFunction = "1"; // 无效的方法
-			item.data("validate", validateFunction);
+			item.data("validator", validateFunction);
 		}
 		return validateFunction;
 	};
@@ -848,73 +869,208 @@
 	
 
 	///////////////////////////////////////////////////////
-	const FormItem = function (data) {
+	const FormItem_bankend = function (data) {
 		this.data = data;
-		this.data.visible = true;
 	};
-	const _FormItem = FormItem.prototype = new Object();
+	const _FormItem_bankend = FormItem_bankend.prototype = new Object();
 
-	_FormItem.getName = function () {
-		return this.data.name;
-	};
-	_FormItem.setName = function (value) {
+	_FormItem_bankend.name = function (value) {
+		if (Utils.isNull(value))
+			return this.data.name;
 		this.data.name = value;
 		return this;
 	};
 
-	_FormItem.getLabel = function () {
-		return this.data.label;
-	};
-	_FormItem.setLabel = function (value) {
+	_FormItem_bankend.label = function (value) {
+		if (Utils.isNull(value))
+			return this.data.label;
 		this.data.label = value;
 		return this;
 	};
 
-	_FormItem.content = function (value) {
+	_FormItem_bankend.content = function (value) {
+		if (typeof value == "undefined")
+			return this.data.content;
 		this.data.content = value;
 		return this;
 	};
 
-	_FormItem.required = function (value) {
+	_FormItem_bankend.required = function (value) {
 		this.data.required = Utils.isNull(value) ? true : Utils.isTrue(value);
 		return this;
 	};
 
-	_FormItem.visible = function (value) {
+	_FormItem_bankend.isRequired = function () {
+		return Utils.isTrue(this.data.required);
+	};
+
+	_FormItem_bankend.visible = function (value) {
 		this.data.visible = Utils.isNull(value) ? true : Utils.isTrue(value);
 		return this;
 	};
 
-	_FormItem.show = function () {
+	_FormItem_bankend.isVisible = function () {
+		return Utils.isTrue(this.data.visible);
+	};
+
+	_FormItem_bankend.show = function () {
 		this.data.visible = true;
 		return this;
 	};
 
-	_FormItem.hide = function () {
+	_FormItem_bankend.hide = function () {
 		this.data.visible = false;
 		return this;
-	}
+	};
 
-	_FormItem.emptyMsg = function (value) {
-		this.data.empty = value;
+	_FormItem_bankend.emptyMsg = function (value) {
+		if (Utils.isNull(value))
+			return this.data.emptyMsg;
+		this.data.emptyMsg = value;
 		return this;
 	};
 
-	_FormItem.validate = function (value) {
-		this.data.validate = value;
+	_FormItem_bankend.validator = function (value) {
+		if (typeof value == "undefined")
+			return this.data.validator;
+		this.data.validator = value;
 		return this;
 	};
 
-	_FormItem.colspan = function (value) {
+	_FormItem_bankend.colspan = function (value) {
+		if (Utils.isNull(value))
+			return this.data.colspan;
 		this.data.colspan = value;
 		return this;
 	};
 
-	_FormItem.noPadding = function () {
-		this.data.padding = 0;
+	_FormItem_bankend.top = function (value) {
+		this.data.top = Utils.isNull(value) ? true : Utils.isTrue(value);
 		return this;
 	};
-	
+
+	// ====================================================
+	const FormItem_frontend = function (form, item) {
+		this.form = form;
+		this.item = item;
+	};
+	const _FormItem_frontend = FormItem_frontend.prototype = new Object();
+
+	_FormItem_frontend.name = function (value) {
+		if (Utils.isNull(value))
+			return this.item.attr("name");
+		this.item.attr("name", Utils.trimToEmpty(value));
+		return this;
+	};
+
+	_FormItem_frontend.label = function (value) {
+		let target = this.item.children(".content").children("dt");
+		if (Utils.isNull(value))
+			return target.text() || "";
+		target.text(Utils.trimToEmpty(value));
+		return this;
+	};
+
+	_FormItem_frontend.container = function () {
+		return this.item.children(".content").children("dd").children("div");
+	};
+
+	_FormItem_frontend.content = function (value) {
+		let container = this.container();
+		if (typeof value == "undefined") {
+			let content = container.children();
+			return content && content.length > 0 ? content : null;
+		}
+		container.empty();
+		if (value) {
+			if (Utils.isFunction(value.render))
+				value.render(container);
+			else 
+				container.append(value.$el || value);
+		}
+		return this;
+	};
+
+	_FormItem_frontend.getContentView = function () {
+		return this.content();
+	};
+
+	_FormItem_frontend.required = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			this.item.attr("opt-required", "1");
+		else
+			this.item.removeAttr("opt-required");
+		return this;
+	};
+
+	_FormItem_frontend.isRequired = function () {
+		return this.item.attr("opt-required") == 1;
+	};
+
+	_FormItem_frontend.visible = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			this.item.removeAttr("opt-hide");
+		else 
+			this.item.attr("opt-hide", "1");
+		return this;
+	};
+
+	_FormItem_frontend.isVisible = function () {
+		return this.item.attr("opt-hide") == 1;
+	};
+
+	_FormItem_frontend.show = function () {
+		return this.visible(true);
+	};
+
+	_FormItem_frontend.hide = function () {
+		return this.visible(false);
+	};
+
+	_FormItem_frontend.emptyMsg = function (value) {
+		if (Utils.isNull(value))
+			return this.item.attr("opt-empty");
+		this.item.attr("opt-empty", Utils.trimToEmpty(value));
+		return this;
+	};
+
+	_FormItem_frontend.validator = function (value) {
+		if (typeof value == "undefined") {
+			let validator = getItemValidate.call(this.form, this.item);
+			return Utils.isFunction(validator) ? validator : null;
+		}
+
+		this.item.data("validator", (Utils.isFunction(value) ? value: "1"));
+		this.item.children(".ui-fn[name=validator]").remove();
+
+		return this;
+	};
+
+	_FormItem_frontend.colspan = function (value) {
+		if (Utils.isNull(value))
+			return Math.max((parseInt(this.item.attr("opt-col")) || 0), 1);
+
+		let colspan = Math.max((parseInt(value) || 0), 1);
+		this.item.attr("opt-col", colspan);
+
+		let columns = this.form.getColumns();
+		if (columns > 1 && columns > colspan)
+			this.item.css("width", (colspan * 100 / columns).toFixed(6) + "%");
+		else
+			this.item.css("width", "");
+
+		return this;
+	};
+
+	_FormItem_frontend.top = function (value) {
+		let container = this.container();
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			container.css("paddingTop", "0px");
+		else
+			container.css("paddingTop", ""); // 使用默认样式
+		return this;
+	};
+
 
 	///////////////////////////////////////////////////////
 	if (frontend) {

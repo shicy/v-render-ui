@@ -206,7 +206,7 @@ const ModuleView = BaseModule.extend(module, {
 			data: [
 				{ name: "a", label: "电子邮箱", content: new UIInput(this, { type: "email" }) },
 				{ name: "b", label: "手机号码", content: new UIInput(this, { type: "int" }),
-					validate: function (value, callback) {
+					validator: function (value, callback) {
 						callback(/^1\d{10}$/.test(value) ? false : "手机号必须是1开始的11位数字");
 					}},
 				{ name: "c", label: "下拉选择框", content: new UISelect(this, { data: ["选项1", "选项2"] }), required: true },
@@ -231,7 +231,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("    name: 'b',");
 		source.push("    label: '手机号码',");
 		source.push("    content: new UIInput([context]),");
-		source.push("    validate: function (value, callback) {");
+		source.push("    validator: function (value, callback) {");
 		source.push("      callback(/^1\\d{10}$/.test(value) ? false : '手机号必须是1开始的11位数字');");
 		source.push("    }");
 		source.push("  }, {");
@@ -287,7 +287,7 @@ const ModuleView = BaseModule.extend(module, {
 		form.add("a", "文本").content("文本内容");
 		form.add("b", "输入框").content(new UIInput(this)).required();
 		form.add("c", "手机号码").content(new UIInput(this))
-			.validate(function (value, callback) {
+			.validator(function (value, callback) {
 				callback(/^1\d{10}$/.test(value) ? false : "手机号必须是1开始的11位数字");
 			});
 		form.add("d", "日期").content(new UIDateInput(this)).required();
@@ -302,7 +302,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("  .required();");
 		source.push("form.add('c', '手机号码')");
 		source.push("  .content(new UIInput([context]))");
-		source.push("  .validate(function (value, callback) {");
+		source.push("  .validator(function (value, callback) {");
 		source.push("    callback(/^1\\d{10}$/.test(value) ? false : '手机号必须是1开始的11位数字');");
 		source.push("  });");
 		source.push("form.add('d', '日期')");
