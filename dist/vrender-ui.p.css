@@ -1502,184 +1502,6 @@
 }
 
 
-.ui-datetime {
-	display: inline-block;
-	width: 260px;
-    text-align: left;
-}
-
-.ui-datetime > .ipt:before {
-	content: "";
-    position: absolute;
-    width: 30px;
-    height: 32px;
-    left: 0px;
-    top: 0px;
-    background-image: url(/vrender-ui/icons/040a.png);
-    background-repeat: no-repeat;
-    background-size: 16px;
-    background-position: center;
-    opacity: .5;
-    z-index: 1;
-}
-
-.ui-datetime > .ipt > input {
-	width: 100%;
-    height: 32px;
-    font-size: inherit;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    border-top-color: #999;
-    border-left-color: #999;
-    padding: 0px 3px 0px 30px;
-    margin: 0px;
-    background-color: #fff;
-}
-
-.ui-datetime > .ipt > input:focus {
-    border-color: #66afe9;
-}
-
-.ui-datetime > .ipt > .prompt {
-    position: absolute;
-    left: 30px;
-    top: 1px;
-    right: 1px;
-    line-height: 30px;
-    color: #999;
-    background-color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.ui-datetime > .ipt > .clear {
-	position: absolute;
-	width: 16px;
-    height: 16px;
-    top: 8px;
-    right: 6px;
-    border: none;
-    background-color: #fff;
-    background-image: url(/vrender-ui/icons/002a.png);
-    background-size: 14px;
-    background-position: center;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    display: none;
-    outline: none;
-}
-
-.ui-datetime > .ipt > .clear:hover {
-	opacity: .75;
-}
-
-.ui-datetime > .ipt > .clear:active {
-	opacity: 1;
-}
-
-.ui-datetime > .format {
-	display: none;
-}
-
-.ui-datetime > .picker {
-    display: none;
-    position: absolute;
-    left: 0px;
-    top: 100%;
-    z-index: 200;
-    margin-top: 3px;
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0px 0px 10px 0px #ddd;
-}
-
-.ui-datetime > .picker > .ui-datepicker {
-    border-bottom: 0px;
-    border-radius: 3px 3px 0px 0px;
-}
-
-.ui-datetime > .picker > .timebar {
-    padding: 5px 0px;
-    text-align: center;
-    border: 1px solid #eee;
-    border-top: 0px;
-    border-radius: 0px 0px 3px 3px;
-    background-color: #f4f5f9;
-}
-
-.ui-datetime > .picker > .timebar > .ui-select {
-    width: 50px;
-}
-
-.ui-datetime > .picker > .timebar > .ui-select > .ipt > input {
-    height: 28px;
-    padding-left: 6px;
-    border-color: #eee;
-}
-
-.ui-datetime > .picker > .timebar > .ui-select > .ipt > .dropdownbtn {
-    width: 20px;
-    background-size: 8px;
-    opacity: 0.5;
-}
-
-.ui-datetime > .picker > .timebar > .tip {
-    margin: 0px 3px 0px 1px;
-    color: #787878;
-}
-
-.ui-datetime.show-picker > .picker {
-    display: block;
-    max-height: 0px;
-    opacity: 0;
-    transition: all 0.25s;
-}
-
-.ui-datetime.show-before > .picker {
-    top: auto;
-    bottom: 100%;
-    margin-bottom: 3px;
-}
-
-.ui-datetime.animate-in > .picker {
-    max-height: 250px;
-    opacity: 1;
-}
-
-.ui-datetime.animate-out > .picker {
-    max-height: 0px;
-    opacity: 0;
-}
-
-.ui-datetime.has-val > .ipt > .prompt {
-    display: none;
-}
-
-.ui-datetime.has-val > .ipt:hover > input {
-    padding-right: 32px;
-}
-
-.ui-datetime.has-val > .ipt:hover > .clear {
-    display: block;
-    opacity: .5;
-}
-
-.ui-datetime[disabled] {
-    cursor: no-drop;
-}
-
-.ui-datetime[disabled] > .ipt {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.ui-datetime[disabled] > .ipt > input {
-    background-color: #f0f0f0;
-}
-
-
 .ui-dialog {
     display: none;
     position: fixed;
@@ -1882,6 +1704,184 @@
     opacity: 0;
     transform: scale(0.1);
     transition: all 0.2s;
+}
+
+
+.ui-datetime {
+	display: inline-block;
+	width: 260px;
+    text-align: left;
+}
+
+.ui-datetime > .ipt:before {
+	content: "";
+    position: absolute;
+    width: 30px;
+    height: 32px;
+    left: 0px;
+    top: 0px;
+    background-image: url(/vrender-ui/icons/040a.png);
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: center;
+    opacity: .5;
+    z-index: 1;
+}
+
+.ui-datetime > .ipt > input {
+	width: 100%;
+    height: 32px;
+    font-size: inherit;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    border-top-color: #999;
+    border-left-color: #999;
+    padding: 0px 3px 0px 30px;
+    margin: 0px;
+    background-color: #fff;
+}
+
+.ui-datetime > .ipt > input:focus {
+    border-color: #66afe9;
+}
+
+.ui-datetime > .ipt > .prompt {
+    position: absolute;
+    left: 30px;
+    top: 1px;
+    right: 1px;
+    line-height: 30px;
+    color: #999;
+    background-color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ui-datetime > .ipt > .clear {
+	position: absolute;
+	width: 16px;
+    height: 16px;
+    top: 8px;
+    right: 6px;
+    border: none;
+    background-color: #fff;
+    background-image: url(/vrender-ui/icons/002a.png);
+    background-size: 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: none;
+    outline: none;
+}
+
+.ui-datetime > .ipt > .clear:hover {
+	opacity: .75;
+}
+
+.ui-datetime > .ipt > .clear:active {
+	opacity: 1;
+}
+
+.ui-datetime > .format {
+	display: none;
+}
+
+.ui-datetime > .picker {
+    display: none;
+    position: absolute;
+    left: 0px;
+    top: 100%;
+    z-index: 200;
+    margin-top: 3px;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 0px #ddd;
+}
+
+.ui-datetime > .picker > .ui-datepicker {
+    border-bottom: 0px;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.ui-datetime > .picker > .timebar {
+    padding: 5px 0px;
+    text-align: center;
+    border: 1px solid #eee;
+    border-top: 0px;
+    border-radius: 0px 0px 3px 3px;
+    background-color: #f4f5f9;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select {
+    width: 50px;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select > .ipt > input {
+    height: 28px;
+    padding-left: 6px;
+    border-color: #eee;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select > .ipt > .dropdownbtn {
+    width: 20px;
+    background-size: 8px;
+    opacity: 0.5;
+}
+
+.ui-datetime > .picker > .timebar > .tip {
+    margin: 0px 3px 0px 1px;
+    color: #787878;
+}
+
+.ui-datetime.show-picker > .picker {
+    display: block;
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.25s;
+}
+
+.ui-datetime.show-before > .picker {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 3px;
+}
+
+.ui-datetime.animate-in > .picker {
+    max-height: 250px;
+    opacity: 1;
+}
+
+.ui-datetime.animate-out > .picker {
+    max-height: 0px;
+    opacity: 0;
+}
+
+.ui-datetime.has-val > .ipt > .prompt {
+    display: none;
+}
+
+.ui-datetime.has-val > .ipt:hover > input {
+    padding-right: 32px;
+}
+
+.ui-datetime.has-val > .ipt:hover > .clear {
+    display: block;
+    opacity: .5;
+}
+
+.ui-datetime[disabled] {
+    cursor: no-drop;
+}
+
+.ui-datetime[disabled] > .ipt {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.ui-datetime[disabled] > .ipt > input {
+    background-color: #f0f0f0;
 }
 
 
@@ -2698,147 +2698,6 @@
 }
 
 
-.ui-notice-wrap {
-	position: fixed;
-    z-index: 2100;
-    top: 50px;
-    right: 0px;
-}
-
-.ui-notice {
-    max-height: 0px;
-    overflow: hidden;
-    padding: 0px 10px;
-    text-align: right;
-}
-
-.ui-notice > .container {
-    display: inline-block;
-    min-width: 200px;
-    max-width: 340px;
-    padding: 10px 22px 10px 10px;
-    margin: 5px 0px;
-    text-align: left;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-    transform: translate(110%, 0px);
-}
-
-.ui-notice > .container > .img {
-    display: none;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left: 10px;
-    top: 12px;
-    background-size: 18px;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.ui-notice > .container > .title {
-    padding-right: 30px;
-    vertical-align: top;
-    margin-bottom: 3px;
-    color: #000;
-    font-size: 16px;
-    line-height: 24px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.ui-notice > .container > .content {
-    overflow: auto;
-    max-height: 120px;
-    padding: 2px 0px;
-    color: #505050;
-    font-size: 14px;
-    line-height: 20px;
-}
-
-
-.ui-notice > .container > .closebtn {
-	position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 14px;
-    right: 5px;
-    background-image: url(/vrender-ui/icons/001a.png);
-    background-size: 10px;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.5;
-    cursor: pointer;
-}
-
-.ui-notice > .container > .closebtn:hover {
-	opacity: 1;
-}
-
-.ui-notice.show-icon > .container {
-    padding-left: 40px;
-}
-
-.ui-notice.show-icon > .container > .img {
-    display: block;
-}
-
-.ui-notice[opt-type='success'] > .container > .img {
-    background-image: url(/vrender-ui/icons/030c.png);
-}
-
-.ui-notice[opt-type='success'] > .container > .title {
-    color: #57ad4c;
-}
-
-.ui-notice[opt-type='error'] > .container > .img {
-    background-image: url(/vrender-ui/icons/031c.png);
-}
-
-.ui-notice[opt-type='error'] > .container > .title {
-    color: #f90e0d;
-}
-
-.ui-notice[opt-type='warn'] > .container > .img {
-    background-image: url(/vrender-ui/icons/032c.png);
-}
-
-.ui-notice[opt-type='warn'] > .container > .title {
-    color: #faa202;
-}
-
-.ui-notice[opt-type='info'] > .container > .img {
-    background-image: url(/vrender-ui/icons/033c.png);
-}
-
-.ui-notice[opt-type='info'] > .container > .title {
-    color: #04aff8;
-}
-
-.ui-notice.animate-in {
-    max-height: 180px;
-    transition: max-height 0.25s;
-}
-
-.ui-notice.animate-in > .container {
-    transform: translate(0px, 0px);
-    transition: transform 0.25s 0.1s;
-}
-
-.ui-notice.animate-out {
-    max-height: 0px;
-    transition: max-height 0.25s 0.25s;
-}
-
-.ui-notice.animate-out > .container {
-    transform: translate(110%, 0px);
-    transition: transform 0.25s;
-}
-
-
 .ui-paginator {
     height: 32px;
 }
@@ -3574,6 +3433,224 @@
 }
 
 
+.ui-notice-wrap {
+	position: fixed;
+    z-index: 2100;
+    top: 50px;
+    right: 0px;
+}
+
+.ui-notice {
+    max-height: 0px;
+    overflow: hidden;
+    padding: 0px 10px;
+    text-align: right;
+}
+
+.ui-notice > .container {
+    display: inline-block;
+    min-width: 200px;
+    max-width: 340px;
+    padding: 10px 22px 10px 10px;
+    margin: 5px 0px;
+    text-align: left;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+    transform: translate(110%, 0px);
+}
+
+.ui-notice > .container > .img {
+    display: none;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 10px;
+    top: 12px;
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ui-notice > .container > .title {
+    padding-right: 30px;
+    vertical-align: top;
+    margin-bottom: 3px;
+    color: #000;
+    font-size: 16px;
+    line-height: 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ui-notice > .container > .content {
+    overflow: auto;
+    max-height: 120px;
+    padding: 2px 0px;
+    color: #505050;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+
+.ui-notice > .container > .closebtn {
+	position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 14px;
+    right: 5px;
+    background-image: url(/vrender-ui/icons/001a.png);
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.ui-notice > .container > .closebtn:hover {
+	opacity: 1;
+}
+
+.ui-notice.show-icon > .container {
+    padding-left: 40px;
+}
+
+.ui-notice.show-icon > .container > .img {
+    display: block;
+}
+
+.ui-notice[opt-type='success'] > .container > .img {
+    background-image: url(/vrender-ui/icons/030c.png);
+}
+
+.ui-notice[opt-type='success'] > .container > .title {
+    color: #57ad4c;
+}
+
+.ui-notice[opt-type='error'] > .container > .img {
+    background-image: url(/vrender-ui/icons/031c.png);
+}
+
+.ui-notice[opt-type='error'] > .container > .title {
+    color: #f90e0d;
+}
+
+.ui-notice[opt-type='warn'] > .container > .img {
+    background-image: url(/vrender-ui/icons/032c.png);
+}
+
+.ui-notice[opt-type='warn'] > .container > .title {
+    color: #faa202;
+}
+
+.ui-notice[opt-type='info'] > .container > .img {
+    background-image: url(/vrender-ui/icons/033c.png);
+}
+
+.ui-notice[opt-type='info'] > .container > .title {
+    color: #04aff8;
+}
+
+.ui-notice.animate-in {
+    max-height: 180px;
+    transition: max-height 0.25s;
+}
+
+.ui-notice.animate-in > .container {
+    transform: translate(0px, 0px);
+    transition: transform 0.25s 0.1s;
+}
+
+.ui-notice.animate-out {
+    max-height: 0px;
+    transition: max-height 0.25s 0.25s;
+}
+
+.ui-notice.animate-out > .container {
+    transform: translate(110%, 0px);
+    transition: transform 0.25s;
+}
+
+
+.ui-radbox {
+	display: inline-block;
+	position: relative;
+	min-height: 16px;
+	padding-left: 16px;
+	vertical-align: baseline;
+}
+
+.ui-radbox:before {
+	content: "";
+	position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 1px;
+    top: 50%;
+    margin-top: -7px;
+    border: 1px solid #ccc;
+    border-radius: 100px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 1px 1px #eee;
+    background-color: #fff;
+    transition: box-shadow 0.25s;
+}
+
+.ui-radbox:after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    left: 4px;
+    top: 50%;
+    margin-top: -4px;
+    background-color: #fff;
+    border-radius: 100px;
+    transition: background-color 0.2s;
+}
+
+.ui-radbox > input {
+    display: none;
+}
+
+.ui-radbox > span {
+    display: inline-block;
+    padding-left: 3px;
+    line-height: 22px;
+}
+
+.ui-radbox:hover:before {
+	background-color: #f6f6f6;
+}
+
+.ui-radbox.checked:before {
+    border-color: #4f9bf9;
+}
+
+.ui-radbox.checked:after {
+    background-color: #0367e2;
+}
+
+.ui-radbox:active:before {
+    box-shadow: 0px 0px 0px 2px #ddd;
+}
+
+.ui-radbox.checked:active:before {
+    box-shadow: 0px 0px 0px 2px #ccc;
+}
+
+.ui-radbox[disabled] {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.ui-radbox + .ui-radbox {
+	margin-left: 10px;
+}
+
+
 .ui-popupmenu {
     display: none;
 	position: absolute;
@@ -3776,83 +3853,6 @@
 }
 
 
-.ui-radbox {
-	display: inline-block;
-	position: relative;
-	min-height: 16px;
-	padding-left: 16px;
-	vertical-align: baseline;
-}
-
-.ui-radbox:before {
-	content: "";
-	position: absolute;
-    width: 14px;
-    height: 14px;
-    left: 1px;
-    top: 50%;
-    margin-top: -7px;
-    border: 1px solid #ccc;
-    border-radius: 100px;
-    box-sizing: border-box;
-    box-shadow: 0px 0px 1px 1px #eee;
-    background-color: #fff;
-    transition: box-shadow 0.25s;
-}
-
-.ui-radbox:after {
-    content: "";
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    left: 4px;
-    top: 50%;
-    margin-top: -4px;
-    background-color: #fff;
-    border-radius: 100px;
-    transition: background-color 0.2s;
-}
-
-.ui-radbox > input {
-    display: none;
-}
-
-.ui-radbox > span {
-    display: inline-block;
-    padding-left: 3px;
-    line-height: 22px;
-}
-
-.ui-radbox:hover:before {
-	background-color: #f6f6f6;
-}
-
-.ui-radbox.checked:before {
-    border-color: #4f9bf9;
-}
-
-.ui-radbox.checked:after {
-    background-color: #0367e2;
-}
-
-.ui-radbox:active:before {
-    box-shadow: 0px 0px 0px 2px #ddd;
-}
-
-.ui-radbox.checked:active:before {
-    box-shadow: 0px 0px 0px 2px #ccc;
-}
-
-.ui-radbox[disabled] {
-    opacity: 0.35;
-    pointer-events: none;
-}
-
-.ui-radbox + .ui-radbox {
-	margin-left: 10px;
-}
-
-
 .ui-radgrp {
 	display: inline-block;
 }
@@ -4049,240 +4049,6 @@
 
 .ui-scroll.is-refresh > .ui-empty {
 	display: none;
-}
-
-
-.ui-select {
-	display: inline-block;
-    width: 200px;
-}
-
-.ui-select > .ipt {
-    cursor: pointer;
-}
-
-.ui-select > .ipt > input {
-	width: 100%;
-    height: 32px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    border-top-color: #999;
-    border-left-color: #999;
-    background-color: #fff;
-    font-size: inherit;
-    padding: 0px 25px 0px 10px;
-    margin: 0px;
-    outline: none;
-    cursor: inherit;
-}
-
-.ui-select > .ipt > input:hover {
-	background-color: #f6f6f6;
-}
-
-.ui-select > .ipt > input:focus {
-	border-color: #66afe9;
-}
-
-.ui-select > .ipt > .dropdownbtn {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    bottom: 1px;
-    width: 25px;
-    border: 0px;
-    border-radius: 0px;
-    background: none;
-    background-image: url(/vrender-ui/icons/005a.png);
-    background-size: 10px;
-    background-repeat: no-repeat;
-    background-position: center;
-    padding: 0px;
-    margin: 0px;
-    outline: none;
-    cursor: pointer;
-}
-
-.ui-select > .ipt > .prompt {
-	position: absolute;
-    left: 10px;
-    top: 1px;
-    right: 25px;
-    line-height: 30px;
-    color: #999;
-    overflow: hidden;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-.ui-select > .dropdown {
-    display: none;
-    position: absolute;
-    z-index: 200;
-    overflow: auto;
-    width: 100%;
-    max-height: 210px;
-    left: 0px;
-    top: 100%;
-    margin-top: 3px;
-    border-radius: 3px;
-    box-shadow: 0px 0px 10px 0px #ddd;
-}
-
-.ui-select > .dropdown > .box {
-    padding: 0px 0px 1px;
-    background-color: #fff;
-}
-
-.ui-select > .dropdown > .box > .grp {
-    padding: 3px 0px;
-    border-top: 1px solid #eee;
-}
-
-.ui-select > .dropdown > .box > .grp:first-child {
-    border-top: 0px;
-}
-
-.ui-select > .dropdown > .box > .grp > .title {
-    padding: 0px 10px;
-    color: #aaa;
-    font-size: 12px;
-    line-height: 22px;
-    pointer-events: none;
-}
-
-.ui-select > .dropdown > .box > .grp > .item {
-    padding: 0px 10px;
-    line-height: 26px;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.ui-select > .dropdown > .box > .grp > .item:hover {
-    background-color: #f0f0f0;
-}
-
-.ui-select > .dropdown > .box > .grp > .item:active {
-    background-color: #ddd;
-}
-
-.ui-select > .dropdown > .box > .grp > .item.selected {
-    color: #fff;
-    background-color: #0367e2;
-    cursor: default;
-}
-
-.ui-select > .dropdown > .box > .grp > .item.disabled {
-    color: #999;
-    pointer-events: none;
-}
-
-.ui-select > .dropdown > .box > .ui-load {
-    position: relative;
-}
-
-.ui-select > .dropdown > .box > .ui-load > .ui-loaddef {
-    position: relative;
-    max-width: none;
-    left: auto;
-    top: auto;
-    padding: 0px 10px 0px 30px;
-    text-align: left;
-    line-height: 26px;
-    border-top: 1px solid #eee;
-    transform: none;
-}
-
-.ui-select > .dropdown > .box > .ui-load > .ui-loaddef:before {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    left: 10px;
-    top: 50%;
-    margin-left: 0px;
-    margin-top: -8px;
-    background-image: url(/vrender-ui/icons/017a.png);
-    background-size: 14px;
-    background-repeat: no-repeat;
-    background-position: center;
-    animation: ui-loading-animate 1s steps(8, end) infinite;
-    -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
-}
-
-.ui-select > .dropdown > .box > .ui-more > .ui-moredef {
-    padding-left: 10px;
-    color: #1976D2;
-    line-height: 26px;
-    border-top: 1px solid #eee;
-    cursor: pointer;
-}
-
-.ui-select > .dropdown > .box > .ui-more > .ui-moredef:hover {
-    text-decoration: underline;
-}
-
-.ui-select.has-val > .ipt > .prompt {
-	display: none;
-}
-
-.ui-select.editable > .ipt {
-    cursor: text;
-}
-
-.ui-select.editable > .ipt > .dropdownbtn {
-	border-left: 1px solid #ddd;
-    background-color: #fff;
-    cursor: pointer;
-}
-
-.ui-select.editable > .ipt > .dropdownbtn:hover {
-	background-color: #f3f3f3;
-}
-
-.ui-select.editable > .ipt > .dropdownbtn:active {
-	background-color: #eee;
-}
-
-.ui-select.show-dropdown > .dropdown {
-	display: block;
-    max-height: 0px;
-    opacity: 0;
-    transition: all 0.25s;
-}
-
-.ui-select.show-before > .dropdown {
-	top: auto;
-	bottom: 100%;
-    margin-bottom: 3px;
-}
-
-.ui-select.animate-in > .dropdown {
-    max-height: 210px;
-    opacity: 1;
-}
-
-.ui-select.animate-out > .dropdown {
-    max-height: 0px;
-    opacity: 0;
-}
-
-.ui-select.is-loading > .dropdown > .box > .ui-load {
-    display: block;
-}
-
-.ui-select[disabled] {
-    opacity: 0.5;
-    cursor: no-drop;
-}
-
-.ui-select[disabled] > .ipt {
-    pointer-events: none;
-}
-
-.ui-select[disabled] > .ipt > input {
-    background-color: #f0f0f0;
 }
 
 
@@ -4938,6 +4704,240 @@
 	left: 0px;
 	right: 0px;
 	top: 36px;
+}
+
+
+.ui-select {
+	display: inline-block;
+    width: 200px;
+}
+
+.ui-select > .ipt {
+    cursor: pointer;
+}
+
+.ui-select > .ipt > input {
+	width: 100%;
+    height: 32px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    border-top-color: #999;
+    border-left-color: #999;
+    background-color: #fff;
+    font-size: inherit;
+    padding: 0px 25px 0px 10px;
+    margin: 0px;
+    outline: none;
+    cursor: inherit;
+}
+
+.ui-select > .ipt > input:hover {
+	background-color: #f6f6f6;
+}
+
+.ui-select > .ipt > input:focus {
+	border-color: #66afe9;
+}
+
+.ui-select > .ipt > .dropdownbtn {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    width: 25px;
+    border: 0px;
+    border-radius: 0px;
+    background: none;
+    background-image: url(/vrender-ui/icons/005a.png);
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 0px;
+    margin: 0px;
+    outline: none;
+    cursor: pointer;
+}
+
+.ui-select > .ipt > .prompt {
+	position: absolute;
+    left: 10px;
+    top: 1px;
+    right: 25px;
+    line-height: 30px;
+    color: #999;
+    overflow: hidden;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.ui-select > .dropdown {
+    display: none;
+    position: absolute;
+    z-index: 200;
+    overflow: auto;
+    width: 100%;
+    max-height: 210px;
+    left: 0px;
+    top: 100%;
+    margin-top: 3px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 10px 0px #ddd;
+}
+
+.ui-select > .dropdown > .box {
+    padding: 0px 0px 1px;
+    background-color: #fff;
+}
+
+.ui-select > .dropdown > .box > .grp {
+    padding: 3px 0px;
+    border-top: 1px solid #eee;
+}
+
+.ui-select > .dropdown > .box > .grp:first-child {
+    border-top: 0px;
+}
+
+.ui-select > .dropdown > .box > .grp > .title {
+    padding: 0px 10px;
+    color: #aaa;
+    font-size: 12px;
+    line-height: 22px;
+    pointer-events: none;
+}
+
+.ui-select > .dropdown > .box > .grp > .item {
+    padding: 0px 10px;
+    line-height: 26px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.ui-select > .dropdown > .box > .grp > .item:hover {
+    background-color: #f0f0f0;
+}
+
+.ui-select > .dropdown > .box > .grp > .item:active {
+    background-color: #ddd;
+}
+
+.ui-select > .dropdown > .box > .grp > .item.selected {
+    color: #fff;
+    background-color: #0367e2;
+    cursor: default;
+}
+
+.ui-select > .dropdown > .box > .grp > .item.disabled {
+    color: #999;
+    pointer-events: none;
+}
+
+.ui-select > .dropdown > .box > .ui-load {
+    position: relative;
+}
+
+.ui-select > .dropdown > .box > .ui-load > .ui-loaddef {
+    position: relative;
+    max-width: none;
+    left: auto;
+    top: auto;
+    padding: 0px 10px 0px 30px;
+    text-align: left;
+    line-height: 26px;
+    border-top: 1px solid #eee;
+    transform: none;
+}
+
+.ui-select > .dropdown > .box > .ui-load > .ui-loaddef:before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 10px;
+    top: 50%;
+    margin-left: 0px;
+    margin-top: -8px;
+    background-image: url(/vrender-ui/icons/017a.png);
+    background-size: 14px;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: ui-loading-animate 1s steps(8, end) infinite;
+    -webkit-animation: ui-loading-animate 1s steps(8, end) infinite;
+}
+
+.ui-select > .dropdown > .box > .ui-more > .ui-moredef {
+    padding-left: 10px;
+    color: #1976D2;
+    line-height: 26px;
+    border-top: 1px solid #eee;
+    cursor: pointer;
+}
+
+.ui-select > .dropdown > .box > .ui-more > .ui-moredef:hover {
+    text-decoration: underline;
+}
+
+.ui-select.has-val > .ipt > .prompt {
+	display: none;
+}
+
+.ui-select.editable > .ipt {
+    cursor: text;
+}
+
+.ui-select.editable > .ipt > .dropdownbtn {
+	border-left: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.ui-select.editable > .ipt > .dropdownbtn:hover {
+	background-color: #f3f3f3;
+}
+
+.ui-select.editable > .ipt > .dropdownbtn:active {
+	background-color: #eee;
+}
+
+.ui-select.show-dropdown > .dropdown {
+	display: block;
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.25s;
+}
+
+.ui-select.show-before > .dropdown {
+	top: auto;
+	bottom: 100%;
+    margin-bottom: 3px;
+}
+
+.ui-select.animate-in > .dropdown {
+    max-height: 210px;
+    opacity: 1;
+}
+
+.ui-select.animate-out > .dropdown {
+    max-height: 0px;
+    opacity: 0;
+}
+
+.ui-select.is-loading > .dropdown > .box > .ui-load {
+    display: block;
+}
+
+.ui-select[disabled] {
+    opacity: 0.5;
+    cursor: no-drop;
+}
+
+.ui-select[disabled] > .ipt {
+    pointer-events: none;
+}
+
+.ui-select[disabled] > .ipt > input {
+    background-color: #f0f0f0;
 }
 
 

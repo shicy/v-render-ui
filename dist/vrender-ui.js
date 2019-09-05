@@ -8879,8 +8879,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var btnName = btn.attr("name");
 
     if (btnName) {
-      this.trigger("btn_" + btnName);
-      this.trigger("btnclick", btnName, btn);
+      this.triggerHandler("btn_" + btnName);
+      this.triggerHandler("btnclick", btnName, btn);
     }
   };
 
@@ -12611,7 +12611,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     var name = item.attr("name");
-    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, btn.is(".active"));
+    if (Utils.isNotBlank(name)) this.triggerHandler("btnclick", name, btn.is(".active"));
   };
 
   var onPopupButtonClickHandler = function onPopupButtonClickHandler(e) {
@@ -12635,7 +12635,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var onPopupMenuButtonHandler = function onPopupMenuButtonHandler(e, data) {
-    if (data && Utils.isNotBlank(data.name)) this.trigger("btnclick", data.name, !!data.checked);
+    if (data && Utils.isNotBlank(data.name)) this.triggerHandler("btnclick", data.name, !!data.checked);
   };
 
   var onDropdownButtonClickHandler = function onDropdownButtonClickHandler(e) {
@@ -12659,7 +12659,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     hideBtnDropdown.call(this, item);
     var name = dropdownItem.attr("name");
-    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, dropdownItem.is(".active"));
+    if (Utils.isNotBlank(name)) this.triggerHandler("btnclick", name, dropdownItem.is(".active"));
   };
 
   var onButtonMouseHandler = function onButtonMouseHandler(e) {
