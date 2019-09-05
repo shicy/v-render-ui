@@ -112,7 +112,7 @@
 		}
 		let name = item.attr("name");
 		if (Utils.isNotBlank(name))
-			this.trigger("btnclick", name, btn.is(".active"));
+			this.triggerHandler("btnclick", name, btn.is(".active"));
 	};
 
 	const onPopupButtonClickHandler = function (e) {
@@ -133,7 +133,7 @@
 
 	const onPopupMenuButtonHandler = function (e, data) {
 		if (data && Utils.isNotBlank(data.name))
-			this.trigger("btnclick", data.name, !!data.checked);
+			this.triggerHandler("btnclick", data.name, !!data.checked);
 	};
 
 	const onDropdownButtonClickHandler = function (e) {
@@ -157,7 +157,7 @@
 		hideBtnDropdown.call(this, item);
 		let name = dropdownItem.attr("name");
 		if (Utils.isNotBlank(name))
-			this.trigger("btnclick", name, dropdownItem.is(".active"));
+			this.triggerHandler("btnclick", name, dropdownItem.is(".active"));
 	};
 
 	const onButtonMouseHandler = function (e) {
