@@ -644,7 +644,7 @@
 		}
 	};
 
-	const tryAutoSize = function (text) { console.log(text);
+	const tryAutoSize = function (text) {
 		if (this.isAutoHeight()) {
 			let preview = this.inputTag.find(".preview pre");
 			if (preview && preview.length > 0) {
