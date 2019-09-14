@@ -148,8 +148,8 @@
 }
 
 .ui-dialog[opt-size='small'] > .dialog-container {
-    width: 540px;
-    height: 320px;
+    width: 420px;
+    height: 290px;
 }
 
 .ui-dialog[opt-size='big'] > .dialog-container {
