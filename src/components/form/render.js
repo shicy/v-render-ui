@@ -313,7 +313,7 @@
 		if (this.options.hasOwnProperty("labelWidth"))
 			return this.options.labelWidth;
 		let width = this.$el.attr("opt-lw");
-		this.options.labelWidth = Utils.getFormatSize(width, this.isRenderAsRem());
+		this.options.labelWidth = Utils.getFormatSize(width, this._isRenderAsRem());
 		this.$el.removeAttr("opt-lw");
 		return this.options.labelWidth;
 	};
