@@ -79,10 +79,8 @@
 		// 通过 new UIBase() 调用时，仅用于子类继承，不执行初始化
 		if (arguments.length > 0 && view !== false) {
 			// 参数 view 不是 Element 或 jQuery 对象时，需要构建组件
-			if (!Fn.isElement(view)) {
-				options = null;
-				view = this._create(view);
-			}
+			if (!Fn.isElement(view))
+				return this._create(view);
 
 			let instance = VRender.Component.get(view);
 			if (instance)

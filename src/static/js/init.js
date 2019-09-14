@@ -236,12 +236,7 @@
 			}
 
 			UIComp.prototype._create = function (options) {
-				options = options || {};
-				if (Utils.isFunction(this.isWidthEnabled))
-					options.widthDisabled = !this.isWidthEnabled();
-				if (Utils.isFunction(this.isHeightEnabled))
-					options.heightDisabled = !this.isHeightEnabled();
-				return VComponent.create(options, null, Renderer);
+				return UIComp.create(options);
 			};
 		};
 
