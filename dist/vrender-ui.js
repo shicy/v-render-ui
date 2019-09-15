@@ -203,10 +203,7 @@
       }
 
       UIComp.prototype._create = function (options) {
-        options = options || {};
-        if (Utils.isFunction(this.isWidthEnabled)) options.widthDisabled = !this.isWidthEnabled();
-        if (Utils.isFunction(this.isHeightEnabled)) options.heightDisabled = !this.isHeightEnabled();
-        return VComponent.create(options, null, Renderer);
+        return UIComp.create(options);
       };
     }; // 判断是不是页面元素（包括 jQuery 对象）
 
@@ -433,11 +430,7 @@
     // 通过 new UIBase() 调用时，仅用于子类继承，不执行初始化
     if (arguments.length > 0 && view !== false) {
       // 参数 view 不是 Element 或 jQuery 对象时，需要构建组件
-      if (!Fn.isElement(view)) {
-        options = null;
-        view = this._create(view);
-      }
-
+      if (!Fn.isElement(view)) return this._create(view);
       var instance = VRender.Component.get(view);
       if (instance) return instance;
       var target = this.$el = $(view);
@@ -3945,8 +3938,6 @@
   };
 
   var tryAutoSize = function tryAutoSize(text) {
-    console.log(text);
-
     if (this.isAutoHeight()) {
       var preview = this.inputTag.find(".preview pre");
 
@@ -8824,7 +8815,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIForm.getLabelWidth = function () {
     if (this.options.hasOwnProperty("labelWidth")) return this.options.labelWidth;
     var width = this.$el.attr("opt-lw");
-    this.options.labelWidth = Utils.getFormatSize(width, this.isRenderAsRem());
+    this.options.labelWidth = Utils.getFormatSize(width, this._isRenderAsRem());
     this.$el.removeAttr("opt-lw");
     return this.options.labelWidth;
   };
@@ -8879,8 +8870,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var btnName = btn.attr("name");
 
     if (btnName) {
-      this.triggerHandler("btn_" + btnName);
-      this.triggerHandler("btnclick", btnName, btn);
+      this.trigger("btn_" + btnName);
+      this.trigger("btnclick", btnName, btn);
     }
   };
 
@@ -10087,6 +10078,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     renderFootButtons.call(this, $, this.$el, buttons);
   };
 
+  _UIDialog.isScrollable = function () {
+    return this.$el.is("scrollable");
+  };
+
+  _UIDialog.setScrollable = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.addClass("scrollable");else this.$el.removeClass("scrollable");
+  };
+
   _UIDialog.getSize = function () {
     return this.$el.attr("opt-size") || "normal";
   };
@@ -10240,9 +10239,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var options = this.options || {};
     if (/^small|big|auto$/.test(options.size)) target.attr("opt-size", options.size);
     if (Utils.isTrue(options.fill)) target.attr("opt-fill", "1");
+    if (Utils.isTrue(options.scrollable)) target.addClass("scrollable");
     target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
     var container = $("<div class='dialog-container'></div>").appendTo(target);
     var dialogView = $("<div class='dialog-view'></div>").appendTo(container);
+
+    var rem = this._isRenderAsRem();
+
+    var width = Utils.getFormatSize(options.width, rem);
+    if (width) container.css("width", width);
+    var height = Utils.getFormatSize(options.height, rem);
+    if (height) container.css("height", height);
     renderDialogHeader.call(this, $, target, dialogView);
     renderDialogContent.call(this, $, target, dialogView);
     renderDialogFooter.call(this, $, target, dialogView);
@@ -12597,6 +12604,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIPanel.setViewActive = function (name) {
     if (Utils.isNotBlank(name)) showViewport.call(this, name);
+  };
+
+  _UIPanel.isFill = function () {
+    return this.$el.attr("opt-fill") == 1;
+  };
+
+  _UIPanel.setFill = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-fill", "1");else this.$el.removeAttr("opt-fill");
   }; // ====================================================
 
 
@@ -12611,7 +12626,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     var name = item.attr("name");
-    if (Utils.isNotBlank(name)) this.triggerHandler("btnclick", name, btn.is(".active"));
+    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, btn.is(".active"));
   };
 
   var onPopupButtonClickHandler = function onPopupButtonClickHandler(e) {
@@ -12635,7 +12650,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var onPopupMenuButtonHandler = function onPopupMenuButtonHandler(e, data) {
-    if (data && Utils.isNotBlank(data.name)) this.triggerHandler("btnclick", data.name, !!data.checked);
+    if (data && Utils.isNotBlank(data.name)) this.trigger("btnclick", data.name, !!data.checked);
   };
 
   var onDropdownButtonClickHandler = function onDropdownButtonClickHandler(e) {
@@ -12659,7 +12674,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     hideBtnDropdown.call(this, item);
     var name = dropdownItem.attr("name");
-    if (Utils.isNotBlank(name)) this.triggerHandler("btnclick", name, dropdownItem.is(".active"));
+    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, dropdownItem.is(".active"));
   };
 
   var onButtonMouseHandler = function onButtonMouseHandler(e) {
@@ -12698,6 +12713,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     UI._baseRender.render.call(this, $, target);
 
     target.addClass("ui-panel");
+    if (Utils.isTrue(this.options.fill)) target.attr("opt-fill", "1");
     this._viewports = getFormatViewports.call(this, this.options.viewports);
     renderHeader.call(this, $, target);
     renderContent.call(this, $, target);
