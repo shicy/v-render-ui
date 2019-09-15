@@ -55,5 +55,12 @@ const UIPanel = UIBase.extend(module, {
 		if (!Utils.isArray(this.options.viewports))
 			this.options.viewports = [];
 		this.options.viewports.push(value);
+	},
+
+	isFill: function () {
+		return this.options.fill;
+	},
+	setFill: function (value) {
+		this.options.fill = value;
 	}
 });

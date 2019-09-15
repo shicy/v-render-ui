@@ -293,3 +293,15 @@
     left: 100%;
     opacity: 0;
 }
+
+.ui-panel[opt-fill] > section {
+    padding: 0px;
+}
+
+.ui-panel[opt-fill] > section > .container > div > .ui-table {
+    border: 0px;
+}
+
+.ui-panel[opt-fill] > section > .container > div > .ui-table header tr {
+    background-color: #fff;
+}

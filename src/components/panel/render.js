@@ -99,6 +99,16 @@
 		if (Utils.isNotBlank(name))
 			showViewport.call(this, name);
 	};
+
+	_UIPanel.isFill = function () {
+		return this.$el.attr("opt-fill") == 1;
+	};
+	_UIPanel.setFill = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			this.$el.attr("opt-fill", "1");
+		else
+			this.$el.removeAttr("opt-fill");
+	};
 	
 	// ====================================================
 	const onButtonClickHandler = function (e) {
@@ -112,7 +122,7 @@
 		}
 		let name = item.attr("name");
 		if (Utils.isNotBlank(name))
-			this.triggerHandler("btnclick", name, btn.is(".active"));
+			this.trigger("btnclick", name, btn.is(".active"));
 	};
 
 	const onPopupButtonClickHandler = function (e) {
@@ -133,7 +143,7 @@
 
 	const onPopupMenuButtonHandler = function (e, data) {
 		if (data && Utils.isNotBlank(data.name))
-			this.triggerHandler("btnclick", data.name, !!data.checked);
+			this.trigger("btnclick", data.name, !!data.checked);
 	};
 
 	const onDropdownButtonClickHandler = function (e) {
@@ -157,7 +167,7 @@
 		hideBtnDropdown.call(this, item);
 		let name = dropdownItem.attr("name");
 		if (Utils.isNotBlank(name))
-			this.triggerHandler("btnclick", name, dropdownItem.is(".active"));
+			this.trigger("btnclick", name, dropdownItem.is(".active"));
 	};
 
 	const onButtonMouseHandler = function (e) {
@@ -191,6 +201,9 @@
 	_Renderer.render = function ($, target) {
 		UI._baseRender.render.call(this, $, target);
 		target.addClass("ui-panel");
+
+		if (Utils.isTrue(this.options.fill))
+			target.attr("opt-fill", "1");
 
 		this._viewports = getFormatViewports.call(this, this.options.viewports);
 

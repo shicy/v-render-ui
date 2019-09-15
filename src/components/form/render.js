@@ -361,8 +361,8 @@
 		}
 		let btnName = btn.attr("name");
 		if (btnName) {
-			this.triggerHandler("btn_" + btnName);
-			this.triggerHandler("btnclick", btnName, btn);
+			this.trigger("btn_" + btnName);
+			this.trigger("btnclick", btnName, btn);
 		}
 	};
 
