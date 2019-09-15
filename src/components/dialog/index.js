@@ -12,6 +12,14 @@ const Renderer = require("./render");
 
 
 const UIDialog = UIBase.extend(module, {
+	getWidth: function () {
+		// 忽略
+	},
+
+	getHeight: function () {
+		// 忽略
+	},
+
 	renderView: function () {
 		UIDialog.super(this);
 		new Renderer(this, this.options).render(VRender.$, this.$el);
@@ -37,6 +45,13 @@ const UIDialog = UIBase.extend(module, {
 	},
 	setButtons: function (value) {
 		this.options.buttons = value;
+	},
+
+	isScrollable: function () {
+		return this.options.scrollable;
+	},
+	setScrollable: function (value) {
+		this.options.scrollable = value;
 	},
 
 	getSize: function () {

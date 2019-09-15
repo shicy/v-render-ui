@@ -173,6 +173,16 @@
 		renderFootButtons.call(this, $, this.$el, buttons);
 	};
 
+	_UIDialog.isScrollable = function () {
+		return this.$el.is("scrollable");
+	};
+	_UIDialog.setScrollable = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			this.$el.addClass("scrollable");
+		else
+			this.$el.removeClass("scrollable");
+	};
+
 	_UIDialog.getSize = function () {
 		return this.$el.attr("opt-size") || "normal";
 	};
@@ -340,10 +350,21 @@
 		if (Utils.isTrue(options.fill))
 			target.attr("opt-fill", "1");
 
+		if (Utils.isTrue(options.scrollable))
+			target.addClass("scrollable");
+
 		target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
 
 		let container = $("<div class='dialog-container'></div>").appendTo(target);
 		let dialogView = $("<div class='dialog-view'></div>").appendTo(container);
+
+		let rem = this._isRenderAsRem();
+		let width = Utils.getFormatSize(options.width, rem);
+		if (width)
+			container.css("width", width);
+		let height = Utils.getFormatSize(options.height, rem);
+		if (height)
+			container.css("height", height);
 
 		renderDialogHeader.call(this, $, target, dialogView);
 		renderDialogContent.call(this, $, target, dialogView);
