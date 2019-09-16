@@ -245,7 +245,6 @@
 
 .ui-panel > section > .container {
 	height: 100%;
-	min-height: 100px;
 }
 
 .ui-panel > section > .container > div {

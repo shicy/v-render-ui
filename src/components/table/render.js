@@ -803,7 +803,7 @@
 
 			target = target.removeClass("no-head").children(".table");
 			let thead = target.children("section").children().children("table").children("thead").empty();
-			row = $("<tr></tr>").appendTo(thead);
+			let row = $("<tr></tr>").appendTo(thead);
 			if (this.isAllSelected(this._renderDatas || []))
 				row.addClass("selected");
 
