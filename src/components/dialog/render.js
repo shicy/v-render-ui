@@ -43,6 +43,8 @@
 	_UIDialog.init = function (target, options) {
 		UI._base.init.call(this, target, options);
 
+		this.dialogParent = this.$el.parent();
+
 		let dialogView = this.dialogView = this.$el.children().children();
 
 		let dialogHeader = dialogView.children("header");
@@ -74,6 +76,16 @@
 		let body = $("body").addClass("ui-scrollless");
 		if (body.children(".ui-dialog-mask").length == 0)
 			body.append("<div class='ui-dialog-mask'></div>");
+
+		if (this.$el.attr("opt-stay") != 1) {
+			if (body.children(".ui-dialog-wrap").length == 0)
+				body.append("<div class='ui-dialog-wrap'></div>");
+			let dialogWrap = body.children(".ui-dialog-wrap");
+			if (!this.dialogParent.is(dialogWrap)) {
+				this.$el.appendTo(dialogWrap);
+			}
+		}
+
 		this.$el.css("display", "").addClass("show-dialog");
 		openedDialogs.push(this);
 
@@ -124,16 +136,19 @@
 					target.removeClass(transName + "-close").removeClass(transName + "-closed");
 				}
 
-				let dialogWrap = $("body").children(".ui-dialog-wrap");
-				if (this.$el.parent().is(dialogWrap))
+				let body = $("body");
+				let dialogWrap = body.children(".ui-dialog-wrap");
+				if (this.dialogParent.is(dialogWrap))
 					this.$el.remove();
+				else if (this.$el.attr("opt-stay") != 1)
+					this.$el.appendTo(this.dialogParent);
 
 				for (let i = openedDialogs.length - 1; i >= 0; i--) {
 					if (openedDialogs[i] === this)
 						openedDialogs.splice(i, 1);
 				}
 				if (openedDialogs.length == 0) {
-					let mask = $("body").removeClass("ui-scrollless").children(".ui-dialog-mask").fadeOut(200);
+					let mask = body.removeClass("ui-scrollless").children(".ui-dialog-mask").fadeOut(200);
 					setTimeout(() => {
 						mask.remove();
 					}, 200);
@@ -352,6 +367,9 @@
 
 		if (Utils.isTrue(options.scrollable))
 			target.addClass("scrollable");
+
+		if (Utils.isTrue(options.stay))
+			target.attr("opt-stay", "1");
 
 		target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
 
