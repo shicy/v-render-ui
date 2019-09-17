@@ -22,7 +22,7 @@
 	// ====================================================
 	_UICheckGroup.setSelectedIndex = function (value) {
 		let snapshoot = this._snapshoot();
-		let indexs = Renderer.fn.getIntValues(value, 0) || [];
+		let indexs = UI.fn.getIntValues(value, 0) || [];
 		Utils.each(this.$el.children(), (item, i) => {
 			let chkbox = VRender.Component.get(item.children());
 			chkbox.setChecked(indexs.indexOf(i) >= 0);

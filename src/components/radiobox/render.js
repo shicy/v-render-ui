@@ -14,8 +14,15 @@
 	};
 	const _UIRadiobox = UIRadiobox.prototype = new UI._base(false);
 
+	UIRadiobox.create = function (options) {
+		options = options || {};
+		options.tagName = "label";
+		return VRender.Component.create(options, UIRadiobox, Renderer);
+	};
+
 	_UIRadiobox.init = function (target, options) {
 		UI._base.init.call(this, target, options);
+		this.$el.removeAttr("name");
 
 		this.input = this.$el.children("input");
 		this.input.on("change", radboxChangeHandler.bind(this));

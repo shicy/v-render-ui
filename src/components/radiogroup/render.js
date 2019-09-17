@@ -70,7 +70,7 @@
 
 	// ====================================================
 	_UIRadioGroup._getRadioName = function () {
-		return this.getViewId();
+		return "rad-" + this.getViewId();
 	};
 
 	_UIRadioGroup._getItems = function () {
