@@ -201,6 +201,13 @@
 			}
 
 			this.rerender();
+
+			setTimeout(() => {
+				let dates = [];
+				dates[0] = this.lastSelectedDate[0].getTime();
+				dates[1] = this.lastSelectedDate[1] ? this.lastSelectedDate[1].getTime() : 0;
+				this.trigger("pre-change", dates);
+			});
 		}
 		else {
 			let snapshoot = this._snapshoot();
@@ -455,8 +462,8 @@
 			else {
 				footer.append("<div class='vals'><span class='s'>-</span> - <span class='e'>-</span></div>");
 				let buttons = $("<div class='btns'></div>").appendTo(footer);
-				addButton.call(this, buttons, {label: "确定", type: "primary", cls: "okbtn"});
-				addButton.call(this, buttons, {label: "取消", type: "cancel", cls: "cancelbtn"});
+				addButton.call(this, buttons, {label: "确定", type: "primary", size: "small", cls: "okbtn"});
+				addButton.call(this, buttons, {label: "取消", type: "cancel", size: "small", cls: "cancelbtn"});
 			}
 		}
 	};

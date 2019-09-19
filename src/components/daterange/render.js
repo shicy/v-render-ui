@@ -201,6 +201,16 @@
 		hideDatePicker.call(this);
 	};
 
+	const onPickerPrechangeHandler = function (e, range) {
+		let start = (range && range[0]) ? (new Date(range[0])) : null;
+		let end = (range && range[1]) ? (new Date(range[1])) : null;
+		if (setDateInner.call(this, start, end || start))
+			updateShortcuts.call(this, start, end || start);
+		this.picker.setDate(start, end);
+		if (start && end)
+			hideDatePicker.call(this);
+	};
+
 	// 移动端点击 picker 隐藏
 	const onPickerHideClickHandler = function (e) {
 		hideDatePicker.call(this);
@@ -406,6 +416,9 @@
 			this.picker = UI.datepicker.create(params);
 			this.picker.on("submit", onPickerSubmitHandler.bind(this));
 			this.picker.on("cancel", onPickerCancelHandler.bind(this));
+			if (!this._isRenderAsApp()) {
+				this.picker.on("pre-change", onPickerPrechangeHandler.bind(this));
+			}
 		}
 
 		if (this.$el.is(".show-picker"))
@@ -418,9 +431,8 @@
 		}
 		else {
 			let picker = this.inputTag.children(".picker");
-
+			picker.off("click").on("click", function () { return false; });
 			setTimeout(() => {
-				picker.off("click").on("click", function () { return false; });
 				$("body").on("click." + this.getViewId(), () => {
 					this.picker.cancel();
 				});

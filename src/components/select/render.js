@@ -404,7 +404,7 @@
 			return ;
 
 		showDropdown.call(this);
-		this.$el.off("mouseenter").off("mouseleave"); // 这样不会自动隐藏
+		// this.$el.off("mouseenter").off("mouseleave"); // 这样不会自动隐藏
 
 		if (e.which == 38 || e.which == 40) { // 上、下箭头
 			if (this.isMultiple())
@@ -481,9 +481,9 @@
 		}, 200);
 	};
 
-	const comboMouseHandler = function (e) {
-		Fn.mouseDebounce(e, hideDropdown.bind(this));
-	};
+	// const comboMouseHandler = function (e) {
+	// 	Fn.mouseDebounce(e, hideDropdown.bind(this));
+	// };
 
 	const dropdownTouchHandler = function (e) {
 		if ($(e.target).is(".dropdown"))
@@ -748,10 +748,16 @@
 			$("html,body").addClass("ui-scrollless");
 		}
 		else {
-			target.on("mouseenter", comboMouseHandler.bind(this));
-			target.on("mouseleave", comboMouseHandler.bind(this));
-
+			// target.on("mouseenter", comboMouseHandler.bind(this));
+			// target.on("mouseleave", comboMouseHandler.bind(this));
 			let dropdown = target.children(".dropdown");
+			dropdown.off("click").on("click", function () { return false; });
+			setTimeout(() => {
+				$("body").on("click." + this.getViewId(), () => {
+					hideDropdown.call(this);
+				});
+			});
+
 			let maxHeight = Fn.getDropdownHeight.call(this, dropdown);
 			let offset = Utils.offset(dropdown, this._getScrollContainer(), 0, maxHeight);
 			if (offset.isOverflowY)
@@ -776,7 +782,8 @@
 		$("html,body").removeClass("ui-scrollless");
 
 		let target = this.$el.addClass("animate-out");
-		target.off("mouseenter").off("mouseleave");
+		// target.off("mouseenter").off("mouseleave");
+		$("body").off("click." + this.getViewId());
 
 		setTimeout(() => {
 			target.removeClass("show-dropdown").removeClass("show-before");

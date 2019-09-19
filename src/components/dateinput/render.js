@@ -138,10 +138,6 @@
 		return false;
 	};
 
-	const dateIptMouseHandler = function (e) {
-		Fn.mouseDebounce(e, hideDatePicker.bind(this));
-	};
-
 	const pickerChangeHandler = function (e, date) {
 		hideDatePicker.call(this);
 		setDateInner.call(this, date);
@@ -260,16 +256,20 @@
 		if (this.$el.is(".show-picker"))
 			return ;
 		let target = this.$el.addClass("show-picker");
+		let picker = target.children(".picker");
 
 		if (this._isRenderAsApp()) {
 			$("html, body").addClass("ui-scrollless");
-			target.children(".picker").on("tap", hideDatePicker.bind(this));
+			picker.on("tap", hideDatePicker.bind(this));
 		}
 		else {
-			target.on("mouseenter", dateIptMouseHandler.bind(this));
-			target.on("mouseleave", dateIptMouseHandler.bind(this));
+			picker.off("click").on("click", function () { return false; });
+			setTimeout(() => {
+				$("body").on("click." + this.getViewId(), () => {
+					hideDatePicker.call(this);
+				});
+			});
 
-			let picker = target.children(".picker");
 			let offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
 			if (offset.isOverflowY)
 				target.addClass("show-before");
@@ -288,7 +288,7 @@
 			target.children(".picker").off("tap");
 		}
 		else {
-			target.off("mouseenter").off("mouseleave");
+			$("body").off("click." + this.getViewId());
 		}
 
 		setTimeout(() => {

@@ -200,8 +200,8 @@
 		
 		let children = target.children();
 		children.css("vertical-align", valign);
-		children.css("margin-left", left).css("margin-top", top);
-		children.eq(0).css("margin-left", "").css("margin-top", "");
+		children.css("margin-right", left).css("margin-bottom", top);
+		children.last().css("margin-right", "").css("margin-bottom", "");
 
 		if (orientation) {
 			children.css("display", display);

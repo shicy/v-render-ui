@@ -191,10 +191,6 @@
 		return false;
 	};
 
-	const mouseHoverHandler = function (e) {
-		Fn.mouseDebounce(e, hideDatePicker.bind(this));
-	};
-
 	const pickerChangeHandler = function (e) {
 		let date = getPickerDate.call(this, this.picker);
 		setDateInner.call(this, getLimitDate.call(this, date));
@@ -419,9 +415,13 @@
 			picker.find(".col").on("scroll", pickerScrollHandler.bind(this));
 		}
 		else {
-			target.on("mouseenter", mouseHoverHandler.bind(this));
-			target.on("mouseleave", mouseHoverHandler.bind(this));
 			picker.on("change", pickerChangeHandler.bind(this));
+			picker.off("click").on("click", function () { return false; });
+			setTimeout(() => {
+				$("body").on("click." + this.getViewId(), () => {
+					hideDatePicker.call(this);
+				});
+			});
 
 			let offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
 			if (offset.isOverflowY)
@@ -444,7 +444,7 @@
 			this.picker.find(".col").off("scroll");
 		}
 		else {
-			target.off("mouseenter").off("mouseleave");
+			$("body").off("click." + this.getViewId());
 			this.picker.off("change");
 		}
 
