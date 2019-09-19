@@ -716,7 +716,7 @@
     border-color: #0367e2;
     background-color: #0367e2;
     background-image: url(/vrender-ui/icons/003b.png);
-    background-size: 10px;
+    background-size: 8px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -784,7 +784,6 @@
 
 .ui-confirm > .container > .title {
 	padding: 0px 40px 0px 15px;
-    font-size: 16px;
     line-height: 40px;
     white-space: nowrap;
     overflow: hidden;
@@ -793,6 +792,7 @@
 
 .ui-confirm > .container > .content {
     padding: 40px 30px 20px 80px;
+    color: #505050;
 }
 
 .ui-confirm > .container > .content:before {
@@ -1017,7 +1017,7 @@
 
 .ui-datepicker {
     display: inline-block;
-    min-width: 212px;
+    min-width: 184px;
     border: 1px solid #eee;
     border-radius: 3px;
     background-color: #fff;
@@ -1028,7 +1028,7 @@
 }
 
 .ui-datepicker > header > .title {
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
 }
 
@@ -1037,7 +1037,7 @@
 }
 
 .ui-datepicker > header > .title > .item > .lbl {
-    line-height: 30px;
+    line-height: 26px;
 }
 
 .ui-datepicker > header > .title > .item > .val {
@@ -1047,7 +1047,7 @@
 
 .ui-datepicker > header > .title > .item > button {
     position: absolute;
-    top: 5px;
+    top: 3px;
     width: 20px;
     height: 20px;
     border: 0px;
@@ -1091,18 +1091,19 @@
 
 .ui-datepicker > section table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
     border-collapse: collapse;
     border-spacing: 0px;
 }
 
 .ui-datepicker > section th {
+    height: 20px;
     font-weight: normal;
 }
 
 .ui-datepicker > section > .table {
     display: inline-block;
-    width: 210px;
+    width: 182px;
     text-align: center;
     vertical-align: top;
 }
@@ -1136,12 +1137,12 @@
 }
 
 .ui-datepicker > section > .table table.body tr {
-    height: 30px;
+    height: 26px;
 }
 
 .ui-datepicker > section > .table table.body td {
     position: relative;
-    width: 30px;
+    width: 26px;
     cursor: pointer;
 }
 
@@ -1154,8 +1155,8 @@
     position: absolute;
     width: 22px;
     height: 22px;
-    left: 3px;
-    top: 3px;
+    left: 1px;
+    top: 1px;
     border: 1px solid #92c1fb;
     border-radius: 100px;
     z-index: 1;
@@ -1163,8 +1164,8 @@
 
 .ui-datepicker > section > .table table.body td.selected span {
     display: inline-block;
-    width: 24px;
-    line-height: 24px;
+    width: 20px;
+    line-height: 20px;
     color: #fff;
     border-radius: 100px;
     background-color: #0072ff;
@@ -1188,14 +1189,14 @@
 }
 
 .ui-datepicker > footer {
-    height: 48px;
+    height: 42px;
     background-color: #f4f5f9;
 }
 
 .ui-datepicker > footer > .vals {
     position: absolute;
     left: 10px;
-    top: 12px;
+    top: 9px;
     color: #999;
 }
 
@@ -1217,12 +1218,12 @@
 }
 
 .ui-datepicker > footer > .btns > .ui-btn {
-    width: 85px;
+    width: 60px;
     margin-left: 10px;
 }
 
 .ui-datepicker.is-range {
-    min-width: 422px;
+    min-width: 366px;
 }
 
 .ui-datepicker.is-range > header > .title > .item {
@@ -1240,7 +1241,7 @@
 
 .ui-datepicker.is-range > section > .table table.body td.selected span {
     width: 100%;
-    line-height: 22px;
+    line-height: 20px;
     border-radius: 0px;
 }
 
@@ -1346,6 +1347,10 @@
     margin-top: 3px;
     border-radius: 3px;
     box-shadow: 0px 0px 10px 0px #ddd;
+}
+
+.ui-daterange > .ipt > .picker > .ui-datepicker > footer {
+    display: none;
 }
 
 .ui-daterange > .ipt:hover > input {
@@ -1464,13 +1469,13 @@
 }
 
 .ui-daterange.animate-in > .ipt > .picker {
-    max-height: 300px;
+    max-height: 220px;
     opacity: 1;
 }
 
 .ui-daterange.animate-out > .ipt > .picker {
     max-height: 0px;
-    opacity: 0;
+    opacity: 0.2;
 }
 
 .ui-daterange.has-val > .ipt > .prompt {
@@ -1602,6 +1607,7 @@
 
 .ui-datetime > .picker > .timebar {
     padding: 5px 0px;
+    font-size: 12px;
     text-align: center;
     border: 1px solid #eee;
     border-top: 0px;
@@ -1611,23 +1617,33 @@
 
 .ui-datetime > .picker > .timebar > .ui-select {
     width: 50px;
+    margin-left: 10px;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select:first-child {
+    margin-left: 0px;
 }
 
 .ui-datetime > .picker > .timebar > .ui-select > .ipt > input {
-    height: 28px;
-    padding-left: 6px;
+    height: 24px;
+    padding: 0px 16px 0px 0px;
+    font-size: 12px;
+    text-align: center;
     border-color: #eee;
 }
 
 .ui-datetime > .picker > .timebar > .ui-select > .ipt > .dropdownbtn {
-    width: 20px;
-    background-size: 8px;
-    opacity: 0.5;
+    display: none;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select > .dropdown .item {
+    line-height: 22px;
 }
 
 .ui-datetime > .picker > .timebar > .tip {
-    margin: 0px 3px 0px 1px;
+    margin-left: -15px;
     color: #787878;
+    pointer-events: none;
 }
 
 .ui-datetime.show-picker > .picker {
@@ -1694,8 +1710,8 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 600px;
-    height: 400px;
+    width: 720px;
+    height: 460px;
     max-width: 92%;
     max-height: 94%;
     transform: translate(-50%, -50%);
@@ -1710,7 +1726,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
-    min-width: 400px;
+    min-width: 320px;
     min-height: 200px;
 }
 
@@ -2431,7 +2447,7 @@
     border-color: #0367e2;
     background-color: #0367e2 !important;
     background-image: url(/vrender-ui/icons/003b.png);
-    background-size: 10px;
+    background-size: 8px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -2581,6 +2597,7 @@
 	position: absolute;
     left: 50%;
     top: -100px;
+    font-size: 12px;
     transform: translate(-50%, 0px);
     transition: top 0.5s;
 }
@@ -2658,7 +2675,7 @@
 }
 
 .ui-message[opt-type='success'] > .container {
-    border: 1px solid rgba(87, 173, 76, 0.2);
+    /*border: 1px solid rgba(87, 173, 76, 0.2);*/
 }
 
 .ui-message[opt-type='success'] > .container > .img {
@@ -2666,7 +2683,7 @@
 }
 
 .ui-message[opt-type='error'] > .container {
-    border: 1px solid rgba(249, 14, 13, 0.1);
+    /*border: 1px solid rgba(249, 14, 13, 0.1);*/
 }
 
 .ui-message[opt-type='error'] > .container > .img {
@@ -2674,7 +2691,7 @@
 }
 
 .ui-message[opt-type='warn'] > .container {
-    border: 1px solid rgba(250, 162, 2, 0.2);
+    /*border: 1px solid rgba(250, 162, 2, 0.2);*/
 }
 
 .ui-message[opt-type='warn'] > .container > .img {
@@ -2682,7 +2699,7 @@
 }
 
 .ui-message[opt-type='info'] > .container {
-    border: 1px solid rgba(4, 175, 248, 0.2);
+    /*border: 1px solid rgba(4, 175, 248, 0.2);*/
 }
 
 .ui-message[opt-type='info'] > .container > .img {
@@ -2743,7 +2760,6 @@
     vertical-align: top;
     margin-bottom: 3px;
     color: #000;
-    font-size: 16px;
     line-height: 24px;
     white-space: nowrap;
     overflow: hidden;
@@ -2755,7 +2771,7 @@
     max-height: 120px;
     padding: 2px 0px;
     color: #505050;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 20px;
 }
 
@@ -2841,6 +2857,7 @@
 
 .ui-paginator {
     height: 32px;
+    font-size: 12px;
 }
 .ui-paginator > * {
     display: inline-block;
@@ -3291,7 +3308,7 @@
     left: 0px;
     right: 0px;
     top: 0px;
-    height: 40px;
+    height: 37px;
     padding-left: 10px;
     border-bottom: 1px solid #eee;
     background-color: #f4f5f9;
@@ -3314,10 +3331,19 @@
     color: #787878;
     font-size: 14px;
     text-align: center;
-    line-height: 32px;
-    border-right: 1px solid #e7e7eb;
+    line-height: 30px;
+    border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+.ui-panel > header > .tabbar > .tab:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-right: 1px solid #e7e7eb;
 }
 
 .ui-panel > header > .tabbar > .tab:hover {
@@ -3370,6 +3396,7 @@
     font-size: 14px;
     text-align: center;
     border: 0px;
+    border-radius: 2px;
     background: none;
     outline: none;
     cursor: pointer;
@@ -3379,6 +3406,9 @@
 	display: inline-block;
     width: 16px;
     height: 16px;
+    margin: 2px 0px;
+    vertical-align: top;
+    border-radius: 2px;
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: center;
@@ -3421,11 +3451,12 @@
 }
 
 .ui-panel > header > .btnbar > .item.active > .btn {
-	background-color: #ddd;
+    color: #fff;
+	background-color: #0367e2;
 }
 
-.ui-panel > header > .btnbar > .item.active > .btn:active {
-	background-color: #0367e2;
+.ui-panel > header > .btnbar > .item.active > .btn > i {
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .ui-panel > header > .btnbar > .item > ul {
@@ -3524,7 +3555,6 @@
 
 .ui-panel > section > .container {
 	height: 100%;
-	min-height: 100px;
 }
 
 .ui-panel > section > .container > div {
@@ -4113,6 +4143,7 @@
     margin: 0px;
     outline: none;
     cursor: pointer;
+    opacity: 0.5;
 }
 
 .ui-select > .ipt > .prompt {
@@ -4165,6 +4196,7 @@
 
 .ui-select > .dropdown > .box > .grp > .item {
     padding: 0px 10px;
+    font-size: 12px;
     line-height: 26px;
     white-space: nowrap;
     cursor: pointer;
@@ -5215,7 +5247,7 @@
     border: 1px solid #ccc;
     border-radius: 2px;
     background-color: #fff;
-    background-size: 10px;
+    background-size: 8px;
     background-repeat: no-repeat;
     background-position: center;
     box-shadow: 0 0 1px 1px #eee;
@@ -5487,6 +5519,10 @@
     box-shadow: 0px 0px 10px 0px #ddd;
 }
 
+.ui-treeselect > .dropdown .ui-tree {
+    font-size: 12px;
+}
+
 .ui-treeselect > .dropdown .tree-node {
     white-space: nowrap;
 }
@@ -5509,7 +5545,7 @@
 }
 
 .ui-treeselect.animate-in > .dropdown {
-    max-height: 300px;
+    max-height: 210px;
     opacity: 1;
 }
 

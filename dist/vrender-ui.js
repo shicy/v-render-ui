@@ -2321,8 +2321,8 @@
     target.css("text-align", align);
     var children = target.children();
     children.css("vertical-align", valign);
-    children.css("margin-left", left).css("margin-top", top);
-    children.eq(0).css("margin-left", "").css("margin-top", "");
+    children.css("margin-right", left).css("margin-bottom", top);
+    children.last().css("margin-right", "").css("margin-bottom", "");
 
     if (orientation) {
       children.css("display", display);
@@ -2864,7 +2864,7 @@
   _UICheckGroup.setSelectedIndex = function (value) {
     var snapshoot = this._snapshoot();
 
-    var indexs = Renderer.fn.getIntValues(value, 0) || [];
+    var indexs = UI.fn.getIntValues(value, 0) || [];
     Utils.each(this.$el.children(), function (item, i) {
       var chkbox = VRender.Component.get(item.children());
       chkbox.setChecked(indexs.indexOf(i) >= 0);
@@ -3043,9 +3043,16 @@
 
   var _UIRadiobox = UIRadiobox.prototype = new UI._base(false);
 
+  UIRadiobox.create = function (options) {
+    options = options || {};
+    options.tagName = "label";
+    return VRender.Component.create(options, UIRadiobox, Renderer);
+  };
+
   _UIRadiobox.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
+    this.$el.removeAttr("name");
     this.input = this.$el.children("input");
     this.input.on("change", radboxChangeHandler.bind(this));
     if (this.input.is(":checked")) this.input.trigger("change");
@@ -3207,7 +3214,7 @@
 
 
   _UIRadioGroup._getRadioName = function () {
-    return this.getViewId();
+    return "rad-" + this.getViewId();
   };
 
   _UIRadioGroup._getItems = function () {
@@ -4444,8 +4451,7 @@
 
   var inputKeyDownHandler = function inputKeyDownHandler(e) {
     if (this._isRenderAsApp()) return;
-    showDropdown.call(this);
-    this.$el.off("mouseenter").off("mouseleave"); // 这样不会自动隐藏
+    showDropdown.call(this); // this.$el.off("mouseenter").off("mouseleave"); // 这样不会自动隐藏
 
     if (e.which == 38 || e.which == 40) {
       // 上、下箭头
@@ -4528,11 +4534,10 @@
         hideDropdown.call(_this3);
       }
     }, 200);
-  };
+  }; // const comboMouseHandler = function (e) {
+  // 	Fn.mouseDebounce(e, hideDropdown.bind(this));
+  // };
 
-  var comboMouseHandler = function comboMouseHandler(e) {
-    Fn.mouseDebounce(e, hideDropdown.bind(this));
-  };
 
   var dropdownTouchHandler = function dropdownTouchHandler(e) {
     if ($(e.target).is(".dropdown")) hideDropdown.call(this);
@@ -4798,9 +4803,17 @@
       // 不会是 native
       $("html,body").addClass("ui-scrollless");
     } else {
-      target.on("mouseenter", comboMouseHandler.bind(this));
-      target.on("mouseleave", comboMouseHandler.bind(this));
+      // target.on("mouseenter", comboMouseHandler.bind(this));
+      // target.on("mouseleave", comboMouseHandler.bind(this));
       var dropdown = target.children(".dropdown");
+      dropdown.off("click").on("click", function () {
+        return false;
+      });
+      setTimeout(function () {
+        $("body").on("click." + _this11.getViewId(), function () {
+          hideDropdown.call(_this11);
+        });
+      });
       var maxHeight = Fn.getDropdownHeight.call(this, dropdown);
       var offset = Utils.offset(dropdown, this._getScrollContainer(), 0, maxHeight);
       if (offset.isOverflowY) target.addClass("show-before");
@@ -4821,8 +4834,9 @@
 
   var hideDropdown = function hideDropdown() {
     $("html,body").removeClass("ui-scrollless");
-    var target = this.$el.addClass("animate-out");
-    target.off("mouseenter").off("mouseleave");
+    var target = this.$el.addClass("animate-out"); // target.off("mouseenter").off("mouseleave");
+
+    $("body").off("click." + this.getViewId());
     setTimeout(function () {
       target.removeClass("show-dropdown").removeClass("show-before");
       target.removeClass("animate-in").removeClass("animate-out");
@@ -5101,6 +5115,8 @@
   };
 
   var onDateClickHandler = function onDateClickHandler(e) {
+    var _this2 = this;
+
     var item = $(e.currentTarget);
     if (item.is(".disabled")) return;
 
@@ -5118,6 +5134,13 @@
       }
 
       this.rerender();
+      setTimeout(function () {
+        var dates = [];
+        dates[0] = _this2.lastSelectedDate[0].getTime();
+        dates[1] = _this2.lastSelectedDate[1] ? _this2.lastSelectedDate[1].getTime() : 0;
+
+        _this2.trigger("pre-change", dates);
+      });
     } else {
       var snapshoot = this._snapshoot();
 
@@ -5375,11 +5398,13 @@
         addButton.call(this, buttons, {
           label: "确定",
           type: "primary",
+          size: "small",
           cls: "okbtn"
         });
         addButton.call(this, buttons, {
           label: "取消",
           type: "cancel",
+          size: "small",
           cls: "cancelbtn"
         });
       }
@@ -5829,10 +5854,6 @@
     return false;
   };
 
-  var dateIptMouseHandler = function dateIptMouseHandler(e) {
-    Fn.mouseDebounce(e, hideDatePicker.bind(this));
-  };
-
   var pickerChangeHandler = function pickerChangeHandler(e, date) {
     hideDatePicker.call(this);
     setDateInner.call(this, date);
@@ -5933,6 +5954,8 @@
 
 
   var showDatePicker = function showDatePicker() {
+    var _this2 = this;
+
     if (!this.picker) {
       var params = {};
       params.target = $("<div class='picker'></div>").appendTo(this.$el);
@@ -5946,14 +5969,20 @@
 
     if (this.$el.is(".show-picker")) return;
     var target = this.$el.addClass("show-picker");
+    var picker = target.children(".picker");
 
     if (this._isRenderAsApp()) {
       $("html, body").addClass("ui-scrollless");
-      target.children(".picker").on("tap", hideDatePicker.bind(this));
+      picker.on("tap", hideDatePicker.bind(this));
     } else {
-      target.on("mouseenter", dateIptMouseHandler.bind(this));
-      target.on("mouseleave", dateIptMouseHandler.bind(this));
-      var picker = target.children(".picker");
+      picker.off("click").on("click", function () {
+        return false;
+      });
+      setTimeout(function () {
+        $("body").on("click." + _this2.getViewId(), function () {
+          hideDatePicker.call(_this2);
+        });
+      });
       var offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
       if (offset.isOverflowY) target.addClass("show-before");
     }
@@ -5970,7 +5999,7 @@
       $("html,body").removeClass("ui-scrollless");
       target.children(".picker").off("tap");
     } else {
-      target.off("mouseenter").off("mouseleave");
+      $("body").off("click." + this.getViewId());
     }
 
     setTimeout(function () {
@@ -6244,6 +6273,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var onPickerCancelHandler = function onPickerCancelHandler(e) {
     hideDatePicker.call(this);
+  };
+
+  var onPickerPrechangeHandler = function onPickerPrechangeHandler(e, range) {
+    var start = range && range[0] ? new Date(range[0]) : null;
+    var end = range && range[1] ? new Date(range[1]) : null;
+    if (setDateInner.call(this, start, end || start)) updateShortcuts.call(this, start, end || start);
+    this.picker.setDate(start, end);
+    if (start && end) hideDatePicker.call(this);
   }; // 移动端点击 picker 隐藏
 
 
@@ -6445,6 +6482,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.picker = UI.datepicker.create(params);
       this.picker.on("submit", onPickerSubmitHandler.bind(this));
       this.picker.on("cancel", onPickerCancelHandler.bind(this));
+
+      if (!this._isRenderAsApp()) {
+        this.picker.on("pre-change", onPickerPrechangeHandler.bind(this));
+      }
     }
 
     if (this.$el.is(".show-picker")) return;
@@ -6455,10 +6496,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.inputTag.children(".picker").on("tap", onPickerHideClickHandler.bind(this));
     } else {
       var picker = this.inputTag.children(".picker");
+      picker.off("click").on("click", function () {
+        return false;
+      });
       setTimeout(function () {
-        picker.off("click").on("click", function () {
-          return false;
-        });
         $("body").on("click." + _this3.getViewId(), function () {
           _this3.picker.cancel();
         });
@@ -6783,10 +6824,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return false;
   };
 
-  var mouseHoverHandler = function mouseHoverHandler(e) {
-    Fn.mouseDebounce(e, hideDatePicker.bind(this));
-  };
-
   var pickerChangeHandler = function pickerChangeHandler(e) {
     var date = getPickerDate.call(this, this.picker);
     setDateInner.call(this, getLimitDate.call(this, date));
@@ -7003,6 +7040,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
   var showDatePicker = function showDatePicker() {
+    var _this4 = this;
+
     if (!this.picker) {
       this.picker = $("<div class='picker'></div>").appendTo(this.$el);
       renderPicker.call(this, this.picker);
@@ -7019,9 +7058,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       picker.on("touchend", pickerTouchHandler.bind(this));
       picker.find(".col").on("scroll", pickerScrollHandler.bind(this));
     } else {
-      target.on("mouseenter", mouseHoverHandler.bind(this));
-      target.on("mouseleave", mouseHoverHandler.bind(this));
       picker.on("change", pickerChangeHandler.bind(this));
+      picker.off("click").on("click", function () {
+        return false;
+      });
+      setTimeout(function () {
+        $("body").on("click." + _this4.getViewId(), function () {
+          hideDatePicker.call(_this4);
+        });
+      });
       var offset = Utils.offset(picker, this._getScrollContainer(), 0, picker[0].scrollHeight);
       if (offset.isOverflowY) target.addClass("show-before");
     }
@@ -7040,7 +7085,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.picker.off("tap").off("touchstart").off("touchend");
       this.picker.find(".col").off("scroll");
     } else {
-      target.off("mouseenter").off("mouseleave");
+      $("body").off("click." + this.getViewId());
       this.picker.off("change");
     }
 
@@ -9949,6 +9994,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   _UIDialog.init = function (target, options) {
     UI._base.init.call(this, target, options);
 
+    this.dialogParent = this.$el.parent();
     var dialogView = this.dialogView = this.$el.children().children();
     var dialogHeader = dialogView.children("header");
     dialogHeader.on("tap", ".closebtn", closeBtnHandler.bind(this));
@@ -9974,6 +10020,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     this.isopened = true;
     var body = $("body").addClass("ui-scrollless");
     if (body.children(".ui-dialog-mask").length == 0) body.append("<div class='ui-dialog-mask'></div>");
+
+    if (this.$el.attr("opt-stay") != 1) {
+      if (body.children(".ui-dialog-wrap").length == 0) body.append("<div class='ui-dialog-wrap'></div>");
+      var dialogWrap = body.children(".ui-dialog-wrap");
+
+      if (!this.dialogParent.is(dialogWrap)) {
+        this.$el.appendTo(dialogWrap);
+      }
+    }
+
     this.$el.css("display", "").addClass("show-dialog");
     openedDialogs.push(this);
 
@@ -10029,15 +10085,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           target.removeClass(transName + "-close").removeClass(transName + "-closed");
         }
 
-        var dialogWrap = $("body").children(".ui-dialog-wrap");
-        if (_this.$el.parent().is(dialogWrap)) _this.$el.remove();
+        var body = $("body");
+        var dialogWrap = body.children(".ui-dialog-wrap");
+        if (_this.dialogParent.is(dialogWrap)) _this.$el.remove();else if (_this.$el.attr("opt-stay") != 1) _this.$el.appendTo(_this.dialogParent);
 
         for (var i = openedDialogs.length - 1; i >= 0; i--) {
           if (openedDialogs[i] === _this) openedDialogs.splice(i, 1);
         }
 
         if (openedDialogs.length == 0) {
-          var mask = $("body").removeClass("ui-scrollless").children(".ui-dialog-mask").fadeOut(200);
+          var mask = body.removeClass("ui-scrollless").children(".ui-dialog-mask").fadeOut(200);
           setTimeout(function () {
             mask.remove();
           }, 200);
@@ -10240,6 +10297,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (/^small|big|auto$/.test(options.size)) target.attr("opt-size", options.size);
     if (Utils.isTrue(options.fill)) target.attr("opt-fill", "1");
     if (Utils.isTrue(options.scrollable)) target.addClass("scrollable");
+    if (Utils.isTrue(options.stay)) target.attr("opt-stay", "1");
     target.attr("opt-active", Utils.trimToNull(this.getActiveButton()));
     var container = $("<div class='dialog-container'></div>").appendTo(target);
     var dialogView = $("<div class='dialog-view'></div>").appendTo(container);
@@ -14095,7 +14153,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       target = target.removeClass("no-head").children(".table");
       var thead = target.children("section").children().children("table").children("thead").empty();
-      row = $("<tr></tr>").appendTo(thead);
+      var row = $("<tr></tr>").appendTo(thead);
       if (this.isAllSelected(this._renderDatas || [])) row.addClass("selected");
       if (this._hasExpand() && !isApp) row.append("<th class='col-exp'></th>");
       if (this.isChkboxVisible()) row.append("<th class='col-chk'><span class='chkbox'></span></th>");
@@ -17666,10 +17724,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       itemChanged.call(this);
       if (data.leaf || !this._isRenderAsApp()) hideDropdown.call(this);
     }
-  };
-
-  var comboMouseHandler = function comboMouseHandler(e) {
-    Fn.mouseDebounce(e, hideDropdown.bind(this));
   }; ///////////////////////////////////////////////////////
 
 
@@ -17736,6 +17790,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var showDropdown = function showDropdown() {
+    var _this = this;
+
     if (isDropdownVisible.call(this)) return;
     var target = this.$el.addClass("show-dropdown");
 
@@ -17743,9 +17799,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       // 不会是 native
       $("html,body").addClass("ui-scrollless");
     } else {
-      target.on("mouseenter", comboMouseHandler.bind(this));
-      target.on("mouseleave", comboMouseHandler.bind(this));
       var dropdown = target.children(".dropdown");
+      dropdown.off("click").on("click", function () {
+        return false;
+      });
+      setTimeout(function () {
+        $("body").on("click." + _this.getViewId(), function () {
+          hideDropdown.call(_this);
+        });
+      });
       var maxHeight = Fn.getDropdownHeight.call(this, dropdown);
       var offset = Utils.offset(dropdown, this._getScrollContainer(), 0, maxHeight);
       if (offset.isOverflowY) target.addClass("show-before");
@@ -17759,7 +17821,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var hideDropdown = function hideDropdown() {
     $("html,body").removeClass("ui-scrollless");
     var target = this.$el.addClass("animate-out");
-    target.off("mouseenter").off("mouseleave");
+    $("body").off("click." + this.getViewId());
     setTimeout(function () {
       target.removeClass("show-dropdown").removeClass("show-before");
       target.removeClass("animate-in").removeClass("animate-out");
@@ -17767,7 +17829,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var itemChanged = function itemChanged() {
-    var _this = this;
+    var _this2 = this;
 
     // 树型的 index 比较复杂，这里不用 snapshoot 了
     // let snapshoot = this._snapshoot();
@@ -17775,7 +17837,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // Component.select.setSelectedIndex.call(this, indexs);
     var datas = this.getSelectedData(true);
     var labels = Utils.map(Utils.toArray(datas), function (data) {
-      return _this.tree._getDataLabel(data);
+      return _this2.tree._getDataLabel(data);
     });
     labels = labels.join(", ");
     this.$el.children(".ipt").find("input").val(labels || "");
