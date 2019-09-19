@@ -1,6 +1,7 @@
 
 .ui-paginator {
     height: 32px;
+    font-size: 12px;
 }
 .ui-paginator > * {
     display: inline-block;

@@ -12,7 +12,7 @@
     left: 0px;
     right: 0px;
     top: 0px;
-    height: 40px;
+    height: 37px;
     padding-left: 10px;
     border-bottom: 1px solid #eee;
     background-color: #f4f5f9;
@@ -35,10 +35,19 @@
     color: #787878;
     font-size: 14px;
     text-align: center;
-    line-height: 32px;
-    border-right: 1px solid #e7e7eb;
+    line-height: 30px;
+    border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+.ui-panel > header > .tabbar > .tab:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-right: 1px solid #e7e7eb;
 }
 
 .ui-panel > header > .tabbar > .tab:hover {
@@ -91,6 +100,7 @@
     font-size: 14px;
     text-align: center;
     border: 0px;
+    border-radius: 2px;
     background: none;
     outline: none;
     cursor: pointer;
@@ -100,6 +110,9 @@
 	display: inline-block;
     width: 16px;
     height: 16px;
+    margin: 2px 0px;
+    vertical-align: top;
+    border-radius: 2px;
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: center;
@@ -142,11 +155,12 @@
 }
 
 .ui-panel > header > .btnbar > .item.active > .btn {
-	background-color: #ddd;
+    color: #fff;
+	background-color: #0367e2;
 }
 
-.ui-panel > header > .btnbar > .item.active > .btn:active {
-	background-color: #0367e2;
+.ui-panel > header > .btnbar > .item.active > .btn > i {
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .ui-panel > header > .btnbar > .item > ul {

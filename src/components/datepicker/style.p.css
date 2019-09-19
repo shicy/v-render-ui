@@ -1,7 +1,7 @@
 
 .ui-datepicker {
     display: inline-block;
-    min-width: 212px;
+    min-width: 184px;
     border: 1px solid #eee;
     border-radius: 3px;
     background-color: #fff;
@@ -12,7 +12,7 @@
 }
 
 .ui-datepicker > header > .title {
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .ui-datepicker > header > .title > .item > .lbl {
-    line-height: 30px;
+    line-height: 26px;
 }
 
 .ui-datepicker > header > .title > .item > .val {
@@ -31,7 +31,7 @@
 
 .ui-datepicker > header > .title > .item > button {
     position: absolute;
-    top: 5px;
+    top: 3px;
     width: 20px;
     height: 20px;
     border: 0px;
@@ -75,18 +75,19 @@
 
 .ui-datepicker > section table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
     border-collapse: collapse;
     border-spacing: 0px;
 }
 
 .ui-datepicker > section th {
+    height: 20px;
     font-weight: normal;
 }
 
 .ui-datepicker > section > .table {
     display: inline-block;
-    width: 210px;
+    width: 182px;
     text-align: center;
     vertical-align: top;
 }
@@ -120,12 +121,12 @@
 }
 
 .ui-datepicker > section > .table table.body tr {
-    height: 30px;
+    height: 26px;
 }
 
 .ui-datepicker > section > .table table.body td {
     position: relative;
-    width: 30px;
+    width: 26px;
     cursor: pointer;
 }
 
@@ -138,8 +139,8 @@
     position: absolute;
     width: 22px;
     height: 22px;
-    left: 3px;
-    top: 3px;
+    left: 1px;
+    top: 1px;
     border: 1px solid #92c1fb;
     border-radius: 100px;
     z-index: 1;
@@ -147,8 +148,8 @@
 
 .ui-datepicker > section > .table table.body td.selected span {
     display: inline-block;
-    width: 24px;
-    line-height: 24px;
+    width: 20px;
+    line-height: 20px;
     color: #fff;
     border-radius: 100px;
     background-color: #0072ff;
@@ -172,14 +173,14 @@
 }
 
 .ui-datepicker > footer {
-    height: 48px;
+    height: 42px;
     background-color: #f4f5f9;
 }
 
 .ui-datepicker > footer > .vals {
     position: absolute;
     left: 10px;
-    top: 12px;
+    top: 9px;
     color: #999;
 }
 
@@ -201,12 +202,12 @@
 }
 
 .ui-datepicker > footer > .btns > .ui-btn {
-    width: 85px;
+    width: 60px;
     margin-left: 10px;
 }
 
 .ui-datepicker.is-range {
-    min-width: 422px;
+    min-width: 366px;
 }
 
 .ui-datepicker.is-range > header > .title > .item {
@@ -224,7 +225,7 @@
 
 .ui-datepicker.is-range > section > .table table.body td.selected span {
     width: 100%;
-    line-height: 22px;
+    line-height: 20px;
     border-radius: 0px;
 }
 

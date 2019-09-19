@@ -72,6 +72,10 @@
     box-shadow: 0px 0px 10px 0px #ddd;
 }
 
+.ui-treeselect > .dropdown .ui-tree {
+    font-size: 12px;
+}
+
 .ui-treeselect > .dropdown .tree-node {
     white-space: nowrap;
 }
@@ -94,7 +98,7 @@
 }
 
 .ui-treeselect.animate-in > .dropdown {
-    max-height: 300px;
+    max-height: 210px;
     opacity: 1;
 }
 

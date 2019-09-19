@@ -92,6 +92,10 @@
     box-shadow: 0px 0px 10px 0px #ddd;
 }
 
+.ui-daterange > .ipt > .picker > .ui-datepicker > footer {
+    display: none;
+}
+
 .ui-daterange > .ipt:hover > input {
 	padding-right: 30px;
 }
@@ -208,13 +212,13 @@
 }
 
 .ui-daterange.animate-in > .ipt > .picker {
-    max-height: 300px;
+    max-height: 220px;
     opacity: 1;
 }
 
 .ui-daterange.animate-out > .ipt > .picker {
     max-height: 0px;
-    opacity: 0;
+    opacity: 0.2;
 }
 
 .ui-daterange.has-val > .ipt > .prompt {

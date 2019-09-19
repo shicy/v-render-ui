@@ -13,6 +13,7 @@
 	position: absolute;
     left: 50%;
     top: -100px;
+    font-size: 12px;
     transform: translate(-50%, 0px);
     transition: top 0.5s;
 }
@@ -90,7 +91,7 @@
 }
 
 .ui-message[opt-type='success'] > .container {
-    border: 1px solid rgba(87, 173, 76, 0.2);
+    /*border: 1px solid rgba(87, 173, 76, 0.2);*/
 }
 
 .ui-message[opt-type='success'] > .container > .img {
@@ -98,7 +99,7 @@
 }
 
 .ui-message[opt-type='error'] > .container {
-    border: 1px solid rgba(249, 14, 13, 0.1);
+    /*border: 1px solid rgba(249, 14, 13, 0.1);*/
 }
 
 .ui-message[opt-type='error'] > .container > .img {
@@ -106,7 +107,7 @@
 }
 
 .ui-message[opt-type='warn'] > .container {
-    border: 1px solid rgba(250, 162, 2, 0.2);
+    /*border: 1px solid rgba(250, 162, 2, 0.2);*/
 }
 
 .ui-message[opt-type='warn'] > .container > .img {
@@ -114,7 +115,7 @@
 }
 
 .ui-message[opt-type='info'] > .container {
-    border: 1px solid rgba(4, 175, 248, 0.2);
+    /*border: 1px solid rgba(4, 175, 248, 0.2);*/
 }
 
 .ui-message[opt-type='info'] > .container > .img {

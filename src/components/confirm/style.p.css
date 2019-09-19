@@ -25,7 +25,6 @@
 
 .ui-confirm > .container > .title {
 	padding: 0px 40px 0px 15px;
-    font-size: 16px;
     line-height: 40px;
     white-space: nowrap;
     overflow: hidden;
@@ -34,6 +33,7 @@
 
 .ui-confirm > .container > .content {
     padding: 40px 30px 20px 80px;
+    color: #505050;
 }
 
 .ui-confirm > .container > .content:before {
