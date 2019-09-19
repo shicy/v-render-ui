@@ -186,7 +186,7 @@ const ModuleView = BaseModule.extend(module, {
 			var desc = $("<div style='color:#787878; font-size:14px; margin-top:10px'></div>").appendTo(item);
 
 			icon.attr("src", data. icon);
-			title.html("<a href='" + data.url + "' style='color:#333; font-size:18px;'>" + data.title + "</a>");
+			title.html("<a href='" + data.url + "' style='color:#333; font-size:16px;'>" + data.title + "</a>");
 			infos.text(data.size.toFixed(2) + "M，版本号：V" + data.version + "，更新时间：" + data.date);
 			desc.text(data.desc);
 
@@ -217,7 +217,7 @@ const ModuleView = BaseModule.extend(module, {
 		source.push("    var desc = $('<div style=\"color:#787878; font-size:14px; margin-top:10px\"></div>').appendTo(item);");
 		source.push("");
 		source.push("    icon.attr('src', data.icon);");
-		source.push("    title.html('<a href=\"' + data.url + '\" style=\"color:#333;font-size:18px;\">' + data.title + '</a>');");
+		source.push("    title.html('<a href=\"' + data.url + '\" style=\"color:#333;font-size:16px;\">' + data.title + '</a>');");
 		source.push("    infos.text(data.size.toFixed(2) + 'M，版本号：V' + data.version + '，更新时间：' + data.date);");
 		source.push("    desc.text(data.desc);");
 		source.push("");
@@ -270,7 +270,10 @@ const ModuleView = BaseModule.extend(module, {
 		let description = [];
 		description.push("内置项渲染器（按钮）");
 
-		let buttons = [{name: "download", label: "立即下载", type: "primary"}, {name: "install", label: "安装到手机"}];
+		let buttons = [
+			{name: "download", label: "立即下载", size: "small", type: "primary"},
+			{name: "install", label: "安装到手机", size: "small"}
+		];
 		let myItemRenderer = UIList.item_renderer_button(buttons);
 
 		let demo = new UIGroup(this, { gap: 10 });
@@ -293,7 +296,10 @@ const ModuleView = BaseModule.extend(module, {
 		let description = [];
 		description.push("内置项渲染器（图标+按钮）");
 
-		let buttons = [{name: "download", label: "立即下载", type: "primary"}, {name: "install", label: "安装到手机"}];
+		let buttons = [
+			{name: "download", label: "立即下载", size: "small", type: "primary"},
+			{name: "install", label: "安装到手机", size: "small"}
+		];
 		let myItemRenderer = UIList.item_renderer_icon_button("icon", buttons, "name");
 
 		let demo = new UIGroup(this, { gap: 10 });
