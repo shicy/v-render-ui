@@ -1,7 +1,7 @@
 
 
 .ui-panel {
-	padding-top: 40px;
+	padding-top: 37px;
     border: 1px solid #eee;
 }
 
@@ -97,7 +97,7 @@
     height: 24px;
     padding: 2px 5px;
     color: #333;
-    font-size: 14px;
+    font-size: inherit;
     text-align: center;
     border: 0px;
     border-radius: 2px;

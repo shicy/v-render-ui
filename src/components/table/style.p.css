@@ -269,7 +269,6 @@
 }
 
 .ui-table > .table > section .table-row {
-	height: 42px;
 	border-top: 1px solid #f0f0f0;
 }
 
@@ -284,6 +283,7 @@
 .ui-table > .table > section .table-row > td {
 	position: relative;
 	padding: 10px 12px;
+	line-height: 22px;
 }
 
 .ui-table > .table > section .table-row > td.col-chk {
