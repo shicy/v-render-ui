@@ -592,7 +592,7 @@
 
 		let container = $("<dd></dd>").appendTo(itemContent);
 		container = $("<div></div>").appendTo(container);
-		if (data.top === 0)
+		if (data.top || data.top === 0)
 			container.css("paddingTop", "0px");
 
 		let contentView = data.content;
