@@ -121,8 +121,10 @@
 			item.toggleClass("active");
 		}
 		let name = item.attr("name");
-		if (Utils.isNotBlank(name))
+		if (Utils.isNotBlank(name)) {
+			this.trigger("btn_" + name, btn.is(".active"));
 			this.trigger("btnclick", name, btn.is(".active"));
+		}
 	};
 
 	const onPopupButtonClickHandler = function (e) {
@@ -142,8 +144,10 @@
 	};
 
 	const onPopupMenuButtonHandler = function (e, data) {
-		if (data && Utils.isNotBlank(data.name))
+		if (data && Utils.isNotBlank(data.name)) {
+			this.trigger("btn_" + data.name, !!data.checked);
 			this.trigger("btnclick", data.name, !!data.checked);
+		}
 	};
 
 	const onDropdownButtonClickHandler = function (e) {
@@ -166,8 +170,10 @@
 		}
 		hideBtnDropdown.call(this, item);
 		let name = dropdownItem.attr("name");
-		if (Utils.isNotBlank(name))
+		if (Utils.isNotBlank(name)) {
+			this.trigger("btn_" + name, dropdownItem.is(".active"));
 			this.trigger("btnclick", name, dropdownItem.is(".active"));
+		}
 	};
 
 	const onButtonMouseHandler = function (e) {

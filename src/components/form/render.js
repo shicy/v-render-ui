@@ -149,16 +149,6 @@
 	_UIForm.getView = function (name) {
 		let item = this.get(name);
 		return item && item.getContentView() || null;
-		// if (Utils.isBlank(name))
-		// 	return null;
-		// let item = Utils.find(this._getItems(), (item) => {
-		// 	return item.attr("name") == name;
-		// });
-		// if (item) {
-		// 	let contentView = item.children(".content").children("dd").children().children();
-		// 	return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
-		// }
-		// return null;
 	};
 
 	_UIForm.delete = function (name) {
@@ -992,7 +982,9 @@
 	};
 
 	_FormItem_frontend.getContentView = function () {
-		return this.content();
+		let content = this.content();
+		let comp = VRender.FrontComponent && VRender.FrontComponent.get(content);
+		return comp || VRender.Component.get(content) || content;
 	};
 
 	_FormItem_frontend.required = function (value) {
