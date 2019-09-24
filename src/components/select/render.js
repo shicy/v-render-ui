@@ -595,6 +595,13 @@
 	const renderItems = function ($, target, itemContainer, datas) {
 		this._render_items = [];
 
+		if (this.options.topItem) {
+			if (!datas)
+				datas = [];
+			if (datas[0] != this.options.topItem)
+				datas.unshift(this.options.topItem);
+		}
+
 		if (this._isRenderAsApp() && this.isNative()) {
 			renderItemsAsSelect.call(this, $, itemContainer, datas);
 		}
