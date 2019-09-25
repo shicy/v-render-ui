@@ -341,6 +341,13 @@
 	box-shadow: 0px 0px 0px 2px #ccc;
 }
 
+.ui-table > .table > section .table-row.disabled > td.col-chk .chkbox {
+	background-color: #ddd;
+	pointer-events: none;
+	box-shadow: none !important;
+	opacity: 0.5;
+}
+
 /* expand column */
 .ui-table > .table > section .table-row > td.col-exp {
 	padding: 0px;
@@ -490,4 +497,12 @@
 	left: 0px;
 	right: 0px;
 	top: 36px;
+}
+
+.ui-table.disabled > .table > header th.col-chk .chkbox,
+.ui-table.disabled > .table > section .table-row > td.col-chk .chkbox {
+	background-color: #eee;
+	pointer-events: none;
+	box-shadow: none !important;
+	opacity: 0.5;
 }

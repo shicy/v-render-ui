@@ -445,7 +445,7 @@
 	const itemClickHandler = function (e) {
 		let item = $(e.currentTarget);
 		if (item.parent().is(this._getItemContainer())) {
-			if (item.is(".disabled"))
+			if (item.is(".disabled") || this.isDisabled())
 				return ;
 
 			let event = {type: "itemclick", detail: this._getItemData(item), target: e.target};
@@ -482,6 +482,8 @@
 	};
 
 	const allChkboxClickHandler = function (e) {
+		if (this.isDisabled())
+			return ;
 		let header = this.gridHead.find("tr");
 		let selectedIndex = [];
 		if (header.is(".selected")) {
