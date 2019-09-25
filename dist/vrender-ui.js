@@ -4103,6 +4103,13 @@
   _UISelect.getData = function (original) {
     if (original) {
       this.options.data = this._doAdapter(this.options.data);
+      var topItem = this.getTopItem();
+
+      if (topItem) {
+        if (!this.options.data) this.options.data = [];
+        if (this.options.data[0] != topItem) this.options.data.unshift(topItem);
+      }
+
       return this.options.data;
     }
 
@@ -4151,6 +4158,31 @@
 
   _UISelect.setPlaceholder = function (value) {
     this.setPrompt(value);
+  };
+
+  _UISelect.getTopItem = function () {
+    if (!this.options.hasOwnProperty("topItem")) {
+      var topItem = this.$el.attr("opt-top");
+
+      if (topItem) {
+        try {
+          topItem = JSON.parse(topItem);
+        } catch (e) {
+          topItem = null;
+        }
+
+        this.$el.removeAttr("opt-top");
+      }
+
+      this.options.topItem = topItem;
+    }
+
+    return this.options.topItem;
+  };
+
+  _UISelect.setTopItem = function (value) {
+    this.options.topItem = value;
+    this.$el.removeAttr("opt-top");
   }; // ====================================================
 
 
@@ -4565,7 +4597,8 @@
     target.addClass("ui-select");
     var options = this.options || {};
     if (this.isNative()) target.attr("opt-native", "1");
-    if (Utils.isTrue(options.needMatch)) target.attr("opt-match", "1"); // 容器，用于下拉列表定位
+    if (Utils.isTrue(options.needMatch)) target.attr("opt-match", "1");
+    if (options.topItem && !frontend) target.attr("opt-top", JSON.stringify(options.topItem)); // 容器，用于下拉列表定位
 
     target.attr("opt-box", options.container);
     renderTextView.call(this, $, target);
@@ -4583,6 +4616,10 @@
 
   _Renderer.isNative = function () {
     return Utils.isTrue(this.options["native"]);
+  };
+
+  _Renderer.getTopItem = function () {
+    return this.options.topItem;
   }; // ====================================================
 
 
@@ -8704,16 +8741,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UIForm.getView = function (name) {
     var item = this.get(name);
-    return item && item.getContentView() || null; // if (Utils.isBlank(name))
-    // 	return null;
-    // let item = Utils.find(this._getItems(), (item) => {
-    // 	return item.attr("name") == name;
-    // });
-    // if (item) {
-    // 	let contentView = item.children(".content").children("dd").children().children();
-    // 	return VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
-    // }
-    // return null;
+    return item && item.getContentView() || null;
   };
 
   _UIForm["delete"] = function (name) {
@@ -9120,7 +9148,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (labelWidth) label.css("width", labelWidth);
     var container = $("<dd></dd>").appendTo(itemContent);
     container = $("<div></div>").appendTo(container);
-    if (data.top === 0) container.css("paddingTop", "0px");
+    if (data.top || data.top === 0) container.css("paddingTop", "0px");
     var contentView = data.content;
 
     if (contentView) {
@@ -9511,7 +9539,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   _FormItem_frontend.getContentView = function () {
-    return this.content();
+    var content = this.content();
+    var comp = VRender.FrontComponent && VRender.FrontComponent.get(content);
+    return comp || VRender.Component.get(content) || content;
   };
 
   _FormItem_frontend.required = function (value) {
@@ -12684,7 +12714,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     var name = item.attr("name");
-    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, btn.is(".active"));
+
+    if (Utils.isNotBlank(name)) {
+      this.trigger("btn_" + name, btn.is(".active"));
+      this.trigger("btnclick", name, btn.is(".active"));
+    }
   };
 
   var onPopupButtonClickHandler = function onPopupButtonClickHandler(e) {
@@ -12708,7 +12742,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var onPopupMenuButtonHandler = function onPopupMenuButtonHandler(e, data) {
-    if (data && Utils.isNotBlank(data.name)) this.trigger("btnclick", data.name, !!data.checked);
+    if (data && Utils.isNotBlank(data.name)) {
+      this.trigger("btn_" + data.name, !!data.checked);
+      this.trigger("btnclick", data.name, !!data.checked);
+    }
   };
 
   var onDropdownButtonClickHandler = function onDropdownButtonClickHandler(e) {
@@ -12732,7 +12769,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     hideBtnDropdown.call(this, item);
     var name = dropdownItem.attr("name");
-    if (Utils.isNotBlank(name)) this.trigger("btnclick", name, dropdownItem.is(".active"));
+
+    if (Utils.isNotBlank(name)) {
+      this.trigger("btn_" + name, dropdownItem.is(".active"));
+      this.trigger("btnclick", name, dropdownItem.is(".active"));
+    }
   };
 
   var onButtonMouseHandler = function onButtonMouseHandler(e) {
@@ -13784,7 +13825,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var item = $(e.currentTarget);
 
     if (item.parent().is(this._getItemContainer())) {
-      if (item.is(".disabled")) return;
+      if (item.is(".disabled") || this.isDisabled()) return;
       var event = {
         type: "itemclick",
         detail: this._getItemData(item),
@@ -13820,6 +13861,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var allChkboxClickHandler = function allChkboxClickHandler(e) {
+    if (this.isDisabled()) return;
     var header = this.gridHead.find("tr");
     var selectedIndex = [];
 
