@@ -67,6 +67,13 @@
 	_UISelect.getData = function (original) {
 		if (original) {
 			this.options.data = this._doAdapter(this.options.data);
+			let topItem = this.getTopItem();
+			if (topItem) {
+				if (!this.options.data)
+					this.options.data = [];
+				if (this.options.data[0] != topItem)
+					this.options.data.unshift(topItem);
+			}
 			return this.options.data;
 		}
 		return getDataFlat.call(this);
@@ -107,6 +114,28 @@
 	};
 	_UISelect.setPlaceholder = function (value) {
 		this.setPrompt(value);
+	};
+
+
+	_UISelect.getTopItem = function () {
+		if (!this.options.hasOwnProperty("topItem")) {
+			let topItem = this.$el.attr("opt-top");
+			if (topItem) {
+				try {
+					topItem = JSON.parse(topItem);
+				}
+				catch (e) {
+					topItem = null;
+				}
+				this.$el.removeAttr("opt-top");
+			}
+			this.options.topItem = topItem;
+		}
+		return this.options.topItem;
+	};
+	_UISelect.setTopItem = function (value) {
+		this.options.topItem = value;
+		this.$el.removeAttr("opt-top");
 	};
 
 	// ====================================================
@@ -515,6 +544,8 @@
 
 		if (Utils.isTrue(options.needMatch))
 			target.attr("opt-match", "1");
+		if (options.topItem && !frontend)
+			target.attr("opt-top", JSON.stringify(options.topItem));
 
 		// 容器，用于下拉列表定位
 		target.attr("opt-box", options.container);
@@ -534,6 +565,10 @@
 
 	_Renderer.isNative = function () {
 		return Utils.isTrue(this.options.native);
+	};
+
+	_Renderer.getTopItem = function () {
+		return this.options.topItem;
 	};
 
 	// ====================================================
@@ -594,13 +629,6 @@
 
 	const renderItems = function ($, target, itemContainer, datas) {
 		this._render_items = [];
-
-		if (this.options.topItem) {
-			if (!datas)
-				datas = [];
-			if (datas[0] != this.options.topItem)
-				datas.unshift(this.options.topItem);
-		}
 
 		if (this._isRenderAsApp() && this.isNative()) {
 			renderItemsAsSelect.call(this, $, itemContainer, datas);

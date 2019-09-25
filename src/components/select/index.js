@@ -43,5 +43,12 @@ const UISelect = UISelectable.extend(module, {
 	},
 	setNative: function (value) {
 		this.options.native = value;
+	},
+
+	getTopItem: function () {
+		return this.options.topItem;
+	},
+	setTopItem: function (value) {
+		this.options.topItem = value;
 	}
 });
