@@ -363,7 +363,7 @@
 		// let indexs = this.getSelectedIndex(true);
 		// Component.select.setSelectedIndex.call(this, indexs);
 
-		let datas = this.getSelectedData(true);
+		let datas = this.getSelectedData();
 		let labels = Utils.map(Utils.toArray(datas), (data) => {
 			return this.tree._getDataLabel(data);
 		});
@@ -378,8 +378,8 @@
 			this.$el.removeClass("has-val");
 		}
 
-		this.trigger("change");
-		this.$el.trigger("change");
+		this.trigger("change", datas);
+		this.$el.trigger("change", datas);
 
 		// console.log("====>", indexs, snapshoot.compare())
 
