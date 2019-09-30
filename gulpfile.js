@@ -23,7 +23,7 @@ console.log("build start.. mode=%s", Process.env.NODE_ENV);
 // 	date = (date < 10 ? "0" : "") + date;
 // 	return "" + year + month + date;
 // })();
-const version = "1.0.7";
+const version = "1.0.8";
 
 ///////////////////////////////////////////////////////////
 function clean(callback) {
@@ -91,7 +91,33 @@ function buildJs() {
 function buildCss_p(callback) {
 	let cssFiles = [];
 	cssFiles.push("src/static/css/style.p.css");
-	cssFiles.push("src/components/**/*.p.css");
+	// cssFiles.push("src/components/**/*.p.css"); // 编译顺序不确定
+	cssFiles.push("src/components/button/style.p.css");
+	cssFiles.push("src/components/checkbox/style.p.css");
+	cssFiles.push("src/components/checkgroup/style.p.css");
+	cssFiles.push("src/components/confirm/style.p.css");
+	cssFiles.push("src/components/container/style.p.css");
+	cssFiles.push("src/components/dateinput/style.p.css");
+	cssFiles.push("src/components/datepicker/style.p.css");
+	cssFiles.push("src/components/daterange/style.p.css");
+	cssFiles.push("src/components/dialog/style.p.css");
+	cssFiles.push("src/components/form/style.p.css");
+	cssFiles.push("src/components/input/style.p.css");
+	cssFiles.push("src/components/list/style.p.css");
+	cssFiles.push("src/components/message/style.p.css");
+	cssFiles.push("src/components/notice/style.p.css");
+	cssFiles.push("src/components/paginator/style.p.css");
+	cssFiles.push("src/components/panel/style.p.css");
+	cssFiles.push("src/components/popupmenu/style.p.css");
+	cssFiles.push("src/components/radiobox/style.p.css");
+	cssFiles.push("src/components/radiogroup/style.p.css");
+	cssFiles.push("src/components/scroll/style.p.css");
+	cssFiles.push("src/components/select/style.p.css");
+	cssFiles.push("src/components/tabbar/style.p.css");
+	cssFiles.push("src/components/table/style.p.css");
+	cssFiles.push("src/components/timeinput/style.p.css");
+	cssFiles.push("src/components/tree/style.p.css");
+	cssFiles.push("src/components/treeselect/style.p.css");
 
 	let result = Gulp.src(cssFiles)
 		.pipe(GulpConcat("vrender-ui.p.css"))
@@ -107,7 +133,31 @@ function buildCss_p(callback) {
 function buildCss_m(callback) {
 	let cssFiles = [];
 	cssFiles.push("src/static/css/style.m.css");
-	cssFiles.push("src/components/**/*.m.css");
+	// cssFiles.push("src/components/**/*.m.css"); // 编译顺序不确定
+	cssFiles.push("src/components/button/style.m.css");
+	cssFiles.push("src/components/checkbox/style.m.css");
+	cssFiles.push("src/components/confirm/style.m.css");
+	cssFiles.push("src/components/dateinput/style.m.css");
+	cssFiles.push("src/components/datepicker/style.m.css");
+	cssFiles.push("src/components/daterange/style.m.css");
+	cssFiles.push("src/components/datetime/style.m.css");
+	cssFiles.push("src/components/dialog/style.m.css");
+	cssFiles.push("src/components/form/style.m.css");
+	cssFiles.push("src/components/input/style.m.css");
+	cssFiles.push("src/components/list/style.m.css");
+	cssFiles.push("src/components/message/style.m.css");
+	cssFiles.push("src/components/notice/style.m.css");
+	cssFiles.push("src/components/paginator/style.m.css");
+	cssFiles.push("src/components/panel/style.m.css");
+	cssFiles.push("src/components/popupmenu/style.m.css");
+	cssFiles.push("src/components/radiobox/style.m.css");
+	cssFiles.push("src/components/scroll/style.m.css");
+	cssFiles.push("src/components/select/style.m.css");
+	cssFiles.push("src/components/tabbar/style.m.css");
+	cssFiles.push("src/components/table/style.m.css");
+	cssFiles.push("src/components/timeinput/style.m.css");
+	cssFiles.push("src/components/tree/style.m.css");
+	cssFiles.push("src/components/treeselect/style.m.css");
 
 	let result = Gulp.src(cssFiles)
 		.pipe(GulpConcat("vrender-ui.m.css"))
