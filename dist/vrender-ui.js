@@ -16547,11 +16547,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   _UITree._snapshoot_shoot = function (state) {
-    state.selectedIndex = this.getSelectedIndex(true);
+    state.selectedIndex = this.getSelectedIndex(true, true);
   };
 
   _UITree._snapshoot_compare = function (state) {
-    var selectedIndex = this.getSelectedIndex(true);
+    var selectedIndex = this.getSelectedIndex(true, true);
     return Fn.equalIndex(state.selectedIndex, selectedIndex);
   }; // ====================================================
 
@@ -17877,7 +17877,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // let snapshoot = this._snapshoot();
     // let indexs = this.getSelectedIndex(true);
     // Component.select.setSelectedIndex.call(this, indexs);
-    var datas = this.getSelectedData(true);
+    var datas = this.getSelectedData();
     var labels = Utils.map(Utils.toArray(datas), function (data) {
       return _this2.tree._getDataLabel(data);
     });
@@ -17890,8 +17890,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.$el.removeClass("has-val");
     }
 
-    this.trigger("change");
-    this.$el.trigger("change"); // console.log("====>", indexs, snapshoot.compare())
+    this.trigger("change", datas);
+    this.$el.trigger("change", datas); // console.log("====>", indexs, snapshoot.compare())
     // snapshoot.done();
   }; // ====================================================
 
