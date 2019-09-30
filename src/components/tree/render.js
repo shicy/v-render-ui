@@ -595,11 +595,11 @@
 	};
 
 	_UITree._snapshoot_shoot = function (state) {
-		state.selectedIndex = this.getSelectedIndex(true);
+		state.selectedIndex = this.getSelectedIndex(true, true);
 	};
 
 	_UITree._snapshoot_compare = function (state) {
-		let selectedIndex = this.getSelectedIndex(true);
+		let selectedIndex = this.getSelectedIndex(true, true);
 		return Fn.equalIndex(state.selectedIndex, selectedIndex);
 	};
 
