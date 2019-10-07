@@ -283,7 +283,7 @@
 .ui-table > .table > section .table-row > td {
 	position: relative;
 	padding: 10px 12px;
-	line-height: 22px;
+	line-height: 20px;
 }
 
 .ui-table > .table > section .table-row > td.col-chk {
@@ -295,7 +295,7 @@
 .ui-table > .table > section .table-row > td.col-chk .chkbox {
 	position: absolute;
 	left: 10px;
-	top: 14px;
+	top: 13px;
     width: 14px;
     height: 14px;
     border: 1px solid #ccc;
@@ -358,7 +358,7 @@
     width: 20px;
     height: 20px;
     left: 0px;
-    top: 11px;
+    top: 10px;
     background-image: url(/vrender-ui/icons/006a.png);
     background-size: 10px;
     background-repeat: no-repeat;
