@@ -4,7 +4,7 @@ const Path = require("path");
 
 global.__basedir = Path.resolve(__dirname, "../");
 global.__vrender = "v-render";
-global.__vrender = Path.resolve(__dirname, "../../v-render"); // 为测试方便
+// global.__vrender = Path.resolve(__dirname, "../../v-render"); // 为测试方便
 
 const VRender = require(__vrender);
 
@@ -15,7 +15,7 @@ require("./router");
 VRender.use(require("../index"));
 
 new VRender({
-	mode: "development",
+	// mode: "development",
 	cwd: __basedir,
 	babel: true,
 	server: {
