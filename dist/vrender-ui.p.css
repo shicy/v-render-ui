@@ -1505,6 +1505,195 @@
 }
 
 
+.ui-datetime {
+	display: inline-block;
+	width: 260px;
+    text-align: left;
+}
+
+.ui-datetime > .ipt:before {
+	content: "";
+    position: absolute;
+    width: 30px;
+    height: 32px;
+    left: 0px;
+    top: 0px;
+    background-image: url(/vrender-ui/icons/040a.png);
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: center;
+    opacity: .5;
+    z-index: 1;
+}
+
+.ui-datetime > .ipt > input {
+	width: 100%;
+    height: 32px;
+    font-size: inherit;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    border-top-color: #999;
+    border-left-color: #999;
+    padding: 0px 3px 0px 30px;
+    margin: 0px;
+    background-color: #fff;
+}
+
+.ui-datetime > .ipt > input:focus {
+    border-color: #66afe9;
+}
+
+.ui-datetime > .ipt > .prompt {
+    position: absolute;
+    left: 30px;
+    top: 1px;
+    right: 1px;
+    line-height: 30px;
+    color: #999;
+    background-color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ui-datetime > .ipt > .clear {
+	position: absolute;
+	width: 16px;
+    height: 16px;
+    top: 8px;
+    right: 6px;
+    border: none;
+    background-color: #fff;
+    background-image: url(/vrender-ui/icons/002a.png);
+    background-size: 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: none;
+    outline: none;
+}
+
+.ui-datetime > .ipt > .clear:hover {
+	opacity: .75;
+}
+
+.ui-datetime > .ipt > .clear:active {
+	opacity: 1;
+}
+
+.ui-datetime > .format {
+	display: none;
+}
+
+.ui-datetime > .picker {
+    display: none;
+    position: absolute;
+    left: 0px;
+    top: 100%;
+    z-index: 200;
+    margin-top: 3px;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 0px #ddd;
+}
+
+.ui-datetime > .picker > .ui-datepicker {
+    border-bottom: 0px;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.ui-datetime > .picker > .timebar {
+    padding: 5px 0px;
+    font-size: 12px;
+    text-align: center;
+    border: 1px solid #eee;
+    border-top: 0px;
+    border-radius: 0px 0px 3px 3px;
+    background-color: #f4f5f9;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select {
+    width: 50px;
+    margin-left: 10px;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select:first-child {
+    margin-left: 0px;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select > .ipt > input {
+    height: 24px;
+    padding: 0px 16px 0px 0px;
+    font-size: 12px;
+    text-align: center;
+    border-color: #eee;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select > .ipt > .dropdownbtn {
+    display: none;
+}
+
+.ui-datetime > .picker > .timebar > .ui-select > .dropdown .item {
+    line-height: 22px;
+}
+
+.ui-datetime > .picker > .timebar > .tip {
+    margin-left: -15px;
+    color: #787878;
+    pointer-events: none;
+}
+
+.ui-datetime.show-picker > .picker {
+    display: block;
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.25s;
+}
+
+.ui-datetime.show-before > .picker {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 3px;
+}
+
+.ui-datetime.animate-in > .picker {
+    max-height: 250px;
+    opacity: 1;
+}
+
+.ui-datetime.animate-out > .picker {
+    max-height: 0px;
+    opacity: 0;
+}
+
+.ui-datetime.has-val > .ipt > .prompt {
+    display: none;
+}
+
+.ui-datetime.has-val > .ipt:hover > input {
+    padding-right: 32px;
+}
+
+.ui-datetime.has-val > .ipt:hover > .clear {
+    display: block;
+    opacity: .5;
+}
+
+.ui-datetime[disabled] {
+    cursor: no-drop;
+}
+
+.ui-datetime[disabled] > .ipt {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.ui-datetime[disabled] > .ipt > input {
+    background-color: #f0f0f0;
+}
+
+
 .ui-dialog {
     display: none;
     position: fixed;
@@ -1655,7 +1844,7 @@
 
 .ui-dialog[opt-size='small'] > .dialog-container {
     width: 420px;
-    height: 290px;
+    height: 250px;
 }
 
 .ui-dialog[opt-size='big'] > .dialog-container {
@@ -4584,7 +4773,7 @@
 .ui-table > .table > section .table-row > td {
 	position: relative;
 	padding: 10px 12px;
-	line-height: 22px;
+	line-height: 20px;
 }
 
 .ui-table > .table > section .table-row > td.col-chk {
@@ -4596,7 +4785,7 @@
 .ui-table > .table > section .table-row > td.col-chk .chkbox {
 	position: absolute;
 	left: 10px;
-	top: 14px;
+	top: 13px;
     width: 14px;
     height: 14px;
     border: 1px solid #ccc;
@@ -4659,7 +4848,7 @@
     width: 20px;
     height: 20px;
     left: 0px;
-    top: 11px;
+    top: 10px;
     background-image: url(/vrender-ui/icons/006a.png);
     background-size: 10px;
     background-repeat: no-repeat;

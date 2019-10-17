@@ -13399,21 +13399,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     target = this.$el;
     var ghead = this.gridHead = target.children(".table").children("header").children();
     var gbody = this.gridBody = target.children(".table").children("section").children();
-    ghead.on("tap", "th.col-chk", allChkboxClickHandler.bind(this));
-    gbody.on("tap", "tr", itemClickHandler.bind(this));
-    gbody.on("tap", "td.col-exp .expbtn", onExpandBtnHandler.bind(this));
 
-    if (this._isRenderAsApp()) {
-      ghead.on("tap", "th", headTouchHandler.bind(this));
-      target.on("tap", ".sort-and-filter", sortAndFilterClickHandler.bind(this));
-      target.on("tap", ".sort-and-filter .item", sortAndFilterItemHandler.bind(this));
-      target.on("tap", ".sort-and-filter input", sortAndFilterInputClickHandler.bind(this));
-      target.on("tap", ".sort-and-filter .clearbtn", sortAndFilterClearHandler.bind(this));
-      target.on("tap", ".sort-and-filter .submitbtn", sortAndFilterSubmitHandler.bind(this));
+    var isApp = this._isRenderAsApp();
+
+    var clickName = isApp ? "tap" : "click";
+    ghead.on(clickName, "th.col-chk", allChkboxClickHandler.bind(this));
+    gbody.on(clickName, "tr", itemClickHandler.bind(this));
+    gbody.on(clickName, "td.col-exp .expbtn", onExpandBtnHandler.bind(this));
+
+    if (isApp) {
+      ghead.on(clickName, "th", headTouchHandler.bind(this));
+      target.on(clickName, ".sort-and-filter", sortAndFilterClickHandler.bind(this));
+      target.on(clickName, ".sort-and-filter .item", sortAndFilterItemHandler.bind(this));
+      target.on(clickName, ".sort-and-filter input", sortAndFilterInputClickHandler.bind(this));
+      target.on(clickName, ".sort-and-filter .clearbtn", sortAndFilterClearHandler.bind(this));
+      target.on(clickName, ".sort-and-filter .submitbtn", sortAndFilterSubmitHandler.bind(this));
       target.on("keyup", ".sort-and-filter input", sortAndFilterInputKeyHandler.bind(this));
     } else {
-      ghead.on("tap", ".toolbar > *", toolbtnClickHandler.bind(this));
-      ghead.on("tap", ".toolbar .dropdown li", toolDropdownClickHandler.bind(this));
+      ghead.on(clickName, ".toolbar > *", toolbtnClickHandler.bind(this));
+      ghead.on(clickName, ".toolbar .dropdown li", toolDropdownClickHandler.bind(this));
       ghead.on("mouseenter", ".toolbar > *", toolbtnMouseHandler.bind(this));
       ghead.on("mouseleave", ".toolbar > *", toolbtnMouseHandler.bind(this));
     }

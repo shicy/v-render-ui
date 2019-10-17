@@ -100,6 +100,7 @@ function buildCss_p(callback) {
 	cssFiles.push("src/components/dateinput/style.p.css");
 	cssFiles.push("src/components/datepicker/style.p.css");
 	cssFiles.push("src/components/daterange/style.p.css");
+	cssFiles.push("src/components/datetime/style.p.css");
 	cssFiles.push("src/components/dialog/style.p.css");
 	cssFiles.push("src/components/form/style.p.css");
 	cssFiles.push("src/components/input/style.p.css");
