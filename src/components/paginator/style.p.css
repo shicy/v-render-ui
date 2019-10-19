@@ -1,5 +1,6 @@
 
 .ui-paginator {
+    position: relative;
     height: 32px;
     font-size: 12px;
 }

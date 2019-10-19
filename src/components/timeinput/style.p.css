@@ -1,6 +1,7 @@
 
 .ui-timeipt {
 	display: inline-block;
+    position: relative;
     width: 140px;
     text-align: left;
 }

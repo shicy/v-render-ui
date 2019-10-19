@@ -1,5 +1,6 @@
 
 .ui-tabbar {
+    position: relative;
 	padding-top: 5px;
 }
 

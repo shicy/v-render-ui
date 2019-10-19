@@ -1,6 +1,7 @@
 
 .ui-datetime {
 	display: inline-block;
+    position: relative;
 	width: 260px;
     text-align: left;
 }
@@ -133,6 +134,7 @@
 }
 
 .ui-datetime > .picker > .timebar > .tip {
+    position: relative;
     margin-left: -15px;
     color: #787878;
     pointer-events: none;
