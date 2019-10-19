@@ -4437,6 +4437,14 @@
 
   _UISelect._doAdapter = function (datas) {
     return doAdapter.call(this, datas);
+  };
+
+  _UISelect._showDropdown = function () {
+    showDropdown.call(this);
+  };
+
+  _UISelect._hideDropdown = function () {
+    hideDropdown.call(this);
   }; // ====================================================
 
 
@@ -4566,10 +4574,7 @@
         hideDropdown.call(_this3);
       }
     }, 200);
-  }; // const comboMouseHandler = function (e) {
-  // 	Fn.mouseDebounce(e, hideDropdown.bind(this));
-  // };
-
+  };
 
   var dropdownTouchHandler = function dropdownTouchHandler(e) {
     if ($(e.target).is(".dropdown")) hideDropdown.call(this);
@@ -4840,8 +4845,6 @@
       // 不会是 native
       $("html,body").addClass("ui-scrollless");
     } else {
-      // target.on("mouseenter", comboMouseHandler.bind(this));
-      // target.on("mouseleave", comboMouseHandler.bind(this));
       var dropdown = target.children(".dropdown");
       dropdown.off("click").on("click", function () {
         return false;
@@ -6935,6 +6938,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         waitToStop();
       }
     }
+  };
+
+  var pickerClickHandler = function pickerClickHandler(e) {
+    var target = $(e.target);
+    console.log(target);
+    var timeBar = this.$el.find(".timebar");
+    var hour = timeBar.children("[name=hour]");
+    var minute = timeBar.children("[name=minute]");
+    var second = timeBar.children("[name=second]");
+    if (hour.find(target).length == 0) UISelect.instance(hour)._hideDropdown();
+    if (minute.find(target).length == 0) UISelect.instance(minute)._hideDropdown();
+    if (second.find(target).length == 0) UISelect.instance(second)._hideDropdown();
+    return false;
   }; ///////////////////////////////////////////////////////
 
 
@@ -7096,9 +7112,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       picker.find(".col").on("scroll", pickerScrollHandler.bind(this));
     } else {
       picker.on("change", pickerChangeHandler.bind(this));
-      picker.off("click").on("click", function () {
-        return false;
-      });
+      picker.off("click").on("click", pickerClickHandler.bind(this));
       setTimeout(function () {
         $("body").on("click." + _this4.getViewId(), function () {
           hideDatePicker.call(_this4);

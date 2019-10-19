@@ -7,7 +7,6 @@
 }
 
 .vrender-ui * {
-    position: relative;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
@@ -679,6 +678,7 @@
     min-height: 16px;
     padding-left: 16px;
     vertical-align: baseline;
+    line-height: 22px;
 }
 
 .ui-chkbox:before {
@@ -706,8 +706,8 @@
 }
 
 .ui-chkbox > span {
+    display: inline-block;
     padding-left: 3px;
-    line-height: 22px;
 }
 
 .ui-chkbox.checked:before {
@@ -871,6 +871,7 @@
 
 .ui-dateipt {
 	display: inline-block;
+    position: relative;
 	width: 200px;
     text-align: left;
 }
@@ -1256,6 +1257,7 @@
 
 .ui-daterange {
 	display: inline-block;
+    position: relative;
     text-align: left;
 }
 
@@ -1507,6 +1509,7 @@
 
 .ui-datetime {
 	display: inline-block;
+    position: relative;
 	width: 260px;
     text-align: left;
 }
@@ -1639,6 +1642,7 @@
 }
 
 .ui-datetime > .picker > .timebar > .tip {
+    position: relative;
     margin-left: -15px;
     color: #787878;
     pointer-events: none;
@@ -2854,6 +2858,7 @@
 
 
 .ui-paginator {
+    position: relative;
     height: 32px;
     font-size: 12px;
 }
@@ -4094,6 +4099,7 @@
 
 .ui-select {
 	display: inline-block;
+    position: relative;
     width: 200px;
 }
 
@@ -4329,6 +4335,7 @@
 
 
 .ui-tabbar {
+    position: relative;
 	padding-top: 5px;
 }
 
@@ -5000,6 +5007,7 @@
 
 .ui-timeipt {
 	display: inline-block;
+    position: relative;
     width: 140px;
     text-align: left;
 }
@@ -5461,6 +5469,7 @@
 
 .ui-treeselect {
 	display: inline-block;
+    position: relative;
     width: 200px;
 }
 

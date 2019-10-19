@@ -17,7 +17,7 @@ input {
 }
 
 .vrender-ui * {
-    position: relative;
+    /*position: relative;*/
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
