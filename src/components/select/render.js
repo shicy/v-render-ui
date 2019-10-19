@@ -380,6 +380,13 @@
 		return doAdapter.call(this, datas);
 	};
 
+	_UISelect._showDropdown = function () {
+		showDropdown.call(this);
+	};
+	_UISelect._hideDropdown = function () {
+		hideDropdown.call(this);
+	};
+
 	// ====================================================
 	const iptClickHandler = function (e) {
 		let target = $(e.target);
@@ -509,10 +516,6 @@
 			}
 		}, 200);
 	};
-
-	// const comboMouseHandler = function (e) {
-	// 	Fn.mouseDebounce(e, hideDropdown.bind(this));
-	// };
 
 	const dropdownTouchHandler = function (e) {
 		if ($(e.target).is(".dropdown"))
@@ -783,8 +786,6 @@
 			$("html,body").addClass("ui-scrollless");
 		}
 		else {
-			// target.on("mouseenter", comboMouseHandler.bind(this));
-			// target.on("mouseleave", comboMouseHandler.bind(this));
 			let dropdown = target.children(".dropdown");
 			dropdown.off("click").on("click", function () { return false; });
 			setTimeout(() => {

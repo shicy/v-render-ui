@@ -262,6 +262,21 @@
 		}
 	};
 
+	const pickerClickHandler = function (e) {
+		let target = $(e.target); console.log(target);
+		let timeBar = this.$el.find(".timebar");
+		let hour = timeBar.children("[name=hour]");
+		let minute = timeBar.children("[name=minute]");
+		let second = timeBar.children("[name=second]");
+		if (hour.find(target).length == 0)
+			UISelect.instance(hour)._hideDropdown();
+		if (minute.find(target).length == 0)
+			UISelect.instance(minute)._hideDropdown();
+		if (second.find(target).length == 0)
+			UISelect.instance(second)._hideDropdown();
+		return false;
+	};
+
 	///////////////////////////////////////////////////////
 	const Renderer = function (context, options) {
 		UI._baseRender.call(this, context, options);
@@ -416,7 +431,7 @@
 		}
 		else {
 			picker.on("change", pickerChangeHandler.bind(this));
-			picker.off("click").on("click", function () { return false; });
+			picker.off("click").on("click", pickerClickHandler.bind(this));
 			setTimeout(() => {
 				$("body").on("click." + this.getViewId(), () => {
 					hideDatePicker.call(this);
