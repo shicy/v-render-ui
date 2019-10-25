@@ -12,40 +12,6 @@ var RouterAdapter = module.exports = function (context) {
 	this.context = context;
 };
 
-// RouterAdapter.prototype.before = function (path, params, callback) {
-// 	console.log(path, params);
-// };
-
-RouterAdapter.prototype.view = function (name, params, callback) {
-	var names = name.substr(1).split("/");
-	var viewpath = null;
-
-	if (names[0] === "quickstart") {
-		viewpath = "./pages/quickstart";
-	}
-	else if (names[0] === "documents") {
-		viewpath = "./pages/documents";
-	}
-	else if (names[0] === "components") {
-		if (names[1] === "module")
-			viewpath = "./pages/components/ModuleView";
-		else
-			viewpath = "./pages/components";
-	}
-	else if (names[0] === "styles") {
-		viewpath = "./pages/styles";
-	}
-	else if (names[0] === "apis") {
-		viewpath = "./pages/apis";
-	}
-
-	if (viewpath) {
-		callback(false, VRender.RouterStatus.OK, viewpath);
-		return true;
-	}
-	return false;
-};
-
 RouterAdapter.prototype.api = function (name, params, callback) {
 	if (name === "data.component.items") {
 		setTimeout(function () {
