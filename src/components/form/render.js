@@ -680,10 +680,12 @@
 
 	const validateTextView = function (item, view, callback) {
 		// console.log("validateTextView")
-		view.validate(() => {
+		view.validate((errmsg) => {
 			if (view.hasError()) {
 				item.addClass("is-error");
 				item.children(".errmsg").remove();
+				if (Utils.isFunction(callback))
+					callback(errmsg);
 			}
 			else {
 				item.removeClass("is-error");
