@@ -728,19 +728,20 @@
 		// console.log("doItemValidate");
 		if (Utils.isBlank(value)) {
 			let error = item.attr("opt-required") == 1 ? (item.attr("opt-empty") || "不能为空") : null;
-			setItemErrorMsg.call(this, item, error, callback);
+			if (error) {
+				setItemErrorMsg.call(this, item, error, callback);
+				return ;
+			}
+		}
+		let validate = getItemValidate.call(this, item);
+		if (Utils.isFunction(validate)) {
+			validate.call(this, value, (err) => {
+				let error = !err ? false : (err === true ? "内容不正确" : Utils.trimToNull(err));
+				setItemErrorMsg.call(this, item, error, callback);
+			});
 		}
 		else {
-			let validate = getItemValidate.call(this, item);
-			if (Utils.isFunction(validate)) {
-				validate(value, (err) => {
-					let error = !err ? false : (err === true ? "内容不正确" : Utils.trimToNull(err));
-					setItemErrorMsg.call(this, item, error, callback);
-				});
-			}
-			else {
-				setItemErrorMsg.call(this, item, false, callback);
-			}
+			setItemErrorMsg.call(this, item, false, callback);
 		}
 	};
 
@@ -850,6 +851,9 @@
 
 	const doSubmitBefore = function (params, callback) {
 		let event = {type: "action_before"};
+		event.preventDefault = () => {
+			event.isPreventDefault = true;
+		};
 		this.trigger(event, params);
 		if (event.isPreventDefault) {
 			callback("canceled");
