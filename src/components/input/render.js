@@ -711,10 +711,13 @@
 	const isNumberKeyEnable = function (e, text) {
 		if (/[0-9]/.test(e.key))
 			return true;
-		if (e.key == "-")
-			return !/\-/.test(text) && text.length == 0;
-		if (e.key == ".")
-			return !/\./.test(text) && text.length > 0;
+		let start = e.target.selectionStart;
+		if (e.key == "-") {
+			return !/\-/.test(text) && (isNaN(start) || start === 0);
+		}
+		else if (e.key == ".") {
+			return !/\./.test(text) && text.length > 0 && (isNaN(start) || start > 0);
+		}
 		return false;
 	};
 
