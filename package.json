@@ -1,6 +1,6 @@
 {
   "name": "v-render-ui",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "a vrender component library",
   "main": "index.js",
   "scripts": {
@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/shicy/v-render-ui#readme",
   "devDependencies": {
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.2.0",
@@ -34,6 +34,6 @@
     "gulp-uglify": "^3.0.2",
     "node-dev": "^3.1.3",
     "prismjs": "^1.17.1",
-    "v-render": "^2.1.4"
+    "v-render": "^2.1.5"
   }
 }
