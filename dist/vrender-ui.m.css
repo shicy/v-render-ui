@@ -51,7 +51,7 @@ input {
 
 .ui-hidden,
 .ui-fn {
-	display: none;
+	display: none !important;
 }
 
 .ui-scrollless {

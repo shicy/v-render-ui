@@ -51,8 +51,9 @@
 	user-select: none;
 }
 
-.ui-hidden, .ui-fn {
-	display: none;
+.ui-hidden,
+.ui-fn {
+	display: none !important;
 }
 
 .ui-scrollless {

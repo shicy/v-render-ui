@@ -4018,8 +4018,14 @@
 
   var isNumberKeyEnable = function isNumberKeyEnable(e, text) {
     if (/[0-9]/.test(e.key)) return true;
-    if (e.key == "-") return !/\-/.test(text) && text.length == 0;
-    if (e.key == ".") return !/\./.test(text) && text.length > 0;
+    var start = e.target.selectionStart;
+
+    if (e.key == "-") {
+      return !/\-/.test(text) && (isNaN(start) || start === 0);
+    } else if (e.key == ".") {
+      return !/\./.test(text) && text.length > 0 && (isNaN(start) || start > 0);
+    }
+
     return false;
   }; ///////////////////////////////////////////////////////
 
@@ -8781,7 +8787,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }; // ====================================================
 
 
-  _UIForm.getFormData = function () {
+  _UIForm.getFormData = function (beTrim) {
     var params = {};
     params = Utils.extend(params, this.getParams());
     Utils.each(this._getItems(), function (item) {
@@ -8791,7 +8797,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (content.is("input, textarea")) {
         params[name] = content.val() || "";
-        params[name] = Utils.trimToEmpty(params[name]);
       } else {
         var contentView = VRender.Component.get(content) || VRender.FrontComponent.get(content);
 
@@ -8809,6 +8814,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           params[name] = content.attr("data-val");
         }
       }
+
+      if (beTrim && params[name] && typeof params[name] == "string") params[name] = Utils.trimToEmpty(params[name]);
     });
     return params;
   };
@@ -9251,10 +9258,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var _this6 = this;
 
     // console.log("validateTextView")
-    view.validate(function () {
+    view.validate(function (errmsg) {
       if (view.hasError()) {
         item.addClass("is-error");
         item.children(".errmsg").remove();
+        if (Utils.isFunction(callback)) callback(errmsg);
       } else {
         item.removeClass("is-error");
         doItemValidate.call(_this6, item, view.val(), callback);
@@ -9297,18 +9305,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // console.log("doItemValidate");
     if (Utils.isBlank(value)) {
       var error = item.attr("opt-required") == 1 ? item.attr("opt-empty") || "不能为空" : null;
-      setItemErrorMsg.call(this, item, error, callback);
-    } else {
-      var validate = getItemValidate.call(this, item);
 
-      if (Utils.isFunction(validate)) {
-        validate(value, function (err) {
-          var error = !err ? false : err === true ? "内容不正确" : Utils.trimToNull(err);
-          setItemErrorMsg.call(_this7, item, error, callback);
-        });
-      } else {
-        setItemErrorMsg.call(this, item, false, callback);
+      if (error) {
+        setItemErrorMsg.call(this, item, error, callback);
+        return;
       }
+    }
+
+    var validate = getItemValidate.call(this, item);
+
+    if (Utils.isFunction(validate)) {
+      validate.call(this, value, function (err) {
+        var error = !err ? false : err === true ? "内容不正确" : Utils.trimToNull(err);
+        setItemErrorMsg.call(_this7, item, error, callback);
+      });
+    } else {
+      setItemErrorMsg.call(this, item, false, callback);
     }
   };
 
@@ -9425,6 +9437,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var event = {
       type: "action_before"
     };
+
+    event.preventDefault = function () {
+      event.isPreventDefault = true;
+    };
+
     this.trigger(event, params);
 
     if (event.isPreventDefault) {
