@@ -174,7 +174,7 @@
 	};
 
 	// ====================================================
-	_UIForm.getFormData = function () {
+	_UIForm.getFormData = function (beTrim) {
 		let params = {};
 		params = Utils.extend(params, this.getParams());
 		Utils.each(this._getItems(), (item) => {
@@ -184,7 +184,6 @@
 			let content = item.children(".content").children("dd").children().children();
 			if (content.is("input, textarea")) {
 				params[name] = content.val() || "";
-				params[name] = Utils.trimToEmpty(params[name]);
 			}
 			else {
 				let contentView = VRender.Component.get(content) || VRender.FrontComponent.get(content);
@@ -207,6 +206,8 @@
 					params[name] = content.attr("data-val");
 				}
 			}
+			if (beTrim && params[name] && (typeof params[name] == "string"))
+				params[name] = Utils.trimToEmpty(params[name]);
 		});
 		return params;
 	};
