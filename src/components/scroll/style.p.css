@@ -157,8 +157,8 @@
 	min-height: 120px;
 }
 
-.ui-scroll.is-empty > .ui-empty {
-	/*display: block;*/
+.ui-scroll.is-empty > .bottom {
+	display: none;
 }
 
 .ui-scroll.no-more > .bottom > .scroll-bottom {
