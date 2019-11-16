@@ -34,7 +34,6 @@
 	height: 100%;
 	color: #999;
 	overflow: hidden;
-	font-size: 14px;
 }
 
 .ui-scroll > .top > .scroll-refreshdef > * {
@@ -90,10 +89,6 @@
 
 .ui-scroll > .top.animate {
 	transition: height 0.2s;
-}
-
-.ui-scroll > .bottom {
-	font-size: 14px;
 }
 
 .ui-scroll > .bottom > * {
