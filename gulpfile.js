@@ -23,7 +23,7 @@ console.log("build start.. mode=%s", Process.env.NODE_ENV);
 // 	date = (date < 10 ? "0" : "") + date;
 // 	return "" + year + month + date;
 // })();
-const version = "1.0.9";
+const version = "1.1.0";
 
 ///////////////////////////////////////////////////////////
 function clean(callback) {

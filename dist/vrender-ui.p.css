@@ -3953,7 +3953,6 @@
 	height: 100%;
 	color: #999;
 	overflow: hidden;
-	font-size: 14px;
 }
 
 .ui-scroll > .top > .scroll-refreshdef > * {
@@ -4009,10 +4008,6 @@
 
 .ui-scroll > .top.animate {
 	transition: height 0.2s;
-}
-
-.ui-scroll > .bottom {
-	font-size: 14px;
 }
 
 .ui-scroll > .bottom > * {
@@ -4081,8 +4076,8 @@
 	min-height: 120px;
 }
 
-.ui-scroll.is-empty > .ui-empty {
-	/*display: block;*/
+.ui-scroll.is-empty > .bottom {
+	display: none;
 }
 
 .ui-scroll.no-more > .bottom > .scroll-bottom {
@@ -5238,6 +5233,7 @@
 
 .ui-tree .tree-node > .ic {
 	flex: none;
+	position: relative;
 	width: 18px;
 	height: 20px;
 }
@@ -5255,6 +5251,7 @@
 }
 
 .ui-tree .tree-node > .chkbox {
+	position: absolute;
 	width: 20px;
     height: 20px;
     cursor: pointer;
