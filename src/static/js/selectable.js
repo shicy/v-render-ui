@@ -215,6 +215,12 @@
 		return UISelect.getSelectedData.call(this, needArray);
 	};
 
+	// 选择所有
+	_UISelect.setAllSelected = function () {
+		let indexs = Utils.map(this.getData(), (data, i) => (i));
+		this.setSelectedIndex(indexs);
+	};
+
 	// 判断某个索引是否被选中
 	_UISelect.isSelectedIndex = function (index) {
 		index = Utils.getIndexValue(index);
