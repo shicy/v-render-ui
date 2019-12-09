@@ -1862,6 +1862,14 @@
 
   _UISelect.getSelectedData = function (needArray) {
     return UISelect.getSelectedData.call(this, needArray);
+  }; // 选择所有
+
+
+  _UISelect.setAllSelected = function () {
+    var indexs = Utils.map(this.getData(), function (data, i) {
+      return i;
+    });
+    this.setSelectedIndex(indexs);
   }; // 判断某个索引是否被选中
 
 
