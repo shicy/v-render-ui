@@ -2772,6 +2772,12 @@
 
   var _UICheckbox = UICheckbox.prototype = new UI._base(false);
 
+  UICheckbox.create = function (options) {
+    options = options || {};
+    options.tagName = "label";
+    return VRender.Component.create(options, UICheckbox, Renderer);
+  };
+
   _UICheckbox.init = function (target, options) {
     UI._base.init.call(this, target, options);
 

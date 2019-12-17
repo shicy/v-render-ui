@@ -5252,7 +5252,7 @@
 }
 
 .ui-tree .tree-node > .chkbox {
-	position: absolute;
+	position: relative;
 	width: 20px;
     height: 20px;
     cursor: pointer;
