@@ -41,7 +41,6 @@ const Index = VRender.PageView.extend(module, {
 | [UICheckGroup](https://github.com/shicy/v-render-ui/tree/master/doc/modules/chkgrp) | 多选组 |
 | [UIConfirm](https://github.com/shicy/v-render-ui/tree/master/doc/modules/confirm) | 确认对话框 |
 | [UIContainer](https://github.com/shicy/v-render-ui/tree/master/doc/modules/container) | 边框容器 |
-| [UIDatagrid](https://github.com/shicy/v-render-ui/tree/master/doc/modules/datagrid) | 数据网络 |
 | [UIDateInput](https://github.com/shicy/v-render-ui/tree/master/doc/modules/dateinput) | 日期输入框 |
 | [UIDatePicker](https://github.com/shicy/v-render-ui/tree/master/doc/modules/datepicker) | 日期选择器 |
 | [UIDateRange](https://github.com/shicy/v-render-ui/tree/master/doc/modules/daterange) | 起止日期输入框 |
@@ -62,6 +61,7 @@ const Index = VRender.PageView.extend(module, {
 | [UIScroll](https://github.com/shicy/v-render-ui/tree/master/doc/modules/scroll) | 滚动加载 |
 | [UISelect](https://github.com/shicy/v-render-ui/tree/master/doc/modules/select) | 下拉选择框 |
 | [UITabbar](https://github.com/shicy/v-render-ui/tree/master/doc/modules/tabbar) | 标签栏 |
+| [UITable](https://github.com/shicy/v-render-ui/tree/master/doc/modules/table) | 数据网络 |
 | [UITimeInput](https://github.com/shicy/v-render-ui/tree/master/doc/modules/timeinput) | 时间输入框 |
 | [UITree](https://github.com/shicy/v-render-ui/tree/master/doc/modules/true) | 树形视图 |
 | [UITreeSelect](https://github.com/shicy/v-render-ui/tree/master/doc/modules/treeselect) | 树形下拉选择框 |
