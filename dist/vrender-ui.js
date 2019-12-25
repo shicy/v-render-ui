@@ -14247,7 +14247,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var row = $("<tr></tr>").appendTo(thead);
       if (this.isAllSelected(this._renderDatas || [])) row.addClass("selected");
       if (this._hasExpand() && !isApp) row.append("<th class='col-exp'></th>");
-      if (this.isChkboxVisible()) row.append("<th class='col-chk'><span class='chkbox'></span></th>");
+      if (this.isChkboxVisible()) row.append("<th class='col-chk'><div><span class='chkbox'></span></div></th>");
       Utils.each(columns, function (column, i) {
         if (column.expand) return;
         var col = $("<th></th>").appendTo(row);
@@ -14421,7 +14421,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     if (this._hasExpand() && !isApp) row.append("<td class='col-exp'><span class='expbtn'></span></td>");
-    if (this.isChkboxVisible()) row.append("<td class='col-chk'><span class='chkbox'></span></td>");
+    if (this.isChkboxVisible()) row.append("<td class='col-chk'><div><span class='chkbox'></span></div></td>");
     Utils.each(columns, function (column, i) {
       if (!column.expand) {
         var col = $("<td></td>").appendTo(row);
