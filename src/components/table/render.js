@@ -815,7 +815,7 @@
 			if (this._hasExpand() && !isApp) 
 				row.append("<th class='col-exp'></th>");
 			if (this.isChkboxVisible())
-				row.append("<th class='col-chk'><span class='chkbox'></span></th>");
+				row.append("<th class='col-chk'><div><span class='chkbox'></span></div></th>");
 
 			Utils.each(columns, (column, i) => {
 				if (column.expand)
@@ -1009,7 +1009,7 @@
 			row.append("<td class='col-exp'><span class='expbtn'></span></td>");
 
 		if (this.isChkboxVisible())
-			row.append("<td class='col-chk'><span class='chkbox'></span></td>");
+			row.append("<td class='col-chk'><div><span class='chkbox'></span></div></td>");
 
 		Utils.each(columns, (column, i) => {
 			if (!column.expand) {
