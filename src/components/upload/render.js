@@ -395,9 +395,6 @@
 	};
 
 	const doUpload = function (action, params, callback) {
-		let apiName = getActionName.call(this, action);
-		let apiParams = Utils.extend({}, this.getParams(), params);
-
 		let totalSize = 0;
 		Utils.each(this.files, (file) => {
 			totalSize += file.size;
@@ -406,7 +403,8 @@
 		this.totalSize = totalSize;
 		this.totalSend = 0;
 
-		uploadFiles.call(this, apiName, apiParams, this.files, (err, ret) => {
+		let apiName = getActionName.call(this, action);
+		uploadFiles.call(this, apiName, params, this.files, (err, ret) => {
 			if (!err) {
 				this.files = null;
 				this.trigger("success", ret);
@@ -432,11 +430,19 @@
 	};
 
 	const uploadFiles = function (api, params, files, callback) {
+		let getUploadParams = (index, file) => {
+			let _params = params;
+			if (params && Utils.isFunction(params.handler)) {
+				_params = params.handler(index, file);
+			}
+			return Utils.extend({}, this.getParams(), _params);
+		};
 		if (files.length == 1 || this.isMixed()) {
 			Utils.each(files, function (file) {
 				file.state = 1; // 正在上传
 			});
-			uploadFile.call(this, api, params, files, (err, ret) => {
+			let _params = getUploadName(0, files);
+			uploadFile.call(this, api, _params, files, (err, ret) => {
 				let localIds = [];
 				Utils.each(files, (file) => {
 					file.state = !err ? 2 : 3; // 成功、失败
@@ -450,30 +456,36 @@
 		else {
 			let errors = [];
 			let results = [];
-			let loop = () => {
-				let file = Utils.findBy(files, "state", 0);
-				if (!file) {
+			let loop = (index) => {
+				if (index < files.length) {
+					let file = files[index];
+					if (file.state == 0) {
+						file.state == 1;
+						let _params = getUploadParams(index, file);
+						uploadFile.call(this, api, _params, [file], (err, ret) => {
+							if (!err) {
+								file.state = 2;
+								ret.localId = file.localId;
+								results.push(ret);
+							}
+							else {
+								file.state = 3;
+								errors.push(err);
+							}
+							loop(index + 1);
+						});
+					}
+					else {
+						loop(index + 1);
+					}
+				}
+				else {
 					if (errors.length == 0)
 						errors = null;
 					callback(errors, results);
 				}
-				else {
-					file.state = 1;
-					uploadFile.call(this, api, params, [file], (err, ret) => {
-						if (!err) {
-							file.state = 2;
-							ret.localId = file.localId;
-							results.push(ret);
-						}
-						else {
-							file.state = 3;
-							errors.push(err);
-						}
-						loop();
-					});
-				}
 			};
-			loop();
+			loop(0);
 		}
 	};
 
