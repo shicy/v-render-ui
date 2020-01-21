@@ -8402,8 +8402,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var doUpload = function doUpload(action, params, callback) {
     var _this2 = this;
 
-    var apiName = getActionName.call(this, action);
-    var apiParams = Utils.extend({}, this.getParams(), params);
     var totalSize = 0;
     Utils.each(this.files, function (file) {
       totalSize += file.size;
@@ -8411,7 +8409,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
     this.totalSize = totalSize;
     this.totalSend = 0;
-    uploadFiles.call(this, apiName, apiParams, this.files, function (err, ret) {
+    var apiName = getActionName.call(this, action);
+    uploadFiles.call(this, apiName, params, this.files, function (err, ret) {
       if (!err) {
         _this2.files = null;
 
@@ -8442,11 +8441,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var uploadFiles = function uploadFiles(api, params, files, callback) {
     var _this3 = this;
 
+    var getUploadParams = function getUploadParams(index, file) {
+      var _params = params;
+
+      if (params && Utils.isFunction(params.handler)) {
+        _params = params.handler(index, file);
+      }
+
+      return Utils.extend({}, _this3.getParams(), _params);
+    };
+
     if (files.length == 1 || this.isMixed()) {
       Utils.each(files, function (file) {
         file.state = 1; // 正在上传
       });
-      uploadFile.call(this, api, params, files, function (err, ret) {
+
+      var _params = getUploadName(0, files);
+
+      uploadFile.call(this, api, _params, files, function (err, ret) {
         var localIds = [];
         Utils.each(files, function (file) {
           file.state = !err ? 2 : 3; // 成功、失败
@@ -8461,30 +8473,37 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var errors = [];
       var results = [];
 
-      var loop = function loop() {
-        var file = Utils.findBy(files, "state", 0);
+      var loop = function loop(index) {
+        if (index < files.length) {
+          var file = files[index];
 
-        if (!file) {
+          if (file.state == 0) {
+            file.state == 1;
+
+            var _params2 = getUploadParams(index, file);
+
+            uploadFile.call(_this3, api, _params2, [file], function (err, ret) {
+              if (!err) {
+                file.state = 2;
+                ret.localId = file.localId;
+                results.push(ret);
+              } else {
+                file.state = 3;
+                errors.push(err);
+              }
+
+              loop(index + 1);
+            });
+          } else {
+            loop(index + 1);
+          }
+        } else {
           if (errors.length == 0) errors = null;
           callback(errors, results);
-        } else {
-          file.state = 1;
-          uploadFile.call(_this3, api, params, [file], function (err, ret) {
-            if (!err) {
-              file.state = 2;
-              ret.localId = file.localId;
-              results.push(ret);
-            } else {
-              file.state = 3;
-              errors.push(err);
-            }
-
-            loop();
-          });
         }
       };
 
-      loop();
+      loop(0);
     }
   };
 
