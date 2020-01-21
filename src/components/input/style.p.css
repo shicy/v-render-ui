@@ -250,6 +250,11 @@
 
 .ui-input[opt-fixed] > .ipt {
     width: 100%;
+    height: 100%;
+}
+
+.ui-input[opt-fixed] > .ipt > textarea {
+    height: 100%;
 }
 
 .ui-input[opt-pwd] > .ipt > input {
