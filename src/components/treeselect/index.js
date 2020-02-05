@@ -47,6 +47,13 @@ const UITreeSelect = UIBase.extend(module, {
 		delete this.options.openIndex;
 	},
 
+	isClearable: function () {
+		return Utils.isTrue(this.options.clearable);
+	},
+	setClearable: function (value) {
+		this.options.clearable = Utils.isNull(value) || Utils.isTrue(value);
+	},
+
 	getApiName: function () {
 		return null;
 	},

@@ -20,6 +20,7 @@
 		this.tree = UI.tree.find(this.$el)[0];
 
 		this.$el.on("tap", ".ipt", iptClickHandler.bind(this));
+		this.$el.on("tap", ".ipt .clearbtn", clearbtnClickHandler.bind(this));
 		this.$el.on("change", ".dropdown", function () { return false; });
 
 		this.tree.on("change", treeChangeHandler.bind(this));
@@ -51,6 +52,16 @@
 		if (Utils.isNotBlank(value)) {
 			$("<span class='prompt'></span>").appendTo(target).text(value);
 		}
+	};
+
+	_UITreeSelect.isClearable = function () {
+		return this.$el.attr("opt-clearable") == 1;
+	};
+	_UITreeSelect.setClearable = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			this.$el.attr("opt-clearable", "1");
+		else
+			this.$el.removeAttr("opt-clearable");
 	};
 
 	_UITreeSelect.getDataAdapter = function () {
@@ -229,6 +240,11 @@
 		showDropdown.call(this);
 	};
 
+	const clearbtnClickHandler = function (e) {
+		this.setSelectedIndex(-1);
+		return false;
+	};
+
 	const dropdownTouchHandler = function (e) {
 		if ($(e.target).is(".dropdown"))
 			hideDropdown.call(this);
@@ -258,6 +274,9 @@
 
 		// 容器，用于下拉列表定位
 		target.attr("opt-box", this.options.container);
+
+		if (Utils.isTrue(this.options.clearable))
+			target.attr("opt-clearable", "1");
 
 		if (this.isMultiple())
 			target.attr("multiple", "multiple");
@@ -292,7 +311,8 @@
 		let input = $("<input type='text'/>").appendTo(ipttag);
 		input.attr("readonly", "readonly");
 
-		ipttag.append("<button class='dropdownbtn'></button>");
+		ipttag.append("<div class='dropdownbtn'></div>");
+		ipttag.append("<div class='clearbtn'></div>");
 		ipttag.append("<span class='prompt'>" + Utils.trimToEmpty(this.options.prompt) + "</span>");
 	};
 

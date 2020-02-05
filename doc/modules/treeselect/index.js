@@ -131,7 +131,7 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("基本使用");
 
 		let demo = new UIGroup(this, { gap: 10 });
-		demo.append(new UITreeSelect(this, { data: exampleData, prompt: "请选择" }));
+		demo.append(new UITreeSelect(this, { data: exampleData, prompt: "请选择", clearable: true }));
 
 		let source = [];
 		source.push("new UITreeSelect([context], {\n  data: dataSource,\n  prompt: '请选择'\n});");
