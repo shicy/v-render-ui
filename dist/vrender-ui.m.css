@@ -4407,6 +4407,7 @@ input {
 .ui-tree .tree-node > .ep {
 	flex: none;
     display: inline-block;
+    position: relative;
     width: 0.2rem;
     height: 0.2rem;
 }
@@ -4429,6 +4430,7 @@ input {
 .ui-tree .tree-node > .chkbox {
 	flex: none;
     display: inline-block;
+    position: relative;
     width: 0.2rem;
     height: 0.2rem;
 }
@@ -4454,6 +4456,7 @@ input {
 .ui-tree .tree-node > .ic {
 	flex: none;
     display: inline-block;
+    position: relative;
     width: 0.2rem;
     height: 0.2rem;
 }
@@ -4665,28 +4668,36 @@ input {
     font-size: inherit;
     border: 0px;
     background: none;
-    padding: 0px 0.3rem 0px 0.14rem;
+    padding: 0px 0.4rem 0px 0.14rem;
     margin: 0px;
     outline: none;
 }
 
 .ui-treeselect > .ipt > .dropdownbtn {
 	position: absolute;
-    width: 0.3rem;
-    height: 0.42rem;
-    top: 0.01rem;
+    width: 0.32rem;
+    top: 0px;
     right: 0px;
-    padding: 0px;
-    margin: 0px;
-    border: 0px;
-    background: none;
+    bottom: 0px;
     background-image: url(/vrender-ui/icons/006a.png);
     background-size: 0.12rem;
     background-repeat: no-repeat;
     background-position: center;
-    outline: none;
     opacity: 0.5;
-    z-index: 1;
+}
+
+.ui-treeselect > .ipt > .clearbtn {
+    display: none;
+    position: absolute;
+    width: 0.32rem;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-image: url(/vrender-ui/icons/002a.png);
+    background-size: 0.16rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.35;
 }
 
 .ui-treeselect > .ipt > .prompt {
@@ -4723,6 +4734,14 @@ input {
 
 .ui-treeselect.has-val > .ipt > .prompt {
 	display: none;
+}
+
+.ui-treeselect.has-val[opt-clearable] > .ipt > .dropdownbtn {
+    display: none;
+}
+
+.ui-treeselect.has-val[opt-clearable] > .ipt > .clearbtn {
+    display: block;
 }
 
 .ui-treeselect.show-dropdown > .dropdown {
