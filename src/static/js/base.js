@@ -186,6 +186,14 @@
 		this.$el.removeAttr("data-tryid");
 	};
 
+	UIBase.loadBefore = function (api, params) {
+		this.trigger("load_before", api, params);
+	};
+
+	UIBase.loadAfter = function (err, data) {
+		this.trigger("load_after", err, data);
+	};
+
 	// ====================================================
 	_UIBase.init = function (target, options) {
 		UIBase.init.call(this, target, options);
@@ -304,6 +312,7 @@
 		if (!isNaN(page) && page > 0) {
 			params.p_no = page;
 		}
+		this.trigger("reload_before", this.lastLoadApi, params);
 		return this.load(this.lastLoadApi, params, callback);
 	};
 
@@ -314,6 +323,14 @@
 
 	_UIBase._tryAutoLoad = function () {
 		UIBase.tryAutoLoad.call(this);
+	};
+
+	_UIBase._loadBefore = function (api, params) {
+		UIBase.loadBefore.call(this, api, params);
+	};
+
+	_UIBase._loadAfter = function (err, data) {
+		UIBase.loadAfter.call(this, err, data);
 	};
 
 	///////////////////////////////////////////////////////

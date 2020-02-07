@@ -319,7 +319,8 @@
 		setItemActive.call(this, item, beSelected);
 	};
 
-	_UISelect._loadBefore = function () {
+	_UISelect._loadBefore = function (api, params) {
+		UI._base.loadBefore.call(this, api, params);
 		if (this._isRenderAsApp() && this.isNative())
 			return ;
 		let itemContainer = this._getItemContainer();
@@ -337,7 +338,8 @@
 		}
 	};
 
-	_UISelect._loadAfter = function () {
+	_UISelect._loadAfter = function (err, data) {
+		UI._base.loadAfter.call(this, err, data);
 		if (this._isRenderAsApp() && this.isNative())
 			return ;
 		let itemContainer = this._getItemContainer();

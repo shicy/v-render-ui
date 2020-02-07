@@ -524,6 +524,14 @@
     delete options.selectedId;
     this.$el.removeAttr("data-tryindex");
     this.$el.removeAttr("data-tryid");
+  };
+
+  UIBase.loadBefore = function (api, params) {
+    this.trigger("load_before", api, params);
+  };
+
+  UIBase.loadAfter = function (err, data) {
+    this.trigger("load_after", err, data);
   }; // ====================================================
 
 
@@ -641,6 +649,7 @@
       params.p_no = page;
     }
 
+    this.trigger("reload_before", this.lastLoadApi, params);
     return this.load(this.lastLoadApi, params, callback);
   }; // 判断是否正在加载
 
@@ -651,6 +660,14 @@
 
   _UIBase._tryAutoLoad = function () {
     UIBase.tryAutoLoad.call(this);
+  };
+
+  _UIBase._loadBefore = function (api, params) {
+    UIBase.loadBefore.call(this, api, params);
+  };
+
+  _UIBase._loadAfter = function (err, data) {
+    UIBase.loadAfter.call(this, err, data);
   }; ///////////////////////////////////////////////////////
 
 
@@ -4393,7 +4410,9 @@
     setItemActive.call(this, item, beSelected);
   };
 
-  _UISelect._loadBefore = function () {
+  _UISelect._loadBefore = function (api, params) {
+    UI._base.loadBefore.call(this, api, params);
+
     if (this._isRenderAsApp() && this.isNative()) return;
 
     var itemContainer = this._getItemContainer();
@@ -4414,7 +4433,9 @@
     }
   };
 
-  _UISelect._loadAfter = function () {
+  _UISelect._loadAfter = function (err, data) {
+    UI._base.loadAfter.call(this, err, data);
+
     if (this._isRenderAsApp() && this.isNative()) return;
 
     var itemContainer = this._getItemContainer();
