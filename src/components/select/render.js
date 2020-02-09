@@ -169,6 +169,7 @@
 			UI._select.updateSelection.call(this);
 		}
 
+		this.trigger("itemchange", data);
 		return newItem;
 	};
 
@@ -199,6 +200,7 @@
 			UI._select.updateSelection.call(this);
 			if (oldItem && oldItem.is(".selected"))
 				selectChanged.call(this);
+			this.trigger("itemchange", data);
 		}
 		return index;
 	};

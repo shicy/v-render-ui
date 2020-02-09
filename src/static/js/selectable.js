@@ -249,13 +249,16 @@
 		let newItem = UISelect.addItem.call(this, data, index);
 		if (newItem)
 			UISelect.updateSelection.call(this);
+		this.trigger("itemchange", data);
 		return newItem;
 	};
 
 	_UISelect.updateItem = function (data, index) {
 		index = UISelect.updateItem.call(this, data, index);
-		if (index >= 0)
+		if (index >= 0) {
 			UISelect.updateSelection.call(this);
+			this.trigger("itemchange", data);
+		}
 		return index;
 	};
 
@@ -263,6 +266,7 @@
 		data = UISelect.removeItem.call(this, data);
 		if (data)
 			UISelect.updateSelection.call(this);
+		this.trigger("itemchange", data);
 		return data;
 	};
 
@@ -270,6 +274,7 @@
 		let data = UISelect.removeItem.call(this, null, index);
 		if (data)
 			UISelect.updateSelection.call(this);
+		this.trigger("itemchange", data);
 		return data;
 	};
 

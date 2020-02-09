@@ -156,19 +156,29 @@
 	};
 
 	_UITreeSelect.addItem = function (data, index) {
-		return this.tree.addItem(data, index);
+		let result = this.tree.addItem(data, index);
+		if (result)
+			this.trigger("itemchange", data);
+		return result;
 	};
 
 	_UITreeSelect.updateItem = function (data, index) {
-		return this.tree.updateItem(data, index);
+		let result = this.tree.updateItem(data, index);
+		if (result)
+			this.trigger("itemchange", data);
+		return result;
 	};
 
 	_UITreeSelect.removeItem = function (data) {
-		return this.tree.removeItem(data);
+		let result = this.tree.removeItem(data);
+		this.trigger("itemchange", data);
+		return result;
 	};
 
 	_UITreeSelect.removeItemAt = function (index) {
-		return this.tree.removeItemAt(index);
+		let result = this.tree.removeItemAt(index);
+		this.trigger("itemchange", data);
+		return result;
 	};
 
 	_UITreeSelect.addOrUpdateItem = function (data) {

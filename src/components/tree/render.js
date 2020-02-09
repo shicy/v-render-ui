@@ -346,6 +346,7 @@
 	_UITree.addItem = function (data, pdata, index) {
 		if (Utils.isBlank(data))
 			return false;
+
 		let container = this._getItemContainer();
 		if (Utils.isNotBlank(pdata)) {
 			let item = getItemByData.call(this, pdata, true);
@@ -357,14 +358,18 @@
 				}
 			}
 		}
+
 		let children = container.children();
 		let nodeIndex = container.is(".root") ? 0 : getItemIndex.call(this, container.parent(), true);
 		index = Utils.getIndexValue(index);
 		if (index >= 0 && index < children.length - 1)
 			nodeIndex += index;
+		
 		let snapshoot = this._snapshoot();
 		addItem.call(this, container, data, index, nodeIndex);
 		snapshoot.done();
+
+		this.trigger("itemchange", data);
 		return true;
 	};
 
@@ -410,6 +415,7 @@
 				updateItem.call(this, item, data);
 		}
 		snapshoot.done();
+		this.trigger("itemchange", data);
 		return true;
 	};
 
@@ -438,6 +444,7 @@
 				removeItem.call(this, item);
 		}
 		snapshoot.done();
+		this.trigger("itemchange", data);
 		return true;
 	};
 
@@ -462,6 +469,7 @@
 				removeItem.call(this, item);
 		}
 		snapshoot.done();
+		// this.trigger("itemchange");
 		return true;
 	};
 

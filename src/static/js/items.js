@@ -359,12 +359,17 @@
 	// 添加列表项
 	// index添加项到指定索引位置
 	_UIItems.addItem = function (data, index) {
-		return UIItems.addItem.call(this, data, index);
+		let item = UIItems.addItem.call(this, data, index);
+		this.trigger("itemchange", data);
+		return item;
 	};
 
 	// 更新列表项，index无效时将被忽略
 	_UIItems.updateItem = function (data, index) {
-		return UIItems.updateItem.call(this, data, index);
+		index = UIItems.updateItem.call(this, data, index);
+		if (index >= 0)
+			this.trigger("itemchange", data);
+		return index;
 	};
 
 	// 删除列表项
@@ -374,7 +379,9 @@
 
 	// 删除列表项
 	_UIItems.removeItemAt = function (index) {
-		return UIItems.removeItem.call(this, null, index);
+		let data = UIItems.removeItem.call(this, null, index);
+		this.trigger("itemchange", data);
+		return data;
 	};
 
 	// 添加或更新列表项

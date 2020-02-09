@@ -143,7 +143,7 @@
 		else if (e.type == "mouseleave") {
 			dragEnd.call(this, e);
 		}
-		return false;
+		// return false;
 	};
 
 	const onTouchHandler = function (e) {
@@ -159,7 +159,7 @@
 		else if (e.type == "touchcancel") {
 			dragEnd.call(this, e);
 		}
-		return false;
+		// return false;
 	};
 
 	const onContentLoadHandler = function () {
@@ -172,6 +172,16 @@
 				doMore.call(this);
 			}, 10);
 		}
+	};
+
+	const onContentItemChangeHandler = function () {
+		if (this.itemChangeTimer) {
+			clearTimeout(this.itemChangeTimer);
+		}
+		this.itemChangeTimer = setTimeout(() => {
+			this.itemChangeTimer = 0;
+			checkIfEmpty.call(this);
+		}, 0);
 	};
 	
 	///////////////////////////////////////////////////////
@@ -345,6 +355,12 @@
 			};
 			contentView.scroll_loaded = loadedHandler.bind(this);
 			contentView.on("loaded", contentView.scroll_loaded);
+
+			let itemChangeHandler = function () {
+				onContentItemChangeHandler.call(this);
+			};
+			contentView.scroll_itemchange = itemChangeHandler.bind(this);
+			contentView.on("itemchange", contentView.scroll_itemchange);
 		}
 	};
 
@@ -353,6 +369,9 @@
 		if (contentView && Utils.isFunction(contentView.off)) {
 			if (contentView.scroll_loaded)
 				contentView.off("loaded", contentView.scroll_loaded);
+
+			if (contentView.scroll_itemchange)
+				contentView.off("itemchange", contentView.scroll_itemchange);
 		}
 	};
 	

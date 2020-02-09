@@ -333,6 +333,8 @@
 		let snapshoot = this._snapshoot();
 		rerenderItems.call(this);
 		snapshoot.done();
+
+		this.trigger("itemchange", data);
 	};
 
 	_UITable.updateItem = function (data, index) {
@@ -355,6 +357,7 @@
 			let snapshoot = this._snapshoot(); // 可能被筛选或排序
 			rerenderItems.call(this);
 			snapshoot.done();
+			this.trigger("itemchange", data);
 		}
 	};
 
@@ -373,6 +376,8 @@
 				let snapshoot = this._snapshoot();
 				rerenderItems.call(this);
 				snapshoot.done();
+
+				this.trigger("itemchange", removedData);
 			}
 		}
 	};
