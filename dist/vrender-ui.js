@@ -1122,12 +1122,16 @@
 
 
   _UIItems.addItem = function (data, index) {
-    return UIItems.addItem.call(this, data, index);
+    var item = UIItems.addItem.call(this, data, index);
+    this.trigger("itemchange", data);
+    return item;
   }; // 更新列表项，index无效时将被忽略
 
 
   _UIItems.updateItem = function (data, index) {
-    return UIItems.updateItem.call(this, data, index);
+    index = UIItems.updateItem.call(this, data, index);
+    if (index >= 0) this.trigger("itemchange", data);
+    return index;
   }; // 删除列表项
 
 
@@ -1137,7 +1141,9 @@
 
 
   _UIItems.removeItemAt = function (index) {
-    return UIItems.removeItem.call(this, null, index);
+    var data = UIItems.removeItem.call(this, null, index);
+    this.trigger("itemchange", data);
+    return data;
   }; // 添加或更新列表项
 
 
@@ -1919,24 +1925,32 @@
   _UISelect.addItem = function (data, index) {
     var newItem = UISelect.addItem.call(this, data, index);
     if (newItem) UISelect.updateSelection.call(this);
+    this.trigger("itemchange", data);
     return newItem;
   };
 
   _UISelect.updateItem = function (data, index) {
     index = UISelect.updateItem.call(this, data, index);
-    if (index >= 0) UISelect.updateSelection.call(this);
+
+    if (index >= 0) {
+      UISelect.updateSelection.call(this);
+      this.trigger("itemchange", data);
+    }
+
     return index;
   };
 
   _UISelect.removeItem = function (data) {
     data = UISelect.removeItem.call(this, data);
     if (data) UISelect.updateSelection.call(this);
+    this.trigger("itemchange", data);
     return data;
   };
 
   _UISelect.removeItemAt = function (index) {
     var data = UISelect.removeItem.call(this, null, index);
     if (data) UISelect.updateSelection.call(this);
+    this.trigger("itemchange", data);
     return data;
   }; // 判断是否选中
 
@@ -4254,6 +4268,7 @@
       UI._select.updateSelection.call(this);
     }
 
+    this.trigger("itemchange", data);
     return newItem;
   };
 
@@ -4285,6 +4300,7 @@
       UI._select.updateSelection.call(this);
 
       if (oldItem && oldItem.is(".selected")) selectChanged.call(this);
+      this.trigger("itemchange", data);
     }
 
     return index;
@@ -13791,6 +13807,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
     rerenderItems.call(this);
     snapshoot.done();
+    this.trigger("itemchange", data);
   };
 
   _UITable.updateItem = function (data, index) {
@@ -13813,6 +13830,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       rerenderItems.call(this);
       snapshoot.done();
+      this.trigger("itemchange", data);
     }
   };
 
@@ -13833,6 +13851,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
         rerenderItems.call(this);
         snapshoot.done();
+        this.trigger("itemchange", removedData);
       }
     }
   };
@@ -15364,7 +15383,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     doInit.call(this);
   };
 
-  _UIScroll.reset = function () {}; // ====================================================
+  _UIScroll.reset = function () {
+    doRefresh.call(this);
+  }; // ====================================================
 
 
   _UIScroll.getContentView = function () {
@@ -15374,6 +15395,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       if (content && content.length > 0) {
         if (content.length === 1) this.contentView = VRender.Component.get(content);
         if (!this.contentView) this.contentView = content;
+      } else {
+        this.contentView = this.$el.children(".container");
       }
     }
 
@@ -15491,9 +15514,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       dragEnd.call(this, e);
     } else if (e.type == "mouseleave") {
       dragEnd.call(this, e);
-    }
+    } // return false;
 
-    return false;
   };
 
   var onTouchHandler = function onTouchHandler(e) {
@@ -15505,9 +15527,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       dragEnd.call(this, e);
     } else if (e.type == "touchcancel") {
       dragEnd.call(this, e);
-    }
+    } // return false;
 
-    return false;
   };
 
   var onContentLoadHandler = function onContentLoadHandler() {
@@ -15522,6 +15543,19 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         doMore.call(_this);
       }, 10);
     }
+  };
+
+  var onContentItemChangeHandler = function onContentItemChangeHandler() {
+    var _this2 = this;
+
+    if (this.itemChangeTimer) {
+      clearTimeout(this.itemChangeTimer);
+    }
+
+    this.itemChangeTimer = setTimeout(function () {
+      _this2.itemChangeTimer = 0;
+      checkIfEmpty.call(_this2);
+    }, 0);
   }; ///////////////////////////////////////////////////////
 
 
@@ -15636,14 +15670,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
   var doInit = function doInit() {
-    var _this2 = this;
+    var _this3 = this;
 
     initEvents.call(this);
     initContentEvents.call(this);
     setTimeout(function () {
-      checkIfEmpty.call(_this2);
-      if (isContentLoading.call(_this2)) _this2.$el.addClass("is-loading");
-    }, 10);
+      checkIfEmpty.call(_this3);
+      if (isContentLoading.call(_this3)) _this3.$el.addClass("is-loading");
+    }, 50);
   };
 
   var initEvents = function initEvents() {
@@ -15690,6 +15724,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       contentView.scroll_loaded = loadedHandler.bind(this);
       contentView.on("loaded", contentView.scroll_loaded);
+
+      var itemChangeHandler = function itemChangeHandler() {
+        onContentItemChangeHandler.call(this);
+      };
+
+      contentView.scroll_itemchange = itemChangeHandler.bind(this);
+      contentView.on("itemchange", contentView.scroll_itemchange);
     }
   };
 
@@ -15698,21 +15739,22 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
     if (contentView && Utils.isFunction(contentView.off)) {
       if (contentView.scroll_loaded) contentView.off("loaded", contentView.scroll_loaded);
+      if (contentView.scroll_itemchange) contentView.off("itemchange", contentView.scroll_itemchange);
     }
   }; // ====================================================
 
 
   var doRefresh = function doRefresh() {
-    var _this3 = this;
+    var _this4 = this;
 
     if (this.$el.is(".is-refresh, .is-loading")) return;
     var target = this.$el.addClass("is-refresh");
 
     var complete = function complete() {
-      target.removeClass("is-refresh");
-      target.removeClass("no-more");
-      hideRefreshView.call(_this3);
-      checkIfEmpty.call(_this3);
+      target.removeClass("is-refresh"); // target.removeClass("no-more");
+
+      hideRefreshView.call(_this4);
+      checkIfEmpty.call(_this4);
     };
 
     var result = false;
@@ -15746,7 +15788,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
 
   var doMore = function doMore(state) {
-    var _this4 = this;
+    var _this5 = this;
 
     if (this.$el.is(".is-loading, .is-refresh, .no-more")) return;
     var target = this.$el.addClass("is-loading");
@@ -15754,7 +15796,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var complete = function complete(hasMore) {
       if (!hasMore) target.addClass("no-more");
       target.removeClass("is-loading");
-      checkIfEmpty.call(_this4);
+      checkIfEmpty.call(_this5);
     };
 
     var result = false;
@@ -15768,7 +15810,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       });
     }
 
-    if (result === false) {
+    if (result === false && !(contentView && contentView.is(".no-more"))) {
       var moreFunction = this.getMoreFunction();
 
       if (Utils.isFunction(moreFunction)) {
@@ -15877,7 +15919,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
 
   var hideRefreshView = function hideRefreshView() {
-    var _this5 = this;
+    var _this6 = this;
 
     if (!this.$el.is(".show-top")) return;
     var refreshView = this.$el.children(".top");
@@ -15888,7 +15930,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       refreshView.height(0);
       content.removeAttr("state");
       setTimeout(function () {
-        _this5.$el.removeClass("show-top");
+        _this6.$el.removeClass("show-top");
 
         refreshView.removeClass("animate");
       }, 200);
@@ -15964,7 +16006,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         return contentView.isEmpty();
       }
 
-      return contentView.length <= 0;
+      return contentView.children().length <= 0;
     }
 
     return true;
@@ -16383,6 +16425,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
     addItem.call(this, container, data, index, nodeIndex);
     snapshoot.done();
+    this.trigger("itemchange", data);
     return true;
   };
 
@@ -16436,6 +16479,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     }
 
     snapshoot.done();
+    this.trigger("itemchange", data);
     return true;
   };
 
@@ -16470,6 +16514,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     }
 
     snapshoot.done();
+    this.trigger("itemchange", data);
     return true;
   };
 
@@ -16494,7 +16539,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       if (item) removeItem.call(this, item);
     }
 
-    snapshoot.done();
+    snapshoot.done(); // this.trigger("itemchange");
+
     return true;
   };
 
@@ -17769,19 +17815,27 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
 
   _UITreeSelect.addItem = function (data, index) {
-    return this.tree.addItem(data, index);
+    var result = this.tree.addItem(data, index);
+    if (result) this.trigger("itemchange", data);
+    return result;
   };
 
   _UITreeSelect.updateItem = function (data, index) {
-    return this.tree.updateItem(data, index);
+    var result = this.tree.updateItem(data, index);
+    if (result) this.trigger("itemchange", data);
+    return result;
   };
 
   _UITreeSelect.removeItem = function (data) {
-    return this.tree.removeItem(data);
+    var result = this.tree.removeItem(data);
+    this.trigger("itemchange", data);
+    return result;
   };
 
   _UITreeSelect.removeItemAt = function (index) {
-    return this.tree.removeItemAt(index);
+    var result = this.tree.removeItemAt(index);
+    this.trigger("itemchange", data);
+    return result;
   };
 
   _UITreeSelect.addOrUpdateItem = function (data) {
