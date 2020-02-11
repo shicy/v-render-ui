@@ -20,6 +20,7 @@
 	};
 
 	_UIScroll.reset = function () {
+		doRefresh.call(this);
 	};
 
 	// ====================================================
@@ -31,6 +32,9 @@
 					this.contentView = VRender.Component.get(content);
 				if (!this.contentView)
 					this.contentView = content;
+			}
+			else {
+				this.contentView = this.$el.children(".container");
 			}
 		}
 		return this.contentView;
@@ -306,7 +310,7 @@
 			checkIfEmpty.call(this);
 			if (isContentLoading.call(this))
 				this.$el.addClass("is-loading");
-		}, 10);
+		}, 50);
 	};
 
 	const initEvents = function () {
@@ -383,7 +387,7 @@
 
 		let complete = () => {
 			target.removeClass("is-refresh");
-			target.removeClass("no-more");
+			// target.removeClass("no-more");
 			hideRefreshView.call(this);
 			checkIfEmpty.call(this);
 		}
@@ -441,7 +445,7 @@
 			});
 		}
 
-		if (result === false) {
+		if (result === false && !(contentView && contentView.is(".no-more"))) {
 			let moreFunction = this.getMoreFunction();
 			if (Utils.isFunction(moreFunction)) {
 				let result2 = result = moreFunction((data) => {
@@ -646,7 +650,7 @@
 			if (Utils.isFunction(contentView.isEmpty)) {
 				return contentView.isEmpty();
 			}
-			return contentView.length <= 0;
+			return contentView.children().length <= 0;
 		}
 		return true;
 	};
