@@ -2,3 +2,4 @@ node_modules
 package-lock.json
 logs
 bin/_work
+build/release/*.zip

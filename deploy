@@ -1,0 +1,38 @@
+#! /bin/bash
+
+# 初始化
+rm -rf ./build/dist
+mkdir ./build/dist
+
+# 拷贝
+cp -r ./dist ./build/dist/dist
+cp -r ./doc ./build/dist/doc
+cp -r ./public ./build/dist/public
+cp -r ./src ./build/dist/src
+cp ./index.js ./build/dist/index.js
+cp ./package.json ./build/dist/package.json
+cp ./.npmrc ./build/dist/.npmrc
+
+# 打包
+release_file_name="release_$(date '+%y%m%d%H%M%S').zip"
+release_file_path="./build/release/${release_file_name}"
+echo -e "[$(date '+%Y-%m-%d %H:%M:%S')] 打包：${release_file_path}"
+zip -r -q ${release_file_path} ./build/dist/.
+
+# 上传
+scp ${release_file_path} root@www.scyok.com:/mnt/www/vrender/release.zip
+
+# 远程执行
+ssh root@www.scyok.com << remotessh
+cd /mnt/www/vrender
+unzip -oq release.zip
+rm -f release.zip
+cp -r ./build/dist/. ./
+rm -rf ./build
+npm install
+pm2 restart all
+exit
+remotessh
+
+# 清理
+rm -rf ./build/dist
