@@ -1,10 +1,12 @@
 #! /bin/bash
 
 # 初始化
+echo -e "[$(date '+%Y-%m-%d %H:%M:%S')] 创建目录：$(pwd)/build/dist"
 rm -rf ./build/dist
 mkdir ./build/dist
 
 # 拷贝
+echo -e "[$(date '+%Y-%m-%d %H:%M:%S')] 复制源码..."
 cp -r ./dist ./build/dist/dist
 cp -r ./doc ./build/dist/doc
 cp -r ./public ./build/dist/public
@@ -20,9 +22,11 @@ echo -e "[$(date '+%Y-%m-%d %H:%M:%S')] 打包：${release_file_path}"
 zip -r -q ${release_file_path} ./build/dist/.
 
 # 上传
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] 上传：/mnt/www/vrender/release.zip"
 scp ${release_file_path} root@www.scyok.com:/mnt/www/vrender/release.zip
 
 # 远程执行
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] 部署..."
 ssh root@www.scyok.com << remotessh
 cd /mnt/www/vrender
 unzip -oq release.zip
@@ -36,3 +40,4 @@ remotessh
 
 # 清理
 rm -rf ./build/dist
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] 完成."
