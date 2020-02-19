@@ -8493,7 +8493,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         file.state = 1; // 正在上传
       });
 
-      var _params = getUploadName(0, files);
+      var _params = getUploadParams(0, files);
 
       uploadFile.call(this, api, _params, files, function (err, ret) {
         var localIds = [];
