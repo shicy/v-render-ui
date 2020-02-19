@@ -441,7 +441,7 @@
 			Utils.each(files, function (file) {
 				file.state = 1; // 正在上传
 			});
-			let _params = getUploadName(0, files);
+			let _params = getUploadParams(0, files); 
 			uploadFile.call(this, api, _params, files, (err, ret) => {
 				let localIds = [];
 				Utils.each(files, (file) => {
