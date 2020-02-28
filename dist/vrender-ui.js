@@ -6999,14 +6999,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
   var pickerClickHandler = function pickerClickHandler(e) {
     var target = $(e.target);
-    console.log(target);
     var timeBar = this.$el.find(".timebar");
     var hour = timeBar.children("[name=hour]");
     var minute = timeBar.children("[name=minute]");
     var second = timeBar.children("[name=second]");
-    if (hour.find(target).length == 0) UISelect.instance(hour)._hideDropdown();
-    if (minute.find(target).length == 0) UISelect.instance(minute)._hideDropdown();
-    if (second.find(target).length == 0) UISelect.instance(second)._hideDropdown();
+    if (hour.length > 0 && hour.find(target).length == 0) UISelect.instance(hour)._hideDropdown();
+    if (minute.length > 0 && minute.find(target).length == 0) UISelect.instance(minute)._hideDropdown();
+    if (second.length > 0 && second.find(target).length == 0) UISelect.instance(second)._hideDropdown();
     return false;
   }; ///////////////////////////////////////////////////////
 
