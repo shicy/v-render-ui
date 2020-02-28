@@ -15,7 +15,7 @@ require("./router");
 VRender.use(require("../index"));
 
 new VRender({
-	// mode: "development",
+	mode: "development",
 	cwd: __basedir,
 	babel: true,
 	server: {
