@@ -263,16 +263,16 @@
 	};
 
 	const pickerClickHandler = function (e) {
-		let target = $(e.target); console.log(target);
+		let target = $(e.target);
 		let timeBar = this.$el.find(".timebar");
 		let hour = timeBar.children("[name=hour]");
 		let minute = timeBar.children("[name=minute]");
 		let second = timeBar.children("[name=second]");
-		if (hour.find(target).length == 0)
+		if (hour.length > 0 && hour.find(target).length == 0)
 			UISelect.instance(hour)._hideDropdown();
-		if (minute.find(target).length == 0)
+		if (minute.length > 0 && minute.find(target).length == 0)
 			UISelect.instance(minute)._hideDropdown();
-		if (second.find(target).length == 0)
+		if (second.length > 0 && second.find(target).length == 0)
 			UISelect.instance(second)._hideDropdown();
 		return false;
 	};
