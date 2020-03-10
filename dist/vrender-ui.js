@@ -4111,6 +4111,7 @@
       }
 
       target.on("tap", ".ipt", iptClickHandler.bind(this));
+      target.on("tap", ".ipt .clearbtn", clearBtnClickHandler.bind(this));
       target.on("tap", ".item", itemClickHandler.bind(this));
       target.on("tap", ".ui-more", moreClickHandler.bind(this));
     }
@@ -4209,6 +4210,14 @@
 
   _UISelect.setPlaceholder = function (value) {
     this.setPrompt(value);
+  };
+
+  _UISelect.isClearable = function () {
+    return this.$el.attr("opt-clearable") == 1;
+  };
+
+  _UISelect.setClearable = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-clearable", "1");else this.$el.removeAttr("opt-clearable");
   };
 
   _UISelect.getTopItem = function () {
@@ -4637,6 +4646,11 @@
     if ($(e.target).is(".dropdown")) hideDropdown.call(this);
   };
 
+  var clearBtnClickHandler = function clearBtnClickHandler(e) {
+    this.setSelectedIndex(-1);
+    return false;
+  };
+
   var selectInputChangeHandler = function selectInputChangeHandler(e) {
     var snapshoot = this._snapshoot();
 
@@ -4660,6 +4674,7 @@
     var options = this.options || {};
     if (this.isNative()) target.attr("opt-native", "1");
     if (Utils.isTrue(options.needMatch)) target.attr("opt-match", "1");
+    if (Utils.isTrue(options.clearable)) target.attr("opt-clearable", "1");
     if (options.topItem && !frontend) target.attr("opt-top", JSON.stringify(options.topItem)); // 容器，用于下拉列表定位
 
     target.attr("opt-box", options.container);
@@ -4727,7 +4742,8 @@
 
     var options = this.options || {};
     if (Utils.isTrue(options.editable)) target.addClass("editable");else input.attr("readonly", "readonly");
-    ipttag.append("<button class='dropdownbtn'></button>");
+    ipttag.append("<div class='dropdownbtn'></div>");
+    ipttag.append("<div class='clearbtn'></div>");
     if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipttag).text(options.prompt);else if (Utils.isNotBlank(options.placeholder)) $("<span class='prompt'></span>").appendTo(ipttag).text(options.placeholder);
   };
 
@@ -6150,7 +6166,7 @@
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-04
 // daterange
@@ -8052,7 +8068,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-10
 // upload（原fileupload）
@@ -12693,7 +12709,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-07-23
 // panel
