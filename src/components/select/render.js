@@ -26,6 +26,7 @@
 				target.on("tap", ".dropdown", dropdownTouchHandler.bind(this));
 			}
 			target.on("tap", ".ipt", iptClickHandler.bind(this));
+			target.on("tap", ".ipt .clearbtn", clearBtnClickHandler.bind(this));
 			target.on("tap", ".item", itemClickHandler.bind(this));
 			target.on("tap", ".ui-more", moreClickHandler.bind(this));
 		}
@@ -116,6 +117,15 @@
 		this.setPrompt(value);
 	};
 
+	_UISelect.isClearable = function () {
+		return this.$el.attr("opt-clearable") == 1;
+	};
+	_UISelect.setClearable = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value))
+			this.$el.attr("opt-clearable", "1");
+		else
+			this.$el.removeAttr("opt-clearable");
+	};
 
 	_UISelect.getTopItem = function () {
 		if (!this.options.hasOwnProperty("topItem")) {
@@ -526,6 +536,11 @@
 			hideDropdown.call(this);
 	};
 
+	const clearBtnClickHandler = function (e) {
+		this.setSelectedIndex(-1);
+		return false;
+	};
+
 	const selectInputChangeHandler = function (e) {
 		let snapshoot = this._snapshoot();
 		this._getItems().removeClass("selected");
@@ -551,6 +566,8 @@
 
 		if (Utils.isTrue(options.needMatch))
 			target.attr("opt-match", "1");
+		if (Utils.isTrue(options.clearable))
+			target.attr("opt-clearable", "1");
 		if (options.topItem && !frontend)
 			target.attr("opt-top", JSON.stringify(options.topItem));
 
@@ -627,7 +644,8 @@
 		else
 			input.attr("readonly", "readonly");
 
-		ipttag.append("<button class='dropdownbtn'></button>");
+		ipttag.append("<div class='dropdownbtn'></div>");
+		ipttag.append("<div class='clearbtn'></div>");
 		if (Utils.isNotBlank(options.prompt))
 			$("<span class='prompt'></span>").appendTo(ipttag).text(options.prompt);
 		else if (Utils.isNotBlank(options.placeholder))

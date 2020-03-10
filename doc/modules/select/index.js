@@ -40,11 +40,11 @@ const ModuleView = BaseModule.extend(module, {
 		description.push("属性 <>data</> 是一个数组，作为下拉列表的数据源。（支持数据源分组）");
 
 		let demo = new UIGroup(this);
-		demo.append(new UISelect(this, { data: exampleData, prompt: "请选择.." }));
+		demo.append(new UISelect(this, { data: exampleData, prompt: "请选择..", clearable: true }));
 
 		let source = [];
 		source.push("var items = " + strExampleData);
-		source.push("new UISelect([context], {\n  data: items,\n  prompt: '请选择..'\n});");
+		source.push("new UISelect([context], {\n  data: items,\n  prompt: '请选择..',\n  clearable: true\n});");
 
 		render(demo, source, description);
 	},

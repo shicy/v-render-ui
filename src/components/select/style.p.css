@@ -34,22 +34,35 @@
 
 .ui-select > .ipt > .dropdownbtn {
     position: absolute;
+    width: 25px;
     top: 1px;
     right: 1px;
     bottom: 1px;
-    width: 25px;
-    border: 0px;
-    border-radius: 0px;
-    background: none;
     background-image: url(/vrender-ui/icons/005a.png);
     background-size: 10px;
     background-repeat: no-repeat;
     background-position: center;
-    padding: 0px;
-    margin: 0px;
-    outline: none;
     cursor: pointer;
     opacity: 0.5;
+}
+
+.ui-select > .ipt > .clearbtn {
+    display: none;
+    position: absolute;
+    width: 25px;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    background-image: url(/vrender-ui/icons/002a.png);
+    background-size: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.ui-select > .ipt > .clearbtn:hover {
+    background-color: #eee;
 }
 
 .ui-select > .ipt > .prompt {
@@ -175,6 +188,14 @@
 
 .ui-select.has-val > .ipt > .prompt {
 	display: none;
+}
+
+.ui-select.has-val[opt-clearable] > .ipt:hover > .dropdownbtn {
+    display: none;
+}
+
+.ui-select.has-val[opt-clearable] > .ipt:hover > .clearbtn {
+    display: block;
 }
 
 .ui-select.editable > .ipt {
