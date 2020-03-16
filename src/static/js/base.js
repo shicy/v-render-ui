@@ -107,7 +107,9 @@
 	UIBase.getInitParams = function () {
 		if (!this.initParams) {
 			let params = null;
-			if (this.options.hasOwnProperty("params"))
+			if (this.options.hasOwnProperty("apiParams"))
+				params = this.options.apiParams;
+			else if (this.options.hasOwnProperty("params"))
 				params = this.options.params;
 			else {
 				try {
@@ -132,7 +134,7 @@
 	// 组件初始化时，视图自动加载异步数据
 	UIBase.tryAutoLoad = function () {
 		if (UIBase.isAutoLoad.call(this) && Utils.isFunction(this.load)) {
-			let apiName = this.options.api || this.$el.attr("api-name");
+			let apiName = this.options.apiName || this.options.api || this.$el.attr("api-name");
 
 			let params = $.extend({}, this.getInitParams());
 
