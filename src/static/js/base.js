@@ -285,6 +285,11 @@
 	_UIBase.load = function (api, params, callback) {
 		if (Utils.isFunction(this._loadBefore))
 			this._loadBefore(api, params);
+		if (!params.p_size && Utils.isFunction(this.getPaginator)) {
+			let pager = this.getPaginator();
+			if (pager && Utils.isFunction(pager.getSize))
+				params.p_size = pager.getSize();
+		}
 		return Fn.load.call(this, api, params, (err, data) => {
 			if (!err) {
 				if (Utils.isFunction(this.setData))
