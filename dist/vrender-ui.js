@@ -622,6 +622,12 @@
     var _this4 = this;
 
     if (Utils.isFunction(this._loadBefore)) this._loadBefore(api, params);
+
+    if (!params.p_size && Utils.isFunction(this.getPaginator)) {
+      var pager = this.getPaginator();
+      if (pager && Utils.isFunction(pager.getSize)) params.p_size = pager.getSize();
+    }
+
     return Fn.load.call(this, api, params, function (err, data) {
       if (!err) {
         if (Utils.isFunction(_this4.setData)) _this4.setData(data);else _this4.options.data = data;
