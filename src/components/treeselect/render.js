@@ -194,6 +194,31 @@
 	};
 
 	// ====================================================
+	_UITreeSelect.open = function (data) {
+		this.tree.open(data);
+	};
+
+	_UITreeSelect.openAt = function (index, deep) {
+		this.tree.openAt(index, deep);
+	};
+
+	_UITreeSelect.openByKey = function (value) {
+		this.tree.openByKey(value);
+	};
+
+	_UITreeSelect.close = function (data) {
+		this.tree.close(data);
+	};
+
+	_UITreeSelect.closeAt = function (index, deep) {
+		this.tree.closeAt(index, deep);
+	};
+
+	_UITreeSelect.closeByKey = function (value) {
+		this.tree.closeByKey(value);
+	};
+
+	// ====================================================
 	_UITreeSelect.isMultiple = function () {
 		return this.$el.attr("multiple") == "multiple";
 	};
