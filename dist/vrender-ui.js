@@ -455,7 +455,7 @@
   UIBase.getInitParams = function () {
     if (!this.initParams) {
       var params = null;
-      if (this.options.hasOwnProperty("params")) params = this.options.params;else {
+      if (this.options.hasOwnProperty("apiParams")) params = this.options.apiParams;else if (this.options.hasOwnProperty("params")) params = this.options.params;else {
         try {
           params = JSON.parse(this.$el.attr("api-params") || null);
           this.$el.removeAttr("api-params");
@@ -481,7 +481,7 @@
     var _this2 = this;
 
     if (UIBase.isAutoLoad.call(this) && Utils.isFunction(this.load)) {
-      var apiName = this.options.api || this.$el.attr("api-name");
+      var apiName = this.options.apiName || this.options.api || this.$el.attr("api-name");
       var params = $.extend({}, this.getInitParams());
       var pager = Utils.isFunction(this.getPaginator) && this.getPaginator();
 
@@ -6172,7 +6172,7 @@
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-04
 // daterange
@@ -8074,7 +8074,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-10
 // upload（原fileupload）
@@ -12715,7 +12715,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-07-23
 // panel
@@ -17869,6 +17869,31 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   _UITreeSelect.isEmpty = function () {
     return this.tree.isEmpty();
+  }; // ====================================================
+
+
+  _UITreeSelect.open = function (data) {
+    this.tree.open(data);
+  };
+
+  _UITreeSelect.openAt = function (index, deep) {
+    this.tree.openAt(index, deep);
+  };
+
+  _UITreeSelect.openByKey = function (value) {
+    this.tree.openByKey(value);
+  };
+
+  _UITreeSelect.close = function (data) {
+    this.tree.close(data);
+  };
+
+  _UITreeSelect.closeAt = function (index, deep) {
+    this.tree.closeAt(index, deep);
+  };
+
+  _UITreeSelect.closeByKey = function (value) {
+    this.tree.closeByKey(value);
   }; // ====================================================
 
 
