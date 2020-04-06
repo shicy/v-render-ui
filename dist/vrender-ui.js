@@ -10352,6 +10352,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         button && button.setLabel(value);
       }
     }
+  };
+
+  _UIDialog.isWidthEnabled = function () {
+    return false;
+  };
+
+  _UIDialog.isHeightEnabled = function () {
+    return false;
   }; // ====================================================
 
 
