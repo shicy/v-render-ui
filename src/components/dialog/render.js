@@ -266,6 +266,14 @@
 		}
 	};
 
+	_UIDialog.isWidthEnabled = function () {
+		return false;
+	};
+
+	_UIDialog.isHeightEnabled = function () {
+		return false;
+	};
+
 	// ====================================================
 	_UIDialog._getContentView = function () {
 		return this.dialogView.children("section").children(".container").children();
