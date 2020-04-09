@@ -657,6 +657,9 @@
 			else if (contentView instanceof UI._select) {
 				validateSelectionView.call(this, item, contentView, callback);
 			}
+			else if (Utils.isFunction(contentView.validate)) {
+				validateViewValidator.call(this, item, contentView, callback);
+			}
 			else if (Utils.isFunction(contentView.getValue)) {
 				validateInterfaceView.call(this, item, contentView, contentView.getValue(), callback);
 			}
@@ -677,6 +680,34 @@
 	const validateInterfaceView = function (item, view, value, callback) {
 		// console.log("validateInterfaceView");
 		doItemValidate.call(this, item, value, callback);
+	};
+
+	const validateViewValidator = function (item, view, callback) {
+		if (!callback)
+			callback = () => {};
+		let timeId = setTimeout(() => {
+			timeId = 0;
+			callback("组件 validate() 方法调用时间超长，请检测 validate((err) => {}) 方法使用是否正确！！");
+		}, 5000);
+		let formItem = {
+			name: item.attr("name"),
+			label: item.children(".content").children("dt").text()
+		};
+		let result = view.validate(this, formItem, (err) => {
+			if (timeId) {
+				clearTimeout(timeId);
+				timeId = 0;
+				callback(err);
+			}
+		});
+		if (typeof result != "undefined") {
+			clearTimeout(timeId);
+			timeId = 0;
+			if (result === true)
+				callback();
+			else 
+				callback(result || "表单错误！");
+		}
 	};
 
 	const validateTextView = function (item, view, callback) {
