@@ -86,12 +86,27 @@
 			Utils.each(submitBtn, (button) => {
 				VRender.Component.get(button).waiting(0);
 			});
+			let result = null;
 			if (Utils.isFunction(callback)) {
-				callback(err, ret, submitParams);
+				result = callback(err, ret, submitParams);
 			}
 			if (action) {
-				this.trigger("action_after", err, ret, submitParams);
+				let event = { type: "action_after" };
+				this.trigger(event, err, ret, submitParams);
+				if (event.isPreventDefault)
+					result = false;
 			}
+			if (result !== false && err) {
+				let errmsg = "";
+				if (Utils.isArray(err)) {
+					errmsg = Utils.map(err, (tmp) => (tmp.message)).join("；");
+				}
+				else {
+					errmsg = err.msg || err;
+				}
+				new UIMessage({ type: "error", content: errmsg });
+			}
+			return false;
 		};
 
 		this.validate((errors) => {
@@ -867,12 +882,12 @@
 				if (/post|put|delete/.test(method)) {
 					VRender.send(action, params, (err, ret) => {
 						callback(err, ret, params);
-					});
+					}, true);
 				}
 				else {
 					VRender.fetch(action, params, (err, ret) => {
 						callback(err, ret, params);
-					});
+					}, true);
 				}
 			}
 			else {
@@ -883,9 +898,9 @@
 
 	const doSubmitBefore = function (params, callback) {
 		let event = {type: "action_before"};
-		event.preventDefault = () => {
-			event.isPreventDefault = true;
-		};
+		// event.preventDefault = () => {
+		// 	event.isPreventDefault = true;
+		// };
 		this.trigger(event, params);
 		if (event.isPreventDefault) {
 			callback("canceled");
