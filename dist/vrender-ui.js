@@ -6172,7 +6172,7 @@
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-04
 // daterange
@@ -8074,7 +8074,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-10
 // upload（原fileupload）
@@ -9325,6 +9325,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         validateComboboxView.call(this, item, contentView, callback);
       } else if (contentView instanceof UI._select) {
         validateSelectionView.call(this, item, contentView, callback);
+      } else if (Utils.isFunction(contentView.validate)) {
+        validateViewValidator.call(this, item, contentView, callback);
       } else if (Utils.isFunction(contentView.getValue)) {
         validateInterfaceView.call(this, item, contentView, contentView.getValue(), callback);
       } else if (Utils.isFunction(contentView.val)) {
@@ -9343,6 +9345,31 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   var validateInterfaceView = function validateInterfaceView(item, view, value, callback) {
     // console.log("validateInterfaceView");
     doItemValidate.call(this, item, value, callback);
+  };
+
+  var validateViewValidator = function validateViewValidator(item, view, callback) {
+    if (!callback) callback = function callback() {};
+    var timeId = setTimeout(function () {
+      timeId = 0;
+      callback("组件 validate() 方法调用时间超长，请检测 validate((err) => {}) 方法使用是否正确！！");
+    }, 5000);
+    var formItem = {
+      name: item.attr("name"),
+      label: item.children(".content").children("dt").text()
+    };
+    var result = view.validate(this, formItem, function (err) {
+      if (timeId) {
+        clearTimeout(timeId);
+        timeId = 0;
+        callback(err);
+      }
+    });
+
+    if (typeof result != "undefined") {
+      clearTimeout(timeId);
+      timeId = 0;
+      if (result === true) callback();else callback(result || "表单错误！");
+    }
   };
 
   var validateTextView = function validateTextView(item, view, callback) {
@@ -12723,7 +12750,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-07-23
 // panel
