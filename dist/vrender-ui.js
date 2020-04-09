@@ -6172,7 +6172,7 @@
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-04
 // daterange
@@ -8074,7 +8074,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-06-10
 // upload（原fileupload）
@@ -8791,14 +8791,40 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       Utils.each(submitBtn, function (button) {
         VRender.Component.get(button).waiting(0);
       });
+      var result = null;
 
       if (Utils.isFunction(callback)) {
-        callback(err, ret, submitParams);
+        result = callback(err, ret, submitParams);
       }
 
       if (action) {
-        _this2.trigger("action_after", err, ret, submitParams);
+        var event = {
+          type: "action_after"
+        };
+
+        _this2.trigger(event, err, ret, submitParams);
+
+        if (event.isPreventDefault) result = false;
       }
+
+      if (result !== false && err) {
+        var errmsg = "";
+
+        if (Utils.isArray(err)) {
+          errmsg = Utils.map(err, function (tmp) {
+            return tmp.message;
+          }).join("；");
+        } else {
+          errmsg = err.msg || err;
+        }
+
+        new UIMessage({
+          type: "error",
+          content: errmsg
+        });
+      }
+
+      return false;
     };
 
     this.validate(function (errors) {
@@ -9539,11 +9565,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         if (/post|put|delete/.test(method)) {
           VRender.send(action, params, function (err, ret) {
             callback(err, ret, params);
-          });
+          }, true);
         } else {
           VRender.fetch(action, params, function (err, ret) {
             callback(err, ret, params);
-          });
+          }, true);
         }
       } else {
         callback(error, null, params);
@@ -9554,11 +9580,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var doSubmitBefore = function doSubmitBefore(params, callback) {
     var event = {
       type: "action_before"
-    };
-
-    event.preventDefault = function () {
-      event.isPreventDefault = true;
-    };
+    }; // event.preventDefault = () => {
+    // 	event.isPreventDefault = true;
+    // };
 
     this.trigger(event, params);
 
@@ -12750,7 +12774,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 })(typeof window !== "undefined");
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // 2019-07-23
 // panel
