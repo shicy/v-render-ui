@@ -1922,7 +1922,7 @@
 
     if (length > 0) {
       var indexs = this.getSelectedIndex(true);
-      return indexs && indexs.length == length;
+      return !!(indexs && indexs.length == length);
     }
 
     return false;
@@ -2841,6 +2841,17 @@
     this.input.trigger("change");
   };
 
+  _UICheckbox.setCheckedSilent = function (bool) {
+    var checked = Utils.isNull(bool) ? true : Utils.isTrue(bool);
+    this.input[0].checked = checked;
+
+    if (checked) {
+      this.$el.addClass("checked");
+    } else {
+      this.$el.removeClass("checked");
+    }
+  };
+
   _UICheckbox.getLabel = function () {
     return this.$el.children("span").text();
   };
@@ -2853,7 +2864,9 @@
 
 
   var chkboxChangeHandler = function chkboxChangeHandler(e) {
-    if ($(e.currentTarget).is(":checked")) this.$el.addClass("checked");else this.$el.removeClass("checked");
+    var checked = $(e.currentTarget).is(":checked");
+    if (checked) this.$el.addClass("checked");else this.$el.removeClass("checked");
+    this.trigger("change", checked);
   }; ///////////////////////////////////////////////////////
 
 
@@ -15615,13 +15628,20 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var _this = this;
 
     this.$el.removeClass("is-loading").removeClass("is-refresh");
-    checkIfEmpty.call(this);
-    var container = this.$el.children(".container");
+    var isEmpty = checkIfEmpty.call(this);
 
-    if (container.outerHeight() < this.$el.height()) {
-      setTimeout(function () {
-        doMore.call(_this);
-      }, 10);
+    if (isEmpty) {
+      this.$el.addClass("no-more");
+    }
+
+    if (!this.$el.is(".no-more")) {
+      var container = this.$el.children(".container");
+
+      if (container.outerHeight() < this.$el.height()) {
+        setTimeout(function () {
+          doMore.call(_this);
+        }, 10);
+      }
     }
   };
 
@@ -15882,31 +15902,35 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var result = false;
     var contentView = this.getContentView();
 
-    if (contentView && Utils.isFunction(contentView.more)) {
-      var result1 = result = contentView.more(function () {
-        setTimeout(function () {
-          if (result1 !== false) complete(Utils.isFunction(contentView.hasMore) ? contentView.hasMore() : true);
-        }, 0);
-      });
-    }
-
-    if (result === false && !(contentView && contentView.is(".no-more"))) {
-      var moreFunction = this.getMoreFunction();
-
-      if (Utils.isFunction(moreFunction)) {
-        var result2 = result = moreFunction(function (data) {
-          setTimeout(function () {
-            if (result2 !== false) complete(data && data.hasOwnProperty("hasMore") ? Utils.isTrue(data.hasMore) : true);
-          }, 0);
+    if (contentView) {
+      if (Utils.isFunction(contentView.more)) {
+        result = contentView.more(function () {
+          if (result !== false) {
+            if (Utils.isFunction(contentView.hasMore)) complete(contentView.hasMore());else complete(true);
+          }
         });
+      }
+    } else {
+      var $el = contentView.$el || contentView;
+
+      if (!Utils.isFunction($el.is) || !$el.is(".no-more")) {
+        var moreFunction = this.getMoreFunction();
+
+        if (Utils.isFunction(moreFunction)) {
+          result = moreFunction(function (data) {
+            if (result !== false) {
+              if (data && data.hasOwnProperty("hasMore")) complete(Utils.isTrue(data.hasMore));else complete(true);
+            }
+          });
+        }
       }
     }
 
-    this.trigger("more");
-
     if (result === false) {
-      complete();
+      complete(false);
     }
+
+    this.trigger("more");
   }; // ====================================================
 
 
@@ -16075,7 +16099,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
 
   var checkIfEmpty = function checkIfEmpty() {
-    if (isContentEmpty.call(this)) this.$el.addClass("is-empty");else this.$el.removeClass("is-empty");
+    var isEmpty = isContentEmpty.call(this);
+    if (isEmpty) this.$el.addClass("is-empty");else this.$el.removeClass("is-empty");
+    return isEmpty;
   };
 
   var isContentEmpty = function isContentEmpty() {
