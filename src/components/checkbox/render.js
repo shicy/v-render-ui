@@ -44,6 +44,16 @@
 		this.input[0].checked = checked;
 		this.input.trigger("change");
 	};
+	_UICheckbox.setCheckedSilent = function (bool) {
+		let checked = Utils.isNull(bool) ? true : Utils.isTrue(bool);
+		this.input[0].checked = checked;
+		if (checked) {
+			this.$el.addClass("checked");
+		}
+		else {
+			this.$el.removeClass("checked");
+		}
+	};
 
 	_UICheckbox.getLabel = function () {
 		return this.$el.children("span").text();
@@ -57,10 +67,12 @@
 	// ====================================================
 	// 复选框状态变更事件
 	const chkboxChangeHandler = function (e) {
-		if ($(e.currentTarget).is(":checked"))
+		let checked = $(e.currentTarget).is(":checked");
+		if (checked)
 			this.$el.addClass("checked");
 		else
 			this.$el.removeClass("checked");
+		this.trigger("change", checked);
 	};
 
 	///////////////////////////////////////////////////////

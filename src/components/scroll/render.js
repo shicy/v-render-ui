@@ -168,13 +168,17 @@
 
 	const onContentLoadHandler = function () {
 		this.$el.removeClass("is-loading").removeClass("is-refresh");
-		checkIfEmpty.call(this);
-
-		let container = this.$el.children(".container");
-		if (container.outerHeight() < this.$el.height()) {
-			setTimeout(() => {
-				doMore.call(this);
-			}, 10);
+		let isEmpty = checkIfEmpty.call(this);
+		if (isEmpty) {
+			this.$el.addClass("no-more");
+		}
+		if (!this.$el.is(".no-more")) {
+			let container = this.$el.children(".container");
+			if (container.outerHeight() < this.$el.height()) {
+				setTimeout(() => {
+					doMore.call(this);
+				}, 10);
+			}
 		}
 	};
 
@@ -436,32 +440,40 @@
 
 		let result = false;
 		let contentView = this.getContentView();
-		if (contentView && Utils.isFunction(contentView.more)) {
-			let result1 = result = contentView.more(() => {
-				setTimeout(() => {
-					if (result1 !== false)
-						complete(Utils.isFunction(contentView.hasMore) ? contentView.hasMore() : true);
-				}, 0);
-			});
-		}
-
-		if (result === false && !(contentView && contentView.is(".no-more"))) {
-			let moreFunction = this.getMoreFunction();
-			if (Utils.isFunction(moreFunction)) {
-				let result2 = result = moreFunction((data) => {
-					setTimeout(() => {
-						if (result2 !== false)
-							complete((data && data.hasOwnProperty("hasMore")) ? Utils.isTrue(data.hasMore) : true);
-					}, 0);
+		if (contentView) {
+			if (Utils.isFunction(contentView.more)) {
+				result = contentView.more(() => {
+					if (result !== false) {
+						if (Utils.isFunction(contentView.hasMore))
+							complete(contentView.hasMore());
+						else
+							complete(true);
+					}
 				});
 			}
 		}
-
-		this.trigger("more");
+		else {
+			let $el = contentView.$el || contentView;
+			if (!Utils.isFunction($el.is) || !$el.is(".no-more")) {
+				let moreFunction = this.getMoreFunction();
+				if (Utils.isFunction(moreFunction)) {
+					result = moreFunction((data) => {
+						if (result !== false) {
+							if (data && data.hasOwnProperty("hasMore"))
+								complete(Utils.isTrue(data.hasMore));
+							else
+								complete(true);
+						}
+					});
+				}
+			}
+		}
 
 		if (result === false) {
-			complete();
+			complete(false);
 		}
+
+		this.trigger("more");
 	};
 	
 	// ====================================================
@@ -638,10 +650,12 @@
 	};
 
 	const checkIfEmpty = function () {
-		if (isContentEmpty.call(this))
+		let isEmpty = isContentEmpty.call(this);
+		if (isEmpty)
 			this.$el.addClass("is-empty");
 		else
 			this.$el.removeClass("is-empty");
+		return isEmpty;
 	};
 
 	const isContentEmpty = function () {

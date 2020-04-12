@@ -240,7 +240,7 @@
 		let length = this.length();
 		if (length > 0) {
 			let indexs = this.getSelectedIndex(true);
-			return indexs && indexs.length == length;
+			return !!(indexs && indexs.length == length);
 		}
 		return false;
 	};
