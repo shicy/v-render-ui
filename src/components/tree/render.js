@@ -890,6 +890,8 @@
 		// 随着节点展开和关闭，索引值一直会变
 		this.$el.removeAttr("data-inds").removeAttr("data-ids");
 
+		this.lastLoadParams = this.getInitParams();
+
 		this.openProps = this._getOpenProps();
 		tryAutoOpen.call(this);
 	};
