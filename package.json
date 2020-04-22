@@ -1,6 +1,6 @@
 {
   "name": "v-render-ui",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "a vrender component library",
   "main": "index.js",
   "scripts": {
