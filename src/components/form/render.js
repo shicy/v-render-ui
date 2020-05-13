@@ -653,36 +653,39 @@
 			validateInput.call(this, item, contentView, callback);
 		}
 		else {
-			contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
-			if (contentView instanceof UI.input) {
-				validateTextView.call(this, item, contentView, callback);
+			let comp = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView);
+			if (comp) {
+				if (comp instanceof UI.input) {
+					validateTextView.call(this, item, comp, callback);
+				}
+				else if (comp instanceof UI.dateinput) {
+					validateDateInputView.call(this, item, comp, callback);
+				}
+				else if (comp instanceof UI.datetime) {
+					validateDateTimeView.call(this, item, comp, callback);
+				}
+				else if (comp instanceof UI.daterange) {
+					validateDateRangeView.call(this, item, comp, callback);
+				}
+				else if (comp instanceof UI.select) {
+					validateComboboxView.call(this, item, comp, callback);
+				}
+				else if (comp instanceof UI._select) {
+					validateSelectionView.call(this, item, comp, callback);
+				}
+				else if (Utils.isFunction(comp.validate)) {
+					validateViewValidator.call(this, item, comp, callback);
+				}
+				else if (Utils.isFunction(comp.getValue)) {
+					validateInterfaceView.call(this, item, comp, comp.getValue(), callback);
+				}
+				else if (Utils.isFunction(comp.val)) {
+					validateInterfaceView.call(this, item, comp, comp.val(), callback);
+				}
 			}
-			else if (contentView instanceof UI.dateinput) {
-				validateDateInputView.call(this, item, contentView, callback);
-			}
-			else if (contentView instanceof UI.datetime) {
-				validateDateTimeView.call(this, item, contentView, callback);
-			}
-			else if (contentView instanceof UI.daterange) {
-				validateDateRangeView.call(this, item, contentView, callback);
-			}
-			else if (contentView instanceof UI.select) {
-				validateComboboxView.call(this, item, contentView, callback);
-			}
-			else if (contentView instanceof UI._select) {
-				validateSelectionView.call(this, item, contentView, callback);
-			}
-			else if (Utils.isFunction(contentView.validate)) {
-				validateViewValidator.call(this, item, contentView, callback);
-			}
-			else if (Utils.isFunction(contentView.getValue)) {
-				validateInterfaceView.call(this, item, contentView, contentView.getValue(), callback);
-			}
-			else if (Utils.isFunction(contentView.val)) {
-				validateInterfaceView.call(this, item, contentView, contentView.val(), callback);
-			}
-			else if (Utils.isFunction(callback)) {
-				callback(false);
+			else {
+				let value = contentView.attr("data-val");
+				validateInterfaceView.call(this, item, contentView, value, callback);
 			}
 		}
 	};
