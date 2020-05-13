@@ -677,6 +677,11 @@
 				target.css("top", (this.inputTag.height() + 8));
 		}
 
+		if (this.clearErrorTimerId) {
+			clearTimeout(this.clearErrorTimerId);
+			this.clearErrorTimerId;
+		}
+
 		target.html(errmsg);
 		this.$el.addClass("is-error");
 		target.removeClass("animate-in").removeClass("animate-out");
@@ -701,7 +706,8 @@
 		this.lastErrorMsg = null;
 		if (this.hasError()) {
 			let target = this.$el.find(".errmsg").addClass("animate-out");
-			setTimeout(() => {
+			this.clearErrorTimerId = setTimeout(() => {
+				this.clearErrorTimerId = 0;
 				this.$el.removeClass("is-error");
 				target.removeClass("animate-in").removeClass("animate-out");
 			}, 300);
