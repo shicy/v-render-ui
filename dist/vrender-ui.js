@@ -4046,6 +4046,11 @@
       if (!this._isRenderAsApp()) target.css("top", this.inputTag.height() + 8);
     }
 
+    if (this.clearErrorTimerId) {
+      clearTimeout(this.clearErrorTimerId);
+      this.clearErrorTimerId;
+    }
+
     target.html(errmsg);
     this.$el.addClass("is-error");
     target.removeClass("animate-in").removeClass("animate-out");
@@ -4072,7 +4077,9 @@
 
     if (this.hasError()) {
       var target = this.$el.find(".errmsg").addClass("animate-out");
-      setTimeout(function () {
+      this.clearErrorTimerId = setTimeout(function () {
+        _this7.clearErrorTimerId = 0;
+
         _this7.$el.removeClass("is-error");
 
         target.removeClass("animate-in").removeClass("animate-out");
@@ -9350,28 +9357,31 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     if (contentView.is("input, textarea")) {
       validateInput.call(this, item, contentView, callback);
     } else {
-      contentView = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView) || contentView;
+      var comp = VRender.Component.get(contentView) || VRender.FrontComponent.get(contentView);
 
-      if (contentView instanceof UI.input) {
-        validateTextView.call(this, item, contentView, callback);
-      } else if (contentView instanceof UI.dateinput) {
-        validateDateInputView.call(this, item, contentView, callback);
-      } else if (contentView instanceof UI.datetime) {
-        validateDateTimeView.call(this, item, contentView, callback);
-      } else if (contentView instanceof UI.daterange) {
-        validateDateRangeView.call(this, item, contentView, callback);
-      } else if (contentView instanceof UI.select) {
-        validateComboboxView.call(this, item, contentView, callback);
-      } else if (contentView instanceof UI._select) {
-        validateSelectionView.call(this, item, contentView, callback);
-      } else if (Utils.isFunction(contentView.validate)) {
-        validateViewValidator.call(this, item, contentView, callback);
-      } else if (Utils.isFunction(contentView.getValue)) {
-        validateInterfaceView.call(this, item, contentView, contentView.getValue(), callback);
-      } else if (Utils.isFunction(contentView.val)) {
-        validateInterfaceView.call(this, item, contentView, contentView.val(), callback);
-      } else if (Utils.isFunction(callback)) {
-        callback(false);
+      if (comp) {
+        if (comp instanceof UI.input) {
+          validateTextView.call(this, item, comp, callback);
+        } else if (comp instanceof UI.dateinput) {
+          validateDateInputView.call(this, item, comp, callback);
+        } else if (comp instanceof UI.datetime) {
+          validateDateTimeView.call(this, item, comp, callback);
+        } else if (comp instanceof UI.daterange) {
+          validateDateRangeView.call(this, item, comp, callback);
+        } else if (comp instanceof UI.select) {
+          validateComboboxView.call(this, item, comp, callback);
+        } else if (comp instanceof UI._select) {
+          validateSelectionView.call(this, item, comp, callback);
+        } else if (Utils.isFunction(comp.validate)) {
+          validateViewValidator.call(this, item, comp, callback);
+        } else if (Utils.isFunction(comp.getValue)) {
+          validateInterfaceView.call(this, item, comp, comp.getValue(), callback);
+        } else if (Utils.isFunction(comp.val)) {
+          validateInterfaceView.call(this, item, comp, comp.val(), callback);
+        }
+      } else {
+        var value = contentView.attr("data-val");
+        validateInterfaceView.call(this, item, contentView, value, callback);
       }
     }
   };
