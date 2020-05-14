@@ -732,6 +732,18 @@
     margin-left: 10px;
 }
 
+.ui-chkbox[opt-readonly]:before  {
+    box-shadow: none !important;
+}
+
+.ui-chkbox[opt-readonly]:not(.checked):before  {
+    background-color: #fffcf4;
+}
+
+.ui-chkbox[opt-readonly]:not(.checked):after {
+    display: none;
+}
+
 .ui-chkbox[disabled] {
     opacity: 0.35;
     pointer-events: none;
@@ -3897,6 +3909,19 @@
     box-shadow: 0px 0px 0px 2px #ccc;
 }
 
+.ui-radbox[opt-readonly]:before {
+    box-shadow: none !important;
+}
+
+.ui-radbox[opt-readonly]:not(.checked):before {
+    background-color: #fffcf4;
+}
+
+
+.ui-radbox[opt-readonly]:not(.checked):after {
+    display: none;
+}
+
 .ui-radbox[disabled] {
     opacity: 0.35;
     pointer-events: none;
@@ -4343,6 +4368,18 @@
 
 .ui-select.is-loading > .dropdown > .box > .ui-load {
     display: block;
+}
+
+.ui-select[opt-readonly] > .ipt > input {
+    background-color: #fffcf4;
+}
+
+.ui-select[opt-readonly] > .ipt > .dropdownbtn {
+    display: block !important;
+}
+
+.ui-select[opt-readonly] > .ipt > .clearbtn {
+    display: none !important;
 }
 
 .ui-select[disabled] {

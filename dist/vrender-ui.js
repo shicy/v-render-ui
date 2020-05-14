@@ -2859,6 +2859,20 @@
   _UICheckbox.setLabel = function (value) {
     this.$el.children("span").remove();
     if (Utils.isNotBlank(value)) $("<span></span>").appendTo(this.$el).text(value);
+  };
+
+  _UICheckbox.isReadonly = function () {
+    return this.$el.attr("opt-readonly") == 1;
+  };
+
+  _UICheckbox.setReadonly = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) {
+      this.$el.attr("opt-readonly", "1");
+      this.input.attr("disabled", "disabled");
+    } else {
+      this.$el.removeAttr("opt-readonly");
+      this.input.removeAttr("disabled");
+    }
   }; // ====================================================
   // 复选框状态变更事件
 
@@ -2887,6 +2901,11 @@
     if (Utils.isTrue(options.checked)) {
       target.addClass("checked");
       input.attr("checked", "checked");
+    }
+
+    if (Utils.isTrue(options.readonly)) {
+      target.attr("opt-readonly", "1");
+      input.attr("disabled", "disabled");
     }
 
     if (Utils.isNotNull(options.label)) $("<span></span>").appendTo(target).text(options.label);
@@ -2962,8 +2981,44 @@
       var chkbox = VRender.Component.get(this._getItemAt(value).children());
       chkbox && chkbox.setDisabled(disabled);
     } else {
-      disabled = Utils.isNull(disabled) || Utils.isTrue(disabled) ? true : false;
+      disabled = Utils.isNull(disabled) || Utils.isTrue(disabled);
       if (disabled) this.$el.addClass("disabled").attr("disabled", "disabled");else this.$el.removeClass("disabled").removeAttr("disabled");
+    }
+  };
+
+  _UICheckGroup.isReadonly = function (value) {
+    if (typeof value == "number") {
+      var chkbox = VRender.Component.get(this._getItemAt(value).children());
+      return chkbox ? chkbox.isReadonly() : false;
+    }
+
+    if (typeof value == "string") {
+      return this.isReadonly(this.getIndexByName(value));
+    }
+
+    return this.$el.is(".readonly");
+  };
+
+  _UICheckGroup.setReadonly = function (readonly, value) {
+    if (typeof value == "string") {
+      return this.setReadonly(readonly, this.getIndexByName(value));
+    }
+
+    if (typeof value == "number") {
+      var chkbox = VRender.Component.get(this._getItemAt(value).children());
+      chkbox && chkbox.setReadonly(readonly);
+    } else {
+      readonly = Utils.isNull(readonly) || Utils.isTrue(readonly);
+      Utils.each(this._getItems(), function (item) {
+        var chkbox = VRender.Component.get(item.children());
+        chkbox && chkbox.setReadonly(readonly);
+      });
+
+      if (readonly) {
+        this.$el.addClass("readonly");
+      } else {
+        this.$el.removeClass("readonly");
+      }
     }
   }; // ====================================================
 
@@ -3151,6 +3206,20 @@
   _UIRadiobox.setLabel = function (value) {
     this.$el.children("span").remove();
     if (Utils.isNotBlank(value)) $("<span></span>").appendTo(this.$el).text(value);
+  };
+
+  _UIRadiobox.isReadonly = function () {
+    return this.$el.attr("opt-readonly") == 1;
+  };
+
+  _UIRadiobox.setReadonly = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) {
+      this.$el.attr("opt-readonly", "1");
+      this.input.attr("disabled", "disabled");
+    } else {
+      this.$el.removeAttr("opt-readonly");
+      this.input.removeAttr("disabled");
+    }
   }; // ====================================================
 
 
@@ -3190,6 +3259,11 @@
     if (Utils.isTrue(options.checked)) {
       target.addClass("checked");
       input.attr("checked", "checked");
+    }
+
+    if (Utils.isTrue(options.readonly)) {
+      target.attr("opt-readonly", "1");
+      input.attr("disabled", "disabled");
     }
 
     if (Utils.isNotNull(options.label)) $("<span></span>").appendTo(target).text(options.label);
@@ -3273,6 +3347,37 @@
     } else {
       disabled = Utils.isNull(disabled) || Utils.isTrue(disabled) ? true : false;
       if (disabled) this.$el.addClass("disabled").attr("disabled", "disabled");else this.$el.removeClass("disabled").removeAttr("disabled");
+    }
+  };
+
+  _UIRadioGroup.isReadonly = function (value) {
+    if (typeof value == "number") {
+      var radbox = VRender.Component.get(this._getItemAt(value).children());
+      return radbox ? radbox.isReadonly() : false;
+    }
+
+    if (typeof value == "string") {
+      return this.isReadonly(this.getIndexByName(value));
+    }
+
+    return this.$el.is(".readonly");
+  };
+
+  _UIRadioGroup.setReadonly = function (readonly, value) {
+    if (typeof value == "string") {
+      return this.setReadonly(readonly, this.getIndexByName(value));
+    }
+
+    if (typeof value == "number") {
+      var radbox = VRender.Component.get(this._getItemAt(value).children());
+      radbox && radbox.setReadonly(readonly);
+    } else {
+      readonly = Utils.isNull(readonly) || Utils.isTrue(readonly);
+      Utils.each(this._getItems(), function (item) {
+        var radbox = VRender.Component.get(item.children());
+        radbox && radbox.setReadonly(readonly);
+      });
+      if (readonly) this.$el.addClass("readonly");else this.$el.removeClass("readonly");
     }
   }; // ====================================================
 
@@ -4246,6 +4351,20 @@
     if (Utils.isNull(value) || Utils.isTrue(value)) this.$el.attr("opt-clearable", "1");else this.$el.removeAttr("opt-clearable");
   };
 
+  _UISelect.isReadonly = function () {
+    return this.$el.attr("opt-readonly") == 1;
+  };
+
+  _UISelect.setReadonly = function (value) {
+    if (Utils.isNull(value) || Utils.isTrue(value)) {
+      this.$el.attr("opt-readonly", "1");
+      this.$el.find("input").attr("readonly", "readonly");
+    } else {
+      this.$el.removeAttr("opt-readonly");
+      if (this.isEditable()) this.$el.find("input").removeAttr("readonly");
+    }
+  };
+
   _UISelect.getTopItem = function () {
     if (!this.options.hasOwnProperty("topItem")) {
       var topItem = this.$el.attr("opt-top");
@@ -4552,7 +4671,7 @@
       }
     }
 
-    showDropdown.call(this);
+    if (!this.isReadonly()) showDropdown.call(this);
   };
 
   var itemClickHandler = function itemClickHandler(e) {
@@ -4701,6 +4820,7 @@
     if (this.isNative()) target.attr("opt-native", "1");
     if (Utils.isTrue(options.needMatch)) target.attr("opt-match", "1");
     if (Utils.isTrue(options.clearable)) target.attr("opt-clearable", "1");
+    if (Utils.isTrue(options.readonly)) target.attr("opt-readonly", "1");
     if (options.topItem && !frontend) target.attr("opt-top", JSON.stringify(options.topItem)); // 容器，用于下拉列表定位
 
     target.attr("opt-box", options.container);
@@ -4767,7 +4887,7 @@
     }
 
     var options = this.options || {};
-    if (Utils.isTrue(options.editable)) target.addClass("editable");else input.attr("readonly", "readonly");
+    if (Utils.isTrue(options.editable) && !Utils.isTrue(options.readonly)) target.addClass("editable");else input.attr("readonly", "readonly");
     ipttag.append("<div class='dropdownbtn'></div>");
     ipttag.append("<div class='clearbtn'></div>");
     if (Utils.isNotBlank(options.prompt)) $("<span class='prompt'></span>").appendTo(ipttag).text(options.prompt);else if (Utils.isNotBlank(options.placeholder)) $("<span class='prompt'></span>").appendTo(ipttag).text(options.placeholder);
