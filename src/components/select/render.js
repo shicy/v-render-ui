@@ -127,6 +127,21 @@
 			this.$el.removeAttr("opt-clearable");
 	};
 
+	_UISelect.isReadonly = function () {
+		return this.$el.attr("opt-readonly") == 1;
+	};
+	_UISelect.setReadonly = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value)) {
+			this.$el.attr("opt-readonly", "1");
+			this.$el.find("input").attr("readonly", "readonly");
+		}
+		else {
+			this.$el.removeAttr("opt-readonly");
+			if (this.isEditable())
+				this.$el.find("input").removeAttr("readonly");
+		}
+	};
+
 	_UISelect.getTopItem = function () {
 		if (!this.options.hasOwnProperty("topItem")) {
 			let topItem = this.$el.attr("opt-top");
@@ -416,7 +431,8 @@
 			}
 		}
 
-		showDropdown.call(this);
+		if (!this.isReadonly())
+			showDropdown.call(this);
 	};
 
 	const itemClickHandler = function (e) {
@@ -568,6 +584,8 @@
 			target.attr("opt-match", "1");
 		if (Utils.isTrue(options.clearable))
 			target.attr("opt-clearable", "1");
+		if (Utils.isTrue(options.readonly))
+			target.attr("opt-readonly", "1");
 		if (options.topItem && !frontend)
 			target.attr("opt-top", JSON.stringify(options.topItem));
 
@@ -639,7 +657,7 @@
 		}
 
 		let options = this.options || {};
-		if (Utils.isTrue(options.editable))
+		if (Utils.isTrue(options.editable) && !Utils.isTrue(options.readonly))
 			target.addClass("editable");
 		else
 			input.attr("readonly", "readonly");

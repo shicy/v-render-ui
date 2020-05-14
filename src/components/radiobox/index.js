@@ -47,5 +47,12 @@ const UIRadiobox = UIBase.extend(module, {
 	},
 	setChecked: function (bool) {
 		this.options.checked = bool;
+	},
+
+	isReadonly: function () {
+		return Utils.isTrue(this.options.readonly);
+	},
+	setReadonly: function (bool) {
+		this.options.readonly = bool;
 	}
 });

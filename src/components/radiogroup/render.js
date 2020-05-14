@@ -68,6 +68,37 @@
 		}
 	};
 
+	_UIRadioGroup.isReadonly = function (value) {
+		if (typeof value == "number") {
+			let radbox = VRender.Component.get(this._getItemAt(value).children());
+			return radbox ? radbox.isReadonly() : false;
+		}
+		if (typeof value == "string") {
+			return this.isReadonly(this.getIndexByName(value));
+		}
+		return this.$el.is(".readonly");
+	};
+	_UIRadioGroup.setReadonly = function (readonly, value) {
+		if (typeof value == "string") {
+			return this.setReadonly(readonly, this.getIndexByName(value));
+		}
+		if (typeof value == "number") {
+			let radbox = VRender.Component.get(this._getItemAt(value).children());
+			radbox && radbox.setReadonly(readonly);
+		}
+		else {
+			readonly = Utils.isNull(readonly) || Utils.isTrue(readonly);
+			Utils.each(this._getItems(), (item) => {
+				let radbox = VRender.Component.get(item.children());
+				radbox && radbox.setReadonly(readonly);
+			});
+			if (readonly)
+				this.$el.addClass("readonly");
+			else
+				this.$el.removeClass("readonly");
+		}
+	};
+
 	// ====================================================
 	_UIRadioGroup._getRadioName = function () {
 		return "rad-" + this.getViewId();

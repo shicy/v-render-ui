@@ -66,6 +66,19 @@
     box-shadow: 0px 0px 0px 2px #ccc;
 }
 
+.ui-radbox[opt-readonly]:before {
+    box-shadow: none !important;
+}
+
+.ui-radbox[opt-readonly]:not(.checked):before {
+    background-color: #fffcf4;
+}
+
+
+.ui-radbox[opt-readonly]:not(.checked):after {
+    display: none;
+}
+
 .ui-radbox[disabled] {
     opacity: 0.35;
     pointer-events: none;

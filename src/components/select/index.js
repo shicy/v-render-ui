@@ -38,6 +38,13 @@ const UISelect = UISelectable.extend(module, {
 		this.options.editable = bool;
 	},
 
+	isReadonly: function () {
+		return Utils.isTrue(this.options.readonly);
+	},
+	setReadonly: function (bool) {
+		this.options.readonly = bool;
+	},
+
 	isClearable: function () {
 		return Utils.isTrue(this.options.clearable);
 	},

@@ -59,6 +59,20 @@
 			$("<span></span>").appendTo(this.$el).text(value);
 	};
 
+	_UIRadiobox.isReadonly = function () {
+		return this.$el.attr("opt-readonly") == 1;
+	};
+	_UIRadiobox.setReadonly = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value)) {
+			this.$el.attr("opt-readonly", "1");
+			this.input.attr("disabled", "disabled");
+		}
+		else {
+			this.$el.removeAttr("opt-readonly");
+			this.input.removeAttr("disabled");
+		}
+	};
+
 	// ====================================================
 	const radboxChangeHandler = function (e) {
 		let _isChecked = this.isChecked();
@@ -96,6 +110,11 @@
 		if (Utils.isTrue(options.checked)) {
 			target.addClass("checked");
 			input.attr("checked", "checked");
+		}
+
+		if (Utils.isTrue(options.readonly)) {
+			target.attr("opt-readonly", "1");
+			input.attr("disabled", "disabled");
 		}
 
 		if (Utils.isNotNull(options.label))

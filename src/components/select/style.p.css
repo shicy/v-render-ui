@@ -243,6 +243,18 @@
     display: block;
 }
 
+.ui-select[opt-readonly] > .ipt > input {
+    background-color: #fffcf4;
+}
+
+.ui-select[opt-readonly] > .ipt > .dropdownbtn {
+    display: block !important;
+}
+
+.ui-select[opt-readonly] > .ipt > .clearbtn {
+    display: none !important;
+}
+
 .ui-select[disabled] {
     opacity: 0.5;
     cursor: no-drop;

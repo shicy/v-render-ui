@@ -53,11 +53,44 @@
 			chkbox && chkbox.setDisabled(disabled);
 		}
 		else {
-			disabled = (Utils.isNull(disabled) || Utils.isTrue(disabled)) ? true : false;
+			disabled = Utils.isNull(disabled) || Utils.isTrue(disabled);
 			if (disabled)
 				this.$el.addClass("disabled").attr("disabled", "disabled");
 			else
 				this.$el.removeClass("disabled").removeAttr("disabled");
+		}
+	};
+
+	_UICheckGroup.isReadonly = function (value) {
+		if (typeof value == "number") {
+			let chkbox = VRender.Component.get(this._getItemAt(value).children());
+			return chkbox ? chkbox.isReadonly() : false;
+		}
+		if (typeof value == "string") {
+			return this.isReadonly(this.getIndexByName(value));
+		}
+		return this.$el.is(".readonly");
+	};
+	_UICheckGroup.setReadonly = function (readonly, value) {
+		if (typeof value == "string") {
+			return this.setReadonly(readonly, this.getIndexByName(value));
+		}
+		if (typeof value == "number") {
+			let chkbox = VRender.Component.get(this._getItemAt(value).children());
+			chkbox && chkbox.setReadonly(readonly);
+		}
+		else {
+			readonly = Utils.isNull(readonly) || Utils.isTrue(readonly);
+			Utils.each(this._getItems(), (item) => {
+				let chkbox = VRender.Component.get(item.children());
+				chkbox && chkbox.setReadonly(readonly);
+			});
+			if (readonly) {
+				this.$el.addClass("readonly");
+			}
+			else {
+				this.$el.removeClass("readonly");
+			}
 		}
 	};
 

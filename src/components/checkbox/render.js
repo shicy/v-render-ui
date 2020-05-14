@@ -64,6 +64,20 @@
 			$("<span></span>").appendTo(this.$el).text(value);
 	};
 
+	_UICheckbox.isReadonly = function () {
+		return this.$el.attr("opt-readonly") == 1;
+	};
+	_UICheckbox.setReadonly = function (value) {
+		if (Utils.isNull(value) || Utils.isTrue(value)) {
+			this.$el.attr("opt-readonly", "1");
+			this.input.attr("disabled", "disabled");
+		}
+		else {
+			this.$el.removeAttr("opt-readonly");
+			this.input.removeAttr("disabled");
+		}
+	};
+
 	// ====================================================
 	// 复选框状态变更事件
 	const chkboxChangeHandler = function (e) {
@@ -95,6 +109,11 @@
 		if (Utils.isTrue(options.checked)) {
 			target.addClass("checked");
 			input.attr("checked", "checked");
+		}
+
+		if (Utils.isTrue(options.readonly)) {
+			target.attr("opt-readonly", "1");
+			input.attr("disabled", "disabled");
 		}
 
 		if (Utils.isNotNull(options.label))
