@@ -11840,7 +11840,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
 
   _UIPaginator.setSize = function (value) {
+    var snapshoot = this._snapshoot();
+
     setInner.call(this, null, null, value);
+    snapshoot.done();
   };
 
   _UIPaginator.getTotal = function () {
@@ -11950,7 +11953,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
 
   _UIPaginator._snapshoot_compare = function (state) {
-    return state.data.page == this.getPageNo();
+    return state.data.page == this.getPageNo() && state.data.size == this.getSize();
   };
 
   _UIPaginator._isFirst = function () {
@@ -12024,7 +12027,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var size = parseInt($(e.currentTarget).text());
 
     if (size && size != this.getSize()) {
+      var snapshoot = this._snapshoot();
+
+      this.setPage(1);
       this.setSize(size);
+      snapshoot.done();
     }
 
     hideSizeDropdown.call(this);
