@@ -56,7 +56,9 @@
 		return parseInt(this.$el.attr("data-size")) || 0;
 	};
 	_UIPaginator.setSize = function (value) {
+		let snapshoot = this._snapshoot();
 		setInner.call(this, null, null, value);
+		snapshoot.done();
 	};
 
 	_UIPaginator.getTotal = function () {
@@ -167,7 +169,8 @@
 	};
 
 	_UIPaginator._snapshoot_compare = function (state) {
-		return state.data.page == this.getPageNo();
+		return state.data.page == this.getPageNo() &&
+			state.data.size == this.getSize();
 	};
 
 	_UIPaginator._isFirst = function () {
@@ -248,7 +251,10 @@
 	const sizebarClickHandler = function (e) {
 		let size = parseInt($(e.currentTarget).text());
 		if (size && size != this.getSize()) {
+			let snapshoot = this._snapshoot();
+			this.setPage(1);
 			this.setSize(size);
+			snapshoot.done();
 		}
 		hideSizeDropdown.call(this);
 	};

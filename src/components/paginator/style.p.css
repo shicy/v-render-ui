@@ -57,6 +57,7 @@
 .ui-paginator > .sizebar {
     min-width: 55px;
     margin-left: 10px;
+    text-align: left;
 }
 
 .ui-paginator > .sizebar > .lbl {
