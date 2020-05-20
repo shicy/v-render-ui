@@ -247,7 +247,7 @@
 
 		// 异步数据加载方法
 		Fn.load = function (api, params, callback) {
-			api = api || this.lastLoadApi || this.$el.attr("api-name");
+			api = api || this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
 			if (Utils.isBlank(api))
 				return false;
 			let target = this.$el.addClass("is-loading");

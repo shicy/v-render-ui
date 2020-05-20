@@ -512,7 +512,7 @@
 
 	// ====================================================
 	_UITree.load = function (api, params, callback) {
-		api = api || this.lastLoadApi || this.$el.attr("api-name");
+		api = api || this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
 		if (Utils.isBlank(api))
 			return false;
 
@@ -976,7 +976,7 @@
 			doNodeShowAnimate.call(this, item);
 
 			let itemData = this._getItemData(item);
-			let api = this.lastLoadApi || this.$el.attr("api-name");
+			let api = this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
 			if (api && !item.is(".is-loaded")) {
 				if (item.children("ul").children().length == 0) {
 					let params = {pid: getItemId.call(this, item), p_no: 1};
@@ -1398,7 +1398,7 @@
 				node = node.parent().addClass("open").parent();
 			}
 			if (!item.is(".is-loaded") && item.children("ul").children().length == 0) {
-				let api = this.lastLoadApi || this.$el.attr("api-name");
+				let api = this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
 				if (Utils.isBlank(api)) {
 					tryAutoOpen.call(this);
 				}
