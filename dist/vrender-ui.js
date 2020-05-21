@@ -216,7 +216,7 @@
     Fn.load = function (api, params, callback) {
       var _this = this;
 
-      api = api || this.lastLoadApi || this.$el.attr("api-name");
+      api = api || this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
       if (Utils.isBlank(api)) return false;
       var target = this.$el.addClass("is-loading");
       var timerId = this.loadTimerId = Date.now();
@@ -16833,7 +16833,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   _UITree.load = function (api, params, callback) {
     var _this8 = this;
 
-    api = api || this.lastLoadApi || this.$el.attr("api-name");
+    api = api || this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
     if (Utils.isBlank(api)) return false;
 
     var container = this._getItemContainer().empty();
@@ -17321,7 +17321,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       var itemData = this._getItemData(item);
 
-      var api = this.lastLoadApi || this.$el.attr("api-name");
+      var api = this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
 
       if (api && !item.is(".is-loaded")) {
         if (item.children("ul").children().length == 0) {
@@ -17753,7 +17753,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }
 
       if (!item.is(".is-loaded") && item.children("ul").children().length == 0) {
-        var api = this.lastLoadApi || this.$el.attr("api-name");
+        var api = this.lastLoadApi || this.options.apiName || this.$el.attr("api-name");
 
         if (Utils.isBlank(api)) {
           tryAutoOpen.call(this);
