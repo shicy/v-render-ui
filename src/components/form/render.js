@@ -682,6 +682,9 @@
 				else if (Utils.isFunction(comp.val)) {
 					validateInterfaceView.call(this, item, comp, comp.val(), callback);
 				}
+				else if (Utils.isFunction(callback)) {
+					callback(false);
+				}
 			}
 			else {
 				let value = contentView.attr("data-val");
