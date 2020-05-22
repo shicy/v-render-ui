@@ -9498,6 +9498,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           validateInterfaceView.call(this, item, comp, comp.getValue(), callback);
         } else if (Utils.isFunction(comp.val)) {
           validateInterfaceView.call(this, item, comp, comp.val(), callback);
+        } else if (Utils.isFunction(callback)) {
+          callback(false);
         }
       } else {
         var value = contentView.attr("data-val");
