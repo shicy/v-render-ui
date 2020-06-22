@@ -54,6 +54,7 @@
     resize: none;
     outline: none;
     font-size: inherit;
+    font-family: inherit;
     line-height: 20px;
 }
 

@@ -602,7 +602,7 @@
 				}
 			}
 			else if (type == "tel") {
-				if (!Utils.isMobile(value) || !Utils.isPhone(value))
+				if (!Utils.isMobile(value) && !Utils.isPhone(value))
 					setErrorMsg.call(this, (defaultErrorMsg || "手机或电话号码不正确"));
 			}
 			else if (type == "text") {
