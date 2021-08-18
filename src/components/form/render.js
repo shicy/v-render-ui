@@ -104,7 +104,9 @@
 				else {
 					errmsg = err.msg || err;
 				}
-				new UIMessage({ type: "error", content: errmsg });
+				if (errmsg != "canceled") {
+					new UIMessage({ type: "error", content: errmsg });
+				}
 			}
 			return false;
 		};

@@ -4084,7 +4084,7 @@
           if (!isNaN(max) && max < val) setErrorMsg.call(this, defaultErrorMsg || "数据不正确，请输入小于等于" + max + "的值");
         }
       } else if (type == "tel") {
-        if (!Utils.isMobile(value) || !Utils.isPhone(value)) setErrorMsg.call(this, defaultErrorMsg || "手机或电话号码不正确");
+        if (!Utils.isMobile(value) && !Utils.isPhone(value)) setErrorMsg.call(this, defaultErrorMsg || "手机或电话号码不正确");
       } else if (type == "text") {
         var maxSize = this.getMaxSize();
         if (maxSize > 0 && maxSize < value.length) setErrorMsg.call(this, defaultErrorMsg || "输入内容太长，允许最大长度为：" + maxSize);
@@ -8958,10 +8958,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           errmsg = err.msg || err;
         }
 
-        new UIMessage({
-          type: "error",
-          content: errmsg
-        });
+        if (errmsg != "canceled") {
+          new UIMessage({
+            type: "error",
+            content: errmsg
+          });
+        }
       }
 
       return false;
