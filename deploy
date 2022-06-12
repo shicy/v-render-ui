@@ -21,13 +21,16 @@ release_file_path="./build/release/${release_file_name}"
 echo -e "[$(date '+%Y-%m-%d %H:%M:%S')] 打包：${release_file_path}"
 zip -r -q ${release_file_path} ./build/dist/.
 
+deploy_user="root"
+deploy_host="www.scyok.com"
+
 # 上传
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 上传：/mnt/www/vrender/release.zip"
-scp ${release_file_path} root@www.scyok.com:/mnt/www/vrender/release.zip
+scp ${release_file_path} ${deploy_user}@${deploy_host}:/mnt/www/vrender/release.zip
 
 # 远程执行
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 部署..."
-ssh root@www.scyok.com << remotessh
+ssh ${deploy_user}@${deploy_host} << remotessh
 cd /mnt/www/vrender
 unzip -oq release.zip
 rm -f release.zip
